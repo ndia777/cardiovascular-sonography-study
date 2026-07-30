@@ -1,0 +1,221 @@
+/* Headless test suite for the study app. No dependencies — plain Node.
+ *
+ *     node test/app.test.js
+ *
+ * Runs the real engine against a stubbed DOM and checks both the source pair
+ * (index.html + decks.js) and the bundled single file (docs/index.html), then
+ * verifies the bundle is actually up to date with the source.
+ *
+ * Exits non-zero on any failure, so CI fails before a bad deck reaches anyone.
+ */
+
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+
+const ROOT = path.join(__dirname, '..');
+const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
+const lf = s => s.replace(/\r\n/g, '\n');
+
+/* Inline <script> blocks, i.e. those without a src attribute. */
+const inlineScripts = html =>
+  [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+
+let pass = 0;
+const failures = [];
+const check = (name, cond, detail) => {
+  if (cond) pass++;
+  else failures.push(detail ? `${name}\n      ${detail}` : name);
+};
+
+/* ---------------------------------------------------------------- sandbox */
+function boot(decksSrc, engineSrc, label) {
+  const el = () => ({
+    innerHTML: '', value: '', selectionStart: 0, style: {}, dataset: {},
+    classList: { add() {}, remove() {}, contains: () => false },
+    focus() {}, blur() {}, setSelectionRange() {}, addEventListener() {},
+    querySelector: () => el(), querySelectorAll: () => [],
+  });
+  const store = new Map();
+  const s = {
+    console, Math, Date, JSON, Set, Map, Array, Object, String, Number, RegExp,
+    parseInt, parseFloat, setTimeout: () => {}, clearTimeout: () => {},
+    scrollTo() {}, requestAnimationFrame() {}, getComputedStyle: () => ({}),
+    matchMedia: () => ({ matches: false }),
+    localStorage: {
+      getItem: k => (store.has(k) ? store.get(k) : null),
+      setItem: (k, v) => store.set(k, String(v)),
+      removeItem: k => store.delete(k),
+    },
+    document: {
+      getElementById: el, querySelector: el, querySelectorAll: () => [],
+      addEventListener() {}, documentElement: { dataset: {} }, body: el(),
+    },
+  };
+  s.window = s;
+  vm.createContext(s);
+  vm.runInContext(decksSrc, s, { filename: `${label}:decks` });
+  vm.runInContext(engineSrc, s, { filename: `${label}:engine` });
+  /* `session` is a top-level `let`, so it lives in the context's lexical scope
+     rather than on the sandbox object — reach it by evaluating inside. */
+  s.$ = expr => vm.runInContext(expr, s);
+  return s;
+}
+
+/* ------------------------------------------------------------ assertions */
+const MODES = ['recall', 'learn', 'quiz', 'browse', 'match'];
+const norm = x => x.toLowerCase().trim();
+const clashes = (a, b) => {
+  a = norm(a); b = norm(b);
+  return a === b || a.includes(b) || b.includes(a);
+};
+
+function suite(s, label) {
+  const { DECKS, go, judge, autoQuestions, $ } = s;
+
+  check(`[${label}] decks load`, DECKS && DECKS.length > 0, `got ${DECKS && DECKS.length}`);
+  if (!DECKS || !DECKS.length) return;
+
+  /* every deck/mode renders without throwing */
+  for (const d of DECKS) {
+    for (const m of MODES.concat(d.chest ? ['chest'] : [])) {
+      try { go('run', d.id, m); check(`[${label}] ${d.id}/${m} renders`, true); }
+      catch (e) { check(`[${label}] ${d.id}/${m} renders`, false, e.message); }
+    }
+  }
+
+  /* generated questions must have four genuinely distinct choices, and a quiz
+     must never ask about the same card twice */
+  const ROUNDS = 40;
+  let generated = 0, dupChoice = 0, interchangeable = 0, badShape = 0, sample = '';
+  let quizzes = 0, quizRepeats = 0;
+
+  for (const d of DECKS) {
+    for (let r = 0; r < ROUNDS; r++) {
+      for (const q of autoQuestions(d)) {
+        generated++;
+        if (!q.choices || q.choices.length !== 4 || !Number.isInteger(q.answer)
+            || q.answer < 0 || q.answer > 3) { badShape++; continue; }
+        if (new Set(q.choices).size !== 4) {
+          dupChoice++;
+          if (!sample) sample = `${d.id} / ${q.card.term}: ${JSON.stringify(q.choices)}`;
+          continue;
+        }
+        outer: for (let i = 0; i < 4; i++)
+          for (let j = i + 1; j < 4; j++)
+            if (clashes(q.choices[i], q.choices[j])) {
+              interchangeable++;
+              if (!sample) sample = `${d.id} / ${q.card.term}: ${JSON.stringify(q.choices)}`;
+              break outer;
+            }
+      }
+      go('run', d.id, 'quiz');
+      quizzes++;
+      const seen = new Map();
+      for (const q of $('session.qs')) if (q.card) seen.set(q.card, (seen.get(q.card) || 0) + 1);
+      if ([...seen.values()].some(n => n > 1)) quizRepeats++;
+    }
+  }
+
+  check(`[${label}] ${generated} questions well formed`, badShape === 0, `${badShape} malformed`);
+  check(`[${label}] no repeated answer choice`, dupChoice === 0, `${dupChoice} hits, e.g. ${sample}`);
+  check(`[${label}] no interchangeable choices`, interchangeable === 0, `${interchangeable} hits, e.g. ${sample}`);
+  check(`[${label}] ${quizzes} quizzes ask each card at most once`, quizRepeats === 0, `${quizRepeats} repeated`);
+
+  /* hand-written questions */
+  let badWritten = 0;
+  for (const d of DECKS) for (const q of d.questions || []) {
+    if (!q.choices || q.choices.length !== 4 || !Number.isInteger(q.answer)
+        || q.answer < 0 || q.answer > 3 || new Set(q.choices).size !== 4) badWritten++;
+  }
+  check(`[${label}] hand-written questions well formed`, badWritten === 0, `${badWritten} bad`);
+
+  /* spelling is graded strictly — one wrong letter is wrong */
+  const card = (deck, term) => DECKS.find(d => d.id === deck).cards.find(c => c.term === term);
+  const spelling = [
+    ['mt1-roots', 'abdomin/o', 'abdomino', 'exact'],
+    ['mt1-roots', 'abdomin/o', 'ABDOMIN O', 'exact'],
+    ['mt1-suffixes', '-algia', 'algia', 'exact'],
+    ['mt1-suffixes', '-ac, -al, -ar, -ary, -ic, -ous', '-al', 'exact'],
+    ['mt1-terms', 'hemorrhage', 'hemorage', 'wrong'],
+    ['mt1-terms', 'appendectomy', 'appendecomy', 'wrong'],
+    ['mt1-prefixes', 'hyper-', 'hypo-', 'wrong'],
+    ['mt1-suffixes', '-ostomy', '-otomy', 'wrong'],
+    ['mt1-terms', 'hypertension', 'hypotension', 'wrong'],
+    ['bio-cellcycle', 'Metaphase', 'Anaphase', 'wrong'],
+    ['mt1-roots', 'gastr/o', '', 'wrong'],
+  ];
+  for (const [deck, term, typed, want] of spelling) {
+    const got = judge(typed, card(deck, term));
+    check(`[${label}] spelling "${typed}" vs ${term}`, got === want, `wanted ${want}, got ${got}`);
+  }
+
+  /* full playthroughs terminate and reach a result */
+  for (const [deck, mode] of [['bio-cellcycle', 'recall'], ['ekg-basics', 'quiz'], ['ekg-leads', 'chest']]) {
+    try {
+      go('run', deck, mode);
+      let guard = 0;
+      if (mode === 'recall') {
+        while ($('session.queue.length') && guard++ < 500) {
+          $('session.typed = session.queue[0].term'); s.checkRecall(); s.nextRecall();
+        }
+      } else if (mode === 'quiz') {
+        while ($('session.i < session.qs.length') && guard++ < 200) {
+          s.answer($('session.qs[session.i].answer')); s.nextQ();
+        }
+      } else {
+        while ($('session.i < session.order.length') && guard++ < 50) {
+          s.pickLead($('session.order[session.i]')); s.nextLead();
+        }
+      }
+      check(`[${label}] ${deck}/${mode} playthrough terminates`, guard < 500, `guard hit ${guard}`);
+    } catch (e) {
+      check(`[${label}] ${deck}/${mode} playthrough terminates`, false, e.message);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ run */
+const srcHtml = read('index.html');
+const decksSrc = read('decks.js');
+const srcInline = inlineScripts(srcHtml);
+check('index.html has exactly one inline script', srcInline.length === 1, `found ${srcInline.length}`);
+
+suite(boot(decksSrc, srcInline[0], 'source'), 'source');
+
+/* The bundle is what actually gets served — test it too, and confirm it is not
+   stale, since forgetting to run build.ps1 would silently ship old code. */
+const bundlePath = path.join(ROOT, 'docs', 'index.html');
+if (!fs.existsSync(bundlePath)) {
+  check('docs/index.html exists (run build.ps1)', false, 'bundle missing');
+} else {
+  const bundle = read('docs/index.html');
+  const parts = inlineScripts(bundle);
+  check('docs/index.html has two inline scripts', parts.length === 2, `found ${parts.length}`);
+  if (parts.length === 2) suite(boot(parts[0], parts[1], 'bundle'), 'bundle');
+
+  /* Reproduce exactly what build.ps1 would emit and compare the whole file.
+     Comparing only the script contents would miss edits to the CSS or markup,
+     which are just as capable of going stale. */
+  const needle = '<script src="decks.js"></script>';
+  const at = srcHtml.indexOf(needle);
+  check('index.html has the decks.js script tag', at >= 0, 'build.ps1 would fail too');
+  if (at >= 0) {
+    const expected = srcHtml.slice(0, at) + '<script>\n' + decksSrc + '\n</script>'
+                   + srcHtml.slice(at + needle.length);
+    check('docs/index.html is up to date with index.html + decks.js',
+          lf(expected).trim() === lf(bundle).trim(),
+          'source changed since the last build — run build.ps1 and commit docs/index.html');
+  }
+  check('bundle references no external files', !/<script[^>]*\bsrc=/.test(bundle)
+        && !/<link[^>]*\bhref=/.test(bundle), 'bundle must be self-contained');
+}
+
+/* ---------------------------------------------------------------- report */
+console.log('');
+if (failures.length) {
+  console.log(`FAILED  ${failures.length} check(s), ${pass} passed\n`);
+  failures.forEach(f => console.log('  x ' + f));
+  process.exit(1);
+}
+console.log(`PASSED  all ${pass} checks`);

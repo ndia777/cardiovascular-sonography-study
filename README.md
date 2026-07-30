@@ -87,6 +87,22 @@ A few things that make the generated questions better:
 
 Just tell me the chapter and I can add it for you.
 
+## Tests
+
+```
+node test/app.test.js
+```
+
+No dependencies — plain Node. It loads the real engine into a stubbed DOM and
+checks that every deck and mode renders, that generated questions never repeat
+or reuse an interchangeable answer choice, that a quiz never asks about the same
+card twice, that spelling is still graded strictly, that playthroughs terminate,
+and that `docs/index.html` is up to date with the source.
+
+The same suite runs on every push via GitHub Actions, so a malformed deck fails
+CI instead of reaching anyone. If it complains the bundle is stale, run
+`build.ps1` and commit `docs/index.html`.
+
 ## Sharing it with classmates
 
 `build.ps1` bundles `index.html` + `decks.js` into a single self-contained file

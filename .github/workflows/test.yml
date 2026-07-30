@@ -1,0 +1,22 @@
+name: tests
+
+# Runs on every push and pull request. The suite has no dependencies, so there
+# is nothing to install — it just needs Node.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Run study app test suite
+        run: node test/app.test.js
