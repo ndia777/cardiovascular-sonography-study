@@ -106,23 +106,31 @@ function suite(s, label) {
           'mixing terms and steps makes the mode list ambiguous');
   }
 
-  /* ordering decks: every step must be placeable, in sequence, to completion */
+  /* ordering decks: every step must be placeable, in sequence, across all
+     stages, to completion — and the pool must never exceed one stage */
+  const STAGE = 6;
   for (const d of DECKS.filter(x => x.steps.length)) {
-    let ok = true, detail = '';
+    let ok = true, detail = '', maxPool = 0;
     for (let r = 0; r < 25 && ok; r++) {
       go('run', d.id, 'order');
       let guard = 0;
-      while ($('session.remaining.length') && guard++ < 200) {
+      while ($('session.done') < d.steps.length && guard++ < 300) {
         const remaining = $('session.remaining');
-        const want = d.steps[$('session.placed.length')];
+        maxPool = Math.max(maxPool, remaining.length);
+        const want = d.steps[$('session.done')];
         const at = remaining.indexOf(want);
-        if (at < 0) { ok = false; detail = 'correct next step not in the pool'; break; }
+        if (at < 0) { ok = false; detail = `step ${$('session.done') + 1} not in its stage pool`; break; }
         s.placeStep(at);
       }
-      if (ok && guard >= 200) { ok = false; detail = 'did not terminate'; }
+      if (ok && guard >= 300) { ok = false; detail = 'did not terminate'; }
       if (ok && $('session.misses') !== 0) { ok = false; detail = 'perfect run recorded misses'; }
+      if (ok && $('session.done') !== d.steps.length) {
+        ok = false; detail = `placed ${$('session.done')} of ${d.steps.length}`;
+      }
     }
-    check(`[${label}] ${d.id} order playthrough (25 runs)`, ok, detail);
+    check(`[${label}] ${d.id} staged order playthrough (25 runs)`, ok, detail);
+    check(`[${label}] ${d.id} pool never exceeds one stage`, maxPool <= STAGE,
+          `saw ${maxPool} options at once`);
 
     /* a wrong pick must be rejected and counted, not accepted */
     go('run', d.id, 'order');
@@ -130,8 +138,8 @@ function suite(s, label) {
     const wrongAt = pool.findIndex(st => st !== d.steps[0]);
     s.placeStep(wrongAt);
     check(`[${label}] ${d.id} rejects an out-of-sequence step`,
-          $('session.placed.length') === 0 && $('session.misses') === 1,
-          `placed=${$('session.placed.length')} misses=${$('session.misses')}`);
+          $('session.done') === 0 && $('session.misses') === 1,
+          `done=${$('session.done')} misses=${$('session.misses')}`);
   }
 
   /* generated questions must have four genuinely distinct choices, and a quiz

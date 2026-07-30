@@ -131,6 +131,9 @@
   .dot.muted{opacity:.4}
 
   /* ---- put in order ---- */
+  .stagehead{display:flex;align-items:baseline;gap:9px;margin:0 0 14px;font-size:13px;
+    font-weight:600;letter-spacing:.02em;color:var(--accent)}
+  .stagehead span{font-weight:400;color:var(--dim);letter-spacing:0}
   .placed{list-style:none;padding:0;margin:0 0 20px}
   .placed li{display:flex;gap:11px;align-items:flex-start;padding:10px 13px;border:1px solid var(--line);
     border-radius:9px;background:var(--card);margin-bottom:6px;font-size:14px;line-height:1.45}
@@ -1849,12 +1852,18 @@ function pickLead(id){
 function nextLead(){ session.i++; session.picked = null; render(); }
 
 /* ═══════════════ PUT IN ORDER ═══════════════ */
+/* Steps are worked in stages so the screen stays short on a phone: as items
+   move from the pool into the placed list the total on screen stays at STAGE. */
+const STAGE = 6;
+const stageCount = d => Math.ceil(d.steps.length / STAGE);
+const stageSteps = (d, i) => d.steps.slice(i * STAGE, (i + 1) * STAGE);
+
 function runOrder(d){
-  if (!session) session = { remaining: shuffle(d.steps), placed: [], misses: 0,
-                            start: Date.now(), detail: null, bad: null };
+  if (!session) session = { stage: 0, remaining: shuffle(stageSteps(d, 0)), placed: [],
+                            done: 0, misses: 0, start: Date.now(), detail: null, bad: null };
   const s = session;
 
-  if (!s.remaining.length){
+  if (s.done >= d.steps.length){
     const secs = Math.round((Date.now() - s.start) / 1000);
     const prev = load()[d.id] || {};
     record(d.id, { orderBest: prev.orderBest != null ? Math.min(prev.orderBest, s.misses) : s.misses });
@@ -1862,13 +1871,16 @@ function runOrder(d){
       `misses placing ${d.steps.length} steps in order · ${secs}s`, [], 'order');
   }
 
-  const n = s.placed.length + 1;
+  const first = s.stage * STAGE + 1;
+  const last = Math.min((s.stage + 1) * STAGE, d.steps.length);
   app.innerHTML = `
-    ${sessionBar(d, s.placed.length, d.steps.length,
+    ${sessionBar(d, s.done, d.steps.length,
        `Put in Order · <span style="color:${s.misses ? 'var(--bad)' : 'var(--dim)'}">${s.misses} misses</span>`)}
+    <div class="stagehead">Stage ${s.stage + 1} of ${stageCount(d)}
+      <span>steps ${first}–${last}</span></div>
     ${s.placed.length ? `<ol class="placed">${s.placed.map((st, i) =>
-       `<li><b>${i + 1}</b><span>${esc(st.text)}</span></li>`).join('')}</ol>` : ''}
-    <div class="q">What is step <b>${n}</b>?</div>
+       `<li><b>${first + i}</b><span>${esc(st.text)}</span></li>`).join('')}</ol>` : ''}
+    <div class="q">What is step <b>${s.done + 1}</b>?</div>
     ${s.detail ? `<div class="why">${esc(s.detail)}</div>` : ''}
     <div class="steps">
       ${s.remaining.map((st, i) =>
@@ -1881,16 +1893,25 @@ function placeStep(i){
   const s = session, d = deckById(view.deck);
   if (s.bad !== null) return;
   const step = s.remaining[i];
-  if (step === d.steps[s.placed.length]){
-    s.remaining.splice(i, 1);
-    s.placed.push(step);
-    s.detail = step.detail || null;
-    return render();
+
+  if (step !== d.steps[s.done]){
+    s.misses++;
+    s.bad = i;
+    render();
+    return setTimeout(() => { if (session) { session.bad = null; render(); } }, 340);
   }
-  s.misses++;
-  s.bad = i;
+
+  s.remaining.splice(i, 1);
+  s.placed.push(step);
+  s.done++;
+  s.detail = step.detail || null;
+
+  if (!s.remaining.length && s.done < d.steps.length){   /* on to the next stage */
+    s.stage++;
+    s.remaining = shuffle(stageSteps(d, s.stage));
+    s.placed = [];
+  }
   render();
-  setTimeout(() => { if (session) { session.bad = null; render(); } }, 340);
 }
 
 /* ═══════════════ BROWSE ═══════════════ */
