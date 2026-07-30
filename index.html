@@ -130,6 +130,19 @@
   .dot.wrong{border-color:var(--bad);background:var(--bad);color:#fff}
   .dot.muted{opacity:.4}
 
+  /* ---- put in order ---- */
+  .placed{list-style:none;padding:0;margin:0 0 20px}
+  .placed li{display:flex;gap:11px;align-items:flex-start;padding:10px 13px;border:1px solid var(--line);
+    border-radius:9px;background:var(--card);margin-bottom:6px;font-size:14px;line-height:1.45}
+  .placed li b{color:var(--good);flex:0 0 20px;font-variant-numeric:tabular-nums}
+  .placed .detail{color:var(--dim)}
+  .placed .detail::before{content:""}
+  .steps{display:flex;flex-direction:column;gap:8px}
+  .step{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;
+    text-align:left;font-size:14.5px;line-height:1.45;transition:.12s;width:100%}
+  .step:hover{border-color:var(--accent);background:var(--card2)}
+  .step.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card));animation:shake .3s}
+
   /* ---- browse ---- */
   table.browse{width:100%;border-collapse:collapse;font-size:14.5px}
   table.browse td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -174,6 +187,10 @@
 const app = document.getElementById('app');
 const DECKS = window.DECKS || [];
 const STORE = 'cvs-study-v1';
+
+/* A deck is either a vocabulary list (`cards`) or a sequence (`steps`).
+   Default both so the rest of the engine never has to check. */
+DECKS.forEach(d => { d.cards = d.cards || []; d.steps = d.steps || []; });
 
 /* ---------- storage ---------- */
 const load = () => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } };
@@ -243,7 +260,7 @@ function screenHome(){
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
       html += `<button class="deck" onclick="go('deck','${d.id}')">
         <h3>${esc(d.title)}</h3>
-        <div class="meta">${d.cards.length} terms${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
+        <div class="meta">${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         <div class="badges">
           ${p.recallBest != null ? `<span class="badge ${p.recallBest>=80?'on':''}">Recall ${p.recallBest}%</span>` : ''}
           ${p.quizBest != null ? `<span class="badge ${p.quizBest>=80?'on':''}">Quiz best ${p.quizBest}%</span>` : ''}
@@ -264,19 +281,29 @@ function screenHome(){
 /* ═══════════════ DECK MENU ═══════════════ */
 function screenDeck(){
   const d = deckById(view.deck);
-  const modes = [
-    ['recall','Recall — Type It In','Read the definition, type the term, and get marked right or wrong on the spot.'],
-    ['learn','Flashcards','Flip through the terms and grade yourself. Missed cards come back around.'],
-    ['quiz','Multiple Choice','Written concept questions plus auto-generated term questions, with explanations.'],
-    ['match','Matching','Pair each term with its definition against the clock, six at a time.'],
-    ['browse','Review Sheet','The whole list in one table. Hide the definitions to self-test.']
-  ];
-  if (d.chest) modes.splice(4, 0, ['chest','Place the Leads','Click the correct spot on the chest for each V lead.']);
+  /* Only offer modes the deck can actually support — a procedure has no terms
+     to flip or match, and a vocabulary list has no order to reconstruct. */
+  const modes = [];
+  if (d.steps.length)
+    modes.push(['order','Put in Order','Rebuild the procedure one step at a time, in sequence.']);
+  if (d.cards.length){
+    modes.push(['recall','Recall — Type It In','Read the definition, type the term, and get marked right or wrong on the spot.']);
+    modes.push(['learn','Flashcards','Flip through the terms and grade yourself. Missed cards come back around.']);
+  }
+  if (d.cards.length || (d.questions || []).length)
+    modes.push(['quiz','Multiple Choice','Written concept questions plus auto-generated term questions, with explanations.']);
+  if (d.cards.length)
+    modes.push(['match','Matching','Pair each term with its definition against the clock, six at a time.']);
+  if (d.chest)
+    modes.push(['chest','Place the Leads','Click the correct spot on the chest for each V lead.']);
+  modes.push(['browse','Review Sheet', d.steps.length
+    ? 'The full procedure in order, with the rationale for each step.'
+    : 'The whole list in one table. Hide the definitions to self-test.']);
 
   app.innerHTML = `
     <button class="back" onclick="go('home')">← All decks</button>
     <h2 class="title">${esc(d.title)}</h2>
-    <div class="srcline">${esc(d.course)} · ${d.cards.length} terms<br>from ${esc(d.source)}</div>
+    <div class="srcline">${esc(d.course)} · ${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}<br>from ${esc(d.source)}</div>
     <div class="modes">
       ${modes.map(([m,t,s]) => `<button class="mode" onclick="go('run','${d.id}','${m}')">
         <strong>${t}</strong><span>${s}</span></button>`).join('')}
@@ -674,11 +701,77 @@ function pickLead(id){
 }
 function nextLead(){ session.i++; session.picked = null; render(); }
 
+/* ═══════════════ PUT IN ORDER ═══════════════ */
+function runOrder(d){
+  if (!session) session = { remaining: shuffle(d.steps), placed: [], misses: 0,
+                            start: Date.now(), detail: null, bad: null };
+  const s = session;
+
+  if (!s.remaining.length){
+    const secs = Math.round((Date.now() - s.start) / 1000);
+    const prev = load()[d.id] || {};
+    record(d.id, { orderBest: prev.orderBest != null ? Math.min(prev.orderBest, s.misses) : s.misses });
+    return results(d, String(s.misses),
+      `misses placing ${d.steps.length} steps in order · ${secs}s`, [], 'order');
+  }
+
+  const n = s.placed.length + 1;
+  app.innerHTML = `
+    ${sessionBar(d, s.placed.length, d.steps.length,
+       `Put in Order · <span style="color:${s.misses ? 'var(--bad)' : 'var(--dim)'}">${s.misses} misses</span>`)}
+    ${s.placed.length ? `<ol class="placed">${s.placed.map((st, i) =>
+       `<li><b>${i + 1}</b><span>${esc(st.text)}</span></li>`).join('')}</ol>` : ''}
+    <div class="q">What is step <b>${n}</b>?</div>
+    ${s.detail ? `<div class="why">${esc(s.detail)}</div>` : ''}
+    <div class="steps">
+      ${s.remaining.map((st, i) =>
+        `<button class="step ${s.bad === i ? 'bad' : ''}" onclick="placeStep(${i})">${esc(st.text)}</button>`
+      ).join('')}
+    </div>`;
+  keyHandler = null;
+}
+function placeStep(i){
+  const s = session, d = deckById(view.deck);
+  if (s.bad !== null) return;
+  const step = s.remaining[i];
+  if (step === d.steps[s.placed.length]){
+    s.remaining.splice(i, 1);
+    s.placed.push(step);
+    s.detail = step.detail || null;
+    return render();
+  }
+  s.misses++;
+  s.bad = i;
+  render();
+  setTimeout(() => { if (session) { session.bad = null; render(); } }, 340);
+}
+
 /* ═══════════════ BROWSE ═══════════════ */
 function runBrowse(d){
   if (!session) session = { hide: false, filter: '' };
   const s = session;
   const f = s.filter.toLowerCase();
+
+  /* A sequence deck reads as a numbered procedure, not a two-column glossary. */
+  if (d.steps.length){
+    const steps = d.steps.filter(st =>
+      !f || (st.text + ' ' + (st.detail || '')).toLowerCase().includes(f));
+    app.innerHTML = `
+      <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+      <div class="bar"><span>${steps.length} of ${d.steps.length} steps</span></div>
+      <input class="search" id="bfilter" placeholder="Filter…" value="${esc(s.filter)}">
+      <ol class="placed">
+        ${steps.map(st => `<li><b>${d.steps.indexOf(st) + 1}</b><span>${esc(st.text)}
+          ${st.detail ? `<span class="note detail">${esc(st.detail)}</span>` : ''}</span></li>`).join('')}
+      </ol>
+      ${!steps.length ? '<p style="color:var(--dim)">Nothing matches that filter.</p>' : ''}`;
+    const sf = document.getElementById('bfilter');
+    sf.oninput = e => { const p = e.target.selectionStart; s.filter = e.target.value; runBrowse(d);
+      const nn = document.getElementById('bfilter'); nn.focus(); nn.setSelectionRange(p, p); };
+    keyHandler = null;
+    return;
+  }
+
   const rows = d.cards.filter(c => !f || (c.term + ' ' + c.def).toLowerCase().includes(f));
 
   app.innerHTML = `
@@ -735,7 +828,7 @@ function render(){
   if (!d) return go('home');
   if (view.screen === 'deck') return screenDeck();
   ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch,
-     chest: runChest, browse: runBrowse }[view.mode] || screenDeck)(d);
+     chest: runChest, order: runOrder, browse: runBrowse }[view.mode] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }

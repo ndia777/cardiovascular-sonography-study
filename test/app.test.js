@@ -63,7 +63,20 @@ function boot(decksSrc, engineSrc, label) {
 }
 
 /* ------------------------------------------------------------ assertions */
-const MODES = ['recall', 'learn', 'quiz', 'browse', 'match'];
+/* Mirrors the mode list the deck menu builds: card modes only for decks with
+   cards, the ordering mode only for decks with steps. */
+const modesFor = d => {
+  const cards = (d.cards || []).length;
+  const steps = (d.steps || []).length;
+  const written = (d.questions || []).length;
+  const m = [];
+  if (steps) m.push('order');
+  if (cards) m.push('recall', 'learn', 'match');
+  if (cards || written) m.push('quiz');
+  if (d.chest) m.push('chest');
+  m.push('browse');
+  return m;
+};
 const norm = x => x.toLowerCase().trim();
 const clashes = (a, b) => {
   a = norm(a); b = norm(b);
@@ -78,10 +91,47 @@ function suite(s, label) {
 
   /* every deck/mode renders without throwing */
   for (const d of DECKS) {
-    for (const m of MODES.concat(d.chest ? ['chest'] : [])) {
+    for (const m of modesFor(d)) {
       try { go('run', d.id, m); check(`[${label}] ${d.id}/${m} renders`, true); }
       catch (e) { check(`[${label}] ${d.id}/${m} renders`, false, e.message); }
     }
+  }
+
+  /* a deck is a vocabulary list or a sequence, and must offer matching modes */
+  for (const d of DECKS) {
+    check(`[${label}] ${d.id} has cards or steps`,
+          d.cards.length > 0 || d.steps.length > 0, 'deck has neither');
+    check(`[${label}] ${d.id} is not both`,
+          !(d.cards.length > 0 && d.steps.length > 0),
+          'mixing terms and steps makes the mode list ambiguous');
+  }
+
+  /* ordering decks: every step must be placeable, in sequence, to completion */
+  for (const d of DECKS.filter(x => x.steps.length)) {
+    let ok = true, detail = '';
+    for (let r = 0; r < 25 && ok; r++) {
+      go('run', d.id, 'order');
+      let guard = 0;
+      while ($('session.remaining.length') && guard++ < 200) {
+        const remaining = $('session.remaining');
+        const want = d.steps[$('session.placed.length')];
+        const at = remaining.indexOf(want);
+        if (at < 0) { ok = false; detail = 'correct next step not in the pool'; break; }
+        s.placeStep(at);
+      }
+      if (ok && guard >= 200) { ok = false; detail = 'did not terminate'; }
+      if (ok && $('session.misses') !== 0) { ok = false; detail = 'perfect run recorded misses'; }
+    }
+    check(`[${label}] ${d.id} order playthrough (25 runs)`, ok, detail);
+
+    /* a wrong pick must be rejected and counted, not accepted */
+    go('run', d.id, 'order');
+    const pool = $('session.remaining');
+    const wrongAt = pool.findIndex(st => st !== d.steps[0]);
+    s.placeStep(wrongAt);
+    check(`[${label}] ${d.id} rejects an out-of-sequence step`,
+          $('session.placed.length') === 0 && $('session.misses') === 1,
+          `placed=${$('session.placed.length')} misses=${$('session.misses')}`);
   }
 
   /* generated questions must have four genuinely distinct choices, and a quiz

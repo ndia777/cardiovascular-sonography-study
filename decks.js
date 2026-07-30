@@ -1013,23 +1013,91 @@ window.DECKS = [
   course: 'M103 · Medical Procedures',
   title: 'EKG — Performing the Procedure',
   source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md',
-  cards: [
-    { term: 'Purpose of the procedure', def: 'to obtain a graphic representation of the electrical activity of the patient’s heart' },
-    { term: 'Why perform an ECG',       def: 'to detect damage from previous heart attacks, enlargement of the heart muscle, rhythm disturbances and other abnormal conditions' },
-    { term: 'Baseline ECG age',         def: 'patients between 40 and 45 are recommended to get an ECG to establish a baseline' },
-    { term: 'Daily machine check',      def: 'check the machine for proper function and error codes before starting the patient schedule each day' },
-    { term: 'Step 1 — Prepare',         def: 'plug in the machine, make sure no other electrical equipment could cause interference, check cables and clips, turn it on' },
-    { term: 'Patient explanation',      def: '"Today we are going to perform an ECG to see how the electrical activity and rhythm in your heart is working." Then ask: "Do you have any questions or concerns?"' },
-    { term: 'Disrobing',                def: 'waist up, and remove clothing from the lower legs — provide privacy and show the patient where to put belongings' },
-    { term: 'Skin prep',                def: 'if the skin has lotion, oil or cream, wipe with gauze or an alcohol prep pad; shave excess hair WITH the patient’s permission' },
-    { term: 'Cable safety',             def: 'the power cord and patient cable must NOT be allowed to touch' },
-    { term: 'Breast tissue',            def: 'if breast tissue extends over the V3–V5 positions, elevate it using the BACK of the hand and place the electrodes underneath' },
-    { term: 'During recording',         def: 'cover the patient with the drape, remind them not to move, then press the Auto button' },
-    { term: 'After recording',          def: 'alert the provider of complaints or unusual findings, then remove leads with provider approval; clean sites with alcohol if needed' },
-    { term: 'Finishing up',             def: 'assist the patient up and dressed, change the table paper and pillow cover, discard disposables, wash hands, give the tracing to the provider, chart the entry' },
-    { term: 'Equipment list',           def: 'electrocardiograph, ECG paper, pre-gelled disposable electrodes, patient cable and lead wires with clips, exam table, pillow, drape/gown, gauze, alcohol pads, chart/EHR, pen, disposable razor' }
+  /* This one is a sequence, not a vocabulary list — a deck with `steps` gets
+     the "Put in Order" mode instead of flashcards/matching/recall. Order and
+     wording follow the 18-step procedure table in Chapter 45.md. */
+  steps: [
+    { text: 'Prepare the ECG machine and equipment.',
+      detail: 'Plug it in. Make sure no other electrical equipment is plugged in that could cause interference. Check the cable wires and clips, then turn the machine on.' },
+    { text: 'Wash hands and assemble the remaining equipment.' },
+    { text: 'Introduce yourself, identify the patient, and explain the procedure.',
+      detail: '"Today we are going to perform an ECG to see how the electrical activity and rhythm in your heart is working." Then acknowledge their concerns: "Do you have any questions or concerns?"' },
+    { text: 'Ask the patient to disrobe from the waist up and remove clothing from the lower legs.',
+      detail: 'Provide privacy and show the patient where to put their belongings.' },
+    { text: 'Assist the patient onto the table and cover them with a drape sheet.',
+      detail: 'Ask them to lie down, pull out the leg rest, and adjust a pillow under their head for comfort.' },
+    { text: 'Place the limb electrodes.',
+      detail: 'Arms: fleshy outer area of the UPPER arm, connectors pointing DOWN. Legs: fleshy inner area of the lower leg near the calf, connectors pointing UP. This reduces tension on the electrodes. Wipe off lotion, oil or cream with gauze or an alcohol pad first.' },
+    { text: 'Connect the lead wires to the limb electrodes.',
+      detail: 'Clip each wire tip to the tab on its electrode. The power cord and the patient cable must NOT be allowed to touch.' },
+    { text: 'Attach the six chest electrodes, V1 through V6.',
+      detail: 'Explain the anatomical positioning as you go. Shave dense chest hair with the patient’s permission. If breast tissue extends over the V3–V5 positions, elevate it using the BACK of the hand.' },
+    { text: 'Cover the patient with the drape.',
+      detail: 'For minimum exposure and warmth while the ECG is obtained.' },
+    { text: 'Enter the patient’s information.',
+      detail: 'Follow the manufacturer’s instructions, and check your provider’s preference for what data to enter.' },
+    { text: 'Remind the patient not to move, then press the Auto button.',
+      detail: 'The machine records and standardizes the tracing automatically.' },
+    { text: 'Tear the tracing off the machine.',
+      detail: 'Check it over for artifacts now — BEFORE disconnecting the patient — so you can correct interference and rerun without setting them up again.' },
+    { text: 'Alert the provider of any complaints or unusual findings, then remove the wires and electrodes.',
+      detail: 'Remove the lead wires from the limb electrodes only with provider approval. Clean the sites with an alcohol prep pad if necessary.' },
+    { text: 'Assist the patient to a sitting position, then down from the table.',
+      detail: 'Help them dress if necessary.' },
+    { text: 'Change the table paper and pillow cover, and discard used disposables.' },
+    { text: 'Wash hands.' },
+    { text: 'Give the tracing to the provider for interpretation.',
+      detail: 'Interpreting the ECG yourself is outside your scope of practice.' },
+    { text: 'Record the appropriate entry in the patient’s chart.' }
   ],
   questions: [
+    { q: 'What is the stated purpose of performing an electrocardiogram?',
+      choices: [
+        'To obtain a graphic representation of the electrical activity of the patient’s heart',
+        'To measure the structure and function of the heart valves',
+        'To record the volume of blood the heart pumps per minute',
+        'To measure blood pressure inside the chambers of the heart'
+      ], answer: 0,
+      why: 'Contrast with echocardiography, which assesses STRUCTURE and FUNCTION using sound waves.' },
+
+    { q: 'At what age is a baseline ECG recommended?',
+      choices: ['Between 40 and 45', 'Between 18 and 21', 'Between 30 and 35', 'Between 60 and 65'], answer: 0 },
+
+    { q: 'What should you do with the ECG machine before starting your patient schedule each day?',
+      choices: [
+        'Check it for proper function and any error codes',
+        'Replace the electrodes and cables',
+        'Run a test tracing on yourself',
+        'Nothing — check it only when a problem appears'
+      ], answer: 0,
+      why: 'Refer to the instruction manual for troubleshooting and service numbers if a code appears.' },
+
+    { q: 'The patient has lotion on their chest and legs. What do you do before applying electrodes?',
+      choices: [
+        'Wipe the areas with gauze or an alcohol prep pad',
+        'Apply the electrodes anyway and press firmly',
+        'Use extra electrodes to compensate',
+        'Reschedule the appointment'
+      ], answer: 0,
+      why: 'Oils, creams and lotions are the classic cause of a WANDERING BASELINE artifact.' },
+
+    { q: 'Breast tissue extends over the V3–V5 positions. What is the correct technique?',
+      choices: [
+        'Elevate the breast using the BACK of the hand and place the electrodes underneath',
+        'Place the electrodes on top of the breast tissue',
+        'Move V3–V5 higher onto the upper chest',
+        'Omit V3–V5 and note it on the tracing'
+      ], answer: 0 },
+
+    { q: 'Which of these is NOT on the equipment list for an ECG?',
+      choices: [
+        'A sphygmomanometer',
+        'Pre-gelled disposable electrodes',
+        'Alcohol prep pads and gauze squares',
+        'A disposable razor'
+      ], answer: 0,
+      why: 'The list is: electrocardiograph, ECG paper, pre-gelled disposable electrodes, patient cable and lead wires with clips, exam table, pillow, drape or gown, gauze, alcohol pads, chart/EHR, pen, and a disposable razor.' },
+
     { q: 'When should you look the tracing over for artifacts?',
       choices: [
         'After the ECG is obtained but BEFORE disconnecting the patient',
