@@ -119,13 +119,16 @@
   @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
   /* ---- chest game ---- */
-  .torso{position:relative;max-width:460px;margin:0 auto;aspect-ratio:1/1}
+  .torso{position:relative;max-width:460px;margin:0 auto;aspect-ratio:200/240}
   .torso svg{width:100%;height:100%;display:block}
-  .dot{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;
-    border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 30%,var(--bg));
-    display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;
-    color:var(--text);transition:.12s}
-  .dot:hover:not(:disabled){transform:scale(1.18)}
+  /* Sized as a share of the figure, not fixed px, so the spacing between
+     electrodes stays proportional and dots never collide on a narrow screen. */
+  .dot{position:absolute;width:5.2%;aspect-ratio:1;transform:translate(-50%,-50%);
+    border-radius:50%;border:2px solid var(--accent);
+    background:color-mix(in srgb,var(--accent) 30%,var(--bg));
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(7px,1.55vw,10.5px);font-weight:700;color:var(--text);transition:.12s}
+  .dot:hover:not(:disabled){transform:translate(-50%,-50%) scale(1.2)}
   .dot.correct{border-color:var(--good);background:var(--good);color:#04120b}
   .dot.wrong{border-color:var(--bad);background:var(--bad);color:#fff}
   .dot.muted{opacity:.4}
@@ -306,7 +309,7 @@ function screenDeck(){
   if (d.cards.length)
     modes.push(['match','Matching','Pair each term with its definition against the clock, six at a time.']);
   if (d.chest)
-    modes.push(['chest','Place the Leads','Click the correct spot on the chest for each V lead.']);
+    modes.push(['chest','Place the Electrodes','Click where each of the 10 electrodes goes — 4 limb and 6 chest.']);
   modes.push(['browse','Review Sheet', d.steps.length
     ? 'The full procedure in order, with the rationale for each step.'
     : 'The whole list in one table. Hide the definitions to self-test.']);
@@ -637,33 +640,38 @@ function pick(side, i){
 }
 
 /* ═══════════════ PLACE THE LEADS ═══════════════ */
-/* Anterior torso, patient facing the viewer: the patient's LEFT is on our RIGHT.
-   viewBox units are halves of a percent, so SVG x=128 == left:64% for a dot.   */
-const TORSO = `<svg viewBox="0 0 200 200" aria-hidden="true">
+/* Anterior figure, patient facing the viewer: the patient's LEFT is on our
+   RIGHT. viewBox is 200x240, so a dot at SVG x=128,y=101 is left:64%, top:42%.
+   Arms and legs are drawn because the four limb electrodes go on them.        */
+const TORSO = `<svg viewBox="0 0 200 240" aria-hidden="true">
   <g fill="var(--card)" stroke="var(--line)" stroke-width="1.7" stroke-linejoin="round">
-    <path d="M88 10 v16 h24 V10"/>
-    <path d="M112 25 C140 29 162 40 168 58 C172 74 168 90 166 104
-             C164 126 156 142 152 160 L148 191 L52 191 L48 160
-             C44 142 36 126 34 104 C32 90 28 74 32 58 C38 40 60 29 88 25 Z"/>
+    <path d="M90 10 h20 v22 h-20 Z"/>
+    <path d="M61 156 L96 156 L93 232 L66 232 Z"/>
+    <path d="M104 156 L139 156 L134 232 L107 232 Z"/>
+    <path d="M53 48 C43 53 37 66 35 80 L30 146 L44 148 L48 86 C49 72 51 58 56 52 Z"/>
+    <path d="M147 48 C157 53 163 66 165 80 L170 146 L156 148 L152 86 C151 72 149 58 144 52 Z"/>
+    <path d="M110 28 C128 31 142 38 147 50 C152 64 152 78 151 92
+             C150 112 145 130 141 146 L139 156 L61 156 L59 146
+             C55 130 50 112 49 92 C48 78 48 64 53 50 C58 38 72 31 90 28 Z"/>
   </g>
   <g fill="none" stroke="var(--line)" stroke-linecap="round">
-    <path d="M96 41 C84 35 68 37 57 47" stroke-width="1.9"/>
-    <path d="M104 41 C116 35 132 37 143 47" stroke-width="1.9"/>
-    <path d="M100 43 v68" stroke-width="2.8" opacity=".9"/>
-    <g stroke-width="1" opacity=".45">
-      <path d="M100 60 C80 60 62 67 52 78"/><path d="M100 60 C120 60 138 67 148 78"/>
-      <path d="M100 74 C78 74 58 82 47 94"/><path d="M100 74 C122 74 142 82 153 94"/>
-      <path d="M100 88 C76 88 55 97 44 110"/><path d="M100 88 C124 88 145 97 156 110"/>
-      <path d="M100 102 C76 102 55 112 44 126"/><path d="M100 102 C124 102 145 112 156 126"/>
+    <path d="M96 44 C85 39 72 41 62 50" stroke-width="1.9"/>
+    <path d="M104 44 C115 39 128 41 138 50" stroke-width="1.9"/>
+    <path d="M100 46 v70" stroke-width="2.8" opacity=".9"/>
+    <g stroke-width="1" opacity=".4">
+      <path d="M100 64 C84 64 70 70 62 79"/><path d="M100 64 C116 64 130 70 138 79"/>
+      <path d="M100 78 C82 78 66 85 57 95"/><path d="M100 78 C118 78 134 85 143 95"/>
+      <path d="M100 92 C80 92 62 100 53 111"/><path d="M100 92 C120 92 138 100 147 111"/>
+      <path d="M100 106 C80 106 62 115 54 126"/><path d="M100 106 C120 106 138 115 146 126"/>
     </g>
   </g>
-  <g stroke="var(--accent)" stroke-width=".9" stroke-dasharray="3 4" opacity=".5" fill="none">
-    <path d="M128 46 v106"/><path d="M146 52 v100"/><path d="M160 60 v92"/>
+  <g stroke="var(--accent)" stroke-width=".9" stroke-dasharray="3 4" opacity=".45" fill="none">
+    <path d="M125 50 v92"/><path d="M136 56 v86"/><path d="M148 64 v78"/>
   </g>
 </svg>`;
 
 function runChest(d){
-  const leads = d.chestLeads;
+  const leads = d.electrodes;
   if (!session) session = { order: shuffle(leads.map(l => l.id)), i: 0, score: 0, picked: null, missed: [] };
   const s = session;
 
@@ -671,7 +679,7 @@ function runChest(d){
     const pct = Math.round(s.score / s.order.length * 100);
     const prev = load()[d.id] || {};
     record(d.id, { chestBest: Math.max(prev.chestBest || 0, pct) });
-    return results(d, `${s.score}/${s.order.length}`, 'electrodes placed correctly', s.missed, 'chest');
+    return results(d, `${s.score}/${s.order.length}`, 'of 10 electrodes placed correctly', s.missed, 'chest');
   }
 
   const target = s.order[s.i], done = s.picked !== null;
@@ -695,7 +703,8 @@ function runChest(d){
       <button class="next" onclick="nextLead()">${s.i + 1 < s.order.length ? 'Next lead →' : 'See results →'}</button>` : ''}
     <p style="color:var(--dim);font-size:12.5px;text-align:center;margin-top:16px">
       Patient is facing you — their right side is on your left. Dashed lines are the
-      midclavicular, anterior axillary and midaxillary lines.</p>`;
+      midclavicular, anterior axillary and midaxillary lines. Limb electrodes go on the
+      fleshy outer upper arms and the fleshy inner lower legs.</p>`;
   keyHandler = e => { if (done && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextLead(); } };
 }
 function pickLead(id){
@@ -705,7 +714,7 @@ function pickLead(id){
   const target = s.order[s.i];
   if (id === target) s.score++;
   else {
-    const l = deckById(view.deck).chestLeads.find(x => x.id === target);
+    const l = deckById(view.deck).electrodes.find(x => x.id === target);
     s.missed.push({ q: `Where does ${target} go?`, a: l.landmark });
   }
   render();

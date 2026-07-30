@@ -913,14 +913,20 @@ window.DECKS = [
       why: 'F = Foot. R = Right arm, L = Left arm. Each augmented lead compares its own electrode against the average of the other two.' }
   ],
 
-  /* Data for the "Place the Leads" mini-game. x/y are % of the torso graphic. */
-  chestLeads: [
-    { id: 'V1', x: 46.5,  y: 44,    landmark: 'Fourth intercostal space, RIGHT margin of the sternum' },
-    { id: 'V2', x: 53.5,  y: 44,    landmark: 'Fourth intercostal space, LEFT margin of the sternum' },
-    { id: 'V3', x: 58.75, y: 47.25, landmark: 'Midway between V2 and V4 (placed after V4)' },
-    { id: 'V4', x: 64,    y: 50.5,  landmark: 'Fifth intercostal space, left MIDCLAVICULAR line' },
-    { id: 'V5', x: 73,    y: 50.5,  landmark: 'Level of V4, left ANTERIOR AXILLARY line' },
-    { id: 'V6', x: 80,    y: 50.5,  landmark: 'Level of V4, left MIDAXILLARY line' }
+  /* Data for the "Place the Leads" mini-game — all 10 electrodes, 4 limb and 6
+     chest. x/y are % of the figure, which is drawn facing the viewer, so the
+     patient's RIGHT side is on the LEFT of the graphic. */
+  electrodes: [
+    { id: 'RA', limb: true, x: 20.5, y: 30,    landmark: 'Fleshy OUTER area of the right UPPER ARM, connector pointing DOWN · colour WHITE' },
+    { id: 'LA', limb: true, x: 79.5, y: 30,    landmark: 'Fleshy OUTER area of the left UPPER ARM, connector pointing DOWN · colour BLACK' },
+    { id: 'RL', limb: true, x: 44,   y: 83.33, landmark: 'Fleshy INNER area of the right LOWER LEG near the calf, connector pointing UP · colour GREEN — this is the ground electrode' },
+    { id: 'LL', limb: true, x: 56,   y: 83.33, landmark: 'Fleshy INNER area of the left LOWER LEG near the calf, connector pointing UP · colour RED' },
+    { id: 'V1', x: 46.5, y: 36.67, landmark: 'Fourth intercostal space, RIGHT margin of the sternum' },
+    { id: 'V2', x: 53.5, y: 36.67, landmark: 'Fourth intercostal space, LEFT margin of the sternum' },
+    { id: 'V3', x: 58,   y: 39.17, landmark: 'Midway between V2 and V4 (placed after V4)' },
+    { id: 'V4', x: 62.5, y: 41.67, landmark: 'Fifth intercostal space, left MIDCLAVICULAR line' },
+    { id: 'V5', x: 68,   y: 41.67, landmark: 'Level of V4, left ANTERIOR AXILLARY line' },
+    { id: 'V6', x: 74,   y: 41.67, landmark: 'Level of V4, left MIDAXILLARY line' }
   ]
 },
 

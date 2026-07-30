@@ -180,6 +180,42 @@ function suite(s, label) {
   check(`[${label}] no interchangeable choices`, interchangeable === 0, `${interchangeable} hits, e.g. ${sample}`);
   check(`[${label}] ${quizzes} quizzes ask each card at most once`, quizRepeats === 0, `${quizRepeats} repeated`);
 
+  /* electrode-placement decks: every electrode must be reachable, uniquely
+     positioned, and inside the figure */
+  for (const d of DECKS.filter(x => x.chest)) {
+    const es = d.electrodes || [];
+    check(`[${label}] ${d.id} has all 10 electrodes`, es.length === 10, `found ${es.length}`);
+    check(`[${label}] ${d.id} has 4 limb + 6 chest`,
+          es.filter(e => e.limb).length === 4 && es.filter(e => !e.limb).length === 6,
+          `${es.filter(e => e.limb).length} limb / ${es.filter(e => !e.limb).length} chest`);
+    check(`[${label}] ${d.id} electrode ids unique`,
+          new Set(es.map(e => e.id)).size === es.length, 'duplicate id');
+    const bad = es.filter(e => !(e.x > 2 && e.x < 98 && e.y > 2 && e.y < 98) || !e.landmark);
+    check(`[${label}] ${d.id} electrodes positioned and described`, bad.length === 0,
+          bad.map(e => e.id).join(', '));
+    /* Dots are 5.2% of figure WIDTH, so centres must sit at least that far
+       apart in width-relative units. y is a % of height, and the figure is
+       200x240, so a vertical 1% spans 1.2x what a horizontal 1% does.
+       Scale-free: holds at every screen size, which fixed px would not. */
+    const DOT = 5.2;
+    let tooClose = '';
+    for (let i = 0; i < es.length; i++) for (let j = i + 1; j < es.length; j++) {
+      const dx = es[i].x - es[j].x, dy = (es[i].y - es[j].y) * 1.2;
+      const gap = Math.hypot(dx, dy);
+      if (gap < DOT && !tooClose) tooClose = `${es[i].id}/${es[j].id} only ${gap.toFixed(2)}% apart`;
+    }
+    check(`[${label}] ${d.id} no overlapping electrode dots`, !tooClose, tooClose);
+
+    /* a full placement round scores every electrode */
+    go('run', d.id, 'chest');
+    let guard = 0;
+    while ($('session.i') < es.length && guard++ < 40) {
+      s.pickLead($('session.order[session.i]')); s.nextLead();
+    }
+    check(`[${label}] ${d.id} placement playthrough scores 10/10`,
+          $('session.score') === es.length, `scored ${$('session.score')}`);
+  }
+
   /* hand-written questions */
   let badWritten = 0;
   for (const d of DECKS) for (const q of d.questions || []) {
