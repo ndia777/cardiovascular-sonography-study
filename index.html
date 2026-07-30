@@ -135,12 +135,17 @@
     font-weight:600;letter-spacing:.02em;color:var(--accent)}
   .stagehead span{font-weight:400;color:var(--dim);letter-spacing:0}
   .placed{list-style:none;padding:0;margin:0 0 20px}
-  .placed li{display:flex;gap:11px;align-items:flex-start;padding:10px 13px;border:1px solid var(--line);
-    border-radius:9px;background:var(--card);margin-bottom:6px;font-size:14px;line-height:1.45}
-  .placed li b{color:var(--good);flex:0 0 20px;font-variant-numeric:tabular-nums}
-  .placed .detail{display:block;margin-top:7px;padding-top:7px;font-size:12.8px;line-height:1.5;
-    color:var(--dim);border-top:1px solid var(--line)}
-  .placed .detail::before{content:"Why: ";color:var(--accent);font-weight:600}
+  .placed li{border:1px solid var(--line);border-radius:9px;background:var(--card);
+    margin-bottom:7px;font-size:14px;line-height:1.45;overflow:hidden}
+  /* the step whose rationale is showing gets an accent edge to draw the eye */
+  .placed li.current{border-color:color-mix(in srgb,var(--accent) 48%,var(--line))}
+  .placed .row{display:flex;gap:11px;align-items:flex-start;padding:10px 13px}
+  .placed .row b{color:var(--good);flex:0 0 20px;font-variant-numeric:tabular-nums}
+  /* tinted panel flush to the bottom of the card — clearly not a clickable option */
+  .placed .detail{padding:10px 13px;font-size:12.9px;line-height:1.55;color:var(--text);
+    background:color-mix(in srgb,var(--accent) 12%,transparent);
+    border-top:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+  .placed .detail::before{content:"Why: ";color:var(--accent);font-weight:700}
   .steps{display:flex;flex-direction:column;gap:8px}
   .step{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;
     text-align:left;font-size:14.5px;line-height:1.45;transition:.12s;width:100%}
@@ -734,10 +739,12 @@ function runOrder(d){
       <span>steps ${first}–${last}</span></div>
     ${s.placed.length ? `<ol class="placed">${s.placed.map((st, i) => {
        /* The rationale belongs to the step just placed, so it hangs off that
-          list item. Floating it above the pool made it look clickable. */
+          list item as a tinted panel. Floating it above the pool made it look
+          like a clickable option. */
        const showWhy = i === s.placed.length - 1 && st.detail;
-       return `<li><b>${first + i}</b><span>${esc(st.text)}${
-         showWhy ? `<span class="detail">${esc(st.detail)}</span>` : ''}</span></li>`;
+       return `<li class="${showWhy ? 'current' : ''}">
+         <div class="row"><b>${first + i}</b><span>${esc(st.text)}</span></div>
+         ${showWhy ? `<div class="detail">${esc(st.detail)}</div>` : ''}</li>`;
      }).join('')}</ol>` : ''}
     <div class="q">What is step <b>${s.done + 1}</b>?</div>
     <div class="steps">
@@ -786,8 +793,9 @@ function runBrowse(d){
       <div class="bar"><span>${steps.length} of ${d.steps.length} steps</span></div>
       <input class="search" id="bfilter" placeholder="Filter…" value="${esc(s.filter)}">
       <ol class="placed">
-        ${steps.map(st => `<li><b>${d.steps.indexOf(st) + 1}</b><span>${esc(st.text)}
-          ${st.detail ? `<span class="note detail">${esc(st.detail)}</span>` : ''}</span></li>`).join('')}
+        ${steps.map(st => `<li>
+          <div class="row"><b>${d.steps.indexOf(st) + 1}</b><span>${esc(st.text)}</span></div>
+          ${st.detail ? `<div class="detail">${esc(st.detail)}</div>` : ''}</li>`).join('')}
       </ol>
       ${!steps.length ? '<p style="color:var(--dim)">Nothing matches that filter.</p>' : ''}`;
     const sf = document.getElementById('bfilter');
