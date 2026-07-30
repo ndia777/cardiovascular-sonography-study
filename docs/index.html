@@ -1509,22 +1509,46 @@ function conflicts(a, b){
   a = a.toLowerCase().trim(); b = b.toLowerCase().trim();
   return a === b || a.includes(b) || b.includes(a);
 }
+/* Pick n wrong answers that clash with neither the right answer nor each other.
+   Checking only against the right answer is not enough: mt2-parts has both
+   path/o and -pathy meaning "disease, suffering, feeling, emotion", and neither
+   clashes with, say, "before, front" — so both could be drawn, listing the same
+   choice twice. Returns null when the deck can't supply n distinct options. */
+function distractors(pool, n, keyOf, taken){
+  const out = [];
+  for (const c of shuffle(pool)){
+    const k = keyOf(c);
+    if (taken.some(t => conflicts(t, k))) continue;
+    taken.push(k);
+    out.push(c);
+    if (out.length === n) return out;
+  }
+  return null;
+}
 function autoQuestions(d){
   const out = [];
   d.cards.forEach(card => {
     const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def));
     if (pool.length < 3) return;
 
-    let ch = shuffle([card.def, ...sample(pool, 3).map(c => c.def)]);
-    out.push({ q:`What does <b>${esc(card.term)}</b> mean?`, choices: ch,
-               answer: ch.indexOf(card.def), why: card.note });
+    /* Each question carries its source card so the quiz can avoid asking the
+       same card twice — see runQuiz. */
+    const fwd = distractors(pool, 3, c => c.def, [card.def]);
+    if (fwd){
+      const ch = shuffle([card.def, ...fwd.map(c => c.def)]);
+      out.push({ card, q:`What does <b>${esc(card.term)}</b> mean?`, choices: ch,
+                 answer: ch.indexOf(card.def), why: card.note });
+    }
 
     /* Reverse direction only when no other card shares this meaning, otherwise
        "which term means X" would have more than one right answer. */
     if (pool.length === d.cards.length - 1){
-      ch = shuffle([card.term, ...sample(pool, 3).map(c => c.term)]);
-      out.push({ q:`Which term means: <em>${esc(card.def)}</em>`, choices: ch,
-                 answer: ch.indexOf(card.term), why: card.note });
+      const rev = distractors(pool, 3, c => c.term, [card.term]);
+      if (rev){
+        const ch = shuffle([card.term, ...rev.map(c => c.term)]);
+        out.push({ card, q:`Which term means: <em>${esc(card.def)}</em>`, choices: ch,
+                   answer: ch.indexOf(card.term), why: card.note });
+      }
     }
   });
   return out;
@@ -1532,7 +1556,23 @@ function autoQuestions(d){
 function runQuiz(d){
   if (!session){
     const written = (d.questions || []).map(q => Object.assign({}, q, { written: true }));
-    const auto = autoQuestions(d);
+
+    /* A card can produce two questions — "what does X mean" and "which term
+       means X" — and being asked both in one sitting reads as a duplicate.
+       Keep a single randomly chosen direction per card. */
+    const byCard = new Map();
+    autoQuestions(d).forEach(q => {
+      if (!byCard.has(q.card)) byCard.set(q.card, []);
+      byCard.get(q.card).push(q);
+    });
+    let auto = [...byCard.values()].map(qs => qs[Math.random() * qs.length | 0]);
+
+    /* Drop generated questions that land on the same answer as a hand-written
+       one (e.g. a written "which term means abnormal narrowing?" alongside the
+       generated version of the same thing). */
+    const spokenFor = new Set(written.map(q => q.choices[q.answer]));
+    auto = auto.filter(q => !spokenFor.has(q.choices[q.answer]));
+
     const n = Math.min(20, written.length + auto.length);
     const picked = shuffle(written).slice(0, n)
       .concat(sample(auto, Math.max(0, n - written.length)));
