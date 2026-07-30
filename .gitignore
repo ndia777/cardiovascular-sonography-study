@@ -1,0 +1,13 @@
+# Windows / editor cruft
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+
+# Kept out of the public repo on purpose.
+# "Notes Check.md" is your private working list of places the course notes
+# disagree with standard references — including the note about the textbook's
+# bipolar/unipolar classification. That's a fine thing to discuss with your
+# instructor, and a slightly awkward thing for a classmate or instructor to
+# find on a public URL. Delete the line below if you'd rather share it.
+Notes Check.md

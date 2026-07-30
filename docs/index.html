@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cardiovascular Sonography — Study</title>
+<style>
+  :root{
+    --bg:#0f1419; --bg2:#161d26; --card:#1b232e; --card2:#212b38;
+    --line:#2b3745; --text:#e6edf3; --dim:#8b9bad; --accent:#4db8d4;
+    --accent-dim:#2a6a7d; --good:#4ec98a; --bad:#e2685f; --warn:#e0b055;
+    --radius:12px;
+  }
+  html[data-theme="light"]{
+    --bg:#f4f6f8; --bg2:#ffffff; --card:#ffffff; --card2:#eef2f6;
+    --line:#d8e0e8; --text:#16212c; --dim:#5d7186; --accent:#0f7c99;
+    --accent-dim:#a9d9e6; --good:#127a4c; --bad:#b8352b; --warn:#8a6210;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 18px 80px}
+  a{color:var(--accent)}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+
+  /* ---- header ---- */
+  header.top{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+  header.top h1{font-size:19px;margin:0;font-weight:650;letter-spacing:-.01em}
+  header.top .sub{color:var(--dim);font-size:13px;margin-top:2px}
+  .spacer{flex:1}
+  .iconbtn{border:1px solid var(--line);background:var(--card);padding:7px 12px;
+    border-radius:8px;font-size:13px;color:var(--dim)}
+  .iconbtn:hover{color:var(--text);border-color:var(--accent-dim)}
+
+  /* ---- home ---- */
+  .search{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card);color:var(--text);font-size:15px;margin-bottom:24px}
+  .search:focus{outline:none;border-color:var(--accent)}
+  .coursehead{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
+    margin:26px 0 10px;font-weight:600}
+  .decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  .deck{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:15px 16px;text-align:left;transition:.13s;display:block;width:100%}
+  .deck:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .deck h3{margin:0 0 6px;font-size:15.5px;font-weight:600;line-height:1.35}
+  .deck .meta{font-size:12.5px;color:var(--dim)}
+  .badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--card2);
+    color:var(--dim);border:1px solid var(--line)}
+  .badge.on{color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent)}
+
+  /* ---- deck menu ---- */
+  .back{color:var(--dim);font-size:14px;margin-bottom:14px;display:inline-block}
+  .back:hover{color:var(--accent)}
+  h2.title{font-size:23px;margin:0 0 4px;letter-spacing:-.01em}
+  .srcline{color:var(--dim);font-size:12.5px;margin-bottom:22px;word-break:break-word}
+  .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .mode{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;text-align:left;transition:.13s}
+  .mode:hover{border-color:var(--accent);background:var(--card2)}
+  .mode strong{display:block;font-size:15px;margin-bottom:4px}
+  .mode span{font-size:12.5px;color:var(--dim);line-height:1.45}
+
+  /* ---- shared session chrome ---- */
+  .bar{display:flex;align-items:center;gap:12px;margin-bottom:18px;font-size:13px;color:var(--dim)}
+  .prog{flex:1;height:5px;background:var(--card2);border-radius:3px;overflow:hidden}
+  .prog i{display:block;height:100%;background:var(--accent);transition:width .3s}
+
+  /* ---- flashcards ---- */
+  .fc{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:36px 28px;text-align:center;cursor:pointer;user-select:none}
+  .fc:hover{border-color:var(--accent-dim)}
+  .fc .side{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+  .fc .term{font-size:29px;font-weight:600;line-height:1.25;letter-spacing:-.015em}
+  .fc .def{font-size:19px;line-height:1.5;max-width:560px}
+  .fc .tap{margin-top:22px;font-size:12.5px;color:var(--dim)}
+  .grade{display:flex;gap:12px;margin-top:16px}
+  .grade button{flex:1;padding:14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card);font-size:15px;font-weight:550}
+  .grade .again:hover{border-color:var(--bad);color:var(--bad)}
+  .grade .ok:hover{border-color:var(--good);color:var(--good)}
+
+  /* ---- quiz ---- */
+  .q{font-size:19px;line-height:1.45;margin-bottom:20px;font-weight:500}
+  .q b{color:var(--accent);font-weight:650}
+  .q em{font-style:normal;color:var(--text)}
+  .choices{display:flex;flex-direction:column;gap:9px}
+  .choice{border:1px solid var(--line);background:var(--card);border-radius:10px;
+    padding:13px 15px;text-align:left;display:flex;gap:12px;align-items:flex-start;
+    line-height:1.45;font-size:15px;transition:.1s}
+  .choice:hover:not(:disabled){border-color:var(--accent)}
+  .choice .k{flex:0 0 22px;height:22px;border-radius:5px;background:var(--card2);
+    color:var(--dim);font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .choice.correct{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--card))}
+  .choice.correct .k{background:var(--good);color:#04120b}
+  .choice.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card))}
+  .choice.wrong .k{background:var(--bad);color:#180504}
+  .choice:disabled{cursor:default}
+  .why{margin-top:16px;padding:13px 15px;border-radius:10px;background:var(--card2);
+    border-left:3px solid var(--accent);font-size:14px;line-height:1.55;color:var(--text)}
+  .why b{color:var(--accent)}
+  .next{margin-top:18px;width:100%;padding:14px;border-radius:10px;background:var(--accent);
+    color:#04161c;font-weight:650;font-size:15px}
+  html[data-theme="light"] .next{color:#fff}
+
+  /* ---- match ---- */
+  .matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+  .mcol{display:flex;flex-direction:column;gap:9px}
+  .mitem{border:1px solid var(--line);background:var(--card);border-radius:10px;
+    padding:12px 13px;text-align:left;font-size:14px;line-height:1.4;transition:.12s}
+  .mitem:hover:not(:disabled){border-color:var(--accent)}
+  .mitem.sel{border-color:var(--accent);background:var(--card2)}
+  .mitem.done{opacity:.32;border-style:dashed;cursor:default}
+  .mitem.bad{border-color:var(--bad);animation:shake .3s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  /* ---- chest game ---- */
+  .torso{position:relative;max-width:460px;margin:0 auto;aspect-ratio:1/1}
+  .torso svg{width:100%;height:100%;display:block}
+  .dot{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;
+    border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 30%,var(--bg));
+    display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;
+    color:var(--text);transition:.12s}
+  .dot:hover:not(:disabled){transform:scale(1.18)}
+  .dot.correct{border-color:var(--good);background:var(--good);color:#04120b}
+  .dot.wrong{border-color:var(--bad);background:var(--bad);color:#fff}
+  .dot.muted{opacity:.4}
+
+  /* ---- browse ---- */
+  table.browse{width:100%;border-collapse:collapse;font-size:14.5px}
+  table.browse td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.browse td.t{font-weight:600;width:34%;color:var(--accent)}
+  table.browse tr:hover td{background:var(--card)}
+  .hidden-def{color:transparent;background:var(--card2);border-radius:4px;cursor:pointer}
+  .hidden-def:hover{color:var(--dim)}
+  .note{display:block;margin-top:6px;font-size:12.5px;color:var(--warn);line-height:1.5}
+  .note::before{content:"⚑ ";}
+
+  /* ---- results ---- */
+  .score{text-align:center;padding:34px 20px}
+  .score .big{font-size:54px;font-weight:700;letter-spacing:-.03em;line-height:1}
+  .score .lbl{color:var(--dim);margin-top:8px;font-size:14px}
+  .row{display:flex;gap:10px;margin-top:24px}
+  .row button{flex:1;padding:13px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card);font-weight:550;font-size:14.5px}
+  .row button:hover{border-color:var(--accent)}
+  .missed{margin-top:26px;text-align:left}
+  .missed h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:0 0 10px}
+  .missed div{padding:11px 13px;border-radius:9px;background:var(--card);border:1px solid var(--line);
+    margin-bottom:8px;font-size:14px;line-height:1.5}
+  .missed div b{color:var(--good);font-weight:600}
+
+  @media(max-width:560px){
+    .wrap{padding:16px 13px 70px}
+    .fc .term{font-size:24px} .fc .def{font-size:17px}
+    .matchgrid{gap:8px} .mitem{font-size:13px;padding:10px}
+    .q{font-size:17px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ============================================================================
+   DECK DATA  —  Cardiovascular Sonography study app
+   ----------------------------------------------------------------------------
+   Every deck is one object in the DECKS array. To add material, copy an
+   existing deck, change the id/title, and swap the cards. Nothing else to do —
+   the app picks it up automatically on refresh.
+
+     id        unique slug (used to save your progress in the browser)
+     course    shown as the small label above the deck title
+     title     deck name
+     source    which note file it came from (shown in Browse mode)
+     cards     [{ term, def, note? }]   note = optional footnote / correction
+     questions [{ q, choices[], answer (index), why? }]  optional written Qs
+                (multiple choice is also auto-generated from the cards, so
+                 `questions` is only for concepts that aren't term/definition)
+   ========================================================================== */
+
+window.DECKS = [
+
+/* ─────────────────────────  M159 · MEDICAL TERMINOLOGY 1  ───────────────── */
+
+{
+  id: 'mt1-roots',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 1 — Word Roots',
+  source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
+  cards: [
+    { term: 'abdomin/o', def: 'abdomen' },
+    { term: 'angi/o',    def: 'blood vessel' },
+    { term: 'arteri/o',  def: 'artery',
+      note: 'Do not mix up with cardi/o (heart). arteri/o is the root behind arteriosclerosis and endarterial.' },
+    { term: 'arthr/o',   def: 'joint' },
+    { term: 'cardi/o',   def: 'heart' },
+    { term: 'cyan/o',    def: 'blue' },
+    { term: 'crani/o',   def: 'skull' },
+    { term: 'dermat/o',  def: 'skin' },
+    { term: 'enter/o',   def: 'small intestine' },
+    { term: 'erythr/o',  def: 'red' },
+    { term: 'gastr/o',   def: 'stomach' },
+    { term: 'hem/o',     def: 'blood' },
+    { term: 'hepat/o',   def: 'liver' },
+    { term: 'leuk/o',    def: 'white' },
+    { term: 'melan/o',   def: 'black' },
+    { term: 'my/o',      def: 'muscle' },
+    { term: 'myel/o',    def: 'spinal cord' },
+    { term: 'neur/o',    def: 'nerve' },
+    { term: 'oste/o',    def: 'bone' },
+    { term: 'ot/o',      def: 'ear' },
+    { term: 'pneum/o',   def: 'air or lung' },
+    { term: 'poli/o',    def: 'gray' },
+    { term: 'pulmon/o',  def: 'lung',
+      note: 'pneumon/o and pulmon/o both mean lung — a good example of two roots sharing one meaning.' },
+    { term: 'ten/o',     def: 'tendon' },
+    { term: 'thorac/o',  def: 'chest' },
+    { term: 'tonsill/o', def: 'tonsils' }
+  ],
+  questions: [
+    { q: 'Which statement about word roots is TRUE?',
+      choices: [
+        'A root cannot stand alone — a suffix must always be added to complete the term',
+        'A root can never take a prefix',
+        'Every medical term has exactly one root',
+        'Roots are always placed at the end of a term'
+      ], answer: 0,
+      why: 'Roots carry the core meaning but are never a complete term by themselves. A term may also have more than one root (gastr/o + enter/o).' },
+
+    { q: 'Break down hemopneumothorax. What does it describe?',
+      choices: [
+        'Air or blood in the space surrounding the lungs in the chest',
+        'Bleeding into the stomach lining',
+        'Inflammation of the chest wall muscles',
+        'A collapsed lung caused by infection'
+      ], answer: 0,
+      why: 'hem = blood, pneum = air/lung, thorac = chest.' },
+
+    { q: 'When two word roots are joined, where does the combining vowel go?',
+      choices: [
+        'Always after the first root; after the second root only if the suffix starts with a consonant',
+        'Always after both roots',
+        'Never — combining vowels only attach to prefixes',
+        'Only after the second root'
+      ], answer: 0,
+      why: 'gastr/o/enter/itis — the "o" stays after gastr because two roots are joined, but no vowel after enter because -itis begins with a vowel.' },
+
+    { q: 'What is a "combining form"?',
+      choices: [
+        'A word root plus a combining vowel (usually o), e.g. pneum/o',
+        'A prefix plus a suffix with no root',
+        'Two suffixes joined together',
+        'A term built from a person’s name'
+      ], answer: 0 },
+
+    { q: 'When taking an unfamiliar medical term apart, where do you start?',
+      choices: [
+        'At the end of the word — the suffix — and work toward the beginning',
+        'At the beginning — the prefix — and work toward the end',
+        'At the root in the middle, then move outward',
+        'Alphabetically, by looking up each letter'
+      ], answer: 0 },
+
+    { q: 'Alzheimer’s disease is an example of what kind of term?',
+      choices: [
+        'An eponym — named for a person',
+        'A unique medical term that cannot be broken into elements',
+        'A combining form',
+        'An adjectival suffix'
+      ], answer: 0,
+      why: 'Contrast with "unique" terms like virus or toxin, which are solid words that simply cannot be broken into elements.' }
+  ]
+},
+
+{
+  id: 'mt1-suffixes',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 1 — Suffixes',
+  source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
+  cards: [
+    { term: '-algia',     def: 'pain / suffering' },
+    { term: '-dynia',     def: 'pain (second form)' },
+    { term: '-centesis',  def: 'surgical puncture to remove fluid' },
+    { term: '-cyte',      def: 'cell' },
+    { term: '-ectomy',    def: 'surgical removal' },
+    { term: '-gram',      def: 'picture or record' },
+    { term: '-graph',     def: 'instrument used to record' },
+    { term: '-graphy',    def: 'process of producing a picture or record' },
+    { term: '-iatry',     def: 'treatment, medical specialty' },
+    { term: '-itis',      def: 'inflammation' },
+    { term: '-malacia',   def: 'abnormal softening' },
+    { term: '-megaly',    def: 'enlargement' },
+    { term: '-necrosis',  def: 'tissue death' },
+    { term: '-osis',      def: 'abnormal condition or disease' },
+    { term: '-ostomy',    def: 'create an artificial opening' },
+    { term: '-otomy',     def: 'cut or make a surgical incision' },
+    { term: '-plasty',    def: 'surgical repair' },
+    { term: '-rrhage',    def: 'abnormal excessive fluid discharge' },
+    { term: '-rrhagia',   def: 'sudden severe bleeding' },
+    { term: '-rrhaphy',   def: 'surgical suturing' },
+    { term: '-rrhea',     def: 'flow or discharge' },
+    { term: '-sclerosis', def: 'abnormal hardening' },
+    { term: '-scopy',     def: 'visual examination' },
+    { term: '-stenosis',  def: 'abnormal narrowing' },
+    { term: '-ac, -al, -ar, -ary, -ic, -ous', def: 'pertaining to (adjectival suffixes)',
+      note: 'There are 28 of these. Full list: -ac, -al, -an, -ar, -ary, -eal, -ical, -ial, -ic, -ine, -ior, -ory, -ous, -tic.' },
+    { term: '-a, -um, -y, -e, -us', def: 'noun endings (turn the root into a noun)',
+      note: 'e.g. crani- (skull) + -um = cranium.' }
+  ],
+  questions: [
+    { q: 'A suffix that produces a term describing a symptom or SIGN of a disease process is classified as:',
+      choices: ['Pathologic', 'Diagnostic', 'Surgical', 'Adjectival'], answer: 0,
+      why: 'path = disease. Arthralgia and tonsillitis are pathologic-suffix terms. Diagnostic suffixes name a test or procedure that identifies illness; surgical suffixes name an invasive procedure.' },
+
+    { q: 'Cardiograph uses which type of suffix?',
+      choices: ['Diagnostic', 'Pathologic', 'Surgical', 'Noun'], answer: 0,
+      why: 'A cardiograph is the instrument used to record heart activity — it identifies the nature of an illness, so the suffix is diagnostic.' },
+
+    { q: 'The "Double R" suffixes (-rrhage, -rrhagia, -rrhaphy, -rrhea) come from which language?',
+      choices: ['Greek', 'Latin', 'Arabic', 'Old English'], answer: 0,
+      why: 'Most medical terms derive from Greek and Latin; the Double R suffixes are specifically Greek rather than Latin in origin.' },
+
+    { q: 'Which pair correctly contrasts -ostomy and -otomy?',
+      choices: [
+        '-ostomy creates an artificial opening; -otomy is simply a cut or incision',
+        '-ostomy is an incision; -otomy creates a permanent opening',
+        'Both mean surgical removal',
+        '-ostomy removes fluid; -otomy repairs tissue'
+      ], answer: 0,
+      why: 'Colostomy = an artificial opening between colon and body surface. The extra "s" is the one to watch on an exam.' },
+
+    { q: 'Which term means "abnormal narrowing"?',
+      choices: ['-stenosis', '-sclerosis', '-malacia', '-necrosis'], answer: 0,
+      why: 'Worth locking in for sonography: aortic stenosis = narrowed valve, atherosclerosis = hardening.' }
+  ]
+},
+
+{
+  id: 'mt1-prefixes',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 1 — Prefixes',
+  source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
+  cards: [
+    { term: 'ab-',            def: 'away from, negative, absent' },
+    { term: 'ad-',            def: 'toward, to, in the direction of' },
+    { term: 'bi-',            def: 'two, both sides' },
+    { term: 'dextro-',        def: 'right side' },
+    { term: 'sinistro-',      def: 'left side' },
+    { term: 'dys-',           def: 'bad, difficult or painful' },
+    { term: 'eu-',            def: 'good, normal' },
+    { term: 'epi-',           def: 'above, over or upon' },
+    { term: 'ex-',            def: 'out of, outside, away from' },
+    { term: 'in-',            def: 'in, into, not, without' },
+    { term: 'hyper-',         def: 'excessive or increased' },
+    { term: 'hypo-',          def: 'deficient or decreased' },
+    { term: 'inter-',         def: 'between or among' },
+    { term: 'intra-',         def: 'within or inside' },
+    { term: 'macro-',         def: 'large, abnormal size or long' },
+    { term: 'micro-',         def: 'small' },
+    { term: 'mega-, megalo-', def: 'large, great' },
+    { term: 'oligo-',         def: 'scanty, few' },
+    { term: 'peri-',          def: 'around, surrounding' },
+    { term: 'pre-',           def: 'before' },
+    { term: 'post-',          def: 'after, behind' },
+    { term: 'sub-',           def: 'under, less or below' },
+    { term: 'super-, supra-', def: 'above or excessive' }
+  ],
+  questions: [
+    { q: 'Which is TRUE of prefixes?',
+      choices: [
+        'They attach to the beginning of a root and do not require a combining vowel',
+        'Every medical term must contain one',
+        'They always indicate a body part',
+        'They require a combining vowel just as roots do'
+      ], answer: 0,
+      why: 'Not all terms have a prefix — but changing the prefix changes the meaning of the whole term (hypertension vs. hypotension).' },
+
+    { q: 'Abduction means:',
+      choices: [
+        'Movement away from the midline',
+        'Movement toward the midline',
+        'Rotation of the forearm so the palm faces up',
+        'Movement between two joints'
+      ], answer: 0,
+      why: 'ab- = away from. Its opposite, adduction (ad- = toward), ADDs the limb back to the body.' },
+
+    { q: 'Perinatal refers to the time:',
+      choices: [
+        'Just before, during, and right after birth',
+        'The first year after birth only',
+        'The entire pregnancy up to delivery',
+        'Any time after infancy'
+      ], answer: 0 },
+
+    { q: 'A patient chart says the finding is "supracostal." Where is it?',
+      choices: ['Above or outside the ribs', 'Below the ribs', 'Between the ribs', 'Behind the sternum'], answer: 0,
+      why: 'supra- = above; cost/o = rib. Compare intercostal (between the ribs) — the space you count for V1 and V2 electrodes.' }
+  ]
+},
+
+{
+  id: 'mt1-terms',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 1 — Medical Terms',
+  source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
+  cards: [
+    { term: 'abdominocentesis', def: 'surgical puncture of the abdominal cavity to remove fluid' },
+    { term: 'acute',            def: 'a condition with rapid onset, severe course and relatively short duration' },
+    { term: 'angiography',      def: 'x-ray study of the blood vessels after injection of a contrast medium',
+      note: 'Spelled "aniography" in your notes — the correct spelling is angiography (angi/o = vessel).' },
+    { term: 'appendectomy',     def: 'surgical removal of the appendix' },
+    { term: 'arteriosclerosis', def: 'abnormal hardening of the walls of an artery' },
+    { term: 'arthralgia',       def: 'pain in a joint' },
+    { term: 'colostomy',        def: 'surgical creation of an artificial opening between the colon and the body surface' },
+    { term: 'cyanosis',         def: 'blue discoloration of the skin caused by a lack of adequate oxygen in the blood' },
+    { term: 'dermatologist',    def: 'a physician who specializes in diagnosing and treating disorders of the skin' },
+    { term: 'diagnosis',        def: 'the identification of a disease' },
+    { term: 'diarrhea',         def: 'the frequent flow of loose or watery stools' },
+    { term: 'edema',            def: 'swelling caused by abnormal accumulation of fluid in cells, tissues or body cavities' },
+    { term: 'endarterial',      def: 'pertaining to the interior or lining of an artery' },
+    { term: 'eponym',           def: 'a disease, structure, operation or procedure named for the person who first described it' },
+    { term: 'erythrocyte',      def: 'a mature red blood cell' },
+    { term: 'fissure',          def: 'a groove or crack-like sore of the skin; also the normal folds in the contours of the brain' },
+    { term: 'fistula',          def: 'an abnormal passage between two internal organs, or from an organ to the body surface' },
+    { term: 'gastralgia',       def: 'pain in the stomach' },
+    { term: 'gastritis',        def: 'inflammation of the stomach lining' },
+    { term: 'gastroenteritis',  def: 'inflammation of the stomach and small intestine' },
+    { term: 'gastrosis',        def: 'any disease of the stomach' },
+    { term: 'hemorrhage',       def: 'the loss of a large amount of blood in a short time' },
+    { term: 'hepatomegaly',     def: 'abnormal enlargement of the liver' },
+    { term: 'hypertension',     def: 'higher than normal blood pressure' },
+    { term: 'hypotension',      def: 'lower than normal blood pressure' },
+    { term: 'infection',        def: 'invasion of the body by a pathogenic organism' },
+    { term: 'inflammation',     def: 'a localized response to injury or to the destruction of tissues' },
+    { term: 'interstitial',     def: 'between, but not within, the parts of a tissue' },
+    { term: 'intramuscular',    def: 'within the muscle' },
+    { term: 'laceration',       def: 'a torn or jagged wound; an accidental cut' },
+    { term: 'lesion',           def: 'a pathologic change of tissue due to disease or injury' },
+    { term: 'malaise',          def: 'general discomfort or uneasiness, often the first indication of an infection or disease' },
+    { term: 'mycosis',          def: 'any abnormal condition or disease caused by a fungus' },
+    { term: 'myelopathy',       def: 'any injury, degeneration or disease of the spinal cord' },
+    { term: 'myopathy',         def: 'any pathologic change or disease of muscle tissue' },
+    { term: 'natal',            def: 'pertaining to birth' },
+    { term: 'neonatology',      def: 'the study of disorders of the newborn' },
+    { term: 'neurorrhaphy',     def: 'suturing together the ends of a severed nerve' },
+    { term: 'otorhinolaryngology', def: 'the study of the ears, nose and throat' },
+    { term: 'palpitation',      def: 'a pounding or racing heart' },
+    { term: 'pathology',        def: 'the study of all aspects of disease' },
+    { term: 'phalanges',        def: 'the bones of the fingers and toes' },
+    { term: 'poliomyelitis',    def: 'a viral infection of the gray nerve tissue of the spinal cord' },
+    { term: 'prognosis',        def: 'a prediction of the probable course and outcome of a disease' },
+    { term: 'pyoderma',         def: 'any acute, inflammatory, pus-forming bacterial skin infection' },
+    { term: 'pyrosis',          def: 'discomfort from regurgitation of stomach acid up into the esophagus (heartburn)' },
+    { term: 'remission',        def: 'temporary, partial or complete disappearance of symptoms without a cure' },
+    { term: 'sign',             def: 'OBJECTIVE evidence of disease — something measurable, e.g. fever' },
+    { term: 'symptom',          def: 'SUBJECTIVE evidence of disease — what the patient reports, e.g. pain or headache' },
+    { term: 'supination',       def: 'rotating the arm so the palm of the hand is forward or upward' },
+    { term: 'suppuration',      def: 'the formation of pus' },
+    { term: 'supracostal',      def: 'above or outside the ribs' },
+    { term: 'syndrome',         def: 'a set of signs and symptoms that occur together as part of a specific disease process' },
+    { term: 'tenorrhaphy',      def: 'surgical suturing of a tendon' },
+    { term: 'tonsillitis',      def: 'inflammation of the tonsils' },
+    { term: 'trauma',           def: 'a wound or injury' },
+    { term: 'triage',           def: 'medical screening of patients to determine relative priority of need and proper place of treatment' },
+    { term: 'viral',            def: 'pertaining to a virus' }
+  ],
+  questions: [
+    { q: 'A patient reports a headache and rates it 7/10. The nurse records a temperature of 101.4°F. Which is the SIGN?',
+      choices: [
+        'The temperature of 101.4°F',
+        'The headache',
+        'Both are signs',
+        'Neither — both are symptoms'
+      ], answer: 0,
+      why: 'Signs are objective (observable/measurable by someone else). Symptoms are subjective (only the patient experiences them). Pain is the classic symptom; fever is the classic sign.' },
+
+    { q: 'Which pair of terms is correctly matched?',
+      choices: [
+        'Diagnosis = identifying the disease; Prognosis = predicting its course and outcome',
+        'Diagnosis = predicting the outcome; Prognosis = identifying the disease',
+        'Both mean the identification of disease',
+        'Diagnosis = a set of symptoms; Prognosis = a single symptom'
+      ], answer: 0 },
+
+    { q: 'Remission means:',
+      choices: [
+        'Symptoms have temporarily or completely disappeared, but the disease is not cured',
+        'The disease has been permanently cured',
+        'The disease has suddenly worsened',
+        'The patient has developed a second disease'
+      ], answer: 0 },
+
+    { q: 'Which term describes suturing a severed nerve?',
+      choices: ['Neurorrhaphy', 'Neuropathy', 'Neurectomy', 'Neurorrhea'], answer: 0,
+      why: '-rrhaphy = surgical suturing. Compare tenorrhaphy (suturing a tendon).' },
+
+    { q: 'The plural of "diagnosis" is:',
+      choices: ['diagnoses', 'diagnosises', 'diagnosae', 'diagnosi'], answer: 0,
+      why: 'Singular -is becomes plural -es. Compare metastasis → metastases.' },
+
+    { q: 'The plural of "alveolus" is:',
+      choices: ['alveoli', 'alveolae', 'alveola', 'alveoluses'], answer: 0,
+      why: 'Singular -us becomes plural -i (malleolus → malleoli).' },
+
+    { q: 'The plural of "ovum" is:',
+      choices: ['ova', 'ovae', 'ovi', 'ovices'], answer: 0,
+      why: 'Singular -um becomes plural -a (diverticulum → diverticula). Same rule turns -on into -a: ganglion → ganglia.' },
+
+    { q: 'The plural of "phalanx" is:',
+      choices: ['phalanges', 'phalanxes', 'phalangices', 'phalanga'], answer: 0,
+      why: 'Singular -nx becomes plural -ges (meninx → meninges).' },
+
+    { q: 'The plural of "appendix" is:',
+      choices: ['appendices', 'appendixes', 'appendicae', 'appendica'], answer: 0,
+      why: 'Singular -ex or -ix becomes plural -ices (index → indices).' },
+
+    { q: 'The plural of "vertebra" is:',
+      choices: ['vertebrae', 'vertebras', 'vertebri', 'vertebrices'], answer: 0,
+      why: 'Singular -a becomes plural -ae (bursa → bursae).' }
+  ]
+},
+
+{
+  id: 'mt2-parts',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 2 — Word Parts (Body Structure)',
+  source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 2.md',
+  cards: [
+    { term: 'end-, endo-', def: 'in, within, inside' },
+    { term: 'exo-',        def: 'out of, outside, away from' },
+    { term: 'aden/o',      def: 'gland' },
+    { term: 'adip/o',      def: 'fat' },
+    { term: 'anter/o',     def: 'before, front' },
+    { term: 'caud/o',      def: 'lower part of the body, tail' },
+    { term: 'cephal/o',    def: 'head' },
+    { term: 'cyt/o',       def: 'cell' },
+    { term: 'hist/o',      def: 'tissue' },
+    { term: 'path/o',      def: 'disease, suffering, feeling, emotion' },
+    { term: 'plas/i, plas/o', def: 'development, growth, formation',
+      note: 'This row was left blank in your Chapter 2 notes — filled in here. It is the root behind aplasia, hyperplasia, dysplasia.' },
+    { term: 'poster/o',    def: 'behind, toward the back' },
+    { term: '-cyte',       def: 'cell (suffix form)' },
+    { term: '-ologist',    def: 'specialist' },
+    { term: '-ology',      def: 'the science or study of' },
+    { term: '-pathy',      def: 'disease, suffering, feeling, emotion' },
+    { term: '-plasia',     def: 'development, growth, formation' },
+    { term: '-stasis, -static', def: 'control, maintenance of a constant level' }
+  ]
+},
+
+{
+  id: 'mt2-terms',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 2 — Body Structure & Disease',
+  source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 2.md',
+  cards: [
+    { term: 'anatomy',    def: 'the study of the STRUCTURES of the body' },
+    { term: 'physiology', def: 'the study of the FUNCTIONS within the structures of the body' },
+    { term: 'pathology',  def: 'the study of disease' },
+    { term: 'etiology',   def: 'the study of the CAUSES of diseases or abnormal conditions' },
+    { term: 'histology',  def: 'microscopic study of the structure, composition and function of tissues' },
+    { term: 'homeostasis',def: 'the processes through which the body maintains a constant internal environment' },
+    { term: 'autopsy',    def: 'postmortem examination' },
+    { term: 'anomaly',    def: 'a deviation from what is regarded as normal' },
+    { term: 'cytoplasm',  def: 'material within the cell membrane that is not part of the nucleus' },
+    { term: 'chromosome', def: 'genetic structure located within the nucleus of each cell' },
+    { term: 'stem cells', def: 'unspecialized cells able to renew themselves for long periods by cell division' },
+
+    { term: 'anaplasia',   def: 'change in the structure of cells and in their orientation to each other' },
+    { term: 'aplasia',     def: 'defective development, or the congenital absence, of an organ or tissue' },
+    { term: 'hypoplasia',  def: 'UNDERdevelopment of an organ or tissue, usually from too few cells' },
+    { term: 'hyperplasia', def: 'an INCREASE in the NUMBER of cells in a tissue or organ' },
+    { term: 'hypertrophy', def: 'a general increase in BULK (size), not cell number' },
+    { term: 'dysplasia',   def: 'abnormal development or growth of cells, or abnormal cells within a tissue' },
+    { term: 'atresia',     def: 'congenital absence or narrowing of a normal body opening or passage' },
+
+    { term: 'adenoma',        def: 'a BENIGN tumor starting in the epithelial tissue of a gland or gland-like structure' },
+    { term: 'adenocarcinoma', def: 'a MALIGNANT tumor originating in the glands that may spread to other parts of the body' },
+    { term: 'endocrine glands', def: 'produce hormones and have NO ducts — they secrete directly into the bloodstream' },
+    { term: 'exocrine glands',  def: 'secrete chemical substances INTO DUCTS leading to other organs or out of the body' },
+
+    { term: 'congenital disorder', def: 'an abnormal condition that exists at the time of birth' },
+    { term: 'genetic disorder',    def: 'a pathological condition caused by an absent or defective gene' },
+    { term: 'hemophilia',          def: 'a hereditary bleeding disorder in which a blood-clotting factor is missing' },
+    { term: 'functional disorder', def: 'physical symptoms for which no disease or organic cause can be identified' },
+    { term: 'idiopathic disease',  def: 'any disease without a known cause' },
+    { term: 'iatrogenic illness',  def: 'an unfavorable response DUE TO prescribed medical treatment' },
+    { term: 'infectious disease',  def: 'an illness caused by living pathogenic organisms such as bacteria and viruses' },
+    { term: 'communicable disease',def: 'a condition transmitted person to person, directly or by contact with contaminated objects' },
+    { term: 'nosocomial infection',def: 'a disease acquired in a hospital or clinical setting' },
+    { term: 'endemic',             def: 'the ONGOING presence of a disease within a population, group or area' },
+    { term: 'epidemic',            def: 'a SUDDEN and widespread outbreak within a specific population group or area' },
+    { term: 'pandemic',            def: 'an outbreak occurring over a LARGE GEOGRAPHIC AREA, sometimes worldwide' },
+    { term: 'bloodborne transmission',  def: 'the spread of pathogens through infected blood or other body fluids' },
+    { term: 'vector-borne transmission',def: 'the spread of disease through blood-sucking vectors' },
+    { term: 'syndrome',            def: 'a set of signs and symptoms occurring together as part of a specific disease process' },
+    { term: 'geriatrician',        def: 'a physician who specializes in the care of older people' },
+
+    { term: 'anterior',  def: 'situated in the FRONT' },
+    { term: 'posterior', def: 'situated in the BACK, or on the back part of the organ' },
+    { term: 'ventral',   def: 'the front, or belly side, of the organ or body' },
+    { term: 'dorsal',    def: 'the back of the organ or body' },
+    { term: 'medial',    def: 'the direction TOWARD or nearer the midline' },
+    { term: 'proximal',  def: 'situated NEAREST the midline or beginning of a body structure' },
+    { term: 'distal',    def: 'situated FARTHEST from the midline or beginning of a body structure' },
+    { term: 'cephalic',  def: 'toward the HEAD' },
+    { term: 'caudal',    def: 'toward the LOWER part of the body' },
+    { term: 'midsagittal plane', def: 'the midline — the sagittal plane dividing the body into EQUAL left and right halves' },
+    { term: 'transverse plane',  def: 'a horizontal plane dividing the body into superior (upper) and inferior (lower) portions' },
+
+    { term: 'thoracic cavity',  def: 'the chest cavity — surrounds and protects the heart and lungs' },
+    { term: 'abdominal cavity', def: 'contains the major organs of digestion' },
+    { term: 'pelvic cavity',    def: 'the space formed by the hip bones; contains reproductive and excretory organs' },
+    { term: 'peritoneum',       def: 'a multilayered membrane that protects and holds the organs in place within the abdominal cavity' },
+    { term: 'peritonitis',      def: 'inflammation of the peritoneum' },
+    { term: 'retroperitoneal',  def: 'located BEHIND the peritoneum' },
+    { term: 'mesentery',        def: 'a fused double layer of parietal peritoneum attaching the intestine to the interior abdominal wall' },
+    { term: 'epigastric region',def: 'the region located ABOVE the stomach' },
+    { term: 'hypogastric region', def: 'the region located BELOW the stomach' },
+    { term: 'inguinal',         def: 'relating to the groin; refers to the entire lower area of the abdomen' },
+    { term: 'umbilicus',        def: 'the belly button / navel — marks where the umbilical cord attached before birth' }
+  ],
+  questions: [
+    { q: 'A patient develops a wound infection three days after being admitted to the hospital. This is best described as:',
+      choices: ['A nosocomial infection', 'An idiopathic disease', 'A congenital disorder', 'A functional disorder'], answer: 0 },
+
+    { q: 'A patient has a severe allergic reaction to a medication the physician prescribed. This is:',
+      choices: ['Iatrogenic', 'Idiopathic', 'Congenital', 'Endemic'], answer: 0,
+      why: 'Iatrogenic = caused by the treatment itself. Idiopathic = cause unknown.' },
+
+    { q: 'What is the key difference between hyperplasia and hypertrophy?',
+      choices: [
+        'Hyperplasia is an increase in the NUMBER of cells; hypertrophy is an increase in BULK',
+        'Hyperplasia is an increase in bulk; hypertrophy is an increase in cell number',
+        'They are two words for the same process',
+        'Hyperplasia only occurs in glands; hypertrophy only in muscle'
+      ], answer: 0,
+      why: 'This distinction matters in echo: left ventricular hypertrophy is thickened muscle — bigger cells, not more of them.' },
+
+    { q: 'Which term means the study of the CAUSES of disease?',
+      choices: ['Etiology', 'Pathology', 'Physiology', 'Histology'], answer: 0,
+      why: 'Pathology is the study of disease itself; etiology is specifically its cause.' },
+
+    { q: 'Endemic, epidemic, and pandemic differ mainly by:',
+      choices: [
+        'Scale and suddenness — ongoing local presence, sudden local outbreak, and very large geographic spread',
+        'The type of pathogen involved',
+        'Whether the disease is communicable',
+        'How the disease is treated'
+      ], answer: 0 },
+
+    { q: 'The kidneys sit behind the peritoneum. The correct term is:',
+      choices: ['Retroperitoneal', 'Intraperitoneal', 'Mesenteric', 'Epigastric'], answer: 0 },
+
+    { q: 'On the arm, the wrist is ___ to the elbow.',
+      choices: ['Distal', 'Proximal', 'Medial', 'Ventral'], answer: 0,
+      why: 'Distal = farther from the point of origin/attachment. The elbow is proximal to the wrist.' },
+
+    { q: 'A transverse plane divides the body into:',
+      choices: [
+        'Superior and inferior portions',
+        'Equal left and right halves',
+        'Anterior and posterior portions',
+        'Proximal and distal portions'
+      ], answer: 0,
+      why: 'Midsagittal divides left/right; transverse divides upper/lower. You will use these constantly in imaging planes.' },
+
+    { q: 'Which gland type secretes hormones directly into the bloodstream with no ducts?',
+      choices: ['Endocrine', 'Exocrine', 'Both', 'Neither'], answer: 0,
+      why: 'endo- = within. Exocrine (exo- = outside) uses ducts — sweat and salivary glands.' }
+  ]
+},
+
+/* ─────────────────────────  BIO101 · ANATOMY & PHYSIOLOGY 1  ─────────────── */
+
+{
+  id: 'bio-cell',
+  course: 'BIO101 · A&P 1 Lecture',
+  title: 'Ch. 3 — The Composite Cell & Organelles',
+  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
+  cards: [
+    { term: 'Nucleus',        def: 'the innermost control center, enclosed by a double-layered nuclear envelope' },
+    { term: 'Nuclear envelope', def: 'the thin double membrane (inner + outer lipid bilayer) enclosing the nucleus' },
+    { term: 'Nucleolus',      def: 'small dense body of RNA and protein with NO membrane — the site of ribosome production' },
+    { term: 'Chromatin',      def: 'extremely long DNA molecules complexed with proteins, wound like thread around spools' },
+    { term: 'Cytoplasm',      def: 'the cell contents holding the organelles, suspended in a liquid called cytosol' },
+    { term: 'Cytosol',        def: 'the liquid in which the cytoplasmic organelles are suspended' },
+    { term: 'Cell membrane',  def: 'the thin, flexible, elastic outermost limit of the cell separating the two major fluid compartments' },
+    { term: 'Phospholipid bilayer', def: 'the double layer of phospholipid molecules forming the basic framework of the cell membrane' },
+    { term: 'Ribosomes',      def: 'tiny spherical structures of protein and RNA that SYNTHESIZE proteins' },
+    { term: 'Rough ER',       def: 'endoplasmic reticulum studded with ribosomes — makes PROTEINS' },
+    { term: 'Smooth ER',      def: 'endoplasmic reticulum with no ribosomes — makes FATS (lipids)' },
+    { term: 'Vesicles',       def: 'membranous sacs that store or transport substances within a cell or between cells' },
+    { term: 'Golgi apparatus',def: 'a stack of 5–8 flattened sacs (cisternae) that refines, packages and transports proteins' },
+    { term: 'Mitochondria',   def: 'the "powerhouse" — produces ATP by cellular respiration' },
+    { term: 'ATP',            def: 'adenosine triphosphate — the cell’s energy currency, supplied by mitochondria' },
+    { term: 'Lysosomes',      def: 'the "garbage disposals" — enzymes inside dismantle cellular debris' },
+    { term: 'Autophagy',      def: 'literally "eating self" — the process by which lysosomes break down the cell’s own debris' },
+    { term: 'Cilia & flagella', def: 'motile extensions of the cell membrane; both are built from nine groups of three microtubules' },
+    { term: 'Differentiated', def: 'the term for cells that have taken on specialized characteristics' },
+    { term: 'Receptors (membrane protein)', def: 'respond to extracellular signals' },
+    { term: 'Pores, channels & carriers',   def: 'transport small molecules and ions; transduce signals' },
+    { term: 'Enzymes (membrane protein)',   def: 'catalyze chemical reactions' },
+    { term: 'Cell surface proteins',        def: 'establish "self" — cellular identity' },
+    { term: 'Cellular adhesion molecules',  def: 'enable cells to stick to each other' }
+  ],
+  questions: [
+    { q: 'Which organelle has NO surrounding membrane?',
+      choices: ['The nucleolus', 'The Golgi apparatus', 'A lysosome', 'A mitochondrion'], answer: 0,
+      why: 'The nucleolus is formed in specialized regions of certain chromosomes and is the site of ribosome production.' },
+
+    { q: 'Rough ER is to ___ as smooth ER is to ___.',
+      choices: ['proteins … fats', 'fats … proteins', 'ATP … proteins', 'fats … ATP'], answer: 0 },
+
+    { q: 'Which sequence correctly describes protein handling in the cell?',
+      choices: [
+        'Ribosomes on rough ER synthesize it → Golgi refines and packages it → vesicles transport it',
+        'Golgi synthesizes it → ribosomes package it → lysosomes transport it',
+        'Smooth ER synthesizes it → mitochondria package it → vesicles transport it',
+        'Lysosomes synthesize it → rough ER packages it → Golgi transports it'
+      ], answer: 0 },
+
+    { q: 'Roughly how much ATP does one glucose molecule yield with oxygen, and what are the byproducts?',
+      choices: [
+        '36–38 ATP, with CO₂ and H₂O as byproducts',
+        '2 ATP, with lactic acid as the byproduct',
+        '100 ATP, with O₂ as the byproduct',
+        '12 ATP, with glucose as the byproduct'
+      ], answer: 0 },
+
+    { q: 'Skeletal muscle cells contain many thousands of mitochondria, while a typical cell has about 1,700. Why?',
+      choices: [
+        'Because they have very high energy requirements',
+        'Because they need extra storage for fats',
+        'Because they lack a nucleus',
+        'Because they divide more often than other cells'
+      ], answer: 0 }
+  ]
+},
+
+{
+  id: 'bio-transport',
+  course: 'BIO101 · A&P 1 Lecture',
+  title: 'Ch. 3 — Membrane Transport',
+  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
+  cards: [
+    { term: 'Diffusion', def: 'PASSIVE — molecules move through the bilayer from higher to lower concentration. Energy: molecular motion. Example: O₂/CO₂ exchange in the lungs' },
+    { term: 'Facilitated diffusion', def: 'PASSIVE — "helped diffusion"; ions use channels or carrier proteins to move high → low. Example: glucose entering a cell' },
+    { term: 'Osmosis', def: 'PASSIVE — water moves through aquaporins/the bilayer toward the solution with more impermeant solute. Example: distilled water entering a cell' },
+    { term: 'Filtration', def: 'PASSIVE — smaller molecules forced through porous membranes from high to low PRESSURE. Energy: hydrostatic pressure. Example: molecules leaving blood capillaries' },
+    { term: 'Active transport', def: 'ACTIVE (ATP) — carrier molecules move substances from LOWER to HIGHER concentration, against the gradient' },
+    { term: 'Endocytosis', def: 'ACTIVE (ATP) — particles too large to diffuse are brought in by a vesicle that forms from the cell membrane' },
+    { term: 'Pinocytosis', def: 'ACTIVE (ATP) — "cell drinking"; the membrane engulfs droplets of liquid with dissolved solutes' },
+    { term: 'Phagocytosis', def: 'ACTIVE (ATP) — "cell eating"; the membrane engulfs SOLID particles. Example: a white blood cell engulfing bacteria' },
+    { term: 'Receptor-mediated endocytosis', def: 'ACTIVE (ATP) — the membrane engulfs selected molecules bound to receptor proteins. Example: removing LDL cholesterol particles' },
+    { term: 'Exocytosis', def: 'ACTIVE (ATP) — the opposite of endocytosis; vesicles fuse with the membrane and release contents outside. Example: neurotransmitter release' },
+    { term: 'Transcytosis', def: 'ACTIVE (ATP) — endocytosis in, through the cytoplasm, then exocytosis out the other side. Example: HIV crossing a cell layer' },
+    { term: 'Isotonic solution',  def: 'the SAME solute concentration as the cell — equal salt inside and out' },
+    { term: 'Hypertonic solution',def: 'a HIGHER solute concentration than body fluids — more salt in the solution than in the cell' },
+    { term: 'Hypotonic solution', def: 'a LOWER solute concentration than body fluids — less salt in the solution than in the cell' },
+    { term: 'Physiological steady state', def: 'concentrations of diffusing substances are unequal but STABLE — what organisms reach instead of true equilibrium' }
+  ],
+  questions: [
+    { q: 'What is the single biggest difference between active transport and facilitated diffusion?',
+      choices: [
+        'Active transport moves particles from LOW to HIGH concentration and costs ATP',
+        'Active transport uses no carrier proteins',
+        'Facilitated diffusion only moves water',
+        'Facilitated diffusion requires ATP; active transport does not'
+      ], answer: 0,
+      why: 'Both use carriers in the membrane. Only active transport pushes against the gradient, which is why it needs energy.' },
+
+    { q: 'A red blood cell is placed in a hypertonic solution. What happens?',
+      choices: [
+        'Water leaves the cell and it shrinks',
+        'Water enters the cell and it swells',
+        'Nothing — the cell stays the same size',
+        'The cell actively pumps solute inward'
+      ], answer: 0,
+      why: 'Remember the rule from your notes: "where salt goes, water follows." Hypertonic = more salt outside → water follows it out.' },
+
+    { q: 'Which process is driven by hydrostatic pressure rather than molecular motion?',
+      choices: ['Filtration', 'Osmosis', 'Diffusion', 'Facilitated diffusion'], answer: 0,
+      why: 'Filtration forces smaller molecules through a porous membrane from high pressure to low — the way fluid leaves a blood capillary.' },
+
+    { q: 'A white blood cell engulfing a bacterium is an example of:',
+      choices: ['Phagocytosis', 'Pinocytosis', 'Exocytosis', 'Filtration'], answer: 0,
+      why: 'Phago = eating (solids). Pino = drinking (liquid droplets).' },
+
+    { q: 'Why does diffusional equilibrium NOT normally occur in living organisms?',
+      choices: [
+        'Organisms maintain a physiological steady state — concentrations stay unequal but stable',
+        'Molecules stop moving inside the body',
+        'Cell membranes block all diffusion',
+        'Body temperature is too high for diffusion'
+      ], answer: 0 },
+
+    { q: 'Delivering antibodies from a mother’s milk into the blood of a nursing infant is an example of:',
+      choices: ['Transcytosis', 'Filtration', 'Osmosis', 'Active transport'], answer: 0,
+      why: 'Transcytosis moves material into, through, and out of a cell — bridging two different environments.' }
+  ]
+},
+
+{
+  id: 'bio-cellcycle',
+  course: 'BIO101 · A&P 1 Lecture',
+  title: 'Ch. 3 — Cell Cycle, Stem Cells & Cell Death',
+  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
+  cards: [
+    { term: 'Interphase', def: 'the cell grows and its genetic material replicates (before mitosis begins)' },
+    { term: 'Prophase',   def: 'chromatin condenses into visible chromosomes; the nuclear envelope and nucleolus disperse; the spindle apparatus forms' },
+    { term: 'Metaphase',  def: 'chromosomes align along the MIDLINE of the cell' },
+    { term: 'Anaphase',   def: 'centromeres separate and sister chromatids are pulled apart — each is now an individual chromosome' },
+    { term: 'Telophase',  def: 'nuclear envelopes reassemble, chromosomes decondense, the spindle disappears' },
+    { term: 'Cytokinesis',def: 'division of the cytoplasm into two separate cells' },
+    { term: 'Stem cells', def: 'cells that keep dividing repeatedly WITHOUT specializing, allowing continual growth and renewal' },
+    { term: 'Apoptosis',  def: 'PROGRAMMED cell death — the planned option for a cell that does not divide or differentiate' },
+    { term: 'Necrosis',   def: 'cell death resulting from DAMAGE (unplanned)' }
+  ],
+  questions: [
+    { q: 'Put the four phases of mitosis in order.',
+      choices: [
+        'Prophase → Metaphase → Anaphase → Telophase',
+        'Metaphase → Prophase → Telophase → Anaphase',
+        'Anaphase → Prophase → Metaphase → Telophase',
+        'Telophase → Anaphase → Metaphase → Prophase'
+      ], answer: 0,
+      why: 'PMAT. Interphase (growth + DNA replication) comes before all four.' },
+
+    { q: 'During which phase do chromosomes line up along the midline of the cell?',
+      choices: ['Metaphase', 'Prophase', 'Anaphase', 'Telophase'], answer: 0,
+      why: 'Metaphase = Middle.' },
+
+    { q: 'What is the key difference between apoptosis and necrosis?',
+      choices: [
+        'Apoptosis is programmed cell death; necrosis results from damage',
+        'Apoptosis results from damage; necrosis is programmed',
+        'Both are programmed; only the speed differs',
+        'Apoptosis only occurs in stem cells'
+      ], answer: 0,
+      why: 'This distinction shows up again in cardiology — myocardial infarction kills tissue by necrosis.' }
+  ]
+},
+
+/* ─────────────────────────  M103 · MEDICAL PROCEDURES  ──────────────────── */
+
+{
+  id: 'ekg-basics',
+  course: 'M103 · Medical Procedures',
+  title: 'EKG — Waves, Intervals & Paper',
+  source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md  +  M103 LAB .../EKG.md',
+  cards: [
+    { term: 'Electrocardiogram (ECG/EKG)', def: 'a recording of the electrical impulses of the heart muscle; noninvasive, painless and safe' },
+    { term: 'P wave',       def: 'ATRIAL DEPOLARIZATION (contraction) — the first impulse recorded, begun by the SA node' },
+    { term: 'QRS complex',  def: 'VENTRICULAR DEPOLARIZATION (contraction); atrial relaxation also happens here' },
+    { term: 'Q wave',       def: 'a NEGATIVE deflection wave' },
+    { term: 'R wave',       def: 'a POSITIVE deflection wave' },
+    { term: 'S wave',       def: 'a NEGATIVE deflection wave (after R)' },
+    { term: 'T wave',       def: 'VENTRICULAR REPOLARIZATION (relaxation) — recovery time before the next contraction' },
+    { term: 'U wave',       def: 'a positive deflection associated with repolarization, only occasionally seen in some patients' },
+    { term: 'Systole',      def: 'contraction' },
+    { term: 'Diastole',     def: 'relaxation' },
+    { term: 'Isoelectric line', def: 'the flat baseline separating the waves — periods with no current; precedes the P wave and follows the T wave' },
+    { term: 'Interval',     def: 'the time between events — a period that includes one segment AND one or more waves' },
+    { term: 'Segment',      def: 'the portion of the ECG BETWEEN two waves' },
+    { term: 'PR interval',  def: 'beginning of the P wave to the beginning of the QRS — normal 0.12–0.20 seconds' },
+    { term: 'QT interval',  def: 'beginning of the QRS to the end of the T wave — normal 0.36–0.44 seconds' },
+    { term: 'ST segment',   def: 'end of the QRS to the beginning of the T wave; should sit on the baseline' },
+    { term: 'ST elevation / depression', def: 'ST segment above or below baseline — indicative of ischemia, a lack of blood flow to the heart' },
+    { term: 'Sinoatrial (SA) node', def: 'in the upper right atrium — the "pacemaker of the heart"; where the impulse originates and what makes the atria contract' },
+    { term: 'Conduction pathway',   def: 'SA node → AV node → Bundle of His → Purkinje fibers' },
+    { term: 'Purkinje fibers',      def: 'cause the ventricles to contract and produce the QRS complex' },
+    { term: 'Paper speed',          def: '25 mm/sec is standard; the horizontal axis measures TIME' },
+    { term: 'Vertical axis',        def: 'records voltage (gain / amplitude)' },
+    { term: 'Small square',         def: '1 mm × 1 mm = 0.04 seconds' },
+    { term: 'Large square',         def: '5 mm × 5 mm = 0.2 seconds — five large squares = 1.0 second' },
+    { term: 'Standardization mark', def: '2 mm wide × 10 mm high at sensitivity 1; should appear in front of each lead' },
+    { term: 'Sensitivity ½',        def: 'used when the tracing is too LARGE — produces a mark 2 mm wide × 5 mm high' },
+    { term: 'Sensitivity 2',        def: 'used when the tracing is too SMALL — produces a mark 2 mm wide × 20 mm high' },
+    { term: 'Galvanometer',         def: 'transforms the electrical current into mechanical motion inside the machine' },
+    { term: 'Stylus',               def: 'the heated pen-like instrument on non-digital machines that prints the tracing' },
+    { term: 'Holter monitor',       def: 'a portable "ambulatory / walking ECG" recording the heart for 24+ hours; patient keeps a diary and presses an event button for symptoms' },
+    { term: 'Event monitor',        def: 'a version the patient activates only when symptoms occur; can be worn for several days' },
+    { term: 'Stress test',          def: 'exercise ECG for patients at high risk of heart disease; no food, smoking, caffeine or alcohol for 3+ hours before' },
+    { term: 'Echocardiography',     def: 'a noninvasive diagnostic tool that tests the STRUCTURE and FUNCTION of the heart using sound waves' },
+    { term: 'Defibrillator',        def: 'delivers a countershock to convert cardiac arrhythmias back into a regular sinus rhythm' }
+  ],
+  questions: [
+    { q: 'One cardiac cycle on an ECG consists of:',
+      choices: [
+        'P wave → QRS complex → T wave',
+        'QRS complex → P wave → T wave',
+        'T wave → P wave → QRS complex',
+        'P wave → T wave → QRS complex'
+      ], answer: 0 },
+
+    { q: 'The T wave represents:',
+      choices: [
+        'Repolarization (relaxation) of the ventricles',
+        'Depolarization of the atria',
+        'Depolarization of the ventricles',
+        'Contraction of the SA node'
+      ], answer: 0 },
+
+    { q: 'Atrial REPOLARIZATION is hidden inside which part of the tracing?',
+      choices: ['The QRS complex', 'The P wave', 'The T wave', 'The isoelectric line'], answer: 0,
+      why: 'Relaxation of the atria happens during the QRS — it is buried under the much larger ventricular signal.' },
+
+    { q: 'A PR interval measures 0.28 seconds. Is that within normal limits?',
+      choices: [
+        'No — normal is 0.12 to 0.20 seconds',
+        'Yes — normal is 0.20 to 0.36 seconds',
+        'Yes — any value under 0.44 seconds is normal',
+        'No — normal is 0.36 to 0.44 seconds'
+      ], answer: 0,
+      why: '0.36–0.44 sec is the normal QT interval, not the PR.' },
+
+    { q: 'On standard ECG paper at 25 mm/sec, how much time does ONE LARGE square represent?',
+      choices: ['0.2 seconds', '0.04 seconds', '1.0 second', '0.5 seconds'], answer: 0,
+      why: 'Small square = 0.04 s, large square = 0.2 s, five large squares = 1.0 s.' },
+
+    { q: 'An ST segment sitting below the baseline is called ST depression and suggests:',
+      choices: [
+        'Ischemia — a lack of blood flow to the heart',
+        'Normal repolarization',
+        'An artifact from a loose electrode',
+        'Atrial enlargement'
+      ], answer: 0 },
+
+    { q: 'The tracing is too large to fit on the paper. What do you do?',
+      choices: [
+        'Set the sensitivity dial to ½, producing a 2 mm × 5 mm standardization mark',
+        'Set the sensitivity dial to 2, producing a 2 mm × 20 mm mark',
+        'Increase paper speed to 50 mm/sec',
+        'Move the electrodes closer to the shoulders'
+      ], answer: 0 },
+
+    { q: 'If you change the paper speed from 25 mm/sec to 50 mm/sec, what must you do?',
+      choices: [
+        'Note the change in pen directly on the tracing',
+        'Nothing — the machine records it automatically on every model',
+        'Rerun the tracing at standard speed as well',
+        'Reduce the sensitivity to ½'
+      ], answer: 0,
+      why: 'Whoever interprets the strip has to know the timebase, or every interval will be misread.' },
+
+    { q: 'Which statement about echocardiography is correct?',
+      choices: [
+        'It is noninvasive and uses sound waves to assess heart structure and function',
+        'It records the electrical impulses of the heart',
+        'It requires injection of a contrast medium',
+        'It is another name for a stress test'
+      ], answer: 0,
+      why: 'This is the distinction between the ECG (electrical activity) and the echo (structure and function) — the core of your program.' },
+
+    { q: 'A Holter monitor is best described as:',
+      choices: [
+        'An ambulatory ECG worn for 24 hours or more while the patient keeps a symptom diary',
+        'A single 12-lead tracing taken in the office',
+        'A device that delivers countershock during arrhythmias',
+        'An exercise test performed on a treadmill'
+      ], answer: 0 }
+  ]
+},
+
+{
+  id: 'ekg-leads',
+  course: 'M103 · Medical Procedures',
+  title: 'EKG — The 12 Leads & Electrode Placement',
+  source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md',
+  chest: true,          /* unlocks the Place the Leads mode */
+  cards: [
+    { term: '12-lead ECG',  def: '12 recordings of the heart’s electrical activity from different angles, using 10 electrodes — 4 limb, 6 chest' },
+    { term: 'Lead I',       def: 'BIPOLAR — voltage difference between the LEFT ARM and the RIGHT ARM' },
+    { term: 'Lead II',      def: 'BIPOLAR — voltage difference between the RIGHT ARM and the LEFT LEG',
+      note: 'The right leg is the GROUND electrode and is never part of any lead — a fast way to sanity-check any lead question.' },
+    { term: 'Lead III',     def: 'BIPOLAR — voltage difference between the LEFT ARM and the LEFT LEG' },
+    { term: 'aVR',          def: 'augmented Voltage Right arm — RA vs. a central point between LA and LL' },
+    { term: 'aVL',          def: 'augmented Voltage Left arm — LA vs. a central point between RA and LL' },
+    { term: 'aVF',          def: 'augmented Voltage left leg / Foot — LL vs. a central point between RA and LA' },
+    { term: 'Why "augmented"?', def: 'these three leads produce small impulses that must be amplified (augmented) by the machine to be recorded' },
+    { term: 'Bipolar vs. unipolar', def: 'BIPOLAR (I, II, III) — both poles are real electrodes on the patient. UNIPOLAR (aVR, aVL, aVF, V1–V6) — one real "exploring" electrode measured against a CALCULATED central reference point',
+      note: 'All voltage is a difference between two points, so "measures a difference" cannot be what separates them — what separates them is whether the negative pole is a physical electrode or a computed average. By that convention the augmented leads are unipolar, which is how lines 44–46 of your Chapter 45 notes describe them ("a central point between..."). But the heading on that page groups them as bipolar — go with your instructor and textbook on the exam.' },
+    { term: 'Lead II strip', def: 'the main lead read for heart rate and rhythm; providers often request an extra two-foot rhythm strip of Lead II alone' },
+    { term: 'V1', def: 'FOURTH intercostal space at the RIGHT margin of the sternum' },
+    { term: 'V2', def: 'FOURTH intercostal space at the LEFT margin of the sternum' },
+    { term: 'V3', def: 'midway between V2 and V4 — placed AFTER V4' },
+    { term: 'V4', def: 'FIFTH intercostal space at the junction of the left midclavicular line' },
+    { term: 'V5', def: 'horizontal level of V4 at the left ANTERIOR AXILLARY line' },
+    { term: 'V6', def: 'horizontal level of V4 at the left MIDAXILLARY line' },
+    { term: 'Order of chest placement', def: 'V1 → V2 → V4 → V3 → V5 → V6 (V4 goes on before V3, because V3 is defined by where V4 lands)' },
+    { term: 'RA electrode color', def: 'WHITE' },
+    { term: 'LA electrode color', def: 'BLACK' },
+    { term: 'LL electrode color', def: 'RED' },
+    { term: 'RL electrode color', def: 'GREEN (the ground)' },
+    { term: 'Arm electrode position', def: 'fleshy outer area of the UPPER arm with the connectors pointing DOWN' },
+    { term: 'Leg electrode position', def: 'fleshy inner area of the LOWER leg near the calf with the connectors pointing UP' }
+  ],
+  questions: [
+    { q: 'How many electrodes and how many leads are used in a standard 12-lead ECG?',
+      choices: [
+        '10 electrodes producing 12 leads',
+        '12 electrodes producing 12 leads',
+        '6 electrodes producing 12 leads',
+        '12 electrodes producing 10 leads'
+      ], answer: 0,
+      why: '4 limb + 6 chest = 10 electrodes. A "lead" is a viewing angle calculated from those electrodes, not a wire.' },
+
+    { q: 'Which lead is described as bipolar?',
+      choices: [
+        'Lead II — it monitors two electrodes',
+        'aVR — it monitors two electrodes',
+        'V1 — it monitors two electrodes',
+        'aVF — it monitors two electrodes'
+      ], answer: 0,
+      why: 'Leads I, II and III are bipolar under every convention: both poles are real electrodes on the patient. The augmented leads are the contested ones — standard references call aVR/aVL/aVF unipolar because their negative pole is a calculated central point rather than an electrode, while some course materials group them with the bipolar leads. Nothing calls Lead II anything but bipolar.' },
+
+    { q: 'You are placing the chest electrodes. What is the correct ORDER?',
+      choices: [
+        'V1 → V2 → V4 → V3 → V5 → V6',
+        'V1 → V2 → V3 → V4 → V5 → V6',
+        'V6 → V5 → V4 → V3 → V2 → V1',
+        'V1 → V3 → V2 → V4 → V6 → V5'
+      ], answer: 0,
+      why: 'V3 sits midway between V2 and V4, so V4 has to be on the chest first to know where V3 goes.' },
+
+    { q: 'Where exactly does V1 go?',
+      choices: [
+        'Fourth intercostal space, right margin of the sternum',
+        'Fourth intercostal space, left margin of the sternum',
+        'Fifth intercostal space, left midclavicular line',
+        'Fifth intercostal space, right midclavicular line'
+      ], answer: 0 },
+
+    { q: 'Which two chest leads sit at the same horizontal level as V4?',
+      choices: ['V5 and V6', 'V1 and V2', 'V2 and V3', 'V3 and V5'], answer: 0,
+      why: 'V4 (midclavicular) → V5 (anterior axillary) → V6 (midaxillary) all run along one horizontal line.' },
+
+    { q: 'The RIGHT LEG electrode is what color, and what is its role?',
+      choices: [
+        'Green — it is the ground electrode',
+        'Red — it forms Lead II',
+        'White — it forms Lead I',
+        'Black — it is the ground electrode'
+      ], answer: 0,
+      why: 'Memory aid: on each side, "smoke over fire" (black over red, left side) and "snow over grass" (white over green, right side).' },
+
+    { q: 'Which color goes on the LEFT LEG?',
+      choices: ['Red', 'Green', 'Black', 'White'], answer: 0 },
+
+    { q: 'How should the arm electrodes be oriented?',
+      choices: [
+        'On the fleshy outer upper arm with the connectors pointing DOWN',
+        'On the fleshy outer upper arm with the connectors pointing UP',
+        'On the wrist with the connectors pointing down',
+        'On the shoulder with the connectors pointing outward'
+      ], answer: 0,
+      why: 'Connectors down on arms, up on legs — this reduces tension on the electrodes. Placing arm electrodes close to the shoulders also cuts down on muscle-voltage artifact.' },
+
+    { q: 'A patient has a below-knee amputation on one side. What do you do with the limb electrodes?',
+      choices: [
+        'Keep the placement symmetrical — move the electrode on the intact limb to match',
+        'Place both leg electrodes on the intact leg',
+        'Omit the leg electrodes and run a 10-lead tracing',
+        'Place the missing leg electrode on the abdomen'
+      ], answer: 0,
+      why: 'Symmetry is what preserves the geometry of the lead calculations.' },
+
+    { q: 'aVF records the voltage difference between:',
+      choices: [
+        'The left leg and a central point between the right arm and left arm',
+        'The right arm and a central point between the left arm and left leg',
+        'The left arm and a central point between the right arm and left leg',
+        'The left leg and the right leg'
+      ], answer: 0,
+      why: 'F = Foot. R = Right arm, L = Left arm. Each augmented lead compares its own electrode against the average of the other two.' }
+  ],
+
+  /* Data for the "Place the Leads" mini-game. x/y are % of the torso graphic. */
+  chestLeads: [
+    { id: 'V1', x: 46.5,  y: 44,    landmark: 'Fourth intercostal space, RIGHT margin of the sternum' },
+    { id: 'V2', x: 53.5,  y: 44,    landmark: 'Fourth intercostal space, LEFT margin of the sternum' },
+    { id: 'V3', x: 58.75, y: 47.25, landmark: 'Midway between V2 and V4 (placed after V4)' },
+    { id: 'V4', x: 64,    y: 50.5,  landmark: 'Fifth intercostal space, left MIDCLAVICULAR line' },
+    { id: 'V5', x: 73,    y: 50.5,  landmark: 'Level of V4, left ANTERIOR AXILLARY line' },
+    { id: 'V6', x: 80,    y: 50.5,  landmark: 'Level of V4, left MIDAXILLARY line' }
+  ]
+},
+
+{
+  id: 'ekg-rhythms',
+  course: 'M103 · Medical Procedures',
+  title: 'EKG — Artifacts & Arrhythmias',
+  source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md',
+  cards: [
+    { term: 'Somatic tremor',     def: 'ARTIFACT from shivering — nervousness, cold, or neurological conditions like Parkinson’s. Fix: place arm electrodes closer to the shoulders' },
+    { term: 'Alternating current (AC) interference', def: 'ARTIFACT from electrical activity nearby. Fix: keep power cords away from the patient, move the table away from the wall' },
+    { term: 'Wandering baseline', def: 'ARTIFACT from improperly applied electrodes or improperly cleaned skin. Fix: remove oils, creams and lotions with an alcohol prep pad' },
+    { term: 'Interrupted baseline', def: 'ARTIFACT from an electrode separating from the wire, or a broken lead wire. Fix: reattach securely or repair the wire' },
+    { term: 'Normal sinus rhythm', def: 'a heart rate between 60 and 100 BPM' },
+    { term: 'Sinus bradycardia',   def: 'a heart rate BELOW 60 BPM' },
+    { term: 'Sinus tachycardia',   def: 'a heart rate ABOVE 100 BPM' },
+    { term: 'Arrhythmia',          def: 'an irregularity in the heart’s rhythm — not all are dangerous' },
+    { term: 'Premature atrial contraction (PAC)', def: 'a cycle that occurs before the next one is due, with a differently shaped P wave. Seen in healthy people who smoke or use stimulants' },
+    { term: 'Paroxysmal atrial tachycardia (PAT)', def: 'a brief episode of 160–250 BPM; patients describe it as a "flutter" in the heart' },
+    { term: 'Atrial fibrillation (A-fib)', def: 'rapid multiple signals firing from the atria outside the SA node; the P wave cannot be identified, leaving small irregular complexes',
+      note: 'The 400–500 BPM figure in your notes is the ATRIAL rate, not the pulse rate — the ventricles respond much more slowly.' },
+    { term: 'A-fib causes',        def: 'myocardial infarction, hypertension, mitral valve disease, heart failure, thyroid disorders, pulmonary emboli, excessive alcohol' },
+    { term: 'Premature ventricular contraction (PVC)', def: 'a beat occurring EARLY in the cycle, followed by a PAUSE before the next cycle' },
+    { term: 'Ventricular tachycardia', def: 'three or more PVCs at 150–250 BPM, with NO P waves and imprecise QRS complexes — life threatening' },
+    { term: 'Ventricular fibrillation (V-fib)', def: 'an erratic, jagged "sawtooth" rhythm; the ventricles tremor and there is NO cardiac output' },
+    { term: 'Pacemaker arrhythmia', def: 'vertical signals (spikes) representing the pacemaker’s electrical activity; more visible in unipolar than bipolar leads' },
+    { term: 'Scope of practice', def: 'interpreting ECGs is beyond your scope — but recognizing arrhythmias and alerting the provider is essential' }
+  ],
+  questions: [
+    { q: 'You get a tracing with a wandering baseline. What is the most likely cause?',
+      choices: [
+        'Improperly applied electrodes or skin that was not properly cleaned',
+        'Nearby electrical equipment',
+        'A broken lead wire',
+        'Patient shivering from cold'
+      ], answer: 0,
+      why: 'Wandering baseline → prep the skin with an alcohol pad. Interrupted baseline → check the wire. Somatic tremor → the patient is moving. AC interference → something electrical is nearby.' },
+
+    { q: 'The tracing shows a completely flat, interrupted section. First thing to check?',
+      choices: [
+        'Whether an electrode has separated from its wire or a lead wire is broken',
+        'Whether the patient is shivering',
+        'Whether the paper speed is set to 50 mm/sec',
+        'Whether the patient ate before the test'
+      ], answer: 0 },
+
+    { q: 'A patient with Parkinson’s disease produces a tracing full of muscle noise. Which artifact is this, and what helps?',
+      choices: [
+        'Somatic tremor — move the arm electrodes closer to the shoulders',
+        'AC interference — unplug nearby equipment',
+        'Wandering baseline — clean the skin',
+        'Interrupted baseline — replace the lead wire'
+      ], answer: 0 },
+
+    { q: 'Which rhythm has NO identifiable P wave, showing small irregular complexes instead?',
+      choices: ['Atrial fibrillation', 'Sinus bradycardia', 'Premature ventricular contraction', 'Normal sinus rhythm'], answer: 0 },
+
+    { q: 'Which of these is a LIFE-THREATENING finding you should alert the provider about immediately?',
+      choices: [
+        'Ventricular fibrillation — the ventricles tremor and there is no cardiac output',
+        'A single premature atrial contraction',
+        'Sinus rhythm at 72 BPM',
+        'An occasional U wave'
+      ], answer: 0 },
+
+    { q: 'A rate of 54 BPM in normal rhythm is called:',
+      choices: ['Sinus bradycardia', 'Sinus tachycardia', 'Normal sinus rhythm', 'Atrial fibrillation'], answer: 0,
+      why: 'Brady = slow (<60), tachy = fast (>100), normal 60–100.' },
+
+    { q: 'What distinguishes a PVC on the tracing?',
+      choices: [
+        'A beat occurring early, followed by a pause before the next cycle',
+        'A rate of 400–500 BPM',
+        'A jagged sawtooth pattern with no output',
+        'Vertical spikes before each complex'
+      ], answer: 0 },
+
+    { q: 'You notice an obvious arrhythmia on the tracing you just ran. What is the correct action?',
+      choices: [
+        'Recognize it and alert the provider — interpreting the ECG is outside your scope of practice',
+        'Document your interpretation in the chart and file the tracing',
+        'Repeat the test until the rhythm looks normal',
+        'Tell the patient what rhythm they have before they leave'
+      ], answer: 0 }
+  ]
+},
+
+{
+  id: 'ekg-procedure',
+  course: 'M103 · Medical Procedures',
+  title: 'EKG — Performing the Procedure',
+  source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md',
+  cards: [
+    { term: 'Purpose of the procedure', def: 'to obtain a graphic representation of the electrical activity of the patient’s heart' },
+    { term: 'Why perform an ECG',       def: 'to detect damage from previous heart attacks, enlargement of the heart muscle, rhythm disturbances and other abnormal conditions' },
+    { term: 'Baseline ECG age',         def: 'patients between 40 and 45 are recommended to get an ECG to establish a baseline' },
+    { term: 'Daily machine check',      def: 'check the machine for proper function and error codes before starting the patient schedule each day' },
+    { term: 'Step 1 — Prepare',         def: 'plug in the machine, make sure no other electrical equipment could cause interference, check cables and clips, turn it on' },
+    { term: 'Patient explanation',      def: '"Today we are going to perform an ECG to see how the electrical activity and rhythm in your heart is working." Then ask: "Do you have any questions or concerns?"' },
+    { term: 'Disrobing',                def: 'waist up, and remove clothing from the lower legs — provide privacy and show the patient where to put belongings' },
+    { term: 'Skin prep',                def: 'if the skin has lotion, oil or cream, wipe with gauze or an alcohol prep pad; shave excess hair WITH the patient’s permission' },
+    { term: 'Cable safety',             def: 'the power cord and patient cable must NOT be allowed to touch' },
+    { term: 'Breast tissue',            def: 'if breast tissue extends over the V3–V5 positions, elevate it using the BACK of the hand and place the electrodes underneath' },
+    { term: 'During recording',         def: 'cover the patient with the drape, remind them not to move, then press the Auto button' },
+    { term: 'After recording',          def: 'alert the provider of complaints or unusual findings, then remove leads with provider approval; clean sites with alcohol if needed' },
+    { term: 'Finishing up',             def: 'assist the patient up and dressed, change the table paper and pillow cover, discard disposables, wash hands, give the tracing to the provider, chart the entry' },
+    { term: 'Equipment list',           def: 'electrocardiograph, ECG paper, pre-gelled disposable electrodes, patient cable and lead wires with clips, exam table, pillow, drape/gown, gauze, alcohol pads, chart/EHR, pen, disposable razor' }
+  ],
+  questions: [
+    { q: 'When should you look the tracing over for artifacts?',
+      choices: [
+        'After the ECG is obtained but BEFORE disconnecting the patient',
+        'After the patient has been discharged',
+        'Only if the provider asks',
+        'While the machine is still recording'
+      ], answer: 0,
+      why: 'If there is interference you have to correct it and run a new tracing — much easier while the patient is still on the table.' },
+
+    { q: 'A patient asks what the ECG is for. What is the best response, per your procedure checklist?',
+      choices: [
+        '"Today we are going to perform an ECG to see how the electrical activity and rhythm in your heart is working."',
+        '"It checks whether you have had a heart attack."',
+        '"The provider will explain it after the test."',
+        '"It takes a picture of your heart using sound waves."'
+      ], answer: 0,
+      why: 'Then follow up with "Do you have any questions or concerns?" — the criteria step for acknowledging patient concerns.' },
+
+    { q: 'Why must the power cord and the patient cable never touch?',
+      choices: [
+        'It causes electrical interference in the tracing',
+        'It damages the electrodes',
+        'It slows the paper speed',
+        'It is a shock hazard to the operator only'
+      ], answer: 0 },
+
+    { q: 'A patient has dense chest hair over the V-lead positions. What do you do?',
+      choices: [
+        'Shave the area with the patient’s permission',
+        'Press the electrodes down harder',
+        'Move the electrodes to a hairless area',
+        'Skip the chest leads and run a 6-lead tracing'
+      ], answer: 0 },
+
+    { q: 'Before a stress test, what must the patient be told to avoid, and for how long?',
+      choices: [
+        'No food, smoking, caffeine or alcohol for three hours or more beforehand',
+        'No food for 12 hours; caffeine is fine',
+        'Nothing — there is no preparation required',
+        'No exercise for 24 hours beforehand'
+      ], answer: 0 }
+  ]
+}
+
+];
+
+</script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Cardiovascular Sonography study app.
+   Content lives in decks.js — this file is only the engine.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+const app = document.getElementById('app');
+const DECKS = window.DECKS || [];
+const STORE = 'cvs-study-v1';
+
+/* ---------- storage ---------- */
+const load = () => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } };
+const save = o => { try { localStorage.setItem(STORE, JSON.stringify(o)); } catch {} };
+function record(deckId, patch){
+  const s = load();
+  s[deckId] = Object.assign({}, s[deckId], patch, { last: Date.now() });
+  save(s);
+}
+
+/* ---------- theme ---------- */
+/* Dark by default — these get used at night. The toggle sticks once it's set. */
+let theme = localStorage.getItem('cvs-theme') || 'dark';
+document.documentElement.dataset.theme = theme;
+function toggleTheme(){
+  theme = theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem('cvs-theme', theme);
+  render();
+}
+
+/* ---------- helpers ---------- */
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const sample  = (a, n) => shuffle(a).slice(0, n);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const deckById = id => DECKS.find(d => d.id === id);
+
+let view = { screen:'home', deck:null, mode:null };
+let session = null;              // live state for the active mode
+let keyHandler = null;
+
+function go(screen, deck, mode){
+  view = { screen, deck, mode };
+  session = null;
+  window.scrollTo(0, 0);
+  render();
+}
+
+/* ═══════════════ HOME ═══════════════ */
+function screenHome(){
+  const q = (session && session.q || '').toLowerCase();
+  const progress = load();
+
+  let list = DECKS;
+  if (q) list = DECKS.filter(d =>
+    (d.title + ' ' + d.course).toLowerCase().includes(q) ||
+    d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
+
+  const courses = [...new Set(list.map(d => d.course))];
+  let html = `
+    <header class="top">
+      <div>
+        <h1>Cardiovascular Sonography</h1>
+        <div class="sub">${DECKS.length} decks · ${DECKS.reduce((n,d)=>n+d.cards.length,0)} terms · Term 1</div>
+      </div>
+      <div class="spacer"></div>
+      <button class="iconbtn" onclick="toggleTheme()">${theme==='dark'?'☀ Light':'☾ Dark'}</button>
+    </header>
+    <input class="search" id="search" placeholder="Search decks or terms…" value="${esc(session&&session.q||'')}">`;
+
+  if (!list.length) html += `<p style="color:var(--dim)">No decks match that search.</p>`;
+
+  courses.forEach(c => {
+    html += `<div class="coursehead">${esc(c)}</div><div class="decks">`;
+    list.filter(d => d.course === c).forEach(d => {
+      const p = progress[d.id] || {};
+      const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
+      html += `<button class="deck" onclick="go('deck','${d.id}')">
+        <h3>${esc(d.title)}</h3>
+        <div class="meta">${d.cards.length} terms${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
+        <div class="badges">
+          ${p.recallBest != null ? `<span class="badge ${p.recallBest>=80?'on':''}">Recall ${p.recallBest}%</span>` : ''}
+          ${p.quizBest != null ? `<span class="badge ${p.quizBest>=80?'on':''}">Quiz best ${p.quizBest}%</span>` : ''}
+          ${p.matchBest != null ? `<span class="badge on">Match ${p.matchBest}s</span>` : ''}
+          ${p.learned ? `<span class="badge on">${p.learned} learned</span>` : ''}
+          ${!p.last ? `<span class="badge">Not started</span>` : ''}
+        </div></button>`;
+    });
+    html += `</div>`;
+  });
+
+  app.innerHTML = html;
+  const box = document.getElementById('search');
+  box.oninput = e => { session = { q: e.target.value }; const pos = e.target.selectionStart; screenHome();
+    const b = document.getElementById('search'); b.focus(); b.setSelectionRange(pos, pos); };
+}
+
+/* ═══════════════ DECK MENU ═══════════════ */
+function screenDeck(){
+  const d = deckById(view.deck);
+  const modes = [
+    ['recall','Recall — Type It In','Read the definition, type the term, and get marked right or wrong on the spot.'],
+    ['learn','Flashcards','Flip through the terms and grade yourself. Missed cards come back around.'],
+    ['quiz','Multiple Choice','Written concept questions plus auto-generated term questions, with explanations.'],
+    ['match','Matching','Pair each term with its definition against the clock, six at a time.'],
+    ['browse','Review Sheet','The whole list in one table. Hide the definitions to self-test.']
+  ];
+  if (d.chest) modes.splice(4, 0, ['chest','Place the Leads','Click the correct spot on the chest for each V lead.']);
+
+  app.innerHTML = `
+    <button class="back" onclick="go('home')">← All decks</button>
+    <h2 class="title">${esc(d.title)}</h2>
+    <div class="srcline">${esc(d.course)} · ${d.cards.length} terms<br>from ${esc(d.source)}</div>
+    <div class="modes">
+      ${modes.map(([m,t,s]) => `<button class="mode" onclick="go('run','${d.id}','${m}')">
+        <strong>${t}</strong><span>${s}</span></button>`).join('')}
+    </div>`;
+}
+
+/* ═══════════════ FLASHCARDS ═══════════════ */
+function runLearn(d){
+  if (!session) session = { queue: shuffle(d.cards), done: 0, total: d.cards.length, flipped: false, mastered: new Set() };
+  const s = session;
+
+  if (!s.queue.length){
+    record(d.id, { learned: s.mastered.size });
+    return results(d, `${s.mastered.size}/${s.total}`, 'cards you got on the first try', [], 'learn');
+  }
+
+  const c = s.queue[0];
+  const missed = s.seenAgain ? s.seenAgain.size : 0;
+  app.innerHTML = `
+    ${sessionBar(d, s.total - s.queue.length, s.total,
+       `Flashcards · <span style="color:var(--good)">${s.mastered.size} got</span> · <span style="color:var(--bad)">${missed} to redo</span>`)}
+    <div class="fc" onclick="flip()">
+      <div class="side">${s.flipped ? 'Definition' : 'Term'}</div>
+      ${s.flipped
+        ? `<div class="def">${esc(c.def)}${c.note ? `<span class="note">${esc(c.note)}</span>` : ''}</div>`
+        : `<div class="term">${esc(c.term)}</div>`}
+      <div class="tap">${s.flipped ? 'How did you do?' : 'Click, tap, or press Space to flip'}</div>
+    </div>
+    ${s.flipped ? `<div class="grade">
+        <button class="again" onclick="grade(false)">Again <span style="color:var(--dim)">(1)</span></button>
+        <button class="ok" onclick="grade(true)">Got it <span style="color:var(--dim)">(2)</span></button>
+      </div>` : ''}`;
+
+  keyHandler = e => {
+    if (!s.flipped && (e.key === ' ' || e.key === 'Enter')){ e.preventDefault(); flip(); }
+    else if (s.flipped && (e.key === '1')) grade(false);
+    else if (s.flipped && (e.key === '2' || e.key === ' ' || e.key === 'Enter')){ e.preventDefault(); grade(true); }
+  };
+}
+function flip(){ session.flipped = true; render(); }
+function grade(ok){
+  const s = session, c = s.queue.shift();
+  if (ok){ if (!s.seenAgain || !s.seenAgain.has(c)) s.mastered.add(c); }
+  else { (s.seenAgain = s.seenAgain || new Set()).add(c);
+         s.queue.splice(Math.min(4, s.queue.length), 0, c); }
+  s.flipped = false;
+  render();
+}
+
+/* ═══════════════ RECALL (type the answer, judged instantly) ═══════════════ */
+
+/* Strip case, punctuation, slashes and any parenthetical aside, so that
+   "abdomin/o", "Abdomino" and "abdomin o" all compare equal. */
+const normalize = s => String(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
+
+/* A card's term may list several acceptable forms ("-ac, -al, -ar…"): any one counts. */
+const alternatives = card => card.term.split(/,| or /i).map(s => s.trim()).filter(Boolean);
+
+/* 'exact' | 'wrong'. Every letter must be right — there is deliberately no typo
+   tolerance. Medical terminology is full of pairs that differ by one or two
+   letters and mean opposite things (hyper/hypo, -ostomy/-otomy, inter/intra),
+   and spelling is graded, so a near-miss is a miss.
+   Case, spacing and the /-o notation are still ignored: "abdomin/o", "Abdomino"
+   and "abdomin o" are the same spelling, just written differently. */
+function judge(input, card){
+  const n = normalize(input);
+  if (!n) return 'wrong';
+  return alternatives(card).map(normalize).some(t => t && t === n) ? 'exact' : 'wrong';
+}
+
+function runRecall(d){
+  if (!session) session = { queue: shuffle(d.cards), total: d.cards.length, right: 0, wrong: 0,
+                            typed: '', verdict: null, missed: [], attempted: new Set() };
+  const s = session;
+
+  if (!s.queue.length){
+    record(d.id, { recallBest: Math.max((load()[d.id] || {}).recallBest || 0,
+                                        Math.round(s.right / s.total * 100)) });
+    return results(d, `${s.right}/${s.total}`,
+                   `correct on the first try · ${s.wrong} missed`, s.missed, 'recall');
+  }
+
+  const c = s.queue[0], v = s.verdict;
+  const tone = v === 'wrong' ? 'var(--bad)' : 'var(--good)';
+
+  app.innerHTML = `
+    ${sessionBar(d, s.total - s.queue.length, s.total,
+       `Recall · <span style="color:var(--good)">${s.right} correct</span> · <span style="color:var(--bad)">${s.wrong} missed</span>`)}
+    <div class="q" style="font-weight:400">${esc(c.def)}</div>
+    <input class="search" id="recall" autocomplete="off" autocapitalize="off" spellcheck="false"
+      placeholder="Type the term…" value="${esc(s.typed)}" ${v ? 'disabled' : ''}
+      style="${v ? `border-color:${tone}` : ''}">
+    ${v ? `
+      <div class="why" style="border-left-color:${tone}">
+        <b style="color:${tone}">${v === 'exact' ? '✓ Correct' : '✗ Not quite'}</b><br>
+        ${v === 'wrong' && s.typed.trim()
+          ? `You typed: <b style="color:var(--bad)">${esc(s.typed.trim())}</b><br>` : ''}
+        Answer: <b style="color:var(--text)">${esc(c.term)}</b>
+        ${c.note ? `<span class="note">${esc(c.note)}</span>` : ''}
+      </div>
+      <button class="next" onclick="nextRecall()">
+        ${s.queue.length > 1 ? 'Next card →' : 'See results →'}</button>`
+    : `<div class="row" style="margin-top:12px">
+        <button onclick="checkRecall()" style="border-color:var(--accent);color:var(--accent)">Check answer</button>
+        <button onclick="revealRecall()">Show me</button>
+      </div>`}`;
+
+  const box = document.getElementById('recall');
+  if (!v){
+    box.focus();
+    box.oninput = e => { s.typed = e.target.value; };
+    box.onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); checkRecall(); } };
+  }
+  keyHandler = e => { if (v && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextRecall(); } };
+}
+/* Only the FIRST attempt at a card moves the tally — a card you missed and then
+   got right on its second pass shouldn't quietly inflate the score. */
+function score(card, wrong){
+  const s = session;
+  if (s.attempted.has(card)) return;
+  s.attempted.add(card);
+  if (wrong){ s.wrong++; s.missed.push({ q: esc(card.def), a: card.term }); }
+  else s.right++;
+}
+function checkRecall(){
+  const s = session, c = s.queue[0];
+  if (s.verdict || !s.typed.trim()) return;
+  s.verdict = judge(s.typed, c);
+  score(c, s.verdict === 'wrong');
+  render();
+}
+function revealRecall(){
+  const s = session, c = s.queue[0];
+  if (s.verdict) return;
+  s.verdict = 'wrong';
+  score(c, true);
+  render();
+}
+function nextRecall(){
+  const s = session, c = s.queue.shift();
+  if (s.verdict === 'wrong') s.queue.splice(Math.min(5, s.queue.length), 0, c);
+  s.typed = ''; s.verdict = null;
+  render();
+}
+
+/* ═══════════════ MULTIPLE CHOICE ═══════════════ */
+/* Two definitions "conflict" if one could pass for the other — identical, or one
+   contained in the other ("lung" inside "air or lung"). A conflicting card must
+   never become a distractor, or the question has two defensible answers. */
+function conflicts(a, b){
+  a = a.toLowerCase().trim(); b = b.toLowerCase().trim();
+  return a === b || a.includes(b) || b.includes(a);
+}
+function autoQuestions(d){
+  const out = [];
+  d.cards.forEach(card => {
+    const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def));
+    if (pool.length < 3) return;
+
+    let ch = shuffle([card.def, ...sample(pool, 3).map(c => c.def)]);
+    out.push({ q:`What does <b>${esc(card.term)}</b> mean?`, choices: ch,
+               answer: ch.indexOf(card.def), why: card.note });
+
+    /* Reverse direction only when no other card shares this meaning, otherwise
+       "which term means X" would have more than one right answer. */
+    if (pool.length === d.cards.length - 1){
+      ch = shuffle([card.term, ...sample(pool, 3).map(c => c.term)]);
+      out.push({ q:`Which term means: <em>${esc(card.def)}</em>`, choices: ch,
+                 answer: ch.indexOf(card.term), why: card.note });
+    }
+  });
+  return out;
+}
+function runQuiz(d){
+  if (!session){
+    const written = (d.questions || []).map(q => Object.assign({}, q, { written: true }));
+    const auto = autoQuestions(d);
+    const n = Math.min(20, written.length + auto.length);
+    const picked = shuffle(written).slice(0, n)
+      .concat(sample(auto, Math.max(0, n - written.length)));
+    session = { qs: shuffle(picked).slice(0, n), i: 0, score: 0, picked: null, missed: [] };
+  }
+  const s = session;
+
+  if (s.i >= s.qs.length){
+    const pct = Math.round(s.score / s.qs.length * 100);
+    const prev = load()[d.id] || {};
+    record(d.id, { quizBest: Math.max(prev.quizBest || 0, pct) });
+    return results(d, pct + '%', `${s.score} of ${s.qs.length} correct`, s.missed, 'quiz');
+  }
+
+  const q = s.qs[s.i], done = s.picked !== null;
+  app.innerHTML = `
+    ${sessionBar(d, s.i, s.qs.length, `Quiz · ${s.score} correct`)}
+    <div class="q">${q.q}</div>
+    <div class="choices">
+      ${q.choices.map((c, i) => {
+        let cls = '';
+        if (done && i === q.answer) cls = 'correct';
+        else if (done && i === s.picked) cls = 'wrong';
+        return `<button class="choice ${cls}" ${done ? 'disabled' : ''} onclick="answer(${i})">
+          <span class="k">${done && i === q.answer ? '✓' : done && i === s.picked ? '✕' : 'ABCD'[i]}</span>
+          <span>${esc(c)}</span></button>`;
+      }).join('')}
+    </div>
+    ${done && q.why ? `<div class="why"><b>Why:</b> ${esc(q.why)}</div>` : ''}
+    ${done ? `<button class="next" onclick="nextQ()">${s.i + 1 < s.qs.length ? 'Next question →' : 'See results →'}</button>` : ''}`;
+
+  keyHandler = e => {
+    if (!done && '1234'.includes(e.key)) answer(+e.key - 1);
+    else if (!done && 'abcd'.includes(e.key.toLowerCase())) answer('abcd'.indexOf(e.key.toLowerCase()));
+    else if (done && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextQ(); }
+  };
+}
+function answer(i){
+  const s = session, q = s.qs[s.i];
+  if (s.picked !== null || i >= q.choices.length) return;
+  s.picked = i;
+  if (i === q.answer) s.score++;
+  else s.missed.push({ q: q.q, a: q.choices[q.answer] });
+  render();
+}
+function nextQ(){ session.i++; session.picked = null; render(); }
+
+/* ═══════════════ MATCHING ═══════════════ */
+function runMatch(d){
+  if (!session){
+    session = { pool: shuffle(d.cards), round: [], left: [], right: [], sel: null,
+                matched: 0, total: d.cards.length, start: Date.now(), wrong: 0 };
+    dealMatch();
+  }
+  const s = session;
+
+  if (!s.round.length && !s.pool.length){
+    const secs = Math.round((Date.now() - s.start) / 1000);
+    const prev = load()[d.id] || {};
+    record(d.id, { matchBest: prev.matchBest ? Math.min(prev.matchBest, secs) : secs });
+    return results(d, secs + 's', `all ${s.total} pairs matched · ${s.wrong} misses`, [], 'match');
+  }
+
+  app.innerHTML = `
+    ${sessionBar(d, s.matched, s.total, `Matching · ${s.wrong} misses`)}
+    <div class="matchgrid">
+      <div class="mcol">${s.left.map((c, i) => btnMatch(c, i, 'L')).join('')}</div>
+      <div class="mcol">${s.right.map((c, i) => btnMatch(c, i, 'R')).join('')}</div>
+    </div>`;
+  keyHandler = null;
+}
+function btnMatch(c, i, side){
+  const s = session, key = side + i;
+  const cls = c.done ? 'done' : (s.sel === key ? 'sel' : '') + (s.badKey === key ? ' bad' : '');
+  return `<button class="mitem ${cls}" ${c.done ? 'disabled' : ''} onclick="pick('${side}',${i})">
+    ${esc(side === 'L' ? c.term : c.def)}</button>`;
+}
+function dealMatch(){
+  const s = session;
+  s.round = s.pool.splice(0, 6);
+  s.left  = s.round.map(c => ({ term: c.term, def: c.def, id: c.term }));
+  s.right = shuffle(s.left);
+  s.sel = null;
+}
+function pick(side, i){
+  const s = session, item = (side === 'L' ? s.left : s.right)[i], key = side + i;
+  if (item.done) return;
+  if (!s.sel){ s.sel = key; s.selItem = item; return render(); }
+  if (s.sel === key){ s.sel = null; s.selItem = null; return render(); }
+  if (s.sel[0] === side){ s.sel = key; s.selItem = item; return render(); }
+
+  if (s.selItem.id === item.id){
+    s.left.forEach(x => { if (x.id === item.id) x.done = true; });
+    s.right.forEach(x => { if (x.id === item.id) x.done = true; });
+    s.matched++;
+    s.sel = null; s.selItem = null;
+    if (s.left.every(x => x.done)){ if (s.pool.length) dealMatch(); else s.round = []; }
+    render();
+  } else {
+    s.wrong++; s.badKey = key; render();
+    setTimeout(() => { session.badKey = null; session.sel = null; session.selItem = null; render(); }, 320);
+  }
+}
+
+/* ═══════════════ PLACE THE LEADS ═══════════════ */
+/* Anterior torso, patient facing the viewer: the patient's LEFT is on our RIGHT.
+   viewBox units are halves of a percent, so SVG x=128 == left:64% for a dot.   */
+const TORSO = `<svg viewBox="0 0 200 200" aria-hidden="true">
+  <g fill="var(--card)" stroke="var(--line)" stroke-width="1.7" stroke-linejoin="round">
+    <path d="M88 10 v16 h24 V10"/>
+    <path d="M112 25 C140 29 162 40 168 58 C172 74 168 90 166 104
+             C164 126 156 142 152 160 L148 191 L52 191 L48 160
+             C44 142 36 126 34 104 C32 90 28 74 32 58 C38 40 60 29 88 25 Z"/>
+  </g>
+  <g fill="none" stroke="var(--line)" stroke-linecap="round">
+    <path d="M96 41 C84 35 68 37 57 47" stroke-width="1.9"/>
+    <path d="M104 41 C116 35 132 37 143 47" stroke-width="1.9"/>
+    <path d="M100 43 v68" stroke-width="2.8" opacity=".9"/>
+    <g stroke-width="1" opacity=".45">
+      <path d="M100 60 C80 60 62 67 52 78"/><path d="M100 60 C120 60 138 67 148 78"/>
+      <path d="M100 74 C78 74 58 82 47 94"/><path d="M100 74 C122 74 142 82 153 94"/>
+      <path d="M100 88 C76 88 55 97 44 110"/><path d="M100 88 C124 88 145 97 156 110"/>
+      <path d="M100 102 C76 102 55 112 44 126"/><path d="M100 102 C124 102 145 112 156 126"/>
+    </g>
+  </g>
+  <g stroke="var(--accent)" stroke-width=".9" stroke-dasharray="3 4" opacity=".5" fill="none">
+    <path d="M128 46 v106"/><path d="M146 52 v100"/><path d="M160 60 v92"/>
+  </g>
+</svg>`;
+
+function runChest(d){
+  const leads = d.chestLeads;
+  if (!session) session = { order: shuffle(leads.map(l => l.id)), i: 0, score: 0, picked: null, missed: [] };
+  const s = session;
+
+  if (s.i >= s.order.length){
+    const pct = Math.round(s.score / s.order.length * 100);
+    const prev = load()[d.id] || {};
+    record(d.id, { chestBest: Math.max(prev.chestBest || 0, pct) });
+    return results(d, `${s.score}/${s.order.length}`, 'electrodes placed correctly', s.missed, 'chest');
+  }
+
+  const target = s.order[s.i], done = s.picked !== null;
+  const targetLead = leads.find(l => l.id === target);
+
+  app.innerHTML = `
+    ${sessionBar(d, s.i, s.order.length, `Placement · ${s.score} correct`)}
+    <div class="q">Where does <b>${target}</b> go?</div>
+    <div class="torso">
+      ${TORSO}
+      ${leads.map(l => {
+        let cls = '';
+        if (done && l.id === target) cls = 'correct';
+        else if (done && l.id === s.picked) cls = 'wrong';
+        else if (done) cls = 'muted';
+        return `<button class="dot ${cls}" style="left:${l.x}%;top:${l.y}%"
+          ${done ? 'disabled' : ''} onclick="pickLead('${l.id}')">${done ? l.id : ''}</button>`;
+      }).join('')}
+    </div>
+    ${done ? `<div class="why"><b>${target}:</b> ${esc(targetLead.landmark)}</div>
+      <button class="next" onclick="nextLead()">${s.i + 1 < s.order.length ? 'Next lead →' : 'See results →'}</button>` : ''}
+    <p style="color:var(--dim);font-size:12.5px;text-align:center;margin-top:16px">
+      Patient is facing you — their right side is on your left. Dashed lines are the
+      midclavicular, anterior axillary and midaxillary lines.</p>`;
+  keyHandler = e => { if (done && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextLead(); } };
+}
+function pickLead(id){
+  const s = session;
+  if (s.picked !== null) return;
+  s.picked = id;
+  const target = s.order[s.i];
+  if (id === target) s.score++;
+  else {
+    const l = deckById(view.deck).chestLeads.find(x => x.id === target);
+    s.missed.push({ q: `Where does ${target} go?`, a: l.landmark });
+  }
+  render();
+}
+function nextLead(){ session.i++; session.picked = null; render(); }
+
+/* ═══════════════ BROWSE ═══════════════ */
+function runBrowse(d){
+  if (!session) session = { hide: false, filter: '' };
+  const s = session;
+  const f = s.filter.toLowerCase();
+  const rows = d.cards.filter(c => !f || (c.term + ' ' + c.def).toLowerCase().includes(f));
+
+  app.innerHTML = `
+    <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <div class="bar">
+      <button class="iconbtn" onclick="session.hide=!session.hide;render()">
+        ${s.hide ? '👁 Show definitions' : '🙈 Hide definitions'}</button>
+      <span>${rows.length} of ${d.cards.length}</span>
+    </div>
+    <input class="search" id="bfilter" placeholder="Filter…" value="${esc(s.filter)}">
+    <table class="browse"><tbody>
+      ${rows.map((c, i) => `<tr>
+        <td class="t">${esc(c.term)}</td>
+        <td class="${s.hide ? 'hidden-def' : ''}" onclick="this.classList.remove('hidden-def')">
+          ${esc(c.def)}${c.note && !s.hide ? `<span class="note">${esc(c.note)}</span>` : ''}</td></tr>`).join('')}
+    </tbody></table>
+    ${!rows.length ? '<p style="color:var(--dim)">Nothing matches that filter.</p>' : ''}`;
+
+  const bf = document.getElementById('bfilter');
+  bf.oninput = e => { const p = e.target.selectionStart; s.filter = e.target.value; runBrowse(d);
+    const n = document.getElementById('bfilter'); n.focus(); n.setSelectionRange(p, p); };
+  keyHandler = null;
+}
+
+/* ═══════════════ SHARED PIECES ═══════════════ */
+function sessionBar(d, done, total, label){
+  return `<button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <div class="bar"><span>${label}</span>
+      <div class="prog"><i style="width:${total ? Math.max(0, Math.min(100, done / total * 100)) : 0}%"></i></div>
+      <span>${Math.max(0, done)}/${total}</span></div>`;
+}
+function results(d, big, lbl, missed, mode){
+  app.innerHTML = `
+    <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <div class="score">
+      <div class="big">${esc(big)}</div>
+      <div class="lbl">${esc(lbl)}</div>
+      <div class="row">
+        <button onclick="go('run','${d.id}','${mode}')">Run it again</button>
+        <button onclick="go('deck','${d.id}')">Other modes</button>
+        <button onclick="go('home')">All decks</button>
+      </div>
+      ${missed.length ? `<div class="missed"><h4>Worth another look</h4>
+        ${missed.map(m => `<div>${m.q}<br><b>${esc(m.a)}</b></div>`).join('')}</div>` : ''}
+    </div>`;
+  keyHandler = null;
+}
+
+/* ═══════════════ ROUTER ═══════════════ */
+function render(){
+  keyHandler = null;
+  if (view.screen === 'home') return screenHome();
+  const d = deckById(view.deck);
+  if (!d) return go('home');
+  if (view.screen === 'deck') return screenDeck();
+  ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch,
+     chest: runChest, browse: runBrowse }[view.mode] || screenDeck)(d);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }
+  if (e.target.tagName === 'INPUT') return;   /* typing shouldn't fire shortcuts */
+  if (keyHandler) keyHandler(e);
+});
+render();
+</script>
+</body>
+</html>

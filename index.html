@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cardiovascular Sonography — Study</title>
+<style>
+  :root{
+    --bg:#0f1419; --bg2:#161d26; --card:#1b232e; --card2:#212b38;
+    --line:#2b3745; --text:#e6edf3; --dim:#8b9bad; --accent:#4db8d4;
+    --accent-dim:#2a6a7d; --good:#4ec98a; --bad:#e2685f; --warn:#e0b055;
+    --radius:12px;
+  }
+  html[data-theme="light"]{
+    --bg:#f4f6f8; --bg2:#ffffff; --card:#ffffff; --card2:#eef2f6;
+    --line:#d8e0e8; --text:#16212c; --dim:#5d7186; --accent:#0f7c99;
+    --accent-dim:#a9d9e6; --good:#127a4c; --bad:#b8352b; --warn:#8a6210;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 18px 80px}
+  a{color:var(--accent)}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+
+  /* ---- header ---- */
+  header.top{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+  header.top h1{font-size:19px;margin:0;font-weight:650;letter-spacing:-.01em}
+  header.top .sub{color:var(--dim);font-size:13px;margin-top:2px}
+  .spacer{flex:1}
+  .iconbtn{border:1px solid var(--line);background:var(--card);padding:7px 12px;
+    border-radius:8px;font-size:13px;color:var(--dim)}
+  .iconbtn:hover{color:var(--text);border-color:var(--accent-dim)}
+
+  /* ---- home ---- */
+  .search{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card);color:var(--text);font-size:15px;margin-bottom:24px}
+  .search:focus{outline:none;border-color:var(--accent)}
+  .coursehead{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
+    margin:26px 0 10px;font-weight:600}
+  .decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  .deck{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:15px 16px;text-align:left;transition:.13s;display:block;width:100%}
+  .deck:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .deck h3{margin:0 0 6px;font-size:15.5px;font-weight:600;line-height:1.35}
+  .deck .meta{font-size:12.5px;color:var(--dim)}
+  .badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--card2);
+    color:var(--dim);border:1px solid var(--line)}
+  .badge.on{color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent)}
+
+  /* ---- deck menu ---- */
+  .back{color:var(--dim);font-size:14px;margin-bottom:14px;display:inline-block}
+  .back:hover{color:var(--accent)}
+  h2.title{font-size:23px;margin:0 0 4px;letter-spacing:-.01em}
+  .srcline{color:var(--dim);font-size:12.5px;margin-bottom:22px;word-break:break-word}
+  .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .mode{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;text-align:left;transition:.13s}
+  .mode:hover{border-color:var(--accent);background:var(--card2)}
+  .mode strong{display:block;font-size:15px;margin-bottom:4px}
+  .mode span{font-size:12.5px;color:var(--dim);line-height:1.45}
+
+  /* ---- shared session chrome ---- */
+  .bar{display:flex;align-items:center;gap:12px;margin-bottom:18px;font-size:13px;color:var(--dim)}
+  .prog{flex:1;height:5px;background:var(--card2);border-radius:3px;overflow:hidden}
+  .prog i{display:block;height:100%;background:var(--accent);transition:width .3s}
+
+  /* ---- flashcards ---- */
+  .fc{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:36px 28px;text-align:center;cursor:pointer;user-select:none}
+  .fc:hover{border-color:var(--accent-dim)}
+  .fc .side{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+  .fc .term{font-size:29px;font-weight:600;line-height:1.25;letter-spacing:-.015em}
+  .fc .def{font-size:19px;line-height:1.5;max-width:560px}
+  .fc .tap{margin-top:22px;font-size:12.5px;color:var(--dim)}
+  .grade{display:flex;gap:12px;margin-top:16px}
+  .grade button{flex:1;padding:14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card);font-size:15px;font-weight:550}
+  .grade .again:hover{border-color:var(--bad);color:var(--bad)}
+  .grade .ok:hover{border-color:var(--good);color:var(--good)}
+
+  /* ---- quiz ---- */
+  .q{font-size:19px;line-height:1.45;margin-bottom:20px;font-weight:500}
+  .q b{color:var(--accent);font-weight:650}
+  .q em{font-style:normal;color:var(--text)}
+  .choices{display:flex;flex-direction:column;gap:9px}
+  .choice{border:1px solid var(--line);background:var(--card);border-radius:10px;
+    padding:13px 15px;text-align:left;display:flex;gap:12px;align-items:flex-start;
+    line-height:1.45;font-size:15px;transition:.1s}
+  .choice:hover:not(:disabled){border-color:var(--accent)}
+  .choice .k{flex:0 0 22px;height:22px;border-radius:5px;background:var(--card2);
+    color:var(--dim);font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .choice.correct{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--card))}
+  .choice.correct .k{background:var(--good);color:#04120b}
+  .choice.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card))}
+  .choice.wrong .k{background:var(--bad);color:#180504}
+  .choice:disabled{cursor:default}
+  .why{margin-top:16px;padding:13px 15px;border-radius:10px;background:var(--card2);
+    border-left:3px solid var(--accent);font-size:14px;line-height:1.55;color:var(--text)}
+  .why b{color:var(--accent)}
+  .next{margin-top:18px;width:100%;padding:14px;border-radius:10px;background:var(--accent);
+    color:#04161c;font-weight:650;font-size:15px}
+  html[data-theme="light"] .next{color:#fff}
+
+  /* ---- match ---- */
+  .matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+  .mcol{display:flex;flex-direction:column;gap:9px}
+  .mitem{border:1px solid var(--line);background:var(--card);border-radius:10px;
+    padding:12px 13px;text-align:left;font-size:14px;line-height:1.4;transition:.12s}
+  .mitem:hover:not(:disabled){border-color:var(--accent)}
+  .mitem.sel{border-color:var(--accent);background:var(--card2)}
+  .mitem.done{opacity:.32;border-style:dashed;cursor:default}
+  .mitem.bad{border-color:var(--bad);animation:shake .3s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  /* ---- chest game ---- */
+  .torso{position:relative;max-width:460px;margin:0 auto;aspect-ratio:1/1}
+  .torso svg{width:100%;height:100%;display:block}
+  .dot{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;
+    border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 30%,var(--bg));
+    display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;
+    color:var(--text);transition:.12s}
+  .dot:hover:not(:disabled){transform:scale(1.18)}
+  .dot.correct{border-color:var(--good);background:var(--good);color:#04120b}
+  .dot.wrong{border-color:var(--bad);background:var(--bad);color:#fff}
+  .dot.muted{opacity:.4}
+
+  /* ---- browse ---- */
+  table.browse{width:100%;border-collapse:collapse;font-size:14.5px}
+  table.browse td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.browse td.t{font-weight:600;width:34%;color:var(--accent)}
+  table.browse tr:hover td{background:var(--card)}
+  .hidden-def{color:transparent;background:var(--card2);border-radius:4px;cursor:pointer}
+  .hidden-def:hover{color:var(--dim)}
+  .note{display:block;margin-top:6px;font-size:12.5px;color:var(--warn);line-height:1.5}
+  .note::before{content:"⚑ ";}
+
+  /* ---- results ---- */
+  .score{text-align:center;padding:34px 20px}
+  .score .big{font-size:54px;font-weight:700;letter-spacing:-.03em;line-height:1}
+  .score .lbl{color:var(--dim);margin-top:8px;font-size:14px}
+  .row{display:flex;gap:10px;margin-top:24px}
+  .row button{flex:1;padding:13px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card);font-weight:550;font-size:14.5px}
+  .row button:hover{border-color:var(--accent)}
+  .missed{margin-top:26px;text-align:left}
+  .missed h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:0 0 10px}
+  .missed div{padding:11px 13px;border-radius:9px;background:var(--card);border:1px solid var(--line);
+    margin-bottom:8px;font-size:14px;line-height:1.5}
+  .missed div b{color:var(--good);font-weight:600}
+
+  @media(max-width:560px){
+    .wrap{padding:16px 13px 70px}
+    .fc .term{font-size:24px} .fc .def{font-size:17px}
+    .matchgrid{gap:8px} .mitem{font-size:13px;padding:10px}
+    .q{font-size:17px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script src="decks.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Cardiovascular Sonography study app.
+   Content lives in decks.js — this file is only the engine.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+const app = document.getElementById('app');
+const DECKS = window.DECKS || [];
+const STORE = 'cvs-study-v1';
+
+/* ---------- storage ---------- */
+const load = () => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } };
+const save = o => { try { localStorage.setItem(STORE, JSON.stringify(o)); } catch {} };
+function record(deckId, patch){
+  const s = load();
+  s[deckId] = Object.assign({}, s[deckId], patch, { last: Date.now() });
+  save(s);
+}
+
+/* ---------- theme ---------- */
+/* Dark by default — these get used at night. The toggle sticks once it's set. */
+let theme = localStorage.getItem('cvs-theme') || 'dark';
+document.documentElement.dataset.theme = theme;
+function toggleTheme(){
+  theme = theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem('cvs-theme', theme);
+  render();
+}
+
+/* ---------- helpers ---------- */
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const sample  = (a, n) => shuffle(a).slice(0, n);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const deckById = id => DECKS.find(d => d.id === id);
+
+let view = { screen:'home', deck:null, mode:null };
+let session = null;              // live state for the active mode
+let keyHandler = null;
+
+function go(screen, deck, mode){
+  view = { screen, deck, mode };
+  session = null;
+  window.scrollTo(0, 0);
+  render();
+}
+
+/* ═══════════════ HOME ═══════════════ */
+function screenHome(){
+  const q = (session && session.q || '').toLowerCase();
+  const progress = load();
+
+  let list = DECKS;
+  if (q) list = DECKS.filter(d =>
+    (d.title + ' ' + d.course).toLowerCase().includes(q) ||
+    d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
+
+  const courses = [...new Set(list.map(d => d.course))];
+  let html = `
+    <header class="top">
+      <div>
+        <h1>Cardiovascular Sonography</h1>
+        <div class="sub">${DECKS.length} decks · ${DECKS.reduce((n,d)=>n+d.cards.length,0)} terms · Term 1</div>
+      </div>
+      <div class="spacer"></div>
+      <button class="iconbtn" onclick="toggleTheme()">${theme==='dark'?'☀ Light':'☾ Dark'}</button>
+    </header>
+    <input class="search" id="search" placeholder="Search decks or terms…" value="${esc(session&&session.q||'')}">`;
+
+  if (!list.length) html += `<p style="color:var(--dim)">No decks match that search.</p>`;
+
+  courses.forEach(c => {
+    html += `<div class="coursehead">${esc(c)}</div><div class="decks">`;
+    list.filter(d => d.course === c).forEach(d => {
+      const p = progress[d.id] || {};
+      const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
+      html += `<button class="deck" onclick="go('deck','${d.id}')">
+        <h3>${esc(d.title)}</h3>
+        <div class="meta">${d.cards.length} terms${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
+        <div class="badges">
+          ${p.recallBest != null ? `<span class="badge ${p.recallBest>=80?'on':''}">Recall ${p.recallBest}%</span>` : ''}
+          ${p.quizBest != null ? `<span class="badge ${p.quizBest>=80?'on':''}">Quiz best ${p.quizBest}%</span>` : ''}
+          ${p.matchBest != null ? `<span class="badge on">Match ${p.matchBest}s</span>` : ''}
+          ${p.learned ? `<span class="badge on">${p.learned} learned</span>` : ''}
+          ${!p.last ? `<span class="badge">Not started</span>` : ''}
+        </div></button>`;
+    });
+    html += `</div>`;
+  });
+
+  app.innerHTML = html;
+  const box = document.getElementById('search');
+  box.oninput = e => { session = { q: e.target.value }; const pos = e.target.selectionStart; screenHome();
+    const b = document.getElementById('search'); b.focus(); b.setSelectionRange(pos, pos); };
+}
+
+/* ═══════════════ DECK MENU ═══════════════ */
+function screenDeck(){
+  const d = deckById(view.deck);
+  const modes = [
+    ['recall','Recall — Type It In','Read the definition, type the term, and get marked right or wrong on the spot.'],
+    ['learn','Flashcards','Flip through the terms and grade yourself. Missed cards come back around.'],
+    ['quiz','Multiple Choice','Written concept questions plus auto-generated term questions, with explanations.'],
+    ['match','Matching','Pair each term with its definition against the clock, six at a time.'],
+    ['browse','Review Sheet','The whole list in one table. Hide the definitions to self-test.']
+  ];
+  if (d.chest) modes.splice(4, 0, ['chest','Place the Leads','Click the correct spot on the chest for each V lead.']);
+
+  app.innerHTML = `
+    <button class="back" onclick="go('home')">← All decks</button>
+    <h2 class="title">${esc(d.title)}</h2>
+    <div class="srcline">${esc(d.course)} · ${d.cards.length} terms<br>from ${esc(d.source)}</div>
+    <div class="modes">
+      ${modes.map(([m,t,s]) => `<button class="mode" onclick="go('run','${d.id}','${m}')">
+        <strong>${t}</strong><span>${s}</span></button>`).join('')}
+    </div>`;
+}
+
+/* ═══════════════ FLASHCARDS ═══════════════ */
+function runLearn(d){
+  if (!session) session = { queue: shuffle(d.cards), done: 0, total: d.cards.length, flipped: false, mastered: new Set() };
+  const s = session;
+
+  if (!s.queue.length){
+    record(d.id, { learned: s.mastered.size });
+    return results(d, `${s.mastered.size}/${s.total}`, 'cards you got on the first try', [], 'learn');
+  }
+
+  const c = s.queue[0];
+  const missed = s.seenAgain ? s.seenAgain.size : 0;
+  app.innerHTML = `
+    ${sessionBar(d, s.total - s.queue.length, s.total,
+       `Flashcards · <span style="color:var(--good)">${s.mastered.size} got</span> · <span style="color:var(--bad)">${missed} to redo</span>`)}
+    <div class="fc" onclick="flip()">
+      <div class="side">${s.flipped ? 'Definition' : 'Term'}</div>
+      ${s.flipped
+        ? `<div class="def">${esc(c.def)}${c.note ? `<span class="note">${esc(c.note)}</span>` : ''}</div>`
+        : `<div class="term">${esc(c.term)}</div>`}
+      <div class="tap">${s.flipped ? 'How did you do?' : 'Click, tap, or press Space to flip'}</div>
+    </div>
+    ${s.flipped ? `<div class="grade">
+        <button class="again" onclick="grade(false)">Again <span style="color:var(--dim)">(1)</span></button>
+        <button class="ok" onclick="grade(true)">Got it <span style="color:var(--dim)">(2)</span></button>
+      </div>` : ''}`;
+
+  keyHandler = e => {
+    if (!s.flipped && (e.key === ' ' || e.key === 'Enter')){ e.preventDefault(); flip(); }
+    else if (s.flipped && (e.key === '1')) grade(false);
+    else if (s.flipped && (e.key === '2' || e.key === ' ' || e.key === 'Enter')){ e.preventDefault(); grade(true); }
+  };
+}
+function flip(){ session.flipped = true; render(); }
+function grade(ok){
+  const s = session, c = s.queue.shift();
+  if (ok){ if (!s.seenAgain || !s.seenAgain.has(c)) s.mastered.add(c); }
+  else { (s.seenAgain = s.seenAgain || new Set()).add(c);
+         s.queue.splice(Math.min(4, s.queue.length), 0, c); }
+  s.flipped = false;
+  render();
+}
+
+/* ═══════════════ RECALL (type the answer, judged instantly) ═══════════════ */
+
+/* Strip case, punctuation, slashes and any parenthetical aside, so that
+   "abdomin/o", "Abdomino" and "abdomin o" all compare equal. */
+const normalize = s => String(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
+
+/* A card's term may list several acceptable forms ("-ac, -al, -ar…"): any one counts. */
+const alternatives = card => card.term.split(/,| or /i).map(s => s.trim()).filter(Boolean);
+
+/* 'exact' | 'wrong'. Every letter must be right — there is deliberately no typo
+   tolerance. Medical terminology is full of pairs that differ by one or two
+   letters and mean opposite things (hyper/hypo, -ostomy/-otomy, inter/intra),
+   and spelling is graded, so a near-miss is a miss.
+   Case, spacing and the /-o notation are still ignored: "abdomin/o", "Abdomino"
+   and "abdomin o" are the same spelling, just written differently. */
+function judge(input, card){
+  const n = normalize(input);
+  if (!n) return 'wrong';
+  return alternatives(card).map(normalize).some(t => t && t === n) ? 'exact' : 'wrong';
+}
+
+function runRecall(d){
+  if (!session) session = { queue: shuffle(d.cards), total: d.cards.length, right: 0, wrong: 0,
+                            typed: '', verdict: null, missed: [], attempted: new Set() };
+  const s = session;
+
+  if (!s.queue.length){
+    record(d.id, { recallBest: Math.max((load()[d.id] || {}).recallBest || 0,
+                                        Math.round(s.right / s.total * 100)) });
+    return results(d, `${s.right}/${s.total}`,
+                   `correct on the first try · ${s.wrong} missed`, s.missed, 'recall');
+  }
+
+  const c = s.queue[0], v = s.verdict;
+  const tone = v === 'wrong' ? 'var(--bad)' : 'var(--good)';
+
+  app.innerHTML = `
+    ${sessionBar(d, s.total - s.queue.length, s.total,
+       `Recall · <span style="color:var(--good)">${s.right} correct</span> · <span style="color:var(--bad)">${s.wrong} missed</span>`)}
+    <div class="q" style="font-weight:400">${esc(c.def)}</div>
+    <input class="search" id="recall" autocomplete="off" autocapitalize="off" spellcheck="false"
+      placeholder="Type the term…" value="${esc(s.typed)}" ${v ? 'disabled' : ''}
+      style="${v ? `border-color:${tone}` : ''}">
+    ${v ? `
+      <div class="why" style="border-left-color:${tone}">
+        <b style="color:${tone}">${v === 'exact' ? '✓ Correct' : '✗ Not quite'}</b><br>
+        ${v === 'wrong' && s.typed.trim()
+          ? `You typed: <b style="color:var(--bad)">${esc(s.typed.trim())}</b><br>` : ''}
+        Answer: <b style="color:var(--text)">${esc(c.term)}</b>
+        ${c.note ? `<span class="note">${esc(c.note)}</span>` : ''}
+      </div>
+      <button class="next" onclick="nextRecall()">
+        ${s.queue.length > 1 ? 'Next card →' : 'See results →'}</button>`
+    : `<div class="row" style="margin-top:12px">
+        <button onclick="checkRecall()" style="border-color:var(--accent);color:var(--accent)">Check answer</button>
+        <button onclick="revealRecall()">Show me</button>
+      </div>`}`;
+
+  const box = document.getElementById('recall');
+  if (!v){
+    box.focus();
+    box.oninput = e => { s.typed = e.target.value; };
+    box.onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); checkRecall(); } };
+  }
+  keyHandler = e => { if (v && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextRecall(); } };
+}
+/* Only the FIRST attempt at a card moves the tally — a card you missed and then
+   got right on its second pass shouldn't quietly inflate the score. */
+function score(card, wrong){
+  const s = session;
+  if (s.attempted.has(card)) return;
+  s.attempted.add(card);
+  if (wrong){ s.wrong++; s.missed.push({ q: esc(card.def), a: card.term }); }
+  else s.right++;
+}
+function checkRecall(){
+  const s = session, c = s.queue[0];
+  if (s.verdict || !s.typed.trim()) return;
+  s.verdict = judge(s.typed, c);
+  score(c, s.verdict === 'wrong');
+  render();
+}
+function revealRecall(){
+  const s = session, c = s.queue[0];
+  if (s.verdict) return;
+  s.verdict = 'wrong';
+  score(c, true);
+  render();
+}
+function nextRecall(){
+  const s = session, c = s.queue.shift();
+  if (s.verdict === 'wrong') s.queue.splice(Math.min(5, s.queue.length), 0, c);
+  s.typed = ''; s.verdict = null;
+  render();
+}
+
+/* ═══════════════ MULTIPLE CHOICE ═══════════════ */
+/* Two definitions "conflict" if one could pass for the other — identical, or one
+   contained in the other ("lung" inside "air or lung"). A conflicting card must
+   never become a distractor, or the question has two defensible answers. */
+function conflicts(a, b){
+  a = a.toLowerCase().trim(); b = b.toLowerCase().trim();
+  return a === b || a.includes(b) || b.includes(a);
+}
+function autoQuestions(d){
+  const out = [];
+  d.cards.forEach(card => {
+    const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def));
+    if (pool.length < 3) return;
+
+    let ch = shuffle([card.def, ...sample(pool, 3).map(c => c.def)]);
+    out.push({ q:`What does <b>${esc(card.term)}</b> mean?`, choices: ch,
+               answer: ch.indexOf(card.def), why: card.note });
+
+    /* Reverse direction only when no other card shares this meaning, otherwise
+       "which term means X" would have more than one right answer. */
+    if (pool.length === d.cards.length - 1){
+      ch = shuffle([card.term, ...sample(pool, 3).map(c => c.term)]);
+      out.push({ q:`Which term means: <em>${esc(card.def)}</em>`, choices: ch,
+                 answer: ch.indexOf(card.term), why: card.note });
+    }
+  });
+  return out;
+}
+function runQuiz(d){
+  if (!session){
+    const written = (d.questions || []).map(q => Object.assign({}, q, { written: true }));
+    const auto = autoQuestions(d);
+    const n = Math.min(20, written.length + auto.length);
+    const picked = shuffle(written).slice(0, n)
+      .concat(sample(auto, Math.max(0, n - written.length)));
+    session = { qs: shuffle(picked).slice(0, n), i: 0, score: 0, picked: null, missed: [] };
+  }
+  const s = session;
+
+  if (s.i >= s.qs.length){
+    const pct = Math.round(s.score / s.qs.length * 100);
+    const prev = load()[d.id] || {};
+    record(d.id, { quizBest: Math.max(prev.quizBest || 0, pct) });
+    return results(d, pct + '%', `${s.score} of ${s.qs.length} correct`, s.missed, 'quiz');
+  }
+
+  const q = s.qs[s.i], done = s.picked !== null;
+  app.innerHTML = `
+    ${sessionBar(d, s.i, s.qs.length, `Quiz · ${s.score} correct`)}
+    <div class="q">${q.q}</div>
+    <div class="choices">
+      ${q.choices.map((c, i) => {
+        let cls = '';
+        if (done && i === q.answer) cls = 'correct';
+        else if (done && i === s.picked) cls = 'wrong';
+        return `<button class="choice ${cls}" ${done ? 'disabled' : ''} onclick="answer(${i})">
+          <span class="k">${done && i === q.answer ? '✓' : done && i === s.picked ? '✕' : 'ABCD'[i]}</span>
+          <span>${esc(c)}</span></button>`;
+      }).join('')}
+    </div>
+    ${done && q.why ? `<div class="why"><b>Why:</b> ${esc(q.why)}</div>` : ''}
+    ${done ? `<button class="next" onclick="nextQ()">${s.i + 1 < s.qs.length ? 'Next question →' : 'See results →'}</button>` : ''}`;
+
+  keyHandler = e => {
+    if (!done && '1234'.includes(e.key)) answer(+e.key - 1);
+    else if (!done && 'abcd'.includes(e.key.toLowerCase())) answer('abcd'.indexOf(e.key.toLowerCase()));
+    else if (done && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextQ(); }
+  };
+}
+function answer(i){
+  const s = session, q = s.qs[s.i];
+  if (s.picked !== null || i >= q.choices.length) return;
+  s.picked = i;
+  if (i === q.answer) s.score++;
+  else s.missed.push({ q: q.q, a: q.choices[q.answer] });
+  render();
+}
+function nextQ(){ session.i++; session.picked = null; render(); }
+
+/* ═══════════════ MATCHING ═══════════════ */
+function runMatch(d){
+  if (!session){
+    session = { pool: shuffle(d.cards), round: [], left: [], right: [], sel: null,
+                matched: 0, total: d.cards.length, start: Date.now(), wrong: 0 };
+    dealMatch();
+  }
+  const s = session;
+
+  if (!s.round.length && !s.pool.length){
+    const secs = Math.round((Date.now() - s.start) / 1000);
+    const prev = load()[d.id] || {};
+    record(d.id, { matchBest: prev.matchBest ? Math.min(prev.matchBest, secs) : secs });
+    return results(d, secs + 's', `all ${s.total} pairs matched · ${s.wrong} misses`, [], 'match');
+  }
+
+  app.innerHTML = `
+    ${sessionBar(d, s.matched, s.total, `Matching · ${s.wrong} misses`)}
+    <div class="matchgrid">
+      <div class="mcol">${s.left.map((c, i) => btnMatch(c, i, 'L')).join('')}</div>
+      <div class="mcol">${s.right.map((c, i) => btnMatch(c, i, 'R')).join('')}</div>
+    </div>`;
+  keyHandler = null;
+}
+function btnMatch(c, i, side){
+  const s = session, key = side + i;
+  const cls = c.done ? 'done' : (s.sel === key ? 'sel' : '') + (s.badKey === key ? ' bad' : '');
+  return `<button class="mitem ${cls}" ${c.done ? 'disabled' : ''} onclick="pick('${side}',${i})">
+    ${esc(side === 'L' ? c.term : c.def)}</button>`;
+}
+function dealMatch(){
+  const s = session;
+  s.round = s.pool.splice(0, 6);
+  s.left  = s.round.map(c => ({ term: c.term, def: c.def, id: c.term }));
+  s.right = shuffle(s.left);
+  s.sel = null;
+}
+function pick(side, i){
+  const s = session, item = (side === 'L' ? s.left : s.right)[i], key = side + i;
+  if (item.done) return;
+  if (!s.sel){ s.sel = key; s.selItem = item; return render(); }
+  if (s.sel === key){ s.sel = null; s.selItem = null; return render(); }
+  if (s.sel[0] === side){ s.sel = key; s.selItem = item; return render(); }
+
+  if (s.selItem.id === item.id){
+    s.left.forEach(x => { if (x.id === item.id) x.done = true; });
+    s.right.forEach(x => { if (x.id === item.id) x.done = true; });
+    s.matched++;
+    s.sel = null; s.selItem = null;
+    if (s.left.every(x => x.done)){ if (s.pool.length) dealMatch(); else s.round = []; }
+    render();
+  } else {
+    s.wrong++; s.badKey = key; render();
+    setTimeout(() => { session.badKey = null; session.sel = null; session.selItem = null; render(); }, 320);
+  }
+}
+
+/* ═══════════════ PLACE THE LEADS ═══════════════ */
+/* Anterior torso, patient facing the viewer: the patient's LEFT is on our RIGHT.
+   viewBox units are halves of a percent, so SVG x=128 == left:64% for a dot.   */
+const TORSO = `<svg viewBox="0 0 200 200" aria-hidden="true">
+  <g fill="var(--card)" stroke="var(--line)" stroke-width="1.7" stroke-linejoin="round">
+    <path d="M88 10 v16 h24 V10"/>
+    <path d="M112 25 C140 29 162 40 168 58 C172 74 168 90 166 104
+             C164 126 156 142 152 160 L148 191 L52 191 L48 160
+             C44 142 36 126 34 104 C32 90 28 74 32 58 C38 40 60 29 88 25 Z"/>
+  </g>
+  <g fill="none" stroke="var(--line)" stroke-linecap="round">
+    <path d="M96 41 C84 35 68 37 57 47" stroke-width="1.9"/>
+    <path d="M104 41 C116 35 132 37 143 47" stroke-width="1.9"/>
+    <path d="M100 43 v68" stroke-width="2.8" opacity=".9"/>
+    <g stroke-width="1" opacity=".45">
+      <path d="M100 60 C80 60 62 67 52 78"/><path d="M100 60 C120 60 138 67 148 78"/>
+      <path d="M100 74 C78 74 58 82 47 94"/><path d="M100 74 C122 74 142 82 153 94"/>
+      <path d="M100 88 C76 88 55 97 44 110"/><path d="M100 88 C124 88 145 97 156 110"/>
+      <path d="M100 102 C76 102 55 112 44 126"/><path d="M100 102 C124 102 145 112 156 126"/>
+    </g>
+  </g>
+  <g stroke="var(--accent)" stroke-width=".9" stroke-dasharray="3 4" opacity=".5" fill="none">
+    <path d="M128 46 v106"/><path d="M146 52 v100"/><path d="M160 60 v92"/>
+  </g>
+</svg>`;
+
+function runChest(d){
+  const leads = d.chestLeads;
+  if (!session) session = { order: shuffle(leads.map(l => l.id)), i: 0, score: 0, picked: null, missed: [] };
+  const s = session;
+
+  if (s.i >= s.order.length){
+    const pct = Math.round(s.score / s.order.length * 100);
+    const prev = load()[d.id] || {};
+    record(d.id, { chestBest: Math.max(prev.chestBest || 0, pct) });
+    return results(d, `${s.score}/${s.order.length}`, 'electrodes placed correctly', s.missed, 'chest');
+  }
+
+  const target = s.order[s.i], done = s.picked !== null;
+  const targetLead = leads.find(l => l.id === target);
+
+  app.innerHTML = `
+    ${sessionBar(d, s.i, s.order.length, `Placement · ${s.score} correct`)}
+    <div class="q">Where does <b>${target}</b> go?</div>
+    <div class="torso">
+      ${TORSO}
+      ${leads.map(l => {
+        let cls = '';
+        if (done && l.id === target) cls = 'correct';
+        else if (done && l.id === s.picked) cls = 'wrong';
+        else if (done) cls = 'muted';
+        return `<button class="dot ${cls}" style="left:${l.x}%;top:${l.y}%"
+          ${done ? 'disabled' : ''} onclick="pickLead('${l.id}')">${done ? l.id : ''}</button>`;
+      }).join('')}
+    </div>
+    ${done ? `<div class="why"><b>${target}:</b> ${esc(targetLead.landmark)}</div>
+      <button class="next" onclick="nextLead()">${s.i + 1 < s.order.length ? 'Next lead →' : 'See results →'}</button>` : ''}
+    <p style="color:var(--dim);font-size:12.5px;text-align:center;margin-top:16px">
+      Patient is facing you — their right side is on your left. Dashed lines are the
+      midclavicular, anterior axillary and midaxillary lines.</p>`;
+  keyHandler = e => { if (done && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextLead(); } };
+}
+function pickLead(id){
+  const s = session;
+  if (s.picked !== null) return;
+  s.picked = id;
+  const target = s.order[s.i];
+  if (id === target) s.score++;
+  else {
+    const l = deckById(view.deck).chestLeads.find(x => x.id === target);
+    s.missed.push({ q: `Where does ${target} go?`, a: l.landmark });
+  }
+  render();
+}
+function nextLead(){ session.i++; session.picked = null; render(); }
+
+/* ═══════════════ BROWSE ═══════════════ */
+function runBrowse(d){
+  if (!session) session = { hide: false, filter: '' };
+  const s = session;
+  const f = s.filter.toLowerCase();
+  const rows = d.cards.filter(c => !f || (c.term + ' ' + c.def).toLowerCase().includes(f));
+
+  app.innerHTML = `
+    <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <div class="bar">
+      <button class="iconbtn" onclick="session.hide=!session.hide;render()">
+        ${s.hide ? '👁 Show definitions' : '🙈 Hide definitions'}</button>
+      <span>${rows.length} of ${d.cards.length}</span>
+    </div>
+    <input class="search" id="bfilter" placeholder="Filter…" value="${esc(s.filter)}">
+    <table class="browse"><tbody>
+      ${rows.map((c, i) => `<tr>
+        <td class="t">${esc(c.term)}</td>
+        <td class="${s.hide ? 'hidden-def' : ''}" onclick="this.classList.remove('hidden-def')">
+          ${esc(c.def)}${c.note && !s.hide ? `<span class="note">${esc(c.note)}</span>` : ''}</td></tr>`).join('')}
+    </tbody></table>
+    ${!rows.length ? '<p style="color:var(--dim)">Nothing matches that filter.</p>' : ''}`;
+
+  const bf = document.getElementById('bfilter');
+  bf.oninput = e => { const p = e.target.selectionStart; s.filter = e.target.value; runBrowse(d);
+    const n = document.getElementById('bfilter'); n.focus(); n.setSelectionRange(p, p); };
+  keyHandler = null;
+}
+
+/* ═══════════════ SHARED PIECES ═══════════════ */
+function sessionBar(d, done, total, label){
+  return `<button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <div class="bar"><span>${label}</span>
+      <div class="prog"><i style="width:${total ? Math.max(0, Math.min(100, done / total * 100)) : 0}%"></i></div>
+      <span>${Math.max(0, done)}/${total}</span></div>`;
+}
+function results(d, big, lbl, missed, mode){
+  app.innerHTML = `
+    <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <div class="score">
+      <div class="big">${esc(big)}</div>
+      <div class="lbl">${esc(lbl)}</div>
+      <div class="row">
+        <button onclick="go('run','${d.id}','${mode}')">Run it again</button>
+        <button onclick="go('deck','${d.id}')">Other modes</button>
+        <button onclick="go('home')">All decks</button>
+      </div>
+      ${missed.length ? `<div class="missed"><h4>Worth another look</h4>
+        ${missed.map(m => `<div>${m.q}<br><b>${esc(m.a)}</b></div>`).join('')}</div>` : ''}
+    </div>`;
+  keyHandler = null;
+}
+
+/* ═══════════════ ROUTER ═══════════════ */
+function render(){
+  keyHandler = null;
+  if (view.screen === 'home') return screenHome();
+  const d = deckById(view.deck);
+  if (!d) return go('home');
+  if (view.screen === 'deck') return screenDeck();
+  ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch,
+     chest: runChest, browse: runBrowse }[view.mode] || screenDeck)(d);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }
+  if (e.target.tagName === 'INPUT') return;   /* typing shouldn't fire shortcuts */
+  if (keyHandler) keyHandler(e);
+});
+render();
+</script>
+</body>
+</html>
