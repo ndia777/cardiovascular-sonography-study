@@ -138,8 +138,9 @@
   .placed li{display:flex;gap:11px;align-items:flex-start;padding:10px 13px;border:1px solid var(--line);
     border-radius:9px;background:var(--card);margin-bottom:6px;font-size:14px;line-height:1.45}
   .placed li b{color:var(--good);flex:0 0 20px;font-variant-numeric:tabular-nums}
-  .placed .detail{color:var(--dim)}
-  .placed .detail::before{content:""}
+  .placed .detail{display:block;margin-top:7px;padding-top:7px;font-size:12.8px;line-height:1.5;
+    color:var(--dim);border-top:1px solid var(--line)}
+  .placed .detail::before{content:"Why: ";color:var(--accent);font-weight:600}
   .steps{display:flex;flex-direction:column;gap:8px}
   .step{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;
     text-align:left;font-size:14.5px;line-height:1.45;transition:.12s;width:100%}
@@ -1860,7 +1861,7 @@ const stageSteps = (d, i) => d.steps.slice(i * STAGE, (i + 1) * STAGE);
 
 function runOrder(d){
   if (!session) session = { stage: 0, remaining: shuffle(stageSteps(d, 0)), placed: [],
-                            done: 0, misses: 0, start: Date.now(), detail: null, bad: null };
+                            done: 0, misses: 0, start: Date.now(), bad: null };
   const s = session;
 
   if (s.done >= d.steps.length){
@@ -1878,10 +1879,14 @@ function runOrder(d){
        `Put in Order · <span style="color:${s.misses ? 'var(--bad)' : 'var(--dim)'}">${s.misses} misses</span>`)}
     <div class="stagehead">Stage ${s.stage + 1} of ${stageCount(d)}
       <span>steps ${first}–${last}</span></div>
-    ${s.placed.length ? `<ol class="placed">${s.placed.map((st, i) =>
-       `<li><b>${first + i}</b><span>${esc(st.text)}</span></li>`).join('')}</ol>` : ''}
+    ${s.placed.length ? `<ol class="placed">${s.placed.map((st, i) => {
+       /* The rationale belongs to the step just placed, so it hangs off that
+          list item. Floating it above the pool made it look clickable. */
+       const showWhy = i === s.placed.length - 1 && st.detail;
+       return `<li><b>${first + i}</b><span>${esc(st.text)}${
+         showWhy ? `<span class="detail">${esc(st.detail)}</span>` : ''}</span></li>`;
+     }).join('')}</ol>` : ''}
     <div class="q">What is step <b>${s.done + 1}</b>?</div>
-    ${s.detail ? `<div class="why">${esc(s.detail)}</div>` : ''}
     <div class="steps">
       ${s.remaining.map((st, i) =>
         `<button class="step ${s.bad === i ? 'bad' : ''}" onclick="placeStep(${i})">${esc(st.text)}</button>`
@@ -1904,7 +1909,6 @@ function placeStep(i){
   s.remaining.splice(i, 1);
   s.placed.push(step);
   s.done++;
-  s.detail = step.detail || null;
 
   if (!s.remaining.length && s.done < d.steps.length){   /* on to the next stage */
     s.stage++;
