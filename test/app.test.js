@@ -230,7 +230,12 @@ function suite(s, label) {
      "term" is really a question stub ("Where protein synthesis happens") is
      unanswerable there. Those must be marked `fact: true`, which keeps them in
      flashcards and matching but takes them out of Recall. */
-  const STUB = /^(where|how|what|which|why|when)\b|^(size|parts|forms|uses|steps|inputs|products|order|reasons|types|purpose|number) of\b|\?$/i;
+  /* Two shapes give a topic heading away. A question word or a trailing "?" is
+     unambiguous. The "<heading> of <thing>" form needs a curated first-word
+     list, not a general "X of Y" rule — "Conservation of energy" and "Citric
+     acid cycle" are real names, so a blanket rule would force bad renames.
+     This list grew from a manual audit; topic-vs-term stays a judgment call. */
+  const STUB = /^(where|how|what|which|why|when)\b|\?$|^(size|parts|forms|uses|steps|inputs|products|order|reasons|types|kinds|causes|effects|purpose|number|control|structure|role|function|nature|storage) of\b/i;
   let stubbed = '';
   for (const d of DECKS) for (const c of recallableCards(d)) {
     if (STUB.test(c.term) && !stubbed) stubbed = `${d.id} / "${c.term}" — mark it fact: true`;
