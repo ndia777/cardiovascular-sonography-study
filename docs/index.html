@@ -1531,7 +1531,12 @@ function screenHome(){
     (d.title + ' ' + d.course).toLowerCase().includes(q) ||
     d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
 
-  const courses = [...new Set(list.map(d => d.course))];
+  /* Sections run alphabetically by SUBJECT, not by course code — "BIO101 ·
+     Anatomy & Physiology" files under A. Decks keep their order within a
+     section, which is chapter order. */
+  const subject = c => (c.split('·')[1] || c).trim();
+  const courses = [...new Set(list.map(d => d.course))]
+    .sort((a, b) => subject(a).localeCompare(subject(b)));
   let html = `
     <header class="top">
       <div>

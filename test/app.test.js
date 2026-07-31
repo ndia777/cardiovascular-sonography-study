@@ -37,6 +37,8 @@ function boot(decksSrc, engineSrc, label) {
     querySelector: () => el(), querySelectorAll: () => [],
   });
   const store = new Map();
+  /* one stable #app element, so assertions can read back what was rendered */
+  const app = el();
   const s = {
     console, Math, Date, JSON, Set, Map, Array, Object, String, Number, RegExp,
     parseInt, parseFloat, setTimeout: () => {}, clearTimeout: () => {},
@@ -48,10 +50,12 @@ function boot(decksSrc, engineSrc, label) {
       removeItem: k => store.delete(k),
     },
     document: {
-      getElementById: el, querySelector: el, querySelectorAll: () => [],
+      getElementById: id => (id === 'app' ? app : el()),
+      querySelector: el, querySelectorAll: () => [],
       addEventListener() {}, documentElement: { dataset: {} }, body: el(),
     },
   };
+  s.__app = app;
   s.window = s;
   vm.createContext(s);
   vm.runInContext(decksSrc, s, { filename: `${label}:decks` });
@@ -90,6 +94,18 @@ function suite(s, label) {
 
   check(`[${label}] decks load`, DECKS && DECKS.length > 0, `got ${DECKS && DECKS.length}`);
   if (!DECKS || !DECKS.length) return;
+
+  /* Course sections must RENDER alphabetically by subject name. Read the order
+     out of the markup the app actually produced — comparing a sorted list to
+     itself would pass no matter what the app did. */
+  go('home');
+  const rendered = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
+    .map(m => m[1].trim())
+    .map(c => (c.split('·')[1] || c).trim());
+  const expected = [...rendered].sort((a, b) => a.localeCompare(b));
+  check(`[${label}] course sections render alphabetically by subject`,
+        rendered.length > 1 && JSON.stringify(rendered) === JSON.stringify(expected),
+        `rendered: ${rendered.join(' | ')}`);
 
   /* every deck/mode renders without throwing */
   for (const d of DECKS) {
