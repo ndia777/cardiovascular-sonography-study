@@ -107,6 +107,22 @@ function suite(s, label) {
         rendered.length > 1 && JSON.stringify(rendered) === JSON.stringify(expected),
         `rendered: ${rendered.join(' | ')}`);
 
+  /* A trailing "Example: …" gets its own line in Recall. Check the rendered
+     markup, and confirm the definition text still arrives escaped. */
+  const egCard = DECKS.flatMap(d => recallableCards(d).map(c => [d, c]))
+    .find(([, c]) => /Example:/.test(c.def));
+  if (egCard) {
+    go('run', egCard[0].id, 'recall');
+    /* force the example card to the front of the queue, then re-render */
+    vm.runInContext('session.queue.unshift(DECKS.find(d=>d.id===' + JSON.stringify(egCard[0].id) +
+      ').cards.find(c=>c.term===' + JSON.stringify(egCard[1].term) + ')); render();', s);
+    const html = s.__app.innerHTML;
+    check(`[${label}] "Example:" starts a new line in Recall`,
+          /<br><span class="eg">Example:<\/span>/.test(html),
+          'no line break before Example in the rendered prompt');
+    check(`[${label}] definitions are still escaped`, !/<script/i.test(html), 'unescaped markup');
+  }
+
   /* every deck/mode renders without throwing */
   for (const d of DECKS) {
     for (const m of modesFor(d)) {
