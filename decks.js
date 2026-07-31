@@ -511,281 +511,179 @@ window.DECKS = [
 /* ─────────────────────────  BIO101 · ANATOMY & PHYSIOLOGY 1  ─────────────── */
 
 {
-  id: 'bio-cell',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 3 — The Composite Cell & Organelles',
-  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
+  id: "bio-ch3",
+  course: "BIO101 · Anatomy & Physiology 1 Lecture",
+  title: "Ch. 3 — Study Guide",
+  source: "Assets/Chap 3 Study Guide Powerpoint.pptx + Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md",
   cards: [
-    { term: 'Nucleus',        def: 'the innermost control center, enclosed by a double-layered nuclear envelope' },
-    { term: 'Nuclear envelope', def: 'the thin double membrane (inner + outer lipid bilayer) enclosing the nucleus' },
-    { term: 'Nucleolus',      def: 'small dense body of RNA and protein with NO membrane — the site of ribosome production' },
-    { term: 'Chromatin',      def: 'extremely long DNA molecules complexed with proteins, wound like thread around spools' },
-    { term: 'Cytoplasm',      def: 'the cell contents holding the organelles, suspended in a liquid called cytosol' },
-    { term: 'Cytosol',        def: 'the liquid in which the cytoplasmic organelles are suspended' },
-    { term: 'Cell membrane',  def: 'the thin, flexible, elastic outermost limit of the cell separating the two major fluid compartments' },
-    { term: 'Phospholipid bilayer', def: 'the double layer of phospholipid molecules forming the basic framework of the cell membrane' },
-    { term: 'Ribosomes',      def: 'tiny spherical structures of protein and RNA that SYNTHESIZE proteins' },
-    { term: 'Rough ER',       def: 'endoplasmic reticulum studded with ribosomes — makes PROTEINS' },
-    { term: 'Smooth ER',      def: 'endoplasmic reticulum with no ribosomes — makes FATS (lipids)' },
-    { term: 'Vesicles',       def: 'membranous sacs that store or transport substances within a cell or between cells' },
-    { term: 'Golgi apparatus',def: 'a stack of 5–8 flattened sacs (cisternae) that refines, packages and transports proteins' },
-    { term: 'Mitochondria',   def: 'the "powerhouse" — produces ATP by cellular respiration' },
-    { term: 'ATP',            def: 'adenosine triphosphate — the cell’s energy currency, supplied by mitochondria' },
-    { term: 'Lysosomes',      def: 'the "garbage disposals" — enzymes inside dismantle cellular debris' },
-    { term: 'Autophagy',      def: 'literally "eating self" — the process by which lysosomes break down the cell’s own debris' },
-    { term: 'Cilia & flagella', def: 'motile extensions of the cell membrane; both are built from nine groups of three microtubules' },
-    { term: 'Cilia (what they do)', def: 'beat in a coordinated wave to drive mucus along the respiratory tract and move an egg toward the uterus' },
-    { term: 'Flagellum (what it does)', def: 'whips to move the WHOLE cell; the sperm tail is the only one in the human body, and a cell has just one' },
-    { term: 'Cytoskeleton', def: 'the internal scaffolding of protein rods and tubules that supports the cell' },
-    { term: 'Microfilaments, microtubules & intermediate filaments', def: 'the thread-like structures that together build the cytoskeleton' },
-    { term: 'Centrioles', def: 'build the spindle fibres during cell division, which drag the chromosomes into the daughter cells' },
-    { term: 'Selectively permeable', def: 'the membrane property that lets the cell choose what gets in and out' },
-    { term: 'What the bilayer admits', def: 'lipid-soluble substances cross freely; water-soluble ones cannot and need a channel or carrier' },
-    { term: 'Cell size', def: 'measured in micrometers' },
-    { term: 'Faulty ion channels', def: 'channel mutations can disturb heart rhythm, impair hearing, or cause cystic fibrosis',
-      note: 'The lecture slide names the specific ions in an image that did not extract as text — worth checking your slides for which channel goes with which condition.' },
-    { term: 'Cystic fibrosis', def: 'caused by abnormal chloride channels — thick mucus, breathing difficulty, a clogged pancreas and salty sweat' },
-    { term: 'Differentiated', def: 'the term for cells that have taken on specialized characteristics' },
-    { term: 'Receptors (membrane protein)', def: 'respond to extracellular signals' },
-    { term: 'Pores, channels & carriers',   def: 'transport small molecules and ions; transduce signals' },
-    { term: 'Enzymes (membrane protein)',   def: 'catalyze chemical reactions' },
-    { term: 'Cell surface proteins',        def: 'establish "self" — cellular identity' },
-    { term: 'Cellular adhesion molecules',  def: 'enable cells to stick to each other' }
+    {"term":"Nucleus","def":"the innermost control center, enclosed by a double-layered nuclear envelope"},
+    {"term":"Nuclear envelope","def":"the thin double membrane (inner + outer lipid bilayer) enclosing the nucleus"},
+    {"term":"Nucleolus","def":"small dense body of RNA and protein with NO membrane — the site of ribosome production"},
+    {"term":"Chromatin","def":"extremely long DNA molecules complexed with proteins, wound like thread around spools"},
+    {"term":"Cytoplasm","def":"the cell contents holding the organelles, suspended in a liquid called cytosol"},
+    {"term":"Cytosol","def":"the liquid in which the cytoplasmic organelles are suspended"},
+    {"term":"Cell membrane","def":"the thin, flexible, elastic outermost limit of the cell separating the two major fluid compartments"},
+    {"term":"Phospholipid bilayer","def":"the double layer of phospholipid molecules forming the basic framework of the cell membrane"},
+    {"term":"Ribosomes","def":"tiny spherical structures of protein and RNA that SYNTHESIZE proteins"},
+    {"term":"Rough ER","def":"endoplasmic reticulum studded with ribosomes — makes PROTEINS"},
+    {"term":"Smooth ER","def":"endoplasmic reticulum with no ribosomes — makes FATS (lipids)"},
+    {"term":"Vesicles","def":"membranous sacs that store or transport substances within a cell or between cells"},
+    {"term":"Golgi apparatus","def":"a stack of 5–8 flattened sacs (cisternae) that refines, packages and transports proteins"},
+    {"term":"Mitochondria","def":"the \"powerhouse\" — produces ATP by cellular respiration"},
+    {"term":"ATP","def":"adenosine triphosphate — the cell’s energy currency, supplied by mitochondria"},
+    {"term":"Lysosomes","def":"the \"garbage disposals\" — enzymes inside dismantle cellular debris"},
+    {"term":"Autophagy","def":"literally \"eating self\" — the process by which lysosomes break down the cell’s own debris"},
+    {"term":"Cilia & flagella","def":"motile extensions of the cell membrane; both are built from nine groups of three microtubules"},
+    {"term":"Cilia (what they do)","def":"beat in a coordinated wave to drive mucus along the respiratory tract and move an egg toward the uterus"},
+    {"term":"Flagellum (what it does)","def":"whips to move the WHOLE cell; the sperm tail is the only one in the human body, and a cell has just one"},
+    {"term":"Cytoskeleton","def":"the internal scaffolding of protein rods and tubules that supports the cell"},
+    {"term":"Microfilaments, microtubules & intermediate filaments","def":"the thread-like structures that together build the cytoskeleton"},
+    {"term":"Centrioles","def":"build the spindle fibres during cell division, which drag the chromosomes into the daughter cells"},
+    {"term":"Selectively permeable","def":"the membrane property that lets the cell choose what gets in and out"},
+    {"term":"What the bilayer admits","def":"lipid-soluble substances cross freely; water-soluble ones cannot and need a channel or carrier"},
+    {"term":"Cell size","def":"measured in micrometers"},
+    {"term":"Faulty ion channels","def":"channel mutations can disturb heart rhythm, impair hearing, or cause cystic fibrosis","note":"The lecture slide names the specific ions in an image that did not extract as text — worth checking your slides for which channel goes with which condition."},
+    {"term":"Cystic fibrosis","def":"caused by abnormal chloride channels — thick mucus, breathing difficulty, a clogged pancreas and salty sweat"},
+    {"term":"Differentiated","def":"the term for cells that have taken on specialized characteristics"},
+    {"term":"Receptors (membrane protein)","def":"respond to extracellular signals"},
+    {"term":"Pores, channels & carriers","def":"transport small molecules and ions; transduce signals"},
+    {"term":"Enzymes (membrane protein)","def":"catalyze chemical reactions"},
+    {"term":"Cell surface proteins","def":"establish \"self\" — cellular identity"},
+    {"term":"Cellular adhesion molecules","def":"enable cells to stick to each other"},
+    {"term":"Diffusion","def":"PASSIVE — molecules move through the bilayer from higher to lower concentration. Energy: molecular motion. Example: O₂/CO₂ exchange in the lungs"},
+    {"term":"Facilitated diffusion","def":"PASSIVE — \"helped diffusion\"; ions use channels or carrier proteins to move high → low. Example: glucose entering a cell"},
+    {"term":"Osmosis","def":"PASSIVE — water moves through aquaporins/the bilayer toward the solution with more impermeant solute. Example: distilled water entering a cell"},
+    {"term":"Filtration","def":"PASSIVE — smaller molecules forced through porous membranes from high to low PRESSURE. Energy: hydrostatic pressure. Example: molecules leaving blood capillaries"},
+    {"term":"Active transport","def":"ACTIVE (ATP) — carrier molecules move substances from LOWER to HIGHER concentration, against the gradient"},
+    {"term":"Endocytosis","def":"ACTIVE (ATP) — particles too large to diffuse are brought in by a vesicle that forms from the cell membrane"},
+    {"term":"Pinocytosis","def":"ACTIVE (ATP) — \"cell drinking\"; the membrane engulfs droplets of liquid with dissolved solutes"},
+    {"term":"Phagocytosis","def":"ACTIVE (ATP) — \"cell eating\"; the membrane engulfs SOLID particles. Example: a white blood cell engulfing bacteria"},
+    {"term":"Receptor-mediated endocytosis","def":"ACTIVE (ATP) — the membrane engulfs selected molecules bound to receptor proteins. Example: removing LDL cholesterol particles"},
+    {"term":"Exocytosis","def":"ACTIVE (ATP) — the opposite of endocytosis; vesicles fuse with the membrane and release contents outside. Example: neurotransmitter release"},
+    {"term":"Transcytosis","def":"ACTIVE (ATP) — endocytosis in, through the cytoplasm, then exocytosis out the other side. Example: HIV crossing a cell layer"},
+    {"term":"Isotonic solution","def":"the SAME solute concentration as the cell — equal salt inside and out, so the cell keeps its shape"},
+    {"term":"Hypertonic solution","def":"a HIGHER solute concentration than body fluids — more salt outside, so water leaves and the cell SHRINKS (crenation)"},
+    {"term":"Hypotonic solution","def":"a LOWER solute concentration than body fluids — less salt outside, so water enters and the cell SWELLS or bursts"},
+    {"term":"Crenation","def":"the shrivelling of a cell after water leaves it in a hypertonic solution"},
+    {"term":"Hemolysis","def":"the bursting of a red blood cell that has taken on too much water in a hypotonic solution"},
+    {"term":"Physiological steady state","def":"concentrations of diffusing substances are unequal but STABLE — what organisms reach instead of true equilibrium"},
+    {"term":"Interphase","def":"the cell grows and its genetic material replicates (before mitosis begins)"},
+    {"term":"Prophase","def":"chromatin condenses into visible chromosomes; the nuclear envelope and nucleolus disperse; the spindle apparatus forms"},
+    {"term":"Metaphase","def":"chromosomes align along the MIDLINE of the cell"},
+    {"term":"Anaphase","def":"centromeres separate and sister chromatids are pulled apart — each is now an individual chromosome"},
+    {"term":"Telophase","def":"nuclear envelopes reassemble, chromosomes decondense, the spindle disappears"},
+    {"term":"Cytokinesis","def":"division of the cytoplasm into two separate cells"},
+    {"term":"Stem cells","def":"cells that keep dividing repeatedly WITHOUT specializing, allowing continual growth and renewal"},
+    {"term":"Stem cell division","def":"a stem cell divides mitotically to yield two daughter cells identical to itself, which go on dividing"},
+    {"term":"Self-renewal","def":"a stem cell dividing to make two new stem cells, keeping the supply topped up"},
+    {"term":"Progenitor cell","def":"a partly specialized daughter of a stem cell, able to become only a RESTRICTED set of cell types"},
+    {"term":"Differentiation","def":"the process guiding cell specialization, by activating and suppressing the functions of many genes"},
+    {"term":"Cytokinesis vs mitosis","def":"mitosis divides the NUCLEUS; cytokinesis divides the CYTOPLASM into two cells"},
+    {"term":"Apoptosis","def":"PROGRAMMED cell death — the planned option for a cell that does not divide or differentiate"},
+    {"term":"Necrosis","def":"cell death resulting from DAMAGE (unplanned)"},
+    {"term":"Control of cell division","def":"how often a cell divides is tightly regulated, and the rate differs from one cell type to the next"},
+    {"term":"Cells that divide continually","def":"skin, the intestinal lining, and the blood-forming cells of the marrow"},
+    {"term":"Neurons","def":"divide a set number of times and then stop for good"},
+    {"term":"Tumor","def":"a mass produced when cell division escapes its normal controls"},
+    {"term":"Benign tumor","def":"stays put in one local area"},
+    {"term":"Malignant tumor","def":"invasive and cancerous — able to spread beyond its original site"},
+    {"term":"Metastasize","def":"to spread from the original site to somewhere else in the body"},
+    {"term":"Oncogene","def":"a faulty version of a gene that drives the cell cycle, stuck switched ON far too strongly"},
+    {"term":"Tumor suppressor gene","def":"normally puts the BRAKES on mitosis; lose it or switch it off and division runs unchecked"},
+    {"term":"The two gene types behind cancer","def":"oncogenes, which are overactive, and tumor suppressor genes, which are disabled"}
   ],
   questions: [
-    { q: 'Which organelle has NO surrounding membrane?',
-      choices: ['The nucleolus', 'The Golgi apparatus', 'A lysosome', 'A mitochondrion'], answer: 0,
-      why: 'The nucleolus is formed in specialized regions of certain chromosomes and is the site of ribosome production.' },
-
-    { q: 'Rough ER is to ___ as smooth ER is to ___.',
-      choices: ['proteins … fats', 'fats … proteins', 'ATP … proteins', 'fats … ATP'], answer: 0 },
-
-    { q: 'Which sequence correctly describes protein handling in the cell?',
-      choices: [
-        'Ribosomes on rough ER synthesize it → Golgi refines and packages it → vesicles transport it',
-        'Golgi synthesizes it → ribosomes package it → lysosomes transport it',
-        'Smooth ER synthesizes it → mitochondria package it → vesicles transport it',
-        'Lysosomes synthesize it → rough ER packages it → Golgi transports it'
-      ], answer: 0 },
-
-    { q: 'Roughly how much ATP does one glucose molecule yield with oxygen, and what are the byproducts?',
-      choices: [
-        '36–38 ATP, with CO₂ and H₂O as byproducts',
-        '2 ATP, with lactic acid as the byproduct',
-        '100 ATP, with O₂ as the byproduct',
-        '12 ATP, with glucose as the byproduct'
-      ], answer: 0 },
-
-    { q: 'Skeletal muscle cells contain many thousands of mitochondria, while a typical cell has about 1,700. Why?',
-      choices: [
-        'Because they have very high energy requirements',
-        'Because they need extra storage for fats',
-        'Because they lack a nucleus',
-        'Because they divide more often than other cells'
-      ], answer: 0 }
+    {"q":"Which organelle has NO surrounding membrane?","choices":["The nucleolus","The Golgi apparatus","A lysosome","A mitochondrion"],"answer":0,"why":"The nucleolus is formed in specialized regions of certain chromosomes and is the site of ribosome production."},
+    {"q":"Rough ER is to ___ as smooth ER is to ___.","choices":["proteins … fats","fats … proteins","ATP … proteins","fats … ATP"],"answer":0},
+    {"q":"Which sequence correctly describes protein handling in the cell?","choices":["Ribosomes on rough ER synthesize it → Golgi refines and packages it → vesicles transport it","Golgi synthesizes it → ribosomes package it → lysosomes transport it","Smooth ER synthesizes it → mitochondria package it → vesicles transport it","Lysosomes synthesize it → rough ER packages it → Golgi transports it"],"answer":0},
+    {"q":"Roughly how much ATP does one glucose molecule yield with oxygen, and what are the byproducts?","choices":["36–38 ATP, with CO₂ and H₂O as byproducts","2 ATP, with lactic acid as the byproduct","100 ATP, with O₂ as the byproduct","12 ATP, with glucose as the byproduct"],"answer":0},
+    {"q":"Skeletal muscle cells contain many thousands of mitochondria, while a typical cell has about 1,700. Why?","choices":["Because they have very high energy requirements","Because they need extra storage for fats","Because they lack a nucleus","Because they divide more often than other cells"],"answer":0},
+    {"q":"What is the single biggest difference between active transport and facilitated diffusion?","choices":["Active transport moves particles from LOW to HIGH concentration and costs ATP","Active transport uses no carrier proteins","Facilitated diffusion only moves water","Facilitated diffusion requires ATP; active transport does not"],"answer":0,"why":"Both use carriers in the membrane. Only active transport pushes against the gradient, which is why it needs energy."},
+    {"q":"A red blood cell is placed in a hypertonic solution. What happens?","choices":["Water leaves the cell and it shrinks — crenation","Water enters the cell and it swells or bursts","Nothing — the cell stays the same size","The cell actively pumps solute inward"],"answer":0,"why":"Remember the rule from your notes: \"where salt goes, water follows.\" Hypertonic = more salt outside → water follows it out → crenation."},
+    {"q":"A cell is placed in a hypotonic solution. What happens?","choices":["Water enters the cell and it swells, possibly bursting","Water leaves the cell and it shrivels","Nothing — the concentrations are already equal","The cell membrane becomes impermeable to water"],"answer":0,"why":"Hypo = less solute outside than in the cell, so water moves inward. This is the opposite of crenation."},
+    {"q":"Which process is driven by hydrostatic pressure rather than molecular motion?","choices":["Filtration","Osmosis","Diffusion","Facilitated diffusion"],"answer":0,"why":"Filtration forces smaller molecules through a porous membrane from high pressure to low — the way fluid leaves a blood capillary."},
+    {"q":"A white blood cell engulfing a bacterium is an example of:","choices":["Phagocytosis","Pinocytosis","Exocytosis","Filtration"],"answer":0,"why":"Phago = eating (solids). Pino = drinking (liquid droplets)."},
+    {"q":"Why does diffusional equilibrium NOT normally occur in living organisms?","choices":["Organisms maintain a physiological steady state — concentrations stay unequal but stable","Molecules stop moving inside the body","Cell membranes block all diffusion","Body temperature is too high for diffusion"],"answer":0},
+    {"q":"Delivering antibodies from a mother’s milk into the blood of a nursing infant is an example of:","choices":["Transcytosis","Filtration","Osmosis","Active transport"],"answer":0,"why":"Transcytosis moves material into, through, and out of a cell — bridging two different environments."},
+    {"q":"Put the four phases of mitosis in order.","choices":["Prophase → Metaphase → Anaphase → Telophase","Metaphase → Prophase → Telophase → Anaphase","Anaphase → Prophase → Metaphase → Telophase","Telophase → Anaphase → Metaphase → Prophase"],"answer":0,"why":"PMAT. Interphase (growth + DNA replication) comes before all four."},
+    {"q":"During which phase do chromosomes line up along the midline of the cell?","choices":["Metaphase","Prophase","Anaphase","Telophase"],"answer":0,"why":"Metaphase = Middle."},
+    {"q":"What is the key difference between apoptosis and necrosis?","choices":["Apoptosis is programmed cell death; necrosis results from damage","Apoptosis results from damage; necrosis is programmed","Both are programmed; only the speed differs","Apoptosis only occurs in stem cells"],"answer":0,"why":"This distinction shows up again in cardiology — myocardial infarction kills tissue by necrosis."},
+    {"q":"What is the difference between a benign and a malignant tumor?","choices":["A benign tumor stays local; a malignant one is invasive and can metastasize","A malignant tumor stays local; a benign one spreads","Benign tumors are made of oncogenes; malignant ones are not","There is no structural difference, only size"],"answer":0},
+    {"q":"An oncogene and a tumor suppressor gene fail in opposite ways. Which describes it?","choices":["An oncogene is overactive; a tumor suppressor gene is inactivated","An oncogene is inactivated; a tumor suppressor gene is overactive","Both are overactive","Both are inactivated"],"answer":0,"why":"Think accelerator versus brakes: cancer can come from flooring the accelerator OR from cutting the brake line."},
+    {"q":"Which cells keep dividing throughout life?","choices":["Skin, intestinal lining, and blood-forming cells","Neurons and cardiac muscle cells","Only stem cells in the marrow","None — all division stops after development"],"answer":0,"why":"Neurons are the contrast: they divide a set number of times, then stop permanently."},
+    {"q":"How does a progenitor cell differ from a stem cell?","choices":["A progenitor cell is partly specialized and can become only a restricted set of cell types","A progenitor cell can become any cell type; a stem cell cannot","A progenitor cell cannot divide at all","They are two names for the same thing"],"answer":0,"why":"A stem cell self-renews and keeps every option open; a progenitor has already narrowed its choices."}
   ]
 },
 
 {
-  id: 'bio-transport',
+  id: 'bio-ch4',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 3 — Membrane Transport',
-  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
+  title: 'Ch. 4 — Study Guide',
+  source: 'Assets/Chap 4 Study Guide Powerpoint.pptx + Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 4.md',
   cards: [
-    { term: 'Diffusion', def: 'PASSIVE — molecules move through the bilayer from higher to lower concentration. Energy: molecular motion. Example: O₂/CO₂ exchange in the lungs' },
-    { term: 'Facilitated diffusion', def: 'PASSIVE — "helped diffusion"; ions use channels or carrier proteins to move high → low. Example: glucose entering a cell' },
-    { term: 'Osmosis', def: 'PASSIVE — water moves through aquaporins/the bilayer toward the solution with more impermeant solute. Example: distilled water entering a cell' },
-    { term: 'Filtration', def: 'PASSIVE — smaller molecules forced through porous membranes from high to low PRESSURE. Energy: hydrostatic pressure. Example: molecules leaving blood capillaries' },
-    { term: 'Active transport', def: 'ACTIVE (ATP) — carrier molecules move substances from LOWER to HIGHER concentration, against the gradient' },
-    { term: 'Endocytosis', def: 'ACTIVE (ATP) — particles too large to diffuse are brought in by a vesicle that forms from the cell membrane' },
-    { term: 'Pinocytosis', def: 'ACTIVE (ATP) — "cell drinking"; the membrane engulfs droplets of liquid with dissolved solutes' },
-    { term: 'Phagocytosis', def: 'ACTIVE (ATP) — "cell eating"; the membrane engulfs SOLID particles. Example: a white blood cell engulfing bacteria' },
-    { term: 'Receptor-mediated endocytosis', def: 'ACTIVE (ATP) — the membrane engulfs selected molecules bound to receptor proteins. Example: removing LDL cholesterol particles' },
-    { term: 'Exocytosis', def: 'ACTIVE (ATP) — the opposite of endocytosis; vesicles fuse with the membrane and release contents outside. Example: neurotransmitter release' },
-    { term: 'Transcytosis', def: 'ACTIVE (ATP) — endocytosis in, through the cytoplasm, then exocytosis out the other side. Example: HIV crossing a cell layer' },
-    { term: 'Isotonic solution',  def: 'the SAME solute concentration as the cell — equal salt inside and out, so the cell keeps its shape' },
-    { term: 'Hypertonic solution',def: 'a HIGHER solute concentration than body fluids — more salt outside, so water leaves and the cell SHRINKS (crenation)' },
-    { term: 'Hypotonic solution', def: 'a LOWER solute concentration than body fluids — less salt outside, so water enters and the cell SWELLS or bursts' },
-    { term: 'Crenation',          def: 'the shrivelling of a cell after water leaves it in a hypertonic solution' },
-    { term: 'Hemolysis',          def: 'the bursting of a red blood cell that has taken on too much water in a hypotonic solution' },
-    { term: 'Physiological steady state', def: 'concentrations of diffusing substances are unequal but STABLE — what organisms reach instead of true equilibrium' }
-  ],
-  questions: [
-    { q: 'What is the single biggest difference between active transport and facilitated diffusion?',
-      choices: [
-        'Active transport moves particles from LOW to HIGH concentration and costs ATP',
-        'Active transport uses no carrier proteins',
-        'Facilitated diffusion only moves water',
-        'Facilitated diffusion requires ATP; active transport does not'
-      ], answer: 0,
-      why: 'Both use carriers in the membrane. Only active transport pushes against the gradient, which is why it needs energy.' },
-
-    { q: 'A red blood cell is placed in a hypertonic solution. What happens?',
-      choices: [
-        'Water leaves the cell and it shrinks — crenation',
-        'Water enters the cell and it swells or bursts',
-        'Nothing — the cell stays the same size',
-        'The cell actively pumps solute inward'
-      ], answer: 0,
-      why: 'Remember the rule from your notes: "where salt goes, water follows." Hypertonic = more salt outside → water follows it out → crenation.' },
-
-    { q: 'A cell is placed in a hypotonic solution. What happens?',
-      choices: [
-        'Water enters the cell and it swells, possibly bursting',
-        'Water leaves the cell and it shrivels',
-        'Nothing — the concentrations are already equal',
-        'The cell membrane becomes impermeable to water'
-      ], answer: 0,
-      why: 'Hypo = less solute outside than in the cell, so water moves inward. This is the opposite of crenation.' },
-
-    { q: 'Which process is driven by hydrostatic pressure rather than molecular motion?',
-      choices: ['Filtration', 'Osmosis', 'Diffusion', 'Facilitated diffusion'], answer: 0,
-      why: 'Filtration forces smaller molecules through a porous membrane from high pressure to low — the way fluid leaves a blood capillary.' },
-
-    { q: 'A white blood cell engulfing a bacterium is an example of:',
-      choices: ['Phagocytosis', 'Pinocytosis', 'Exocytosis', 'Filtration'], answer: 0,
-      why: 'Phago = eating (solids). Pino = drinking (liquid droplets).' },
-
-    { q: 'Why does diffusional equilibrium NOT normally occur in living organisms?',
-      choices: [
-        'Organisms maintain a physiological steady state — concentrations stay unequal but stable',
-        'Molecules stop moving inside the body',
-        'Cell membranes block all diffusion',
-        'Body temperature is too high for diffusion'
-      ], answer: 0 },
-
-    { q: 'Delivering antibodies from a mother’s milk into the blood of a nursing infant is an example of:',
-      choices: ['Transcytosis', 'Filtration', 'Osmosis', 'Active transport'], answer: 0,
-      why: 'Transcytosis moves material into, through, and out of a cell — bridging two different environments.' }
-  ]
-},
-
-{
-  id: 'bio-cellcycle',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 3 — Cell Cycle, Stem Cells & Cell Death',
-  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
-  cards: [
-    { term: 'Interphase', def: 'the cell grows and its genetic material replicates (before mitosis begins)' },
-    { term: 'Prophase',   def: 'chromatin condenses into visible chromosomes; the nuclear envelope and nucleolus disperse; the spindle apparatus forms' },
-    { term: 'Metaphase',  def: 'chromosomes align along the MIDLINE of the cell' },
-    { term: 'Anaphase',   def: 'centromeres separate and sister chromatids are pulled apart — each is now an individual chromosome' },
-    { term: 'Telophase',  def: 'nuclear envelopes reassemble, chromosomes decondense, the spindle disappears' },
-    { term: 'Cytokinesis',def: 'division of the cytoplasm into two separate cells' },
-    { term: 'Stem cells', def: 'cells that keep dividing repeatedly WITHOUT specializing, allowing continual growth and renewal' },
-    { term: 'Stem cell division', def: 'a stem cell divides mitotically to yield two daughter cells identical to itself, which go on dividing' },
-    { term: 'Self-renewal', def: 'a stem cell dividing to make two new stem cells, keeping the supply topped up' },
-    { term: 'Progenitor cell', def: 'a partly specialized daughter of a stem cell, able to become only a RESTRICTED set of cell types' },
-    { term: 'Differentiation', def: 'the process guiding cell specialization, by activating and suppressing the functions of many genes' },
-    { term: 'Cytokinesis vs mitosis', def: 'mitosis divides the NUCLEUS; cytokinesis divides the CYTOPLASM into two cells' },
-    { term: 'Apoptosis',  def: 'PROGRAMMED cell death — the planned option for a cell that does not divide or differentiate' },
-    { term: 'Necrosis',   def: 'cell death resulting from DAMAGE (unplanned)' }
-  ],
-  questions: [
-    { q: 'Put the four phases of mitosis in order.',
-      choices: [
-        'Prophase → Metaphase → Anaphase → Telophase',
-        'Metaphase → Prophase → Telophase → Anaphase',
-        'Anaphase → Prophase → Metaphase → Telophase',
-        'Telophase → Anaphase → Metaphase → Prophase'
-      ], answer: 0,
-      why: 'PMAT. Interphase (growth + DNA replication) comes before all four.' },
-
-    { q: 'During which phase do chromosomes line up along the midline of the cell?',
-      choices: ['Metaphase', 'Prophase', 'Anaphase', 'Telophase'], answer: 0,
-      why: 'Metaphase = Middle.' },
-
-    { q: 'What is the key difference between apoptosis and necrosis?',
-      choices: [
-        'Apoptosis is programmed cell death; necrosis results from damage',
-        'Apoptosis results from damage; necrosis is programmed',
-        'Both are programmed; only the speed differs',
-        'Apoptosis only occurs in stem cells'
-      ], answer: 0,
-      why: 'This distinction shows up again in cardiology — myocardial infarction kills tissue by necrosis.' }
-  ]
-},
-
-{
-  id: 'bio-division-control',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 3 — Cell Division Control & Cancer',
-  source: 'Assets/Chap 3 Study Guide Powerpoint.pptx (lecture outline)',
-  cards: [
-    { term: 'Control of cell division', def: 'how often a cell divides is tightly regulated, and the rate differs from one cell type to the next' },
-    { term: 'Cells that divide continually', def: 'skin, the intestinal lining, and the blood-forming cells of the marrow' },
-    { term: 'Neurons', def: 'divide a set number of times and then stop for good' },
-    { term: 'Tumor', def: 'a mass produced when cell division escapes its normal controls' },
-    { term: 'Benign tumor', def: 'stays put in one local area' },
-    { term: 'Malignant tumor', def: 'invasive and cancerous — able to spread beyond its original site' },
-    { term: 'Metastasize', def: 'to spread from the original site to somewhere else in the body' },
-    { term: 'Oncogene', def: 'a faulty version of a gene that drives the cell cycle, stuck switched ON far too strongly' },
-    { term: 'Tumor suppressor gene', def: 'normally puts the BRAKES on mitosis; lose it or switch it off and division runs unchecked' },
-    { term: 'The two gene types behind cancer', def: 'oncogenes, which are overactive, and tumor suppressor genes, which are disabled' }
-  ],
-  questions: [
-    { q: 'What is the difference between a benign and a malignant tumor?',
-      choices: [
-        'A benign tumor stays local; a malignant one is invasive and can metastasize',
-        'A malignant tumor stays local; a benign one spreads',
-        'Benign tumors are made of oncogenes; malignant ones are not',
-        'There is no structural difference, only size'
-      ], answer: 0 },
-
-    { q: 'An oncogene and a tumor suppressor gene fail in opposite ways. Which describes it?',
-      choices: [
-        'An oncogene is overactive; a tumor suppressor gene is inactivated',
-        'An oncogene is inactivated; a tumor suppressor gene is overactive',
-        'Both are overactive',
-        'Both are inactivated'
-      ], answer: 0,
-      why: 'Think accelerator versus brakes: cancer can come from flooring the accelerator OR from cutting the brake line.' },
-
-    { q: 'Which cells keep dividing throughout life?',
-      choices: [
-        'Skin, intestinal lining, and blood-forming cells',
-        'Neurons and cardiac muscle cells',
-        'Only stem cells in the marrow',
-        'None — all division stops after development'
-      ], answer: 0,
-      why: 'Neurons are the contrast: they divide a set number of times, then stop permanently.' },
-
-    { q: 'How does a progenitor cell differ from a stem cell?',
-      choices: [
-        'A progenitor cell is partly specialized and can become only a restricted set of cell types',
-        'A progenitor cell can become any cell type; a stem cell cannot',
-        'A progenitor cell cannot divide at all',
-        'They are two names for the same thing'
-      ], answer: 0,
-      why: 'A stem cell self-renews and keeps every option open; a progenitor has already narrowed its choices.' }
-  ]
-},
-
-{
-  id: 'bio-metabolism',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 4 — Cellular Metabolism & Energy',
-  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 4.md',
-  cards: [
-    { term: 'Metabolism',  def: 'the collection of ALL the chemical reactions that occur in the body' },
+    { term: 'Metabolism',  def: 'the sum of all the chemical reactions in the body' },
+    { term: 'Cellular metabolism', def: 'the sum of the chemical reactions inside a single cell, usually organised into pathways or cycles' },
     { term: 'Anabolism',   def: 'building small molecules UP into larger ones — REQUIRES energy' },
-    { term: 'Catabolism',  def: 'breaking larger molecules DOWN into smaller ones — RELEASES energy as heat' },
+    { term: 'Catabolism',  def: 'breaking larger molecules DOWN into smaller ones — RELEASES energy' },
     { term: '-ase',        def: 'the word ending that tells you a molecule is an enzyme' },
     { term: 'Enzyme',      def: 'speeds up a chemical reaction' },
+
     { term: 'Energy',      def: 'the capacity to change something — the ability to do work' },
-    { term: 'ATP',         def: 'adenosine triphosphate — the primary energy-carrying molecule in a cell' },
-    { term: 'Parts of ATP',def: 'an adenine, a ribose, and THREE phosphates' },
+    { term: 'Forms of energy', def: 'heat, light, sound, electrical, mechanical and chemical' },
+    { term: 'Conservation of energy', def: 'energy cannot be created or destroyed, only converted from one form into another' },
+    { term: 'Energy most metabolic reactions use', def: 'chemical energy' },
+    { term: 'ATP',         def: 'adenosine triphosphate — energy in a form the cell can actually spend' },
+    { term: 'Parts of ATP',def: 'an adenine, a ribose sugar, and a chain of THREE phosphates' },
     { term: 'ADP',         def: 'adenosine diphosphate — what ATP becomes after losing its terminal phosphate, leaving TWO' },
-    { term: 'Cellular respiration', def: 'glycolysis, then the citric acid cycle, then the electron transport chain' },
-    { term: 'Anaerobic',   def: 'does NOT require oxygen' },
-    { term: 'Aerobic',     def: 'DOES require oxygen — most of the ATP produced comes from these reactions' },
-    { term: 'Glycolysis',  def: '"the breaking of glucose" — ten enzyme-catalysed reactions splitting one 6-carbon glucose into two 3-carbon pyruvic acid molecules' },
+    { term: 'Phosphorylation', def: 'attaching a third phosphate back onto ADP to rebuild ATP, paid for with energy from cellular respiration' },
+    { term: 'The ATP–ADP cycle', def: 'the two shuttle back and forth between cellular respiration and the reactions that spend energy' },
+
+    { term: 'Cellular respiration', def: 'the process that transfers energy out of molecules and makes it available for the cell to use' },
+    { term: 'Three stages of cellular respiration', def: 'glycolysis, then the citric acid cycle, then the electron transport chain' },
+    { term: 'Glycolysis',  def: '"the breaking of glucose" — the ANAEROBIC first stage, splitting one 6-carbon glucose into two 3-carbon pyruvic acid molecules' },
     { term: 'Where glycolysis happens', def: 'in the CYTOPLASM; the product then moves into the mitochondrion' },
     { term: 'Pyruvic acid',def: 'the intermediate product of carbohydrate oxidation' },
-    { term: 'Citric acid cycle', def: 'the 3-carbon pyruvic acids generated by glycolysis enter the mitochondria separately' },
-    { term: 'Electron transport chain', def: 'where MOST of the ATP is produced — 28 ATP, out of 32 total across all the processes',
-      note: 'Your Chapter 3 notes say one glucose yields 36–38 ATP, while Chapter 4 says 32 total. Both figures are in circulation: older textbooks quote 36–38, newer ones ~30–32 once the cost of shuttling NADH into the mitochondrion is counted. Go with whichever your instructor uses — but know they refer to the same process.' },
-    { term: 'Carbohydrate storage', def: 'hydrolysis breaks dietary carbohydrates into monosaccharides, which are then burned for energy or stored as glycogen or triglycerides' }
+    { term: 'Citric acid cycle', def: 'the AEROBIC second stage — the 3-carbon pyruvic acids from glycolysis enter the mitochondria separately' },
+    { term: 'Electron transport chain', def: 'the AEROBIC final stage, where MOST of the ATP is produced',
+      note: 'Your Chapter 3 notes put the yield at 36–38 ATP per glucose and Chapter 4 at 32. Both are in circulation — the older theoretical maximum versus the newer figure net of the NADH shuttle cost. These are approximations of a range, not exact counts.' },
+    { term: 'Oxidative phosphorylation', def: 'another name for the electron transport chain stage' },
+    { term: 'Anaerobic reactions', def: 'need no oxygen, and yield little ATP' },
+    { term: 'Aerobic reactions', def: 'need oxygen, and produce most of the ATP' },
+    { term: 'Inputs of cellular respiration', def: 'a supply of glucose and oxygen' },
+    { term: 'Products of cellular respiration', def: 'carbon dioxide, water, ATP and heat' },
+    { term: 'Energy split in respiration', def: 'only about 40% of the energy released is captured as ATP — the other 60% is lost as heat' },
+
+    { term: 'Carbohydrate storage', def: 'hydrolysis breaks dietary carbohydrates into monosaccharides, which are then burned for energy or put into storage' },
+    { term: 'Glycogen',    def: 'the storage form of excess glucose — most cells hold some, but liver and muscle hold the most' },
+    { term: 'Fat storage', def: 'excess glucose can also be converted into fat and stored in adipose tissue' },
+
+    { term: 'DNA',         def: 'deoxyribonucleic acid — the genetic material, whose sequence stores the instructions for building proteins' },
+    { term: 'What DNA codes for', def: 'enzymes, blood proteins, the structural proteins of muscle and connective tissue, antibodies, and cell membrane components' },
+    { term: 'Nucleotides', def: 'the building blocks that DNA is assembled from' },
+    { term: 'Structure of DNA', def: 'a ladder twisted into a spiral — two polynucleotide chains forming a double helix' },
+    { term: 'Gene',        def: 'a stretch of DNA carrying the information for making ONE protein' },
+    { term: 'Gene expression', def: 'the control over which proteins a cell makes, in what amount, and under which circumstances' },
+    { term: 'Genetic information', def: 'the instructions telling cells how to construct proteins, held in the DNA sequence' },
+    { term: 'Size of the human genome', def: '3.2 billion bits of information' },
+    { term: 'DNA profiling', def: 'comparing the most variable parts of the genome between individuals' },
+    { term: 'Uses of DNA profiling', def: 'identifying human remains, checking family relationships and paternity, and establishing innocence in criminal cases' },
+
+    { term: 'DNA replication', def: 'making an exact copy of a DNA molecule so each daughter cell receives identical DNA — happens during INTERPHASE' },
+    { term: 'Transcription', def: 'copying a DNA sequence onto an RNA sequence — happens in the NUCLEUS' },
+    { term: 'Steps of transcription', def: 'DNA unwinds to expose the gene, complementary mRNA nucleotides pair with the exposed bases, then the new strand is released and the DNA rewinds' },
+    { term: 'mRNA',        def: 'messenger RNA — carries the genetic code from the DNA out to a ribosome' },
+    { term: 'How mRNA leaves the nucleus', def: 'through a nuclear pore, then attaches to a ribosome in the cytoplasm' },
+    { term: 'Translation', def: 'converting the genetic code carried by mRNA into a sequence of amino acids — happens in the CYTOPLASM' },
+    { term: 'Where protein synthesis happens', def: 'on the ribosomes' },
+    { term: 'tRNA',        def: 'transfer RNA — carries an amino acid to the ribosome and binds the mRNA to add it to the growing chain' },
+
+    { term: 'Mutation',    def: 'a change produced when DNA replication results in an error' },
+    { term: 'Harmless mutations', def: 'some produce no effect on health at all' },
+    { term: 'Harmful mutations', def: 'change the amino acid sequence, leaving a protein nonfunctional or missing altogether' },
+    { term: 'Duchenne muscular dystrophy', def: 'caused by a mutation in the gene for dystrophin — muscle cells collapse, producing severe weakness' },
+    { term: 'A beneficial mutation', def: 'rarely one helps: an incomplete receptor leaves some people protected against HIV' },
+    { term: 'How alike human genomes are', def: '99.9% of the sequence is identical between any two people' },
+    { term: 'What the varying 0.1% includes', def: 'sequences affecting health, sequences affecting appearance, and variations with no observable effect' }
   ],
   questions: [
     { q: 'Which correctly pairs the two halves of metabolism?',
@@ -797,14 +695,22 @@ window.DECKS = [
       ], answer: 0,
       why: 'Memory hook: "A" for Assemble, "C" for Cut.' },
 
+    { q: 'Which stage of cellular respiration is the anaerobic one?',
+      choices: [
+        'Glycolysis',
+        'The citric acid cycle',
+        'The electron transport chain',
+        'Oxidative phosphorylation'
+      ], answer: 0,
+      why: 'Glycolysis alone runs without oxygen. The citric acid cycle and the electron transport chain are both aerobic.' },
+
     { q: 'Where does glycolysis take place?',
       choices: [
         'In the cytoplasm, with the product then entering the mitochondrion',
         'Inside the mitochondrion from start to finish',
         'In the nucleus',
         'On the rough endoplasmic reticulum'
-      ], answer: 0,
-      why: 'This trips people up — only the later stages happen inside the mitochondrion.' },
+      ], answer: 0 },
 
     { q: 'Glycolysis splits one glucose molecule into:',
       choices: [
@@ -815,46 +721,32 @@ window.DECKS = [
       ], answer: 0,
       why: 'Glucose has 6 carbons, so it splits evenly into two 3-carbon pieces.' },
 
-    { q: 'What is the difference between ATP and ADP?',
+    { q: 'What is the difference between ATP and ADP, and what converts one to the other?',
       choices: [
-        'ATP has three phosphates; ADP has two, having lost the terminal one',
-        'ADP has three phosphates; ATP has two',
-        'ATP contains ribose; ADP contains deoxyribose',
+        'ATP has three phosphates, ADP two; phosphorylation adds the third back',
+        'ADP has three phosphates, ATP two; hydrolysis adds the third back',
+        'ATP contains ribose, ADP deoxyribose; transcription converts them',
         'They are two names for the same molecule'
       ], answer: 0 },
 
-    { q: 'Which stage of cellular respiration produces the most ATP?',
+    { q: 'Roughly how much of the energy released by cellular respiration is captured as ATP?',
       choices: [
-        'The electron transport chain',
-        'Glycolysis',
-        'The citric acid cycle',
-        'Hydrolysis'
+        'About 40% — the rest is lost as heat',
+        'About 90% — very little is wasted',
+        'About 10% — most goes into building glycogen',
+        'All of it — energy cannot be destroyed'
       ], answer: 0,
-      why: 'Glycolysis and the citric acid cycle mostly hand off high-energy electrons; the transport chain is where those are cashed in.' },
+      why: 'Energy is conserved, but 60% leaves as heat rather than usable chemical energy. That heat is what keeps you warm.' },
 
-    { q: 'A molecule whose name ends in "-ase" is:',
-      choices: ['An enzyme', 'A sugar', 'A phosphate', 'A nucleotide'], answer: 0 }
-  ]
-},
+    { q: 'Excess glucose is stored as glycogen mainly in which tissues?',
+      choices: [
+        'Liver and muscle',
+        'Brain and kidney',
+        'Skin and bone',
+        'Blood and lymph'
+      ], answer: 0,
+      why: 'Most cells store some glycogen, but liver and muscle hold by far the most. Beyond that, the surplus becomes fat in adipose tissue.' },
 
-{
-  id: 'bio-dna',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 4 — DNA & Protein Synthesis',
-  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 4.md',
-  cards: [
-    { term: 'DNA',   def: 'deoxyribonucleic acid — its nucleotide sequence holds the instructions for building a particular protein' },
-    { term: 'Structure of DNA', def: 'double-stranded: two polynucleotide chains twisted into a double helix' },
-    { term: 'Gene',  def: 'a sequence of nucleotide bases along ONE DNA strand carrying the information for one protein’s amino acid sequence' },
-    { term: 'Gene length', def: 'may be thousands or even millions of bases long' },
-    { term: 'Genetic information', def: 'passed from parents to offspring as DNA molecules; mitosis passes it on to new cells' },
-    { term: 'DNA replication', def: 'making an exact copy of a DNA molecule, so each new cell gets the whole genome — happens during INTERPHASE' },
-    { term: 'Transcription', def: 'copying the DNA information into messenger RNA — happens in the NUCLEUS' },
-    { term: 'RNA',   def: 'ribonucleic acid — carries the information from the nucleus to the ribosome' },
-    { term: 'Translation', def: 'converting the mRNA message from nucleic acid into amino acids — happens in the CYTOPLASM' },
-    { term: 'Mutation', def: 'a change produced when DNA replication results in an error' }
-  ],
-  questions: [
     { q: 'Transcription and translation happen where, respectively?',
       choices: [
         'Transcription in the nucleus, translation in the cytoplasm',
@@ -862,7 +754,16 @@ window.DECKS = [
         'Both in the nucleus',
         'Both in the cytoplasm'
       ], answer: 0,
-      why: 'The mRNA is written in the nucleus, then carries the message out to a ribosome, where it is read into amino acids.' },
+      why: 'The mRNA is written in the nucleus, exits through a nuclear pore, and is read at a ribosome in the cytoplasm.' },
+
+    { q: 'What is the job of tRNA?',
+      choices: [
+        'To carry an amino acid to the ribosome and bind the mRNA so it can be added to the chain',
+        'To carry the genetic code from DNA out to the ribosome',
+        'To unwind the DNA during transcription',
+        'To copy DNA during replication'
+      ], answer: 0,
+      why: 'mRNA carries the message; tRNA delivers the building blocks.' },
 
     { q: 'During which part of the cell cycle does DNA replication occur?',
       choices: ['Interphase', 'Prophase', 'Metaphase', 'Telophase'], answer: 0,
@@ -870,7 +771,7 @@ window.DECKS = [
 
     { q: 'What exactly is a gene?',
       choices: [
-        'A sequence of nucleotide bases along one DNA strand coding for one protein’s amino acid sequence',
+        'A stretch of DNA carrying the information for making one protein',
         'An entire chromosome',
         'The protein that DNA produces',
         'The double helix structure itself'
@@ -884,13 +785,18 @@ window.DECKS = [
         'DNA → replication → RNA → translation → protein'
       ], answer: 0 },
 
-    { q: 'A mutation is:',
+    { q: 'How do harmful mutations usually cause disease?',
       choices: [
-        'A change caused by an error during DNA replication',
-        'The normal copying of DNA before cell division',
-        'The movement of mRNA out of the nucleus',
-        'A type of enzyme that cuts DNA'
-      ], answer: 0 }
+        'They change the amino acid sequence, leaving a protein nonfunctional or missing',
+        'They delete the entire chromosome',
+        'They prevent the cell from entering interphase',
+        'They convert DNA into RNA permanently'
+      ], answer: 0,
+      why: 'Duchenne muscular dystrophy is the example: a mutation in the dystrophin gene, so muscle cells collapse.' },
+
+    { q: 'How much of the human genome sequence is identical between any two people?',
+      choices: ['99.9%', '75%', '50%', '100%'], answer: 0,
+      why: 'The 0.1% that varies covers health, appearance, and a great many differences with no observable effect at all.' }
   ]
 },
 

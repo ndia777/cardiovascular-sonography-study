@@ -373,8 +373,12 @@ function grade(ok){
    "abdomin/o", "Abdomino" and "abdomin o" all compare equal. */
 const normalize = s => String(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
 
-/* A card's term may list several acceptable forms ("-ac, -al, -ar…"): any one counts. */
-const alternatives = card => card.term.split(/,| or /i).map(s => s.trim()).filter(Boolean);
+/* A card's term may list several acceptable forms ("-ac, -al, -ar…"): any one
+   counts — and so does the whole string. Without the whole string, a term like
+   "Pores, channels & carriers" is a single name that happens to contain a
+   comma, and typing it exactly as displayed would be marked wrong. */
+const alternatives = card =>
+  [card.term, ...card.term.split(/,| or /i)].map(s => s.trim()).filter(Boolean);
 
 /* 'exact' | 'wrong'. Every letter must be right — there is deliberately no typo
    tolerance. Medical terminology is full of pairs that differ by one or two

@@ -224,6 +224,15 @@ function suite(s, label) {
   }
   check(`[${label}] hand-written questions well formed`, badWritten === 0, `${badWritten} bad`);
 
+  /* The answer the app displays must always be accepted when typed back. This
+     is the invariant that a comma in a term name ("Pores, channels & carriers")
+     used to break, trapping the card in an unclearable loop. */
+  let unacceptable = '';
+  for (const d of DECKS) for (const c of d.cards) {
+    if (judge(c.term, c) !== 'exact' && !unacceptable) unacceptable = `${d.id} / "${c.term}"`;
+  }
+  check(`[${label}] every card accepts its own term`, !unacceptable, unacceptable);
+
   /* spelling is graded strictly — one wrong letter is wrong */
   const card = (deck, term) => DECKS.find(d => d.id === deck).cards.find(c => c.term === term);
   const spelling = [
@@ -236,7 +245,7 @@ function suite(s, label) {
     ['mt1-prefixes', 'hyper-', 'hypo-', 'wrong'],
     ['mt1-suffixes', '-ostomy', '-otomy', 'wrong'],
     ['mt1-terms', 'hypertension', 'hypotension', 'wrong'],
-    ['bio-cellcycle', 'Metaphase', 'Anaphase', 'wrong'],
+    ['bio-ch3', 'Metaphase', 'Anaphase', 'wrong'],
     ['mt1-roots', 'gastr/o', '', 'wrong'],
   ];
   for (const [deck, term, typed, want] of spelling) {
@@ -245,7 +254,7 @@ function suite(s, label) {
   }
 
   /* full playthroughs terminate and reach a result */
-  for (const [deck, mode] of [['bio-cellcycle', 'recall'], ['ekg-basics', 'quiz'], ['ekg-leads', 'chest']]) {
+  for (const [deck, mode] of [['bio-ch3', 'recall'], ['ekg-basics', 'quiz'], ['ekg-leads', 'chest']]) {
     try {
       go('run', deck, mode);
       let guard = 0;
