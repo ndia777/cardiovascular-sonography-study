@@ -706,7 +706,7 @@ window.DECKS = [
 
 {
   id: 'bio-cell',
-  course: 'BIO101 · A&P 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 3 — The Composite Cell & Organelles',
   source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
   cards: [
@@ -771,7 +771,7 @@ window.DECKS = [
 
 {
   id: 'bio-transport',
-  course: 'BIO101 · A&P 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 3 — Membrane Transport',
   source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
   cards: [
@@ -786,9 +786,10 @@ window.DECKS = [
     { term: 'Receptor-mediated endocytosis', def: 'ACTIVE (ATP) — the membrane engulfs selected molecules bound to receptor proteins. Example: removing LDL cholesterol particles' },
     { term: 'Exocytosis', def: 'ACTIVE (ATP) — the opposite of endocytosis; vesicles fuse with the membrane and release contents outside. Example: neurotransmitter release' },
     { term: 'Transcytosis', def: 'ACTIVE (ATP) — endocytosis in, through the cytoplasm, then exocytosis out the other side. Example: HIV crossing a cell layer' },
-    { term: 'Isotonic solution',  def: 'the SAME solute concentration as the cell — equal salt inside and out' },
-    { term: 'Hypertonic solution',def: 'a HIGHER solute concentration than body fluids — more salt in the solution than in the cell' },
-    { term: 'Hypotonic solution', def: 'a LOWER solute concentration than body fluids — less salt in the solution than in the cell' },
+    { term: 'Isotonic solution',  def: 'the SAME solute concentration as the cell — equal salt inside and out, so the cell keeps its shape' },
+    { term: 'Hypertonic solution',def: 'a HIGHER solute concentration than body fluids — more salt outside, so water leaves and the cell SHRINKS (crenation)' },
+    { term: 'Hypotonic solution', def: 'a LOWER solute concentration than body fluids — less salt outside, so water enters and the cell SWELLS or bursts' },
+    { term: 'Crenation',          def: 'the shrivelling of a cell after water leaves it in a hypertonic solution' },
     { term: 'Physiological steady state', def: 'concentrations of diffusing substances are unequal but STABLE — what organisms reach instead of true equilibrium' }
   ],
   questions: [
@@ -803,12 +804,21 @@ window.DECKS = [
 
     { q: 'A red blood cell is placed in a hypertonic solution. What happens?',
       choices: [
-        'Water leaves the cell and it shrinks',
-        'Water enters the cell and it swells',
+        'Water leaves the cell and it shrinks — crenation',
+        'Water enters the cell and it swells or bursts',
         'Nothing — the cell stays the same size',
         'The cell actively pumps solute inward'
       ], answer: 0,
-      why: 'Remember the rule from your notes: "where salt goes, water follows." Hypertonic = more salt outside → water follows it out.' },
+      why: 'Remember the rule from your notes: "where salt goes, water follows." Hypertonic = more salt outside → water follows it out → crenation.' },
+
+    { q: 'A cell is placed in a hypotonic solution. What happens?',
+      choices: [
+        'Water enters the cell and it swells, possibly bursting',
+        'Water leaves the cell and it shrivels',
+        'Nothing — the concentrations are already equal',
+        'The cell membrane becomes impermeable to water'
+      ], answer: 0,
+      why: 'Hypo = less solute outside than in the cell, so water moves inward. This is the opposite of crenation.' },
 
     { q: 'Which process is driven by hydrostatic pressure rather than molecular motion?',
       choices: ['Filtration', 'Osmosis', 'Diffusion', 'Facilitated diffusion'], answer: 0,
@@ -834,7 +844,7 @@ window.DECKS = [
 
 {
   id: 'bio-cellcycle',
-  course: 'BIO101 · A&P 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 3 — Cell Cycle, Stem Cells & Cell Death',
   source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md',
   cards: [
@@ -845,6 +855,8 @@ window.DECKS = [
     { term: 'Telophase',  def: 'nuclear envelopes reassemble, chromosomes decondense, the spindle disappears' },
     { term: 'Cytokinesis',def: 'division of the cytoplasm into two separate cells' },
     { term: 'Stem cells', def: 'cells that keep dividing repeatedly WITHOUT specializing, allowing continual growth and renewal' },
+    { term: 'Stem cell division', def: 'a stem cell divides mitotically to yield two daughter cells identical to itself, which go on dividing' },
+    { term: 'Differentiation', def: 'the process guiding cell specialization, by activating and suppressing the functions of many genes' },
     { term: 'Apoptosis',  def: 'PROGRAMMED cell death — the planned option for a cell that does not divide or differentiate' },
     { term: 'Necrosis',   def: 'cell death resulting from DAMAGE (unplanned)' }
   ],
@@ -870,6 +882,139 @@ window.DECKS = [
         'Apoptosis only occurs in stem cells'
       ], answer: 0,
       why: 'This distinction shows up again in cardiology — myocardial infarction kills tissue by necrosis.' }
+  ]
+},
+
+{
+  id: 'bio-metabolism',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 4 — Cellular Metabolism & Energy',
+  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 4.md',
+  cards: [
+    { term: 'Metabolism',  def: 'the collection of ALL the chemical reactions that occur in the body' },
+    { term: 'Anabolism',   def: 'building small molecules UP into larger ones — REQUIRES energy' },
+    { term: 'Catabolism',  def: 'breaking larger molecules DOWN into smaller ones — RELEASES energy as heat' },
+    { term: '-ase',        def: 'the word ending that tells you a molecule is an enzyme' },
+    { term: 'Enzyme',      def: 'speeds up a chemical reaction' },
+    { term: 'Energy',      def: 'the capacity to change something — the ability to do work' },
+    { term: 'ATP',         def: 'adenosine triphosphate — the primary energy-carrying molecule in a cell' },
+    { term: 'Parts of ATP',def: 'an adenine, a ribose, and THREE phosphates' },
+    { term: 'ADP',         def: 'adenosine diphosphate — what ATP becomes after losing its terminal phosphate, leaving TWO' },
+    { term: 'Cellular respiration', def: 'glycolysis, then the citric acid cycle, then the electron transport chain' },
+    { term: 'Anaerobic',   def: 'does NOT require oxygen' },
+    { term: 'Aerobic',     def: 'DOES require oxygen — most of the ATP produced comes from these reactions' },
+    { term: 'Glycolysis',  def: '"the breaking of glucose" — ten enzyme-catalysed reactions splitting one 6-carbon glucose into two 3-carbon pyruvic acid molecules' },
+    { term: 'Where glycolysis happens', def: 'in the CYTOPLASM; the product then moves into the mitochondrion' },
+    { term: 'Pyruvic acid',def: 'the intermediate product of carbohydrate oxidation' },
+    { term: 'Citric acid cycle', def: 'the 3-carbon pyruvic acids generated by glycolysis enter the mitochondria separately' },
+    { term: 'Electron transport chain', def: 'where MOST of the ATP is produced — 28 ATP, out of 32 total across all the processes',
+      note: 'Your Chapter 3 notes say one glucose yields 36–38 ATP, while Chapter 4 says 32 total. Both figures are in circulation: older textbooks quote 36–38, newer ones ~30–32 once the cost of shuttling NADH into the mitochondrion is counted. Go with whichever your instructor uses — but know they refer to the same process.' },
+    { term: 'Carbohydrate storage', def: 'hydrolysis breaks dietary carbohydrates into monosaccharides, which are then burned for energy or stored as glycogen or triglycerides' }
+  ],
+  questions: [
+    { q: 'Which correctly pairs the two halves of metabolism?',
+      choices: [
+        'Anabolism builds up and requires energy; catabolism breaks down and releases energy',
+        'Anabolism breaks down and releases energy; catabolism builds up and requires energy',
+        'Both build molecules up; only the speed differs',
+        'Both break molecules down; only the location differs'
+      ], answer: 0,
+      why: 'Memory hook: "A" for Assemble, "C" for Cut.' },
+
+    { q: 'Where does glycolysis take place?',
+      choices: [
+        'In the cytoplasm, with the product then entering the mitochondrion',
+        'Inside the mitochondrion from start to finish',
+        'In the nucleus',
+        'On the rough endoplasmic reticulum'
+      ], answer: 0,
+      why: 'This trips people up — only the later stages happen inside the mitochondrion.' },
+
+    { q: 'Glycolysis splits one glucose molecule into:',
+      choices: [
+        'Two 3-carbon pyruvic acid molecules',
+        'Three 2-carbon acetyl molecules',
+        'One 6-carbon pyruvic acid molecule',
+        'Six 1-carbon carbon dioxide molecules'
+      ], answer: 0,
+      why: 'Glucose has 6 carbons, so it splits evenly into two 3-carbon pieces.' },
+
+    { q: 'What is the difference between ATP and ADP?',
+      choices: [
+        'ATP has three phosphates; ADP has two, having lost the terminal one',
+        'ADP has three phosphates; ATP has two',
+        'ATP contains ribose; ADP contains deoxyribose',
+        'They are two names for the same molecule'
+      ], answer: 0 },
+
+    { q: 'Which stage of cellular respiration produces the most ATP?',
+      choices: [
+        'The electron transport chain',
+        'Glycolysis',
+        'The citric acid cycle',
+        'Hydrolysis'
+      ], answer: 0,
+      why: 'Glycolysis and the citric acid cycle mostly hand off high-energy electrons; the transport chain is where those are cashed in.' },
+
+    { q: 'A molecule whose name ends in "-ase" is:',
+      choices: ['An enzyme', 'A sugar', 'A phosphate', 'A nucleotide'], answer: 0 }
+  ]
+},
+
+{
+  id: 'bio-dna',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 4 — DNA & Protein Synthesis',
+  source: 'Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 4.md',
+  cards: [
+    { term: 'DNA',   def: 'deoxyribonucleic acid — its nucleotide sequence holds the instructions for building a particular protein' },
+    { term: 'Structure of DNA', def: 'double-stranded: two polynucleotide chains twisted into a double helix' },
+    { term: 'Gene',  def: 'a sequence of nucleotide bases along ONE DNA strand carrying the information for one protein’s amino acid sequence' },
+    { term: 'Gene length', def: 'may be thousands or even millions of bases long' },
+    { term: 'Genetic information', def: 'passed from parents to offspring as DNA molecules; mitosis passes it on to new cells' },
+    { term: 'DNA replication', def: 'making an exact copy of a DNA molecule, so each new cell gets the whole genome — happens during INTERPHASE' },
+    { term: 'Transcription', def: 'copying the DNA information into messenger RNA — happens in the NUCLEUS' },
+    { term: 'RNA',   def: 'ribonucleic acid — carries the information from the nucleus to the ribosome' },
+    { term: 'Translation', def: 'converting the mRNA message from nucleic acid into amino acids — happens in the CYTOPLASM' },
+    { term: 'Mutation', def: 'a change produced when DNA replication results in an error' }
+  ],
+  questions: [
+    { q: 'Transcription and translation happen where, respectively?',
+      choices: [
+        'Transcription in the nucleus, translation in the cytoplasm',
+        'Transcription in the cytoplasm, translation in the nucleus',
+        'Both in the nucleus',
+        'Both in the cytoplasm'
+      ], answer: 0,
+      why: 'The mRNA is written in the nucleus, then carries the message out to a ribosome, where it is read into amino acids.' },
+
+    { q: 'During which part of the cell cycle does DNA replication occur?',
+      choices: ['Interphase', 'Prophase', 'Metaphase', 'Telophase'], answer: 0,
+      why: 'Interphase is the growth phase where genetic material replicates — before mitosis begins.' },
+
+    { q: 'What exactly is a gene?',
+      choices: [
+        'A sequence of nucleotide bases along one DNA strand coding for one protein’s amino acid sequence',
+        'An entire chromosome',
+        'The protein that DNA produces',
+        'The double helix structure itself'
+      ], answer: 0 },
+
+    { q: 'Which sequence describes protein synthesis correctly?',
+      choices: [
+        'DNA → transcription → mRNA → travels to ribosome → translation → protein',
+        'DNA → translation → mRNA → travels to nucleus → transcription → protein',
+        'RNA → transcription → DNA → translation → protein',
+        'DNA → replication → RNA → translation → protein'
+      ], answer: 0 },
+
+    { q: 'A mutation is:',
+      choices: [
+        'A change caused by an error during DNA replication',
+        'The normal copying of DNA before cell division',
+        'The movement of mRNA out of the nucleus',
+        'A type of enzyme that cuts DNA'
+      ], answer: 0 }
   ]
 },
 
