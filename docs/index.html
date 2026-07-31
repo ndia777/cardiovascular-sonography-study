@@ -728,6 +728,17 @@ window.DECKS = [
     { term: 'Lysosomes',      def: 'the "garbage disposals" — enzymes inside dismantle cellular debris' },
     { term: 'Autophagy',      def: 'literally "eating self" — the process by which lysosomes break down the cell’s own debris' },
     { term: 'Cilia & flagella', def: 'motile extensions of the cell membrane; both are built from nine groups of three microtubules' },
+    { term: 'Cilia (what they do)', def: 'beat in a coordinated wave to drive mucus along the respiratory tract and move an egg toward the uterus' },
+    { term: 'Flagellum (what it does)', def: 'whips to move the WHOLE cell; the sperm tail is the only one in the human body, and a cell has just one' },
+    { term: 'Cytoskeleton', def: 'the internal scaffolding of protein rods and tubules that supports the cell' },
+    { term: 'Microfilaments, microtubules & intermediate filaments', def: 'the thread-like structures that together build the cytoskeleton' },
+    { term: 'Centrioles', def: 'build the spindle fibres during cell division, which drag the chromosomes into the daughter cells' },
+    { term: 'Selectively permeable', def: 'the membrane property that lets the cell choose what gets in and out' },
+    { term: 'What the bilayer admits', def: 'lipid-soluble substances cross freely; water-soluble ones cannot and need a channel or carrier' },
+    { term: 'Cell size', def: 'measured in micrometers' },
+    { term: 'Faulty ion channels', def: 'channel mutations can disturb heart rhythm, impair hearing, or cause cystic fibrosis',
+      note: 'The lecture slide names the specific ions in an image that did not extract as text — worth checking your slides for which channel goes with which condition.' },
+    { term: 'Cystic fibrosis', def: 'caused by abnormal chloride channels — thick mucus, breathing difficulty, a clogged pancreas and salty sweat' },
     { term: 'Differentiated', def: 'the term for cells that have taken on specialized characteristics' },
     { term: 'Receptors (membrane protein)', def: 'respond to extracellular signals' },
     { term: 'Pores, channels & carriers',   def: 'transport small molecules and ions; transduce signals' },
@@ -790,6 +801,7 @@ window.DECKS = [
     { term: 'Hypertonic solution',def: 'a HIGHER solute concentration than body fluids — more salt outside, so water leaves and the cell SHRINKS (crenation)' },
     { term: 'Hypotonic solution', def: 'a LOWER solute concentration than body fluids — less salt outside, so water enters and the cell SWELLS or bursts' },
     { term: 'Crenation',          def: 'the shrivelling of a cell after water leaves it in a hypertonic solution' },
+    { term: 'Hemolysis',          def: 'the bursting of a red blood cell that has taken on too much water in a hypotonic solution' },
     { term: 'Physiological steady state', def: 'concentrations of diffusing substances are unequal but STABLE — what organisms reach instead of true equilibrium' }
   ],
   questions: [
@@ -856,7 +868,10 @@ window.DECKS = [
     { term: 'Cytokinesis',def: 'division of the cytoplasm into two separate cells' },
     { term: 'Stem cells', def: 'cells that keep dividing repeatedly WITHOUT specializing, allowing continual growth and renewal' },
     { term: 'Stem cell division', def: 'a stem cell divides mitotically to yield two daughter cells identical to itself, which go on dividing' },
+    { term: 'Self-renewal', def: 'a stem cell dividing to make two new stem cells, keeping the supply topped up' },
+    { term: 'Progenitor cell', def: 'a partly specialized daughter of a stem cell, able to become only a RESTRICTED set of cell types' },
     { term: 'Differentiation', def: 'the process guiding cell specialization, by activating and suppressing the functions of many genes' },
+    { term: 'Cytokinesis vs mitosis', def: 'mitosis divides the NUCLEUS; cytokinesis divides the CYTOPLASM into two cells' },
     { term: 'Apoptosis',  def: 'PROGRAMMED cell death — the planned option for a cell that does not divide or differentiate' },
     { term: 'Necrosis',   def: 'cell death resulting from DAMAGE (unplanned)' }
   ],
@@ -882,6 +897,61 @@ window.DECKS = [
         'Apoptosis only occurs in stem cells'
       ], answer: 0,
       why: 'This distinction shows up again in cardiology — myocardial infarction kills tissue by necrosis.' }
+  ]
+},
+
+{
+  id: 'bio-division-control',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 3 — Cell Division Control & Cancer',
+  source: 'Assets/Chap 3 Study Guide Powerpoint.pptx (lecture outline)',
+  cards: [
+    { term: 'Control of cell division', def: 'how often a cell divides is tightly regulated, and the rate differs from one cell type to the next' },
+    { term: 'Cells that divide continually', def: 'skin, the intestinal lining, and the blood-forming cells of the marrow' },
+    { term: 'Neurons', def: 'divide a set number of times and then stop for good' },
+    { term: 'Tumor', def: 'a mass produced when cell division escapes its normal controls' },
+    { term: 'Benign tumor', def: 'stays put in one local area' },
+    { term: 'Malignant tumor', def: 'invasive and cancerous — able to spread beyond its original site' },
+    { term: 'Metastasize', def: 'to spread from the original site to somewhere else in the body' },
+    { term: 'Oncogene', def: 'a faulty version of a gene that drives the cell cycle, stuck switched ON far too strongly' },
+    { term: 'Tumor suppressor gene', def: 'normally puts the BRAKES on mitosis; lose it or switch it off and division runs unchecked' },
+    { term: 'The two gene types behind cancer', def: 'oncogenes, which are overactive, and tumor suppressor genes, which are disabled' }
+  ],
+  questions: [
+    { q: 'What is the difference between a benign and a malignant tumor?',
+      choices: [
+        'A benign tumor stays local; a malignant one is invasive and can metastasize',
+        'A malignant tumor stays local; a benign one spreads',
+        'Benign tumors are made of oncogenes; malignant ones are not',
+        'There is no structural difference, only size'
+      ], answer: 0 },
+
+    { q: 'An oncogene and a tumor suppressor gene fail in opposite ways. Which describes it?',
+      choices: [
+        'An oncogene is overactive; a tumor suppressor gene is inactivated',
+        'An oncogene is inactivated; a tumor suppressor gene is overactive',
+        'Both are overactive',
+        'Both are inactivated'
+      ], answer: 0,
+      why: 'Think accelerator versus brakes: cancer can come from flooring the accelerator OR from cutting the brake line.' },
+
+    { q: 'Which cells keep dividing throughout life?',
+      choices: [
+        'Skin, intestinal lining, and blood-forming cells',
+        'Neurons and cardiac muscle cells',
+        'Only stem cells in the marrow',
+        'None — all division stops after development'
+      ], answer: 0,
+      why: 'Neurons are the contrast: they divide a set number of times, then stop permanently.' },
+
+    { q: 'How does a progenitor cell differ from a stem cell?',
+      choices: [
+        'A progenitor cell is partly specialized and can become only a restricted set of cell types',
+        'A progenitor cell can become any cell type; a stem cell cannot',
+        'A progenitor cell cannot divide at all',
+        'They are two names for the same thing'
+      ], answer: 0,
+      why: 'A stem cell self-renews and keeps every option open; a progenitor has already narrowed its choices.' }
   ]
 },
 
