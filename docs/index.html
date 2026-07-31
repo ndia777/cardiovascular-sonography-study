@@ -2116,7 +2116,13 @@ function runBrowse(d){
     return;
   }
 
-  const rows = d.cards.filter(c => !f || (c.term + ' ' + c.def).toLowerCase().includes(f));
+  /* Alphabetical by term. Leading punctuation is ignored so suffix and prefix
+     entries file under their first letter — "-algia" under A, not bunched with
+     every other hyphen. (Sequence decks keep procedure order; see above.) */
+  const alpha = t => t.toLowerCase().replace(/^[^a-z0-9]+/, '');
+  const rows = d.cards
+    .filter(c => !f || (c.term + ' ' + c.def).toLowerCase().includes(f))
+    .sort((a, b) => alpha(a.term).localeCompare(alpha(b.term)));
 
   app.innerHTML = `
     <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>

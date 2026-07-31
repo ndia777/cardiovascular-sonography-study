@@ -107,6 +107,27 @@ function suite(s, label) {
         rendered.length > 1 && JSON.stringify(rendered) === JSON.stringify(expected),
         `rendered: ${rendered.join(' | ')}`);
 
+  /* The review sheet lists terms alphabetically, ignoring leading punctuation.
+     Read the order out of the rendered table, not out of a re-sorted array. */
+  for (const d of DECKS.filter(x => x.cards.length)) {
+    go('run', d.id, 'browse');
+    const shown = [...s.__app.innerHTML.matchAll(/<td class="t">([^<]*)</g)].map(m => m[1].trim());
+    const key = t => t.toLowerCase().replace(/^[^a-z0-9]+/, '');
+    const ordered = [...shown].sort((a, b) => key(a).localeCompare(key(b)));
+    check(`[${label}] ${d.id} review sheet is alphabetical`,
+          shown.length > 1 && JSON.stringify(shown) === JSON.stringify(ordered),
+          `first few: ${shown.slice(0, 4).join(' | ')}`);
+  }
+
+  /* Sequence decks keep procedure order — alphabetising a procedure is wrong */
+  for (const d of DECKS.filter(x => x.steps.length)) {
+    go('run', d.id, 'browse');
+    const nums = [...s.__app.innerHTML.matchAll(/<b>(\d+)<\/b>/g)].map(m => +m[1]);
+    check(`[${label}] ${d.id} review sheet keeps step order`,
+          JSON.stringify(nums) === JSON.stringify(nums.slice().sort((a, b) => a - b)),
+          `got ${nums.slice(0, 6).join(',')}`);
+  }
+
   /* A trailing "Example: …" gets its own line in Recall. Check the rendered
      markup, and confirm the definition text still arrives escaped. */
   const egCard = DECKS.flatMap(d => recallableCards(d).map(c => [d, c]))
