@@ -508,6 +508,310 @@ window.DECKS = [
   ]
 },
 
+{
+  id: 'mt2-overview',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 2 — Overview (Lecture Slides)',
+  source: 'Assets/Medical Terminology Chapter 2 Powerpoint.pptx',
+  cards: [
+    /* ---- anatomical reference systems ---- */
+    { term: 'Anatomical position', def: 'standing erect and facing forward, arms at the sides, palms turned to the front' },
+    { fact: true, term: 'The body planes', def: 'sagittal, midsagittal, frontal (coronal) and transverse' },
+    { term: 'Sagittal plane', def: 'a VERTICAL plane dividing the body into UNEQUAL left and right portions' },
+    { term: 'Midsagittal plane', def: 'the vertical plane dividing the body into EQUAL left and right halves — the midline' },
+    { term: 'Frontal plane', def: 'a vertical plane dividing the body into anterior (front) and posterior (back) portions — also called coronal' },
+    { term: 'Transverse plane', def: 'a HORIZONTAL plane dividing the body into superior (upper) and inferior (lower) portions' },
+    { term: 'Superior', def: 'uppermost, above, or toward the head' },
+    { term: 'Inferior', def: 'lowermost, below, or toward the feet' },
+    { term: 'Lateral', def: 'toward the side of the body, away from the midline' },
+    { term: 'Medial', def: 'toward, or nearer, the midline' },
+    { term: 'Proximal', def: 'nearest the midline or the beginning of a body structure' },
+    { term: 'Distal', def: 'farthest from the midline or the beginning of a body structure' },
+    { term: 'Ventral', def: 'the front, or belly side' },
+    { term: 'Dorsal', def: 'the back of the body or organ' },
+    { term: 'Cephalic', def: 'toward the head' },
+    { term: 'Caudal', def: 'toward the lower part of the body' },
+    { term: 'Anterior', def: 'situated in the front' },
+    { term: 'Posterior', def: 'situated in the back' },
+
+    /* ---- body cavities ---- */
+    { fact: true, term: 'The two major body cavities', def: 'the dorsal (back) and the ventral (front)' },
+    { term: 'Dorsal cavity', def: 'the cavity along the back of the body and head, holding the organs of the nervous system' },
+    { term: 'Cranial cavity', def: 'the space within the skull that surrounds and protects the brain' },
+    { term: 'Spinal cavity', def: 'the space within the spinal column that surrounds and protects the spinal cord' },
+    { term: 'Ventral cavity', def: 'the cavity along the front of the body, holding the organs that sustain homeostasis' },
+    { term: 'Thoracic cavity', def: 'the chest cavity, surrounding and protecting the heart and lungs' },
+    { term: 'Diaphragm', def: 'the muscle separating the thoracic cavity from the abdominal cavity' },
+    { term: 'Abdominal cavity', def: 'holds the major organs of digestion' },
+    { term: 'Pelvic cavity', def: 'the space formed by the hip bones, holding the reproductive and excretory organs' },
+    { term: 'Abdominopelvic cavity', def: 'the abdominal and pelvic cavities treated as a single unit' },
+    { term: 'Inguinal', def: 'relating to the groin — the entire lower area of the abdomen' },
+
+    /* ---- regions and quadrants ---- */
+    { fact: true, term: 'The nine abdominal regions', def: 'hypochondriac, epigastric, lumbar, umbilical, iliac and hypogastric — right and left where paired' },
+    { term: 'Hypochondriac regions', def: 'the upper regions on each side, covered by the lower ribs' },
+    { term: 'Epigastric region', def: 'the region above the stomach' },
+    { term: 'Lumbar regions', def: 'the regions on each side, near the inward curve of the spine' },
+    { term: 'Umbilical region', def: 'the region surrounding the navel' },
+    { term: 'Iliac regions', def: 'the regions on each side, near the hip bones' },
+    { term: 'Hypogastric region', def: 'the region below the stomach' },
+    { term: 'Quadrant', def: 'divided into four — the scheme used to say roughly where abdominal pain or an organ sits' },
+    { term: 'RUQ', def: 'right upper quadrant' },
+    { term: 'LUQ', def: 'left upper quadrant' },
+    { term: 'RLQ', def: 'right lower quadrant' },
+    { term: 'LLQ', def: 'left lower quadrant' },
+
+    /* ---- peritoneum ---- */
+    { term: 'Parietal', def: 'referring to the wall of a cavity' },
+    { term: 'Visceral', def: 'relating to the internal organs' },
+    { term: 'Parietal peritoneum', def: 'the OUTER layer of the peritoneum, lining the interior of the abdominal wall' },
+    { term: 'Visceral peritoneum', def: 'the INNER layer of the peritoneum, wrapping the organs of the abdominal cavity' },
+    { term: 'Mesentery', def: 'a fused double layer of parietal peritoneum that anchors parts of the intestine to the abdominal wall' },
+    { term: 'Retroperitoneal', def: 'located behind the peritoneum' },
+    { term: 'Peritonitis', def: 'inflammation of the peritoneum' },
+
+    /* ---- cells ---- */
+    { term: 'Cytology', def: 'the study of the anatomy, physiology, pathology and chemistry of cells' },
+    { term: 'Cytologist', def: 'a specialist in the study and analysis of cells' },
+    { term: 'Cell membrane', def: 'the tissue surrounding a cell, protecting its contents from the external environment' },
+    { term: 'Cytoplasm', def: 'the material inside the cell membrane that is not part of the nucleus' },
+    { term: 'Nucleus', def: 'the structure inside the cell, wrapped in the nuclear membrane, that controls the cell’s activities and helps it divide' },
+
+    /* ---- stem cells ---- */
+    { term: 'Stem cells', def: 'unspecialized cells able to renew themselves by division for long periods, and to become cells with special functions' },
+    { term: 'Undifferentiated', def: 'not having a specialized function or structure' },
+    { term: 'Differentiated', def: 'having a specialized function or structure' },
+    { term: 'Adult stem cells', def: 'undifferentiated cells sitting among the differentiated cells of a tissue, whose usual job is to maintain and repair it — also called somatic stem cells' },
+    { term: 'Embryonic stem cells', def: 'undifferentiated cells able to become ANY adult cell, taken from cord blood or from surplus embryos' },
+    { term: 'Stem cell therapy', def: 'using stem cells to heal injuries and treat disease — also called regenerative medicine' },
+    { term: 'Hematopoietic', def: 'blood-forming — describes the bone marrow tissue stem cells are usually harvested from' },
+    { term: 'Graft-versus-host disease', def: 'the rejection that can follow a transplant when donor and recipient are not well matched' },
+
+    /* ---- genetics ---- */
+    { term: 'Dominant gene', def: 'produces its trait when inherited from EITHER parent' },
+    { term: 'Recessive gene', def: 'produces its trait only when the same gene comes from BOTH parents' },
+    { term: 'Genome', def: 'the complete set of an organism’s genetic information' },
+    { fact: true, term: 'The Human Genome Project', def: 'first complete mapping of the human genome, published in 2003 after 13 years of work' },
+    { term: 'Chromosome', def: 'a genetic structure inside the nucleus, made of DNA molecules carrying the body’s genes' },
+    { term: 'Somatic cell', def: 'any body cell except a sex cell — carries 46 chromosomes in 23 pairs' },
+    { term: 'Gamete', def: 'a sex cell, sperm or egg — the only cell type carrying 23 single chromosomes rather than 46' },
+    { term: 'DNA', def: 'deoxyribonucleic acid — the main component of chromosomes, carrying the body’s genetic information',
+      note: 'Found in every cell type except erythrocytes (red blood cells). No two patterns are alike except in identical twins.' },
+    { term: 'Genetic mutation', def: 'a change in the sequence of a DNA molecule' },
+    { term: 'Somatic cell mutation', def: 'a change within body cells — affects the individual but is NOT passed to the next generation' },
+    { term: 'Gametic cell mutation', def: 'a change within a sex cell — CAN be passed from a parent to their children' },
+    { term: 'Genetic engineering', def: 'manipulating or splicing genes for scientific or medical purposes' },
+    { term: 'Genetic disorder', def: 'a pathological condition caused by an absent or defective gene — also called a hereditary disease' },
+    { term: 'Down syndrome', def: 'a genetic disorder usually caused by a third copy of chromosome 21, which is why it is also called trisomy 21' },
+
+    /* ---- tissues ---- */
+    { term: 'Tissue', def: 'a group or layer of similarly specialized cells joined together to carry out a specific function' },
+    { term: 'Histology', def: 'the microscopic study of the structure, composition and function of tissues' },
+    { term: 'Histologist', def: 'a non-physician specialist who studies the microscopic structure of tissues' },
+    { fact: true, term: 'The four main tissue types', def: 'epithelial, connective, muscle and nerve' },
+    { term: 'Epithelial tissue', def: 'forms a protective covering over every internal and external body surface, and forms the glands' },
+    { term: 'Epithelium', def: 'the epithelial tissue forming the epidermis of the skin and the surface layer of mucous membranes' },
+    { term: 'Endothelium', def: 'the epithelial tissue lining the blood and lymph vessels, body cavities, glands and organs' },
+    { term: 'Connective tissue', def: 'supports and connects the organs and other body tissues' },
+    { term: 'Dense connective tissue', def: 'forms the joints and the framework of the body — bone and cartilage' },
+    { term: 'Adipose tissue', def: 'fat — provides protective padding, insulation and support' },
+    { term: 'Loose connective tissue', def: 'holds organs in place and binds tissue together' },
+    { term: 'Fluid connective tissue', def: 'blood and lymph — carries nutrients and waste around the body' },
+    { term: 'Muscle tissue', def: 'contains cells with the specialized ability to contract and relax' },
+    { term: 'Nerve tissue', def: 'contains cells specialized to react to stimuli and conduct electrical impulses' },
+    { term: 'Aplasia', def: 'the defective development, or congenital absence, of an organ or tissue' },
+    { term: 'Hypoplasia', def: 'incomplete development of an organ or tissue, from too few cells' },
+    { term: 'Anaplasia', def: 'a change in the structure of cells and in how they are oriented to each other' },
+    { term: 'Dysplasia', def: 'abnormal development or growth of cells, or abnormal cells within a tissue' },
+    { term: 'Hyperplasia', def: 'an increase in the NUMBER of cells in a tissue or organ' },
+    { term: 'Hypertrophy', def: 'an increase in BULK from cells growing larger, not from there being more of them' },
+
+    /* ---- glands ---- */
+    { term: 'Gland', def: 'a group of specialized epithelial cells able to produce secretions' },
+    { term: 'Secretion', def: 'the substance a gland produces' },
+    { term: 'Exocrine glands', def: 'secrete substances into DUCTS leading to other organs or out of the body' },
+    { term: 'Endocrine glands', def: 'produce hormones and have NO ducts, pouring their secretions straight into the bloodstream' },
+    { term: 'aden', def: 'the word root meaning gland' },
+    { term: 'Adenitis', def: 'inflammation of a gland' },
+    { term: 'Adenoma', def: 'a BENIGN tumor starting in the epithelial tissue of a gland or gland-like structure' },
+    { term: 'Adenocarcinoma', def: 'a MALIGNANT tumor originating in the glands, able to spread elsewhere in the body' },
+    { term: 'Adenosis', def: 'any disease or condition of a gland' },
+
+    /* ---- organs and systems ---- */
+    { term: 'Organ', def: 'a somewhat independent part of the body that performs a specific function' },
+    { term: 'Body system', def: 'related tissues and organs grouped together because they share a specialized function' },
+
+    /* ---- pathology ---- */
+    { term: 'Pathology', def: 'the study of disease — its nature and cause, and the changes it produces in structure and function' },
+    { term: 'Pathologist', def: 'a physician who specializes in laboratory analysis of diseased tissue to confirm a diagnosis' },
+    { term: 'Etiology', def: 'the study of the CAUSES of diseases or abnormal conditions' },
+    { term: 'Pathogen', def: 'a disease-producing microorganism, such as a virus' },
+    { term: 'Communicable disease', def: 'any condition transmitted from one person to another' },
+
+    /* ---- modes of transmission ---- */
+    { term: 'Direct transmission', def: 'human-to-human contact, or exchange of body fluids' },
+    { term: 'Bloodborne transmission', def: 'infected blood or body fluid entering the bloodstream.\nExample: HIV and hepatitis B' },
+    { term: 'Droplet transmission', def: 'infected respiratory droplets reaching someone nearby.\nExample: measles, colds, COVID-19 and flu' },
+    { term: 'Indirect contact transmission', def: 'contact with a contaminated surface — which is why hand washing matters so much' },
+    { term: 'Airborne transmission', def: 'pathogens floating in the air, which stay aloft and can infect someone long after the infected person has left.\nExample: tuberculosis, measles and chicken pox' },
+    { term: 'Foodborne transmission', def: 'consuming contaminated food or water — also called fecal-oral transmission' },
+    { term: 'Vector-borne transmission', def: 'an insect bite from a blood-sucking vector.\nExample: mosquitoes carrying malaria and West Nile virus' },
+
+    /* ---- outbreaks ---- */
+    { term: 'Epidemiologist', def: 'a specialist in the study of disease outbreaks within a population group' },
+    { term: 'CDC', def: 'Centers for Disease Control and Prevention — the national agency tracking outbreaks and working to prevent their spread' },
+    { term: 'Endemic', def: 'the ONGOING presence of a disease within a population, group or area' },
+    { term: 'Epidemic', def: 'a SUDDEN, widespread outbreak within a specific population group or area' },
+    { term: 'Pandemic', def: 'an outbreak spreading over a LARGE geographic area, possibly worldwide' },
+
+    /* ---- types of disease ---- */
+    { term: 'Organic disorder', def: 'produces symptoms that are detectable PHYSICAL changes in the body' },
+    { term: 'Functional disorder', def: 'produces physical symptoms for which NO disease or organic cause can be found' },
+    { term: 'Iatrogenic illness', def: 'an unfavorable response caused BY the prescribed medical treatment' },
+    { term: 'Idiopathic disease', def: 'a disease with no known cause' },
+    { term: 'Infectious disease', def: 'an illness caused by living pathogenic organisms such as bacteria and viruses' },
+    { term: 'Nosocomial infection', def: 'a disease acquired in a hospital or clinical setting — also called a hospital-acquired infection' },
+    { term: 'Syndrome', def: 'signs and symptoms that occur together as part of a specific disease process' },
+    { term: 'Metabolic syndrome', def: 'a cluster of risk factors — raised blood pressure, abdominal fat, high insulin and high cholesterol — that together raise the risk of heart disease, stroke and type 2 diabetes' },
+
+    /* ---- congenital, aging, death ---- */
+    { term: 'Congenital disorder', def: 'an abnormal condition present at the time of birth' },
+    { term: 'Anomaly', def: 'a deviation from what is regarded as normal' },
+    { term: 'Premature birth', def: 'birth before the 37th week' },
+    { term: 'Aging', def: 'the normal progression of the life cycle, eventually ending in death' },
+    { term: 'Geriatrics', def: 'the study of the medical problems and care of older people — also called gerontology' },
+    { term: 'Postmortem', def: 'after death' },
+    { term: 'Autopsy', def: 'a postmortem examination, usually done to determine the cause of death' },
+
+    /* ---- advance directives ---- */
+    { term: 'Advance directives', def: 'documents setting out what treatment someone wants, and who may decide for them, if they cannot speak for themselves' },
+    { term: 'Health care proxy', def: 'a durable power of attorney for health care — appoints a trusted person to make treatment decisions' },
+    { term: 'Living will', def: 'a statement of wishes for end-of-life medical care, also known as a POLST' },
+    { term: 'Do Not Resuscitate order', def: 'states that the person does not wish to receive CPR — also called no code, or allow natural death' },
+
+    /* ---- abbreviations ---- */
+    { term: 'GP', def: 'general practitioner' },
+    { term: 'HD', def: 'Huntington’s disease' },
+    { term: 'PA', def: 'physician assistant' }
+  ],
+  questions: [
+    { q: 'Which plane divides the body into EQUAL left and right halves?',
+      choices: ['Midsagittal', 'Sagittal', 'Frontal', 'Transverse'], answer: 0,
+      why: 'A plain sagittal plane is also vertical and front-to-back, but it divides the body UNEQUALLY. Only the midsagittal runs down the midline.' },
+
+    { q: 'The frontal (coronal) plane divides the body into:',
+      choices: [
+        'Anterior and posterior portions',
+        'Superior and inferior portions',
+        'Equal left and right halves',
+        'Proximal and distal portions'
+      ], answer: 0 },
+
+    { q: 'Which cavity contains the organs of the nervous system?',
+      choices: ['The dorsal cavity', 'The ventral cavity', 'The thoracic cavity', 'The abdominopelvic cavity'], answer: 0,
+      why: 'The dorsal cavity splits into the cranial cavity (brain) and the spinal cavity (spinal cord). The ventral cavity holds the organs that sustain homeostasis.' },
+
+    { q: 'What separates the thoracic cavity from the abdominal cavity?',
+      choices: ['The diaphragm', 'The peritoneum', 'The mesentery', 'The pelvic girdle'], answer: 0 },
+
+    { q: 'Which correctly pairs the two layers of the peritoneum?',
+      choices: [
+        'Parietal lines the abdominal wall; visceral wraps the organs',
+        'Parietal wraps the organs; visceral lines the abdominal wall',
+        'Both line the abdominal wall, at different depths',
+        'Both wrap the organs, at different depths'
+      ], answer: 0,
+      why: 'The word roots give it away: parietal means cavity WALL, visceral means relating to the internal ORGANS.' },
+
+    { q: 'A somatic cell and a gamete differ how?',
+      choices: [
+        'A somatic cell has 46 chromosomes in 23 pairs; a gamete has 23 single chromosomes',
+        'A gamete has 46 chromosomes; a somatic cell has 23',
+        'Both have 46, but a gamete carries no DNA',
+        'A somatic cell is a sex cell; a gamete is any other body cell'
+      ], answer: 0,
+      why: 'Each parent contributes 23, so the offspring gets 46. The X or Y from the father determines the sex of the child.' },
+
+    { q: 'Which mutation CAN be passed on to a person’s children?',
+      choices: [
+        'A gametic cell mutation',
+        'A somatic cell mutation',
+        'Both can be inherited',
+        'Neither can be inherited'
+      ], answer: 0,
+      why: 'Gametes are the sex cells, so a change there travels to the next generation. A somatic mutation affects only the individual.' },
+
+    { q: 'A recessive genetic condition appears in the offspring when:',
+      choices: [
+        'The same recessive gene is inherited from BOTH parents',
+        'The recessive gene is inherited from either parent',
+        'One parent contributes a recessive and the other a normal gene',
+        'Neither parent carries the gene'
+      ], answer: 0,
+      why: 'Sickle cell anemia is the example given. A dominant gene, by contrast, needs to come from only one parent.' },
+
+    { q: 'Which tissue type forms the glands?',
+      choices: ['Epithelial', 'Connective', 'Muscle', 'Nerve'], answer: 0,
+      why: 'Epithelial tissue also forms the protective covering over every internal and external body surface.' },
+
+    { q: 'Endothelium differs from epithelium in that it:',
+      choices: [
+        'Lines the blood and lymph vessels, body cavities, glands and organs',
+        'Forms the epidermis of the skin',
+        'Is a type of connective rather than epithelial tissue',
+        'Contains cells that contract and relax'
+      ], answer: 0 },
+
+    { q: 'Adipose tissue is classified as which kind of tissue?',
+      choices: ['Connective', 'Epithelial', 'Muscle', 'Nerve'], answer: 0,
+      why: 'It is one of the four connective types, alongside dense, loose and fluid. Its job is padding, insulation and support.' },
+
+    { q: 'What is the difference between hyperplasia and hypertrophy?',
+      choices: [
+        'Hyperplasia is more cells; hypertrophy is larger cells',
+        'Hyperplasia is larger cells; hypertrophy is more cells',
+        'They describe the same process',
+        'Hyperplasia affects glands only; hypertrophy affects muscle only'
+      ], answer: 0 },
+
+    { q: 'A patient develops a drug-resistant infection three days into a hospital stay. This is:',
+      choices: [
+        'A nosocomial infection',
+        'An idiopathic disease',
+        'An organic disorder',
+        'A congenital disorder'
+      ], answer: 0,
+      why: 'Also called a hospital-acquired infection. MRSA is the standard example.' },
+
+    { q: 'Tuberculosis spreading through particles that stay suspended in a room is which mode of transmission?',
+      choices: [
+        'Airborne',
+        'Droplet',
+        'Indirect contact',
+        'Vector-borne'
+      ], answer: 0,
+      why: 'The distinction from droplet transmission is persistence: airborne microparticles linger and can infect someone after the source has left the room.' },
+
+    { q: 'Which describes an organic disorder rather than a functional one?',
+      choices: [
+        'It produces detectable physical changes in the body',
+        'It produces symptoms with no identifiable physical cause',
+        'It is caused by prescribed medical treatment',
+        'It has no known cause at all'
+      ], answer: 0,
+      why: 'Chickenpox is the organic example; chronic fatigue syndrome the functional one. Iatrogenic means caused by treatment, and idiopathic means cause unknown.' },
+
+    { q: 'A living will and a health care proxy differ how?',
+      choices: [
+        'A living will states treatment wishes; a proxy appoints someone to decide',
+        'A living will appoints someone to decide; a proxy states treatment wishes',
+        'They are two names for the same document',
+        'Only a living will applies to end-of-life care'
+      ], answer: 0,
+      why: 'Both are advance directives. A DNR order is narrower still — it addresses CPR specifically.' }
+  ]
+},
+
 /* ─────────────────────────  BIO101 · ANATOMY & PHYSIOLOGY 1  ─────────────── */
 
 {

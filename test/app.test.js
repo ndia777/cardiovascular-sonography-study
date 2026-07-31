@@ -319,6 +319,26 @@ function suite(s, label) {
      definitions to stay green is worse than no check. Detail that genuinely
      does not belong in the prompt goes in `note`, which shows after answering. */
 
+  /* No deck may define the same term twice, and no two Recall cards may reduce
+     to the same typed answer — "DNA" and "DNA", or two terms differing only in
+     a parenthetical. Either way the second card is unanswerable: whatever you
+     type is graded against one card while the other still waits in the queue. */
+  const collisions = [];
+  for (const d of DECKS) {
+    const byTerm = {}, byTyped = {};
+    for (const c of d.cards) {
+      const t = c.term.toLowerCase();
+      if (byTerm[t]) collisions.push(`${d.id} defines "${c.term}" twice`);
+      byTerm[t] = 1;
+      if (c.fact) continue;
+      const typed = c.term.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
+      if (byTyped[typed]) collisions.push(`${d.id}: "${byTyped[typed]}" and "${c.term}" take the same answer`);
+      byTyped[typed] = c.term;
+    }
+  }
+  check(`[${label}] no duplicate or colliding terms in a deck`, !collisions.length,
+        collisions.join('\n      '));
+
   /* The answer the app displays must always be accepted when typed back. This
      is the invariant that a comma in a term name ("Pores, channels & carriers")
      used to break, trapping the card in an unclearable loop. */
