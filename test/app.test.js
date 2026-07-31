@@ -242,6 +242,17 @@ function suite(s, label) {
   }
   check(`[${label}] no question-stub terms reach Recall`, !stubbed, stubbed);
 
+  /* Recall makes you type the term, so a long list is a punishing answer.
+     "Microfilaments, microtubules & intermediate filaments" was one; the fix was
+     to flip the card so the one-word term is the answer. Short list-terms like
+     "Pores, channels & carriers" are fine — any one alternative is accepted. */
+  const unwieldy = [];
+  for (const d of DECKS) for (const c of recallableCards(d)) {
+    if (c.term.length > 40 && /[,&]| and /.test(c.term))
+      unwieldy.push(`${d.id} / "${c.term}" (${c.term.length} chars)`);
+  }
+  check(`[${label}] no list-shaped Recall answers`, !unwieldy.length, unwieldy.join('\n      '));
+
   /* No automated check for "definition trails off into trivia". Flagging a
      semicolon with a long tail was tried and over-fired badly: "pelvic cavity —
      the space formed by the hip bones; contains reproductive and excretory
