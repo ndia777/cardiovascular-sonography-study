@@ -363,10 +363,46 @@ function suite(s, label) {
     ['bio-ch3', 'Metaphase', 'Anaphase', 'wrong'],
     ['mt1-roots', 'gastr/o', '', 'wrong'],
   ];
+  const deckOf = id => DECKS.find(d => d.id === id);
   for (const [deck, term, typed, want] of spelling) {
-    const got = judge(typed, card(deck, term));
+    const got = judge(typed, card(deck, term), deckOf(deck));
     check(`[${label}] spelling "${typed}" vs ${term}`, got === want, `wanted ${want}, got ${got}`);
   }
+
+  /* A term ending in a category word accepts the short form, but only when no
+     other card in the deck answers to it. */
+  const shortCases = [
+    ['mt2-overview', 'Hypogastric region', 'Hypogastric', 'exact'],
+    ['mt2-overview', 'Hypogastric region', 'Hypogastric region', 'exact'],
+    ['mt2-overview', 'Umbilical region', 'Umbilical', 'exact'],
+    ['mt2-overview', 'Sagittal plane', 'Sagittal', 'exact'],
+    /* blocked: "Dorsal" and "Ventral" are their own cards, meaning something else */
+    ['mt2-overview', 'Dorsal cavity', 'Dorsal', 'wrong'],
+    ['mt2-overview', 'Ventral cavity', 'Ventral', 'wrong'],
+    ['mt2-overview', 'Parietal peritoneum', 'Parietal', 'wrong'],
+    /* still strict on actual spelling */
+    ['mt2-overview', 'Hypogastric region', 'Hypergastric', 'wrong'],
+    ['mt2-overview', 'Epigastric region', 'Hypogastric', 'wrong'],
+  ];
+  for (const [deck, term, typed, want] of shortCases) {
+    const c = card(deck, term);
+    if (!c) { check(`[${label}] short form: ${term} exists`, false, 'card missing'); continue; }
+    const got = judge(typed, c, deckOf(deck));
+    check(`[${label}] short form "${typed}" vs ${term} -> ${want}`, got === want, `got ${got}`);
+  }
+
+  /* The invariant that matters: every displayed answer is still accepted, and
+     no short form silently answers a DIFFERENT card in the same deck. */
+  let hijack = '';
+  for (const d of DECKS) for (const c of recallableCards(d)) {
+    const sf = /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?)$/i.exec(c.term);
+    if (!sf) continue;
+    const short = c.term.slice(0, sf.index).trim();
+    const other = d.cards.find(o => o !== c && judge(short, o, d) === 'exact');
+    if (other && judge(short, c, d) === 'exact' && !hijack)
+      hijack = `${d.id}: "${short}" answers both "${c.term}" and "${other.term}"`;
+  }
+  check(`[${label}] no short form answers two cards`, !hijack, hijack);
 
   /* full playthroughs terminate and reach a result */
   for (const [deck, mode] of [['bio-ch3', 'recall'], ['ekg-basics', 'quiz'], ['ekg-leads', 'chest']]) {

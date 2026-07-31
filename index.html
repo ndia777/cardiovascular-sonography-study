@@ -399,16 +399,40 @@ const normalize = s => String(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/
 const alternatives = card =>
   [card.term, ...card.term.split(/,| or /i)].map(s => s.trim()).filter(Boolean);
 
+/* Terms ending in a category word the definition already supplies — "Hypogastric
+   region", defined as "the region below the stomach" — should accept the short
+   form too. Requiring the redundant word tests typing, not knowledge. */
+const CATEGORY_TAIL =
+  /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?)$/i;
+const shortForm = card => {
+  const m = CATEGORY_TAIL.exec(card.term);
+  return m ? card.term.slice(0, m.index).trim() : null;
+};
+
 /* 'exact' | 'wrong'. Every letter must be right — there is deliberately no typo
    tolerance. Medical terminology is full of pairs that differ by one or two
    letters and mean opposite things (hyper/hypo, -ostomy/-otomy, inter/intra),
    and spelling is graded, so a near-miss is a miss.
    Case, spacing and the /-o notation are still ignored: "abdomin/o", "Abdomino"
    and "abdomin o" are the same spelling, just written differently. */
-function judge(input, card){
+function judge(input, card, deck){
   const n = normalize(input);
   if (!n) return 'wrong';
-  return alternatives(card).map(normalize).some(t => t && t === n) ? 'exact' : 'wrong';
+  if (alternatives(card).map(normalize).some(t => t && t === n)) return 'exact';
+
+  /* Accept the short form only when nothing ELSE in the deck answers to it —
+     neither another card's full name nor another card's short form.
+     "Hypogastric region" → "Hypogastric" is safe. "Dorsal cavity" → "Dorsal" is
+     not: Dorsal is its own card. "Genetic mutation" → "Genetic" is not either:
+     Genetic disorder would shorten to the same thing. */
+  const short = normalize(shortForm(card) || '');
+  if (short && short === n){
+    const taken = ((deck && deck.cards) || []).some(o => o !== card && (
+      alternatives(o).map(normalize).some(t => t === n) ||
+      normalize(shortForm(o) || '') === n));
+    if (!taken) return 'exact';
+  }
+  return 'wrong';
 }
 
 function runRecall(d){
@@ -469,7 +493,7 @@ function score(card, wrong){
 function checkRecall(){
   const s = session, c = s.queue[0];
   if (s.verdict || !s.typed.trim()) return;
-  s.verdict = judge(s.typed, c);
+  s.verdict = judge(s.typed, c, deckById(view.deck));
   score(c, s.verdict === 'wrong');
   render();
 }
