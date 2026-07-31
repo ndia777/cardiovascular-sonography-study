@@ -65,13 +65,15 @@ function boot(decksSrc, engineSrc, label) {
 /* ------------------------------------------------------------ assertions */
 /* Mirrors the mode list the deck menu builds: card modes only for decks with
    cards, the ordering mode only for decks with steps. */
+const recallableCards = d => (d.cards || []).filter(c => !c.fact);
 const modesFor = d => {
   const cards = (d.cards || []).length;
   const steps = (d.steps || []).length;
   const written = (d.questions || []).length;
   const m = [];
   if (steps) m.push('order');
-  if (cards) m.push('recall', 'learn', 'match');
+  if (recallableCards(d).length) m.push('recall');
+  if (cards) m.push('learn', 'match');
   if (cards || written) m.push('quiz');
   if (d.chest) m.push('chest');
   m.push('browse');
@@ -223,6 +225,26 @@ function suite(s, label) {
         || q.answer < 0 || q.answer > 3 || new Set(q.choices).size !== 4) badWritten++;
   }
   check(`[${label}] hand-written questions well formed`, badWritten === 0, `${badWritten} bad`);
+
+  /* Recall shows the definition and asks you to type the term, so a card whose
+     "term" is really a question stub ("Where protein synthesis happens") is
+     unanswerable there. Those must be marked `fact: true`, which keeps them in
+     flashcards and matching but takes them out of Recall. */
+  const STUB = /^(where|how|what|which|why|when)\b|^(size|parts|forms|uses|steps|inputs|products|order|reasons|types|purpose|number) of\b|\?$/i;
+  let stubbed = '';
+  for (const d of DECKS) for (const c of recallableCards(d)) {
+    if (STUB.test(c.term) && !stubbed) stubbed = `${d.id} / "${c.term}" — mark it fact: true`;
+  }
+  check(`[${label}] no question-stub terms reach Recall`, !stubbed, stubbed);
+
+  /* No automated check for "definition trails off into trivia". Flagging a
+     semicolon with a long tail was tried and over-fired badly: "pelvic cavity —
+     the space formed by the hip bones; contains reproductive and excretory
+     organs" is a two-part definition, and the transport cards deliberately read
+     category; mechanism; example. Whether a trailing clause helps identify the
+     term is a judgment call, and a check that forces rewrites of good
+     definitions to stay green is worse than no check. Detail that genuinely
+     does not belong in the prompt goes in `note`, which shows after answering. */
 
   /* The answer the app displays must always be accepted when typed back. This
      is the invariant that a comma in a term name ("Pores, channels & carriers")

@@ -206,6 +206,13 @@ const STORE = 'cvs-study-v1';
    Default both so the rest of the engine never has to check. */
 DECKS.forEach(d => { d.cards = d.cards || []; d.steps = d.steps || []; });
 
+/* Not every card is a term with a definition. Some are a topic paired with a
+   fact, list, or sequence ("Parts of ATP", "Order of chest placement"). Those
+   are marked `fact: true`: fine to flip through or match, but useless in Recall,
+   which shows the definition and asks you to type the term — you would have to
+   type the question. Recall and reverse multiple choice skip them. */
+const recallable = d => d.cards.filter(c => !c.fact);
+
 /* ---------- storage ---------- */
 const load = () => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } };
 const save = o => { try { localStorage.setItem(STORE, JSON.stringify(o)); } catch {} };
@@ -300,10 +307,10 @@ function screenDeck(){
   const modes = [];
   if (d.steps.length)
     modes.push(['order','Put in Order','Rebuild the procedure one step at a time, in sequence.']);
-  if (d.cards.length){
+  if (recallable(d).length)
     modes.push(['recall','Recall — Type It In','Read the definition, type the term, and get marked right or wrong on the spot.']);
+  if (d.cards.length)
     modes.push(['learn','Flashcards','Flip through the terms and grade yourself. Missed cards come back around.']);
-  }
   if (d.cards.length || (d.questions || []).length)
     modes.push(['quiz','Multiple Choice','Written concept questions plus auto-generated term questions, with explanations.']);
   if (d.cards.length)
@@ -393,7 +400,8 @@ function judge(input, card){
 }
 
 function runRecall(d){
-  if (!session) session = { queue: shuffle(d.cards), total: d.cards.length, right: 0, wrong: 0,
+  const pool = recallable(d);
+  if (!session) session = { queue: shuffle(pool), total: pool.length, right: 0, wrong: 0,
                             typed: '', verdict: null, missed: [], attempted: new Set() };
   const s = session;
 
@@ -502,13 +510,18 @@ function autoQuestions(d){
     const fwd = distractors(pool, 3, c => c.def, [card.def]);
     if (fwd){
       const ch = shuffle([card.def, ...fwd.map(c => c.def)]);
-      out.push({ card, q:`What does <b>${esc(card.term)}</b> mean?`, choices: ch,
-                 answer: ch.indexOf(card.def), why: card.note });
+      /* "What does Parts of ATP mean?" reads badly — a fact card is a topic, so
+         pose it as the topic itself. */
+      const stem = card.fact
+        ? `<b>${esc(card.term.replace(/\?$/, ''))}</b>?`
+        : `What does <b>${esc(card.term)}</b> mean?`;
+      out.push({ card, q: stem, choices: ch, answer: ch.indexOf(card.def), why: card.note });
     }
 
     /* Reverse direction only when no other card shares this meaning, otherwise
-       "which term means X" would have more than one right answer. */
-    if (pool.length === d.cards.length - 1){
+       "which term means X" would have more than one right answer. A fact card
+       has no term to name, so it never gets a reverse question. */
+    if (!card.fact && pool.length === d.cards.length - 1){
       const rev = distractors(pool, 3, c => c.term, [card.term]);
       if (rev){
         const ch = shuffle([card.term, ...rev.map(c => c.term)]);
