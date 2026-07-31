@@ -274,16 +274,20 @@ function suite(s, label) {
   }
   check(`[${label}] no question-stub terms reach Recall`, !stubbed, stubbed);
 
-  /* Recall makes you type the term, so a long list is a punishing answer.
-     "Microfilaments, microtubules & intermediate filaments" was one; the fix was
-     to flip the card so the one-word term is the answer. Short list-terms like
-     "Pores, channels & carriers" are fine — any one alternative is accepted. */
+  /* Recall makes you type the term, so a compound list is a punishing answer.
+     An "&" (or " and ") marks a term whose parts are all needed — "Pores,
+     channels & carriers" — and only the first comma-piece is ever accepted,
+     which no one could guess. Those belong in flashcards/matching, not Recall.
+     Commas ALONE are different: they list alternative forms of one term
+     ("mega-, megalo-"), and any single form is accepted, so they are fine. */
   const unwieldy = [];
   for (const d of DECKS) for (const c of recallableCards(d)) {
-    if (c.term.length > 40 && /[,&]| and /.test(c.term))
+    if (/&| and /.test(c.term))
+      unwieldy.push(`${d.id} / "${c.term}" — compound list, mark it fact: true`);
+    else if (c.term.length > 40 && /,/.test(c.term))
       unwieldy.push(`${d.id} / "${c.term}" (${c.term.length} chars)`);
   }
-  check(`[${label}] no list-shaped Recall answers`, !unwieldy.length, unwieldy.join('\n      '));
+  check(`[${label}] no compound-list Recall answers`, !unwieldy.length, unwieldy.join('\n      '));
 
   /* No automated check for "definition trails off into trivia". Flagging a
      semicolon with a long tail was tried and over-fired badly: "pelvic cavity —
