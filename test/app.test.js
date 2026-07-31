@@ -372,11 +372,18 @@ function suite(s, label) {
   /* A term ending in a category word accepts the short form, but only when no
      other card in the deck answers to it. */
   const shortCases = [
+    /* redundant: the definition already says "region" / "plane" */
     ['mt2-overview', 'Hypogastric region', 'Hypogastric', 'exact'],
     ['mt2-overview', 'Hypogastric region', 'Hypogastric region', 'exact'],
     ['mt2-overview', 'Umbilical region', 'Umbilical', 'exact'],
+    ['mt2-overview', 'Iliac regions', 'Iliac', 'exact'],
     ['mt2-overview', 'Sagittal plane', 'Sagittal', 'exact'],
-    /* blocked: "Dorsal" and "Ventral" are their own cards, meaning something else */
+    /* NOT redundant: the definition never uses the category word */
+    ['mt2-overview', 'Genetic mutation', 'Genetic', 'wrong'],
+    ['mt2-overview', 'Genetic disorder', 'Genetic', 'wrong'],
+    ['mt2-overview', 'Adipose tissue', 'Adipose', 'wrong'],
+    ['mt2-overview', 'Organic disorder', 'Organic', 'wrong'],
+    /* redundant, but the short form is another card — still blocked */
     ['mt2-overview', 'Dorsal cavity', 'Dorsal', 'wrong'],
     ['mt2-overview', 'Ventral cavity', 'Ventral', 'wrong'],
     ['mt2-overview', 'Parietal peritoneum', 'Parietal', 'wrong'],
@@ -398,11 +405,25 @@ function suite(s, label) {
     const sf = /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?)$/i.exec(c.term);
     if (!sf) continue;
     const short = c.term.slice(0, sf.index).trim();
+    if (judge(short, c, d) !== 'exact') continue;          /* not accepted anyway */
     const other = d.cards.find(o => o !== c && judge(short, o, d) === 'exact');
-    if (other && judge(short, c, d) === 'exact' && !hijack)
+    if (other && !hijack)
       hijack = `${d.id}: "${short}" answers both "${c.term}" and "${other.term}"`;
   }
   check(`[${label}] no short form answers two cards`, !hijack, hijack);
+
+  /* the short form is only accepted when the definition supplies the word */
+  let notRedundant = '';
+  for (const d of DECKS) for (const c of recallableCards(d)) {
+    const sf = /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?)$/i.exec(c.term);
+    if (!sf) continue;
+    const short = c.term.slice(0, sf.index).trim();
+    const supplied = c.def.toLowerCase().includes(sf[1].toLowerCase().slice(0, 5));
+    if (!supplied && judge(short, c, d) === 'exact' && !notRedundant)
+      notRedundant = `${d.id}: "${c.term}" accepts "${short}" but its definition never says "${sf[1]}"`;
+  }
+  check(`[${label}] short form only where the definition repeats the word`,
+        !notRedundant, notRedundant);
 
   /* full playthroughs terminate and reach a result */
   for (const [deck, mode] of [['bio-ch3', 'recall'], ['ekg-basics', 'quiz'], ['ekg-leads', 'chest']]) {

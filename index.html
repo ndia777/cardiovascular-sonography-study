@@ -399,14 +399,21 @@ const normalize = s => String(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/
 const alternatives = card =>
   [card.term, ...card.term.split(/,| or /i)].map(s => s.trim()).filter(Boolean);
 
-/* Terms ending in a category word the definition already supplies — "Hypogastric
-   region", defined as "the region below the stomach" — should accept the short
-   form too. Requiring the redundant word tests typing, not knowledge. */
+/* A term ending in a category word that its own definition ALREADY supplies is
+   redundant — "Hypogastric region" defined as "the region below the stomach".
+   There the word tests typing, not knowledge, so the short form counts too.
+   The definition is what makes it redundant: "Genetic mutation" is defined as
+   "a change in the sequence of a DNA molecule", which never says mutation, so
+   that one still needs its full name. */
 const CATEGORY_TAIL =
   /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?)$/i;
 const shortForm = card => {
   const m = CATEGORY_TAIL.exec(card.term);
-  return m ? card.term.slice(0, m.index).trim() : null;
+  if (!m) return null;
+  /* compare on a short stem so cavity/cavities and region/regions both match */
+  const stem = m[1].toLowerCase().slice(0, 5);
+  if (!card.def.toLowerCase().includes(stem)) return null;
+  return card.term.slice(0, m.index).trim();
 };
 
 /* 'exact' | 'wrong'. Every letter must be right — there is deliberately no typo
