@@ -390,7 +390,27 @@ function suite(s, label) {
     /* still strict on actual spelling */
     ['mt2-overview', 'Hypogastric region', 'Hypergastric', 'wrong'],
     ['mt2-overview', 'Epigastric region', 'Hypogastric', 'wrong'],
+    /* a fraction glyph is typeable as ASCII, and the bare word is NOT enough */
+    ['ekg-basics', 'Sensitivity ½', 'Sensitivity 1/2', 'exact'],
+    ['ekg-basics', 'Sensitivity ½', 'sensitivity 1/2', 'exact'],
+    ['ekg-basics', 'Sensitivity ½', 'Sensitivity ½', 'exact'],
+    ['ekg-basics', 'Sensitivity ½', 'Sensitivity', 'wrong'],
+    ['ekg-basics', 'Sensitivity ½', 'Sensitivity 2', 'wrong'],
+    ['ekg-basics', 'Sensitivity 2', 'Sensitivity 2', 'exact'],
+    ['ekg-basics', 'Sensitivity 2', 'Sensitivity 1/2', 'wrong'],
   ];
+
+  /* A fraction must carry meaning, not vanish. Dropping the glyph from the term
+     must NOT still be accepted — that is exactly how "Sensitivity ½" came to
+     accept a bare "sensitivity" while rejecting the correct "Sensitivity 1/2". */
+  let swallowed = '';
+  for (const d of DECKS) for (const c of recallableCards(d)) {
+    if (!/[½¼¾⅓⅔]/.test(c.term)) continue;
+    const stripped = c.term.replace(/[½¼¾⅓⅔]/g, '').trim();
+    if (stripped && judge(stripped, c, d) === 'exact' && !swallowed)
+      swallowed = `${d.id} / "${c.term}" also accepts "${stripped}" — the fraction is being ignored`;
+  }
+  check(`[${label}] a fraction in a term is not ignored`, !swallowed, swallowed);
   for (const [deck, term, typed, want] of shortCases) {
     const c = card(deck, term);
     if (!c) { check(`[${label}] short form: ${term} exists`, false, 'card missing'); continue; }

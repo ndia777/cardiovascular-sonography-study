@@ -1389,8 +1389,8 @@ window.DECKS = [
     { term: 'Small square',         def: '1 mm × 1 mm = 0.04 seconds' },
     { term: 'Large square',         def: '5 mm × 5 mm = 0.2 seconds — five large squares = 1.0 second' },
     { term: 'Standardization mark', def: '2 mm wide × 10 mm high at sensitivity 1; should appear in front of each lead' },
-    { term: 'Sensitivity ½',        def: 'used when the tracing is too LARGE — produces a mark 2 mm wide × 5 mm high' },
-    { term: 'Sensitivity 2',        def: 'used when the tracing is too SMALL — produces a mark 2 mm wide × 20 mm high' },
+    { term: 'Sensitivity ½',        def: 'if the tracing is too LARGE, turn the dial to this setting — the standardization mark then measures 2 mm wide × 5 mm high' },
+    { term: 'Sensitivity 2',        def: 'if the tracing is too SMALL, turn the dial to this setting — the standardization mark then measures 2 mm wide × 20 mm high' },
     { term: 'Galvanometer',         def: 'transforms the electrical current into mechanical motion inside the machine' },
     { term: 'Stylus',               def: 'the heated pen-like instrument on non-digital machines that prints the tracing' },
     { term: 'Holter monitor',       def: 'a portable "ambulatory / walking ECG" recording the heart for 24+ hours; patient keeps a diary and presses an event button for symptoms' },
@@ -2024,8 +2024,15 @@ function grade(ok){
 /* ═══════════════ RECALL (type the answer, judged instantly) ═══════════════ */
 
 /* Strip case, punctuation, slashes and any parenthetical aside, so that
-   "abdomin/o", "Abdomino" and "abdomin o" all compare equal. */
-const normalize = s => String(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
+   "abdomin/o", "Abdomino" and "abdomin o" all compare equal.
+   Fraction glyphs are spelled out FIRST: "½" is not in [a-z0-9], so stripping
+   it blind would reduce "Sensitivity ½" to "sensitivity" — accepting the bare
+   word while rejecting the correct "Sensitivity 1/2". Nobody should have to
+   type a glyph they cannot reach from the keyboard. */
+const FRACTIONS = { '½': '1/2', '¼': '1/4', '¾': '3/4', '⅓': '1/3', '⅔': '2/3' };
+const normalize = s => String(s)
+  .replace(/[½¼¾⅓⅔]/g, m => FRACTIONS[m])
+  .toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
 
 /* A card's term may list several acceptable forms ("-ac, -al, -ar…"): any one
    counts — and so does the whole string. Without the whole string, a term like

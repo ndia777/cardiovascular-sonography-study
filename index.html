@@ -389,8 +389,15 @@ function grade(ok){
 /* ═══════════════ RECALL (type the answer, judged instantly) ═══════════════ */
 
 /* Strip case, punctuation, slashes and any parenthetical aside, so that
-   "abdomin/o", "Abdomino" and "abdomin o" all compare equal. */
-const normalize = s => String(s).toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
+   "abdomin/o", "Abdomino" and "abdomin o" all compare equal.
+   Fraction glyphs are spelled out FIRST: "½" is not in [a-z0-9], so stripping
+   it blind would reduce "Sensitivity ½" to "sensitivity" — accepting the bare
+   word while rejecting the correct "Sensitivity 1/2". Nobody should have to
+   type a glyph they cannot reach from the keyboard. */
+const FRACTIONS = { '½': '1/2', '¼': '1/4', '¾': '3/4', '⅓': '1/3', '⅔': '2/3' };
+const normalize = s => String(s)
+  .replace(/[½¼¾⅓⅔]/g, m => FRACTIONS[m])
+  .toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9]/g, '');
 
 /* A card's term may list several acceptable forms ("-ac, -al, -ar…"): any one
    counts — and so does the whole string. Without the whole string, a term like
