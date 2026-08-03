@@ -176,7 +176,10 @@
   .heart[data-lit~="internodal"] .internodal,
   .heart[data-lit~="his"] .his,
   .heart[data-lit~="branches"] .branches,
-  .heart[data-lit~="purkinje"] .purkinje{stroke:var(--accent);stroke-width:4}
+  /* the faint fibres are always there as anatomy; the live copies draw over
+     them from the apex outward as the wavefront spreads */
+  .purkinje-live{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;
+    stroke-dasharray:100;transition:stroke-dashoffset .12s linear}
   .heart[data-lit~="sa"] .node.sa,
   .heart[data-lit~="av"] .node.av{fill:var(--accent);stroke:var(--accent)}
   .heart.holding .node.av{animation:avhold .7s ease-in-out infinite}
@@ -2637,15 +2640,22 @@ const BEAT = [
 /* The impulse tracks the real route: down the septum to the apex, then back UP
    the ventricular wall through the Purkinje network, then home to the SA node
    ready for the next beat. */
-const BEAT_PATH = { sa:[100,66], av:[150,118], apex:[150,232], wall:[108,176] };
+const BEAT_PATH = { sa:[100,66], av:[150,118], apex:[150,232] };
+/* Nothing is conducting during rest, so the impulse is hidden there rather than
+   gliding home — it simply reappears at the SA node when the next beat fires. */
 const BEAT_LEG = { sa:['sa','sa'], atria:['sa','av'], av:['av','av'],
-                   his:['av','apex'], purkinje:['apex','wall'],
-                   repol:['wall','wall'], rest:['wall','sa'] };
+                   his:['av','apex'], purkinje:['apex','apex'],
+                   repol:['apex','apex'], rest:['apex','apex'] };
 
 const phaseAt = t => { let p = BEAT[0]; for (const q of BEAT) if (t >= q.t) p = q; return p; };
 const phaseEnd = i => (i + 1 < BEAT.length ? BEAT[i + 1].t : 1);
 
-const HEART_SVG = `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidden="true">
+const PURKINJE = [
+  'M145 234 C122 222 100 196 88 158', 'M145 234 C128 226 114 206 106 180',
+  'M145 234 C136 226 128 210 123 192', 'M155 234 C178 222 200 196 212 158',
+  'M155 234 C172 226 186 206 194 180', 'M155 234 C164 226 172 210 177 192',
+];
+const heartSvg = fill => `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidden="true">
   <g class="chambers">
     <path class="ch atria-l" d="M150 48 C120 42 82 48 74 76 C68 98 70 110 74 118 L148 118 Z"/>
     <path class="ch atria-r" d="M150 48 C180 42 218 48 226 76 C232 98 230 110 226 118 L152 118 Z"/>
@@ -2662,13 +2672,13 @@ const HEART_SVG = `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidden="true
     <path class="seg his" d="M150 122 V158"/>
     <!-- Bundle branches run DOWN the septum to the apex, hugging it either side -->
     <path class="seg branches" d="M150 158 L145 230 M150 158 L155 230"/>
-    <!-- Purkinje fibres then sweep back UP the free walls from the apex -->
-    <path class="seg purkinje" d="M145 234 C122 222 100 196 88 158
-                                  M145 234 C128 226 114 206 106 180
-                                  M145 234 C136 226 128 210 123 192
-                                  M155 234 C178 222 200 196 212 158
-                                  M155 234 C172 226 186 206 194 180
-                                  M155 234 C164 226 172 210 177 192"/>
+    <!-- Purkinje fibres sweep back UP the free walls from the apex. Each is
+         drawn twice: a faint one that is always there as anatomy, and a bright
+         one over it that fills from the apex outward, so the impulse spreads
+         through the whole network at once rather than one dot picking a fibre. -->
+    ${PURKINJE.map(d => `<path class="seg purkinje" d="${d}"/>`).join('')}
+    ${PURKINJE.map(d => `<path class="purkinje-live" d="${d}" pathLength="100"
+        style="stroke-dashoffset:${(100 - fill * 100).toFixed(1)}"/>`).join('')}
     <circle class="node sa" cx="100" cy="66" r="7"/>
     <circle class="node av" cx="150" cy="118" r="7"/>
   </g>
@@ -2806,7 +2816,7 @@ function beatState(){
   const s = session, R = RHYTHMS[s.rhythm], cycles = R.cycles || 1;
   const ct = (s.t * cycles) % 1;
   let i, ph, k;
-  if (R.sinus){
+  if (R.sinus && s.walk){
     /* the stepped walkthrough owns which phase is showing, so the narration
        cannot drift away from the impulse the way deriving it from t would */
     i = Math.min(s.stepIdx, BEAT.length - 1); ph = BEAT[i]; k = s.k;
@@ -2819,9 +2829,12 @@ function beatState(){
     k = span > 0 ? Math.min(1, Math.max(0, (ct - ph.t) / span)) : 0;
   }
   const [a, b] = BEAT_LEG[ph.id], p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
-  return { R, cycles, i, ph,
+  /* how far the Purkinje network has filled: spreading during its own phase,
+     fully lit while the ventricles repolarise, dark otherwise */
+  const fill = ph.id === 'purkinje' ? k : (ph.id === 'repol' ? 1 : 0);
+  return { R, cycles, i, ph, fill,
            x: p0[0] + (p1[0] - p0[0]) * k, y: p0[1] + (p1[1] - p0[1]) * k,
-           holding: R.sinus && s.dwell > 0 };
+           holding: R.sinus && s.walk && s.dwell > 0 };
 }
 
 /* What a full re-render would change. While this is stable, the frame loop
@@ -2830,7 +2843,7 @@ function beatState(){
    click can ever complete. */
 function beatSig(){
   const s = session, b = beatState();
-  return [s.rhythm, s.beat, s.stepIdx, b.ph.id, b.holding, s.playing, s.speed].join('|');
+  return [s.rhythm, s.walk, s.beat, s.stepIdx, b.ph.id, b.holding, s.playing, s.speed].join('|');
 }
 function paintBeat(){
   const s = session, b = beatState(), px = (s.t * 400).toFixed(2);
@@ -2840,11 +2853,13 @@ function paintBeat(){
   set('.bar .prog i', el => el.style.width = (s.t * 100) + '%');
   set('.dwell i', el => el.style.width = (b.holding ? (s.dwell / DWELL) * 100 : 0) + '%');
   set('.impulse', el => { el.style.left = (b.x / 3) + '%'; el.style.top = (b.y / 3) + '%'; });
+  document.querySelectorAll('.purkinje-live').forEach(el =>
+    el.style.strokeDashoffset = (100 - b.fill * 100).toFixed(1));
 }
 
 function runBeat(d){
   if (!session) session = { t: 0, playing: true, speed: 1, last: 0, rhythm: 0,
-                            beat: 0, stepIdx: 0, k: 0, dwell: 0 };
+                            walk: true, beat: 0, stepIdx: 0, k: 0, dwell: 0 };
   const s = session;
   const R = RHYTHMS[s.rhythm];
   const cycles = R.cycles || 1;
@@ -2852,7 +2867,7 @@ function runBeat(d){
   /* The conduction walkthrough only makes sense while the impulse still takes
      the normal path. For the arrhythmias the pathway story breaks down, so the
      narration switches to the rhythm itself and the heart shows its behaviour. */
-  const { i, ph, x, y, holding } = beatState();
+  const { i, ph, x, y, holding, fill } = beatState();
 
   app.innerHTML = `
     <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
@@ -2868,8 +2883,8 @@ function runBeat(d){
     <div class="beatwrap">
       <div class="heart ${R.sinus && ph.chamber ? 'x-' + ph.chamber : ''} ${R.sinus && ph.hold && holding ? 'holding' : ''} h-${R.heart}"
            data-lit="${R.sinus ? ph.lit.join(' ') : ''}">
-        ${HEART_SVG}
-        ${R.sinus ? `<span class="impulse ${ph.hold ? 'held' : ''}"
+        ${heartSvg(fill)}
+        ${R.sinus && ph.id !== 'rest' ? `<span class="impulse ${holding && ph.hold ? 'held' : ''}"
               style="left:${x / 3}%;top:${y / 3}%"></span>` : ''}
       </div>
 
@@ -2884,12 +2899,16 @@ function runBeat(d){
       </svg>
     </div>
 
-    ${R.sinus
+    ${R.sinus && s.walk
       ? `<div class="phasehead">${esc(ph.name)}
            <span class="stepno">beat ${s.beat + 1} of ${cycles} · step ${i + 1} of ${BEAT.length}</span>
            ${ph.hold ? '<span class="pause">— the AV node is waiting here</span>' : ''}</div>
          <p class="phasesay">${esc(ph.say)}${ph.wave ? ` <span class="eg">${esc(ph.wave)}</span>` : ''}</p>
          <div class="dwell"><i style="width:${holding ? (s.dwell / DWELL) * 100 : 0}%"></i></div>`
+      : R.sinus
+      ? `<div class="phasehead">${esc(ph.name)}
+           <span class="stepno">running at ${esc(R.rate)}</span></div>
+         <p class="phasesay">${esc(R.say)}</p>`
       : `<div class="phasehead">${esc(R.name)}${R.danger ? ' <span class="pause">— life threatening</span>' : ''}</div>
          <p class="phasesay">${esc(R.say)}${R.note ? `<span class="note">${esc(R.note)}</span>` : ''}</p>`}
 
@@ -2897,9 +2916,12 @@ function runBeat(d){
       <button onclick="beatToggle()">${s.playing ? '❚❚ Pause' : '▶ Play'}</button>
       <button onclick="beatRestart()">↺ Restart</button>
       <button onclick="beatSpeed()">Speed ${s.speed}×</button>
+      ${R.sinus ? `<button onclick="beatWalk()"
+        style="${s.walk ? '' : 'border-color:var(--accent);color:var(--accent)'}">
+        ${s.walk ? '▷ Just play it' : '⤷ Walk the steps'}</button>` : ''}
     </div>
 
-    ${R.sinus ? `<div class="steps" style="margin-top:14px">
+    ${R.sinus && s.walk ? `<div class="steps" style="margin-top:14px">
       ${BEAT.map((q, n) => `<button class="step" style="${q.id === ph.id ? 'border-color:var(--accent)' : ''}"
         onclick="beatSeek(${n})"><b style="color:var(--accent)">${n + 1}</b> &nbsp;${esc(q.name)}</button>`).join('')}
     </div>` : ''}`;
@@ -2911,6 +2933,12 @@ function beatRhythm(n){
   Object.assign(session, { rhythm:n, t:0, last:0, beat:0, stepIdx:0, k:0, dwell:0 });
   render();
 }
+/* Two ways to watch it: stepped, holding on each phase to read; or just running,
+   which is what a heart actually does. */
+function beatWalk(){
+  Object.assign(session, { walk: !session.walk, t:0, last:0, beat:0, stepIdx:0, k:0, dwell:0 });
+  render();
+}
 function beatRestart(){
   Object.assign(session, { t:0, last:0, beat:0, stepIdx:0, k:0, dwell:0 });
   render();
@@ -2919,6 +2947,9 @@ function beatRestart(){
    briefly, then holds while you read it. Sweeping through at a readable pace
    would take a minute an unbroken; holding is what makes it legible. */
 const ANIM = 0.9, DWELL = 6;   /* seconds to move, then seconds to dwell */
+/* One pass across the strip when simply playing. The number of complexes then
+   sets the rate on its own: 2 across 2.4s reads ~50 BPM, 3 ~75, 5 ~125. */
+const LIVE_SWEEP = 2.4;
 
 /* The frame loop MUST break the render cycle: runBeat schedules a tick, the tick
    advances and re-renders. Calling the tick directly from runBeat would recurse
@@ -2935,7 +2966,7 @@ function scheduleBeat(){
     const dt = Math.min(0.1, session.last ? (now - session.last) / 1000 : 0);
     session.last = now;
     const before = beatSig();
-    if (RHYTHMS[session.rhythm].sinus) stepBeat(dt); else sweepBeat(dt);
+    if (RHYTHMS[session.rhythm].sinus && session.walk) stepBeat(dt); else sweepBeat(dt);
     /* Re-render only when the markup would actually differ; otherwise nudge the
        few moving attributes and leave the buttons where the pointer found them. */
     if (beatSig() !== before) render();
@@ -2945,7 +2976,7 @@ function scheduleBeat(){
 /* arrhythmias have one description for the whole strip — just draw it steadily */
 function sweepBeat(dt){
   const s = session;
-  s.t += dt * 0.1 * s.speed;             /* a 10s sweep at 1x */
+  s.t += dt * (1 / LIVE_SWEEP) * s.speed;
   if (s.t >= 1) s.t = 0;
 }
 /* Every complex on the strip gets the same seven-step walkthrough — a second
