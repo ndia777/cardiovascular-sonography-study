@@ -147,28 +147,49 @@
   @media(max-width:620px){ .beatwrap{grid-template-columns:1fr} }
   .heart{position:relative;width:100%;aspect-ratio:1}
   .heartsvg{width:100%;height:100%;display:block}
-  /* Chambers light AND squeeze. Scaling about each chamber's own centre reads as
-     a contraction; the wall thickens visually as the cavity draws in. */
-  .heartsvg .ch{fill:var(--card2);stroke:none;transform-box:fill-box;transform-origin:center;
-    transition:fill .25s ease, transform .5s cubic-bezier(.4,0,.3,1)}
-  /* kept shallow on purpose — squeeze far enough and the chambers visibly peel
-     away from the outline, which reads as broken rather than beating */
+  /* The whole body shortens as the ventricles eject, and each cavity shrinks
+     MORE than the body does — the difference between the two is what reads as
+     the muscular wall thickening. */
+  .heartbody{transform-box:view-box;transform-origin:150px 165px;
+    transition:transform .45s cubic-bezier(.34,0,.28,1)}
+  /* The impulse dot is an HTML element sitting over the SVG, so it has to be
+     carried by the same squeeze or it drifts off the apex mid-contraction. Its
+     layer matches .heartbody exactly: 150/300 = 50%, 165/300 = 55%. */
+  .heart.x-ventricles .heartbody,.heart.x-ventricles .track{transform:scale(.945,.90)}
+  .heart.x-ventricles-relax .heartbody,.heart.x-ventricles-relax .track{transform:scale(1.015,1.025)}
+  .track{position:absolute;inset:0;transform-origin:50% 55%;
+    transition:transform .45s cubic-bezier(.34,0,.28,1)}
+
+  /* Each cavity is anchored at the septum on the valve plane (atria) or at the
+     apex (ventricles) rather than at its own centre. Scaling about the centre
+     pulls both halves away from the midline and tears a gap down the septum,
+     which is what forced the old squeeze to stay shallow. Anchored this way the
+     free wall draws inward and the base descends toward a fixed apex — the way
+     a ventricle actually contracts — so it can squeeze far harder and still
+     hold together. */
+  .heartsvg .myo{fill:color-mix(in srgb,var(--bad) 20%,var(--card));stroke:none;
+    transition:fill .3s ease}
+  .heart.x-atria .myo,.heart.x-ventricles .myo{fill:color-mix(in srgb,var(--bad) 32%,var(--card))}
+  .heartsvg .ch{fill:var(--card2);stroke:none;transform-box:fill-box;
+    transition:fill .3s ease, transform .45s cubic-bezier(.34,0,.28,1)}
+  .atria-l,.vent-l{transform-origin:100% 100%}
+  .atria-r,.vent-r{transform-origin:0% 100%}
   .heart.x-atria .atria-l,.heart.x-atria .atria-r{
-    fill:color-mix(in srgb,var(--accent) 42%,var(--card2));transform:scale(.945)}
+    fill:color-mix(in srgb,var(--accent) 46%,var(--card2));transform:scale(.80,.78)}
   .heart.x-ventricles .vent-l,.heart.x-ventricles .vent-r{
-    fill:color-mix(in srgb,var(--accent) 48%,var(--card2));transform:scale(.925)}
-  /* relaxing: the ventricles spring back and fill, just past resting size */
+    fill:color-mix(in srgb,var(--accent) 52%,var(--card2));transform:scale(.80,.82)}
+  /* Relaxing: the ventricles spring back and fill, just past resting size. The
+     overshoot is capped — anchored at the apex, any more and the filling cavity
+     rises through the valve plane or spills past the outline. */
   .heart.x-ventricles-relax .vent-l,.heart.x-ventricles-relax .vent-r{
-    fill:color-mix(in srgb,var(--good) 26%,var(--card2));transform:scale(1.015)}
-  /* the whole heart gives a small lurch as the ventricles eject */
-  .heartsvg{transform-origin:50% 60%;transition:transform .5s cubic-bezier(.4,0,.3,1)}
-  .heart.x-ventricles .heartsvg{transform:scale(.985)}
+    fill:color-mix(in srgb,var(--good) 28%,var(--card2));transform:scale(1.04,1.02)}
   @media (prefers-reduced-motion: reduce){
-    .heartsvg .ch,.heartsvg{transition:fill .25s ease}
+    .heartsvg .ch,.heartbody{transition:fill .3s ease}
     .heart.x-atria .atria-l,.heart.x-atria .atria-r,
     .heart.x-ventricles .vent-l,.heart.x-ventricles .vent-r,
     .heart.x-ventricles-relax .vent-l,.heart.x-ventricles-relax .vent-r,
-    .heart.x-ventricles .heartsvg{transform:none}
+    .heart.x-ventricles .heartbody,.heart.x-ventricles-relax .heartbody,
+    .heart.x-ventricles .track,.heart.x-ventricles-relax .track{transform:none}
   }
   .heartsvg .seg{stroke:var(--line);stroke-width:3;transition:stroke .15s}
   .heartsvg .node{fill:var(--card);stroke:var(--line);stroke-width:2.5;transition:.15s}
@@ -2656,6 +2677,15 @@ const PURKINJE = [
   'M155 234 C172 226 186 206 194 180', 'M155 234 C164 226 172 210 177 192',
 ];
 const heartSvg = fill => `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidden="true">
+  <!-- Outline, chambers and conduction move together as one body, so the whole
+       heart can squeeze visibly without the chambers peeling off the outline.
+       Labels sit outside it and stay put. -->
+  <g class="heartbody">
+  <!-- Muscle, drawn under the chambers and filling the whole silhouette. Without
+       it a shrinking cavity just exposes the page behind the diagram; with it,
+       the wall visibly thickens as the cavity draws in. -->
+  <path class="myo" d="M150 45 C118 37 78 45 70 76 C62 104 64 122 68 142 C76 184 100 226 149 256
+             C198 226 224 184 232 142 C236 122 238 104 230 76 C222 45 182 37 150 45 Z"/>
   <g class="chambers">
     <path class="ch atria-l" d="M150 48 C120 42 82 48 74 76 C68 98 70 110 74 118 L148 118 Z"/>
     <path class="ch atria-r" d="M150 48 C180 42 218 48 226 76 C232 98 230 110 226 118 L152 118 Z"/>
@@ -2684,6 +2714,7 @@ const heartSvg = fill => `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidde
   </g>
   <!-- labels sit outside the chambers with leader lines, so a contracting
        chamber never slides out from under its own caption -->
+  </g>
   <g class="leaders" stroke="var(--line)" stroke-width=".8" fill="none" opacity=".8">
     <path d="M236 130 L160 148"/><path d="M240 186 L206 182"/><path d="M64 214 L142 206"/>
   </g>
@@ -2884,8 +2915,8 @@ function runBeat(d){
       <div class="heart ${R.sinus && ph.chamber ? 'x-' + ph.chamber : ''} ${R.sinus && ph.hold && holding ? 'holding' : ''} h-${R.heart}"
            data-lit="${R.sinus ? ph.lit.join(' ') : ''}">
         ${heartSvg(fill)}
-        ${R.sinus && ph.id !== 'rest' ? `<span class="impulse ${holding && ph.hold ? 'held' : ''}"
-              style="left:${x / 3}%;top:${y / 3}%"></span>` : ''}
+        ${R.sinus && ph.id !== 'rest' ? `<span class="track"><span class="impulse ${holding && ph.hold ? 'held' : ''}"
+              style="left:${x / 3}%;top:${y / 3}%"></span></span>` : ''}
       </div>
 
       <svg viewBox="0 0 400 90" class="ecg">

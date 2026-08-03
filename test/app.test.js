@@ -506,6 +506,124 @@ function suite(s, label) {
   }
 }
 
+/* ------------------------------------------- heart contraction geometry ---
+   The chambers squeeze by CSS transform, which no amount of running the engine
+   can check. So sample the chamber paths, apply the transforms the stylesheet
+   declares, and measure the result: the squeeze must be big enough to actually
+   read as a contraction, and the contracted chambers must stay inside the
+   outline and on their own side of the septum. Scaling a chamber about its own
+   centre tears a gap down the midline, which is what kept the old animation too
+   subtle to see — this is the check that says so out loud.                  */
+function heartGeometry(html, label) {
+  const pathOf = re => { const m = re.exec(html); return m ? m[1] : null; };
+  const chamber = cls => pathOf(new RegExp(`class="ch ${cls}"\\s+d="([^"]+)"`));
+  const myo = pathOf(/class="myo" d="([\s\S]+?)"/);
+  check(`[${label}] heart has a myocardium behind the chambers`, !!myo,
+        'without it a shrinking cavity just exposes the page background');
+  /* the chambers must be wrapped in one group, or the outline stays put while
+     the chambers move and the heart visibly comes apart */
+  const body = /<g class="heartbody">([\s\S]*?)<\/g>\s*<g class="leaders"/.exec(html);
+  check(`[${label}] outline, chambers and conduction share one moving group`, !!body);
+  if (body) {
+    for (const part of ['class="chambers"', 'class="outline"', 'class="conduct"'])
+      check(`[${label}] ${part} rides inside .heartbody`, body[1].includes(part));
+  }
+  /* the impulse dot sits over the SVG as HTML, so it needs the same transform */
+  const bodyScale = /\.heart\.x-ventricles \.heartbody[^{]*\{transform:(scale\([^)]+\))\}/.exec(html);
+  check(`[${label}] the body squeezes during ventricular contraction`, !!bodyScale);
+  if (bodyScale)
+    check(`[${label}] the impulse dot is carried by the same squeeze`,
+          new RegExp(`\\.heart\\.x-ventricles[^{]*\\.track[^{]*\\{transform:${
+            bodyScale[1].replace(/[.()]/g, '\\$&')}\\}`).test(html)
+          || /\.heart\.x-ventricles \.heartbody,\.heart\.x-ventricles \.track\{transform:/.test(html),
+          'dot would drift off the apex mid-contraction');
+  check(`[${label}] reduced motion cancels the squeeze`,
+        /prefers-reduced-motion[\s\S]{0,600}\.heartbody[\s\S]{0,200}transform:none/.test(html));
+
+  if (!chamber('vent-l') || !myo) return;
+
+  const sample = d => {
+    const toks = d.match(/[A-Za-z]|-?\d*\.?\d+/g);
+    const pts = []; let i = 0, cur = [0, 0], start = [0, 0], cmd = '';
+    const n = () => parseFloat(toks[i++]);
+    while (i < toks.length) {
+      if (/^[A-Za-z]$/.test(toks[i])) cmd = toks[i++];
+      if (cmd === 'M') { cur = [n(), n()]; start = cur; pts.push(cur); }
+      else if (cmd === 'L') { cur = [n(), n()]; pts.push(cur); }
+      else if (cmd === 'H') { cur = [n(), cur[1]]; pts.push(cur); }
+      else if (cmd === 'V') { cur = [cur[0], n()]; pts.push(cur); }
+      else if (cmd === 'C') {
+        const p0 = cur, p1 = [n(), n()], p2 = [n(), n()], p3 = [n(), n()];
+        for (let k = 1; k <= 40; k++) {
+          const t = k / 40, u = 1 - t;
+          pts.push([u*u*u*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t*t*t*p3[0],
+                    u*u*u*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t*t*t*p3[1]]);
+        }
+        cur = p3;
+      } else if (/^[Zz]$/.test(cmd)) { pts.push(start); cur = start; }
+      else return pts;
+    }
+    return pts;
+  };
+  const box = p => ({ x0: Math.min(...p.map(a => a[0])), x1: Math.max(...p.map(a => a[0])),
+                      y0: Math.min(...p.map(a => a[1])), y1: Math.max(...p.map(a => a[1])) });
+  /* transform-box:fill-box — the origin is a fraction of the element's own box */
+  const scaled = (pts, ox, oy, sx, sy) => {
+    const b = box(pts);
+    const cx = b.x0 + (b.x1 - b.x0) * ox, cy = b.y0 + (b.y1 - b.y0) * oy;
+    return pts.map(([x, y]) => [cx + (x - cx) * sx, cy + (y - cy) * sy]);
+  };
+  const wall = sample(myo);
+  const inside = ([x, y]) => {
+    let hit = false;
+    for (let i = 0, j = wall.length - 1; i < wall.length; j = i++) {
+      const [xi, yi] = wall[i], [xj, yj] = wall[j];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) hit = !hit;
+    }
+    return hit;
+  };
+  /* read the declared scales rather than restating them, so the test tracks the
+     stylesheet instead of drifting from it */
+  const scaleOf = sel => {
+    const m = new RegExp(`\\.heart\\.${sel}[^{]*\\{[^}]*?transform:scale\\(([\\d.]+),\\s*([\\d.]+)\\)`)
+      .exec(html);
+    return m ? [parseFloat(m[1]), parseFloat(m[2])] : null;
+  };
+  const STATES = [
+    ['atrial contraction',      'x-atria .atria-l',            ['atria-l', 'atria-r'], .25],
+    ['ventricular contraction', 'x-ventricles .vent-l',        ['vent-l', 'vent-r'],   .25],
+    ['ventricular relaxation',  'x-ventricles-relax .vent-l',  ['vent-l', 'vent-r'],   0],
+  ];
+  for (const [name, sel, chambers, minShrink] of STATES) {
+    const sc = scaleOf(sel);
+    check(`[${label}] ${name} declares a scale`, !!sc, sel);
+    if (!sc) continue;
+    for (const c of chambers) {
+      const rest = sample(chamber(c));
+      const left = c.endsWith('-l');
+      const pts = scaled(rest, left ? 1 : 0, 1, sc[0], sc[1]);
+      const b = box(pts);
+      check(`[${label}] ${c} stays inside the outline during ${name}`,
+            pts.filter(p => !inside(p)).length <= 2, `${pts.filter(p => !inside(p)).length} points escape`);
+      check(`[${label}] ${c} stays on its side of the septum during ${name}`,
+            left ? b.x1 <= 150.5 : b.x0 >= 149.5, `x ${b.x0.toFixed(1)}–${b.x1.toFixed(1)}`);
+      check(`[${label}] ${c} respects the valve plane during ${name}`,
+            c.startsWith('atria') ? b.y1 <= 119.5 : b.y0 >= 118.5, `y ${b.y0.toFixed(1)}–${b.y1.toFixed(1)}`);
+      if (minShrink) {
+        /* the septal edge is what gaps open from — it must not move at all */
+        const edge = left ? b.x1 : b.x0;
+        const gap = Math.abs(edge - (left ? box(rest).x1 : box(rest).x0));
+        check(`[${label}] ${c} keeps its septal edge glued during ${name}`, gap <= 0.5,
+              `pulls ${gap.toFixed(1)} units off the septum`);
+        const r = box(rest);
+        const drop = 1 - ((b.x1-b.x0)*(b.y1-b.y0)) / ((r.x1-r.x0)*(r.y1-r.y0));
+        check(`[${label}] ${c} squeeze is visible, not subtle, during ${name}`, drop >= minShrink,
+              `cavity area only drops ${(drop*100).toFixed(0)}%, want ${(minShrink*100)}%+`);
+      }
+    }
+  }
+}
+
 /* ------------------------------------------------------------------ run */
 const srcHtml = read('index.html');
 const decksSrc = read('decks.js');
@@ -513,6 +631,7 @@ const srcInline = inlineScripts(srcHtml);
 check('index.html has exactly one inline script', srcInline.length === 1, `found ${srcInline.length}`);
 
 suite(boot(decksSrc, srcInline[0], 'source'), 'source');
+heartGeometry(srcHtml, 'source');
 
 /* The bundle is what actually gets served — test it too, and confirm it is not
    stale, since forgetting to run build.ps1 would silently ship old code. */
@@ -524,6 +643,7 @@ if (!fs.existsSync(bundlePath)) {
   const parts = inlineScripts(bundle);
   check('docs/index.html has two inline scripts', parts.length === 2, `found ${parts.length}`);
   if (parts.length === 2) suite(boot(parts[0], parts[1], 'bundle'), 'bundle');
+  heartGeometry(bundle, 'bundle');
 
   /* Reproduce exactly what build.ps1 would emit and compare the whole file.
      Comparing only the script contents would miss edits to the CSS or markup,
