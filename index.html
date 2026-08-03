@@ -1032,19 +1032,26 @@ function runBeat(d){
   /* The conduction walkthrough only makes sense while the impulse still takes
      the normal path. For the arrhythmias the pathway story breaks down, so the
      narration switches to the rhythm itself and the heart shows its behaviour. */
-  let i, ph, x = 0, y = 0, ct = (s.t * cycles) % 1;
-  if (R.sinus){
+  let i, ph, x = 0, y = 0;
+  const ct = (s.t * cycles) % 1;
+  const legFor = k => {
+    const [a, b] = BEAT_LEG[ph.id], p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
+    x = p0[0] + (p1[0] - p0[0]) * k; y = p0[1] + (p1[1] - p0[1]) * k;
+  };
+  if (R.sinus && s.stage === 'step'){
     /* the stepped walkthrough owns which phase is showing, so the narration
        cannot drift away from the impulse the way deriving it from t would */
-    i = s.stage === 'sweep' ? BEAT.length - 1 : Math.min(s.stepIdx, BEAT.length - 1);
+    i = Math.min(s.stepIdx, BEAT.length - 1);
     ph = BEAT[i];
-    const [a, b] = BEAT_LEG[ph.id];
-    const k = s.stage === 'sweep' ? 1 : s.k;
-    const p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
-    x = p0[0] + (p1[0] - p0[0]) * k; y = p0[1] + (p1[1] - p0[1]) * k;
+    legFor(s.k);
   } else {
+    /* Run-out, and the arrhythmias: take the phase from where the trace has
+       reached. Each remaining complex is another heartbeat, so the impulse
+       keeps travelling the pathway rather than parking at the apex. */
     i = BEAT.indexOf(phaseAt(ct));
     ph = BEAT[i];
+    const span = phaseEnd(i) - ph.t;
+    legFor(span > 0 ? Math.min(1, Math.max(0, (ct - ph.t) / span)) : 0);
   }
   const holding = R.sinus && s.stage === 'step' && s.dwell > 0;
 
