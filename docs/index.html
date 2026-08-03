@@ -2592,24 +2592,27 @@ function nextLead(){ session.i++; session.picked = null; render(); }
    which each phase starts; the impulse travels from `from` to `to` across it,
    and `hold` marks the AV pause, where the impulse waits instead of moving. */
 const BEAT = [
+  /* `t` values are the WAVEFORM feature boundaries, not arbitrary slices. A step
+     animates to the end of its own feature and parks there, so the playhead sits
+     on what the narration is describing rather than on the next thing along. */
   { id:'sa', t:0, name:'The SA node fires', lit:['sa'], chamber:null,
     say:'The impulse starts in the sinoatrial node, high in the right atrium. This is the pacemaker — it sets the pace at 60–100 beats per minute, faster than anything below it.' },
-  { id:'atria', t:0.09, name:'Atrial depolarization', lit:['sa','internodal'], chamber:'atria',
+  { id:'atria', t:0.10, name:'Atrial depolarization', lit:['sa','internodal'], chamber:'atria',
     say:'The impulse spreads across both atria through the internodal pathways, and they contract — topping the ventricles up before they fire.',
     wave:'This is the P wave.' },
-  { id:'av', t:0.26, name:'The AV node holds', lit:['internodal','av'], chamber:null, hold:true,
+  { id:'av', t:0.25, name:'The AV node holds', lit:['internodal','av'], chamber:null, hold:true,
     say:'Conduction slows to about 0.05 m/s here, the slowest anywhere in the heart, pausing roughly 0.1 second. That pause is the point: it lets the atria finish emptying before the ventricles contract.',
     wave:'The flat PR segment is this wait.' },
   { id:'his', t:0.46, name:'Down the bundle of His', lit:['av','his','branches'], chamber:null,
     say:'Released, the impulse races down the bundle of His and splits into the left and right bundle branches at around 2 m/s.',
     wave:'The QRS complex begins.' },
-  { id:'purkinje', t:0.56, name:'Ventricular depolarization', lit:['branches','purkinje'], chamber:'ventricles',
+  { id:'purkinje', t:0.54, name:'Ventricular depolarization', lit:['branches','purkinje'], chamber:'ventricles',
     say:'The Purkinje fibres carry it through the ventricular walls at about 4 m/s — the fastest conduction in the system — so both ventricles contract almost as one.',
     wave:'This is the QRS complex.' },
-  { id:'repol', t:0.71, name:'Ventricular repolarization', lit:[], chamber:'ventricles-relax',
+  { id:'repol', t:0.62, name:'Ventricular repolarization', lit:[], chamber:'ventricles-relax',
     say:'The ventricles recover electrically and relax, refilling with blood ready for the next beat.',
     wave:'This is the T wave.' },
-  { id:'rest', t:0.90, name:'Resting', lit:[], chamber:null,
+  { id:'rest', t:0.89, name:'Resting', lit:[], chamber:null,
     say:'The trace returns to the isoelectric baseline. The SA node is already building toward the next impulse.' },
 ];
 /* waypoints the impulse travels between, in SVG coordinates */
@@ -2663,14 +2666,14 @@ const BASE = 60;
 function pqrst(x, w, o = {}){
   const at = k => (x + w * k).toFixed(1);
   let d = '';
-  d += o.noP ? `L${at(.26)},${BASE} `
-             : `L${at(.10)},${BASE} Q${at(.17)},44 ${at(.24)},${BASE} L${at(.26)},${BASE} `;
+  d += o.noP ? `L${at(.25)},${BASE} `
+             : `L${at(.10)},${BASE} Q${at(.175)},44 ${at(.25)},${BASE} `;
   d += `L${at(.46)},${BASE} `;                                   /* PR segment: the AV hold */
   if (o.spike) d += `L${at(.455)},22 L${at(.46)},${BASE} `;      /* pacing spike */
   d += o.wide ? `L${at(.47)},72 L${at(.56)},20 L${at(.65)},74 L${at(.70)},${BASE} `
-              : `L${at(.47)},66 L${at(.52)},14 L${at(.57)},74 L${at(.62)},${BASE} `;
+              : `L${at(.48)},66 L${at(.54)},14 L${at(.59)},74 L${at(.62)},${BASE} `;
   d += o.noT ? `L${at(1)},${BASE} `
-             : `L${at(.71)},${BASE} Q${at(.80)},38 ${at(.90)},${BASE} L${at(1)},${BASE} `;
+             : `L${at(.72)},${BASE} Q${at(.805)},38 ${at(.89)},${BASE} L${at(1)},${BASE} `;
   return d;
 }
 /* A ventricular ectopic beat gets its own shape rather than a variant of the
@@ -2807,14 +2810,22 @@ function runBeat(d){
       </div>
 
       <svg viewBox="0 0 400 90" class="ecg">
+        <defs><clipPath id="ecgclip"><rect x="0" y="0" width="${(s.t * 400).toFixed(2)}" height="90"/></clipPath></defs>
         <line x1="0" y1="60" x2="400" y2="60" class="ecgbase"/>
-        <path d="${R.path}" pathLength="100" class="ecgtrace ${R.danger ? 'danger' : ''}"
-              style="stroke-dasharray:100;stroke-dashoffset:${100 - s.t * 100}"/>
-        <line x1="${s.t * 400}" y1="4" x2="${s.t * 400}" y2="86" class="ecgnow"/>
+        <!-- Clipped by X, not revealed by stroke-dashoffset. Dash offset measures
+             PATH LENGTH, and a steep QRS packs a lot of length into very little
+             width, so the trace ran ahead of the playhead. -->
+        <path d="${R.path}" class="ecgtrace ${R.danger ? 'danger' : ''}" clip-path="url(#ecgclip)"/>
+        <line x1="${(s.t * 400).toFixed(2)}" y1="4" x2="${(s.t * 400).toFixed(2)}" y2="86" class="ecgnow"/>
       </svg>
     </div>
 
-    ${R.sinus
+    ${R.sinus && s.stage === 'sweep'
+      ? `<div class="phasehead">The rhythm continues
+           <span class="stepno">${cycles > 1 ? `${cycles - 1} more beat${cycles > 2 ? 's' : ''} across the strip` : 'end of the strip'}</span></div>
+         <p class="phasesay">That whole sequence repeats for every beat. Watch the spacing — it is what separates a normal rate from bradycardia and tachycardia.</p>
+         <div class="dwell"><i style="width:0%"></i></div>`
+      : R.sinus
       ? `<div class="phasehead">${esc(ph.name)}
            <span class="stepno">step ${i + 1} of ${BEAT.length}</span>
            ${ph.hold ? '<span class="pause">— the AV node is waiting here</span>' : ''}</div>
