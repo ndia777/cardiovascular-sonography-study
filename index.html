@@ -1022,6 +1022,48 @@ const RHYTHMS = [
     say:'Sharp vertical spikes mark the pacemaker firing, each one followed by the complex it triggered. More visible in unipolar than in bipolar leads.' },
 ];
 
+/* Everything derived from the clock, in one place, so the full render and the
+   per-frame repaint can never disagree about where the impulse is. */
+function beatState(){
+  const s = session, R = RHYTHMS[s.rhythm], cycles = R.cycles || 1;
+  const ct = (s.t * cycles) % 1;
+  let i, ph, k;
+  if (R.sinus && s.stage === 'step'){
+    /* the stepped walkthrough owns which phase is showing, so the narration
+       cannot drift away from the impulse the way deriving it from t would */
+    i = Math.min(s.stepIdx, BEAT.length - 1); ph = BEAT[i]; k = s.k;
+  } else {
+    /* Run-out, and the arrhythmias: take the phase from where the trace has
+       reached. Each remaining complex is another heartbeat, so the impulse
+       keeps travelling the pathway rather than parking at the apex. */
+    i = BEAT.indexOf(phaseAt(ct)); ph = BEAT[i];
+    const span = phaseEnd(i) - ph.t;
+    k = span > 0 ? Math.min(1, Math.max(0, (ct - ph.t) / span)) : 0;
+  }
+  const [a, b] = BEAT_LEG[ph.id], p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
+  return { R, cycles, i, ph,
+           x: p0[0] + (p1[0] - p0[0]) * k, y: p0[1] + (p1[1] - p0[1]) * k,
+           holding: R.sinus && s.stage === 'step' && s.dwell > 0 };
+}
+
+/* What a full re-render would change. While this is stable, the frame loop
+   repaints attributes instead of replacing the markup — otherwise every button
+   on the page is torn out from under the pointer 60 times a second and no
+   click can ever complete. */
+function beatSig(){
+  const s = session, b = beatState();
+  return [s.rhythm, s.stage, s.stepIdx, b.ph.id, b.holding, s.playing, s.speed].join('|');
+}
+function paintBeat(){
+  const s = session, b = beatState(), px = (s.t * 400).toFixed(2);
+  const set = (sel, fn) => { const el = document.querySelector(sel); if (el) fn(el); };
+  set('#ecgclip rect', el => el.setAttribute('width', px));
+  set('.ecgnow', el => { el.setAttribute('x1', px); el.setAttribute('x2', px); });
+  set('.bar .prog i', el => el.style.width = (s.t * 100) + '%');
+  set('.dwell i', el => el.style.width = (b.holding ? (s.dwell / DWELL) * 100 : 0) + '%');
+  set('.impulse', el => { el.style.left = (b.x / 3) + '%'; el.style.top = (b.y / 3) + '%'; });
+}
+
 function runBeat(d){
   if (!session) session = { t: 0, playing: true, speed: 1, last: 0, rhythm: 0,
                             stage: 'step', stepIdx: 0, k: 0, dwell: 0 };
@@ -1032,28 +1074,7 @@ function runBeat(d){
   /* The conduction walkthrough only makes sense while the impulse still takes
      the normal path. For the arrhythmias the pathway story breaks down, so the
      narration switches to the rhythm itself and the heart shows its behaviour. */
-  let i, ph, x = 0, y = 0;
-  const ct = (s.t * cycles) % 1;
-  const legFor = k => {
-    const [a, b] = BEAT_LEG[ph.id], p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
-    x = p0[0] + (p1[0] - p0[0]) * k; y = p0[1] + (p1[1] - p0[1]) * k;
-  };
-  if (R.sinus && s.stage === 'step'){
-    /* the stepped walkthrough owns which phase is showing, so the narration
-       cannot drift away from the impulse the way deriving it from t would */
-    i = Math.min(s.stepIdx, BEAT.length - 1);
-    ph = BEAT[i];
-    legFor(s.k);
-  } else {
-    /* Run-out, and the arrhythmias: take the phase from where the trace has
-       reached. Each remaining complex is another heartbeat, so the impulse
-       keeps travelling the pathway rather than parking at the apex. */
-    i = BEAT.indexOf(phaseAt(ct));
-    ph = BEAT[i];
-    const span = phaseEnd(i) - ph.t;
-    legFor(span > 0 ? Math.min(1, Math.max(0, (ct - ph.t) / span)) : 0);
-  }
-  const holding = R.sinus && s.stage === 'step' && s.dwell > 0;
+  const { i, ph, x, y, holding } = beatState();
 
   app.innerHTML = `
     <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
@@ -1140,8 +1161,12 @@ function scheduleBeat(){
     const now = Date.now();
     const dt = Math.min(0.1, session.last ? (now - session.last) / 1000 : 0);
     session.last = now;
+    const before = beatSig();
     if (RHYTHMS[session.rhythm].sinus) stepBeat(dt); else sweepBeat(dt);
-    render();
+    /* Re-render only when the markup would actually differ; otherwise nudge the
+       few moving attributes and leave the buttons where the pointer found them. */
+    if (beatSig() !== before) render();
+    else { paintBeat(); scheduleBeat(); }
   });
 }
 /* arrhythmias have one description for the whole strip — just draw it steadily */
