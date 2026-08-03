@@ -1413,6 +1413,113 @@ window.DECKS = [
 },
 
 {
+  id: 'ekg-conduction',
+  course: 'M103 · Medical Procedures',
+  title: 'EKG — The Conduction System',
+  source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md, with conduction velocities and intrinsic rates added from standard references',
+  beat: true,
+  cards: [
+    { term: 'Sinoatrial node', def: 'the pacemaker of the heart, in the upper right atrium, where each normal impulse begins',
+      note: 'Also written SA node, sinus node.' },
+    { term: 'Internodal pathways', def: 'the specialized tracts carrying the impulse from the SA node across the atria to the AV node' },
+    { term: 'Atrioventricular node', def: 'the gateway between atria and ventricles, which deliberately slows the impulse before letting it through',
+      note: 'Also written AV node.' },
+    { term: 'AV node delay', def: 'the roughly 0.1 second pause that lets the atria finish emptying before the ventricles contract' },
+    { term: 'Bundle of His', def: 'carries the impulse from the AV node down into the interventricular septum' },
+    { term: 'Bundle branches', def: 'the left and right pathways carrying the impulse down either side of the septum' },
+    { term: 'Purkinje fibers', def: 'the network spreading the impulse through the ventricular walls, making the ventricles contract' },
+    { fact: true, term: 'The conduction pathway in order',
+      def: 'SA node → internodal pathways → AV node → bundle of His → bundle branches → Purkinje fibers' },
+
+    { term: 'Depolarization', def: 'the electrical discharge that triggers a chamber to contract' },
+    { term: 'Repolarization', def: 'the electrical recovery that lets a chamber relax and refill' },
+    { term: 'P wave', def: 'atrial depolarization on the tracing' },
+    { term: 'PR segment', def: 'the flat stretch of tracing while the impulse is being held at the AV node' },
+    { term: 'QRS complex', def: 'ventricular depolarization on the tracing' },
+    { term: 'T wave', def: 'ventricular repolarization on the tracing' },
+
+    { fact: true, term: 'Intrinsic rate of the SA node', def: '60–100 beats per minute — the fastest, which is why it leads' },
+    { fact: true, term: 'Intrinsic rate of the AV node', def: '40–60 beats per minute' },
+    { fact: true, term: 'Intrinsic rate of the Purkinje fibers', def: '20–40 beats per minute' },
+    { term: 'Escape pacemaker', def: 'a lower site taking over when the site above it fails, pacing at its own slower intrinsic rate' },
+    { fact: true, term: 'Conduction speed through the AV node', def: 'about 0.05 m/s — the slowest anywhere in the heart, which is what creates the delay' },
+    { fact: true, term: 'Conduction speed through the Purkinje fibers', def: 'about 4 m/s — the fastest, so both ventricles fire almost together' }
+  ],
+  questions: [
+    { q: 'Put the conduction pathway in order.',
+      choices: [
+        'SA node → AV node → bundle of His → bundle branches → Purkinje fibers',
+        'AV node → SA node → bundle of His → Purkinje fibers → bundle branches',
+        'SA node → bundle of His → AV node → bundle branches → Purkinje fibers',
+        'Purkinje fibers → bundle branches → bundle of His → AV node → SA node'
+      ], answer: 0 },
+
+    { q: 'Why does the AV node deliberately slow the impulse?',
+      choices: [
+        'So the atria can finish emptying into the ventricles before the ventricles contract',
+        'To protect the ventricles from electrical damage',
+        'To give the SA node time to recharge',
+        'To let the tracing return to baseline'
+      ], answer: 0,
+      why: 'The pause is about 0.1 second, and it is what you are looking at during the flat PR segment.' },
+
+    { q: 'The SA node leads the heart because:',
+      choices: [
+        'Its intrinsic rate of 60–100 is faster than anything below it',
+        'It is physically largest',
+        'It is the only tissue that can generate an impulse',
+        'It sits closest to the ventricles'
+      ], answer: 0,
+      why: 'The AV node runs 40–60 and the Purkinje fibers 20–40. Whichever fires fastest sets the pace, so the SA node normally wins.' },
+
+    { q: 'If the SA node fails, what happens?',
+      choices: [
+        'A lower site takes over as an escape pacemaker, at its own slower rate',
+        'The heart stops immediately',
+        'The atria continue but the ventricles stop',
+        'The Purkinje fibers speed up to 60–100'
+      ], answer: 0 },
+
+    { q: 'Which part of the tracing corresponds to the AV node delay?',
+      choices: ['The PR segment', 'The P wave', 'The QRS complex', 'The T wave'], answer: 0 },
+
+    { q: 'Conduction is SLOWEST through which structure, and fastest through which?',
+      choices: [
+        'Slowest through the AV node, fastest through the Purkinje fibers',
+        'Slowest through the Purkinje fibers, fastest through the AV node',
+        'Slowest through the bundle of His, fastest through atrial muscle',
+        'It travels at the same speed throughout'
+      ], answer: 0,
+      why: 'About 0.05 m/s at the AV node against about 4 m/s in the Purkinje fibers — roughly eighty times faster.' },
+
+    { q: 'In atrial fibrillation, why can no P wave be identified?',
+      choices: [
+        'Many signals fire chaotically from the atria outside the SA node, so there is no single organised atrial depolarization',
+        'The atria have stopped producing any electrical activity',
+        'The P wave is hidden inside the T wave',
+        'The paper speed is too slow to record it'
+      ], answer: 0 },
+
+    { q: 'What makes the QRS wide and bizarre in a premature ventricular contraction?',
+      choices: [
+        'The beat starts inside the ventricle and bypasses the normal conduction pathway',
+        'The beat starts in the SA node but arrives early',
+        'The AV node conducts it faster than usual',
+        'Two beats overlap on the tracing'
+      ], answer: 0,
+      why: 'Skipping the fast Purkinje network means the impulse spreads muscle-to-muscle instead, which takes longer and looks wider.' },
+
+    { q: 'Ventricular fibrillation is immediately life threatening because:',
+      choices: [
+        'The ventricles tremor rather than pump, so there is no cardiac output',
+        'The heart rate climbs above 250 BPM',
+        'The atria stop contributing to filling',
+        'The P waves disappear from the tracing'
+      ], answer: 0 }
+  ]
+},
+
+{
   id: 'ekg-rhythms',
   course: 'M103 · Medical Procedures',
   title: 'EKG — Artifacts & Arrhythmias',

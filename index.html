@@ -133,6 +133,57 @@
   .dot.wrong{border-color:var(--bad);background:var(--bad);color:#fff}
   .dot.muted{opacity:.4}
 
+  /* ---- watch a heartbeat ---- */
+  .rhythms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .rbtn{border:1px solid var(--line);background:var(--card);border-radius:20px;
+    padding:6px 12px;font-size:12.5px;color:var(--dim);transition:.12s}
+  .rbtn:hover{border-color:var(--accent);color:var(--text)}
+  .rbtn.on{background:var(--accent);border-color:var(--accent);color:#04161c;font-weight:650}
+  html[data-theme="light"] .rbtn.on{color:#fff}
+  .rbtn.danger{border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+  .rbtn.danger.on{background:var(--bad);border-color:var(--bad);color:#fff}
+
+  .beatwrap{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:18px;align-items:center}
+  @media(max-width:620px){ .beatwrap{grid-template-columns:1fr} }
+  .heart{position:relative;width:100%;aspect-ratio:1}
+  .heartsvg{width:100%;height:100%;display:block}
+  .heartsvg .ch{fill:var(--card2);stroke:none;transition:fill .18s}
+  /* chambers light as they depolarise, and ease off as they relax */
+  .heart.x-atria .atria-l,.heart.x-atria .atria-r{fill:color-mix(in srgb,var(--accent) 42%,var(--card2))}
+  .heart.x-ventricles .vent-l,.heart.x-ventricles .vent-r{fill:color-mix(in srgb,var(--accent) 48%,var(--card2))}
+  .heart.x-ventricles-relax .vent-l,.heart.x-ventricles-relax .vent-r{fill:color-mix(in srgb,var(--good) 26%,var(--card2))}
+  .heartsvg .seg{stroke:var(--line);stroke-width:3;transition:stroke .15s}
+  .heartsvg .node{fill:var(--card);stroke:var(--line);stroke-width:2.5;transition:.15s}
+  /* the segment carrying the impulse right now */
+  .heart[data-lit~="internodal"] .internodal,
+  .heart[data-lit~="his"] .his,
+  .heart[data-lit~="branches"] .branches,
+  .heart[data-lit~="purkinje"] .purkinje{stroke:var(--accent);stroke-width:4}
+  .heart[data-lit~="sa"] .node.sa,
+  .heart[data-lit~="av"] .node.av{fill:var(--accent);stroke:var(--accent)}
+  .heart.holding .node.av{animation:avhold .7s ease-in-out infinite}
+  @keyframes avhold{50%{r:10;opacity:.55}}
+  /* fibrillation: the chamber quivers instead of contracting */
+  .heart.h-atrial-quiver .atria-l,.heart.h-atrial-quiver .atria-r{animation:quiver .18s linear infinite}
+  .heart.h-vent-quiver .vent-l,.heart.h-vent-quiver .vent-r{animation:quiver .12s linear infinite;
+    fill:color-mix(in srgb,var(--bad) 34%,var(--card2))}
+  @keyframes quiver{0%,100%{opacity:1}50%{opacity:.45}}
+  .heart.h-ectopic-vent .vent-l{fill:color-mix(in srgb,var(--warn) 30%,var(--card2))}
+  .heart.h-ectopic-atrial .atria-r{fill:color-mix(in srgb,var(--warn) 30%,var(--card2))}
+  .impulse{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 12px 4px color-mix(in srgb,var(--accent) 55%,transparent)}
+  .impulse.held{animation:avhold .7s ease-in-out infinite}
+
+  .ecg{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  .ecgbase{stroke:var(--line);stroke-width:1;stroke-dasharray:3 5}
+  .ecgtrace{fill:none;stroke:var(--good);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+  .ecgtrace.danger{stroke:var(--bad)}
+  .ecgnow{stroke:var(--accent);stroke-width:1.4;opacity:.7}
+  .phasehead{font-size:16px;font-weight:650;margin:16px 0 6px}
+  .phasehead .pause{color:var(--warn);font-weight:500;font-size:14px}
+  .phasesay{margin:0 0 4px;font-size:14.5px;line-height:1.6;color:var(--dim)}
+  .phasesay .eg{color:var(--accent);font-weight:600}
+
   /* ---- put in order ---- */
   .stagehead{display:flex;align-items:baseline;gap:9px;margin:0 0 14px;font-size:13px;
     font-weight:600;letter-spacing:.02em;color:var(--accent)}
@@ -329,6 +380,8 @@ function screenDeck(){
     modes.push(['match','Matching','Pair each term with its definition against the clock, six at a time.']);
   if (d.chest)
     modes.push(['chest','Place the Electrodes','Click where each of the 10 electrodes goes — 4 limb and 6 chest.']);
+  if (d.beat)
+    modes.push(['beat','Watch a Heartbeat','See the impulse travel the conduction system while the ECG draws in step — then switch rhythms to compare the arrhythmias.']);
   modes.push(['browse','Review Sheet', d.steps.length
     ? 'The full procedure in order, with the rationale for each step.'
     : 'The whole list in one table. Hide the definitions to self-test.']);
@@ -788,6 +841,274 @@ function pickLead(id){
 }
 function nextLead(){ session.i++; session.picked = null; render(); }
 
+/* ═══════════════ WATCH A HEARTBEAT ═══════════════ */
+/* One cardiac cycle, told as seven phases. `t` is the fraction of the cycle at
+   which each phase starts; the impulse travels from `from` to `to` across it,
+   and `hold` marks the AV pause, where the impulse waits instead of moving. */
+const BEAT = [
+  { id:'sa', t:0, name:'The SA node fires', lit:['sa'], chamber:null,
+    say:'The impulse starts in the sinoatrial node, high in the right atrium. This is the pacemaker — it sets the pace at 60–100 beats per minute, faster than anything below it.' },
+  { id:'atria', t:0.09, name:'Atrial depolarization', lit:['sa','internodal'], chamber:'atria',
+    say:'The impulse spreads across both atria through the internodal pathways, and they contract — topping the ventricles up before they fire.',
+    wave:'This is the P wave.' },
+  { id:'av', t:0.26, name:'The AV node holds', lit:['internodal','av'], chamber:null, hold:true,
+    say:'Conduction slows to about 0.05 m/s here, the slowest anywhere in the heart, pausing roughly 0.1 second. That pause is the point: it lets the atria finish emptying before the ventricles contract.',
+    wave:'The flat PR segment is this wait.' },
+  { id:'his', t:0.46, name:'Down the bundle of His', lit:['av','his','branches'], chamber:null,
+    say:'Released, the impulse races down the bundle of His and splits into the left and right bundle branches at around 2 m/s.',
+    wave:'The QRS complex begins.' },
+  { id:'purkinje', t:0.56, name:'Ventricular depolarization', lit:['branches','purkinje'], chamber:'ventricles',
+    say:'The Purkinje fibres carry it through the ventricular walls at about 4 m/s — the fastest conduction in the system — so both ventricles contract almost as one.',
+    wave:'This is the QRS complex.' },
+  { id:'repol', t:0.71, name:'Ventricular repolarization', lit:[], chamber:'ventricles-relax',
+    say:'The ventricles recover electrically and relax, refilling with blood ready for the next beat.',
+    wave:'This is the T wave.' },
+  { id:'rest', t:0.90, name:'Resting', lit:[], chamber:null,
+    say:'The trace returns to the isoelectric baseline. The SA node is already building toward the next impulse.' },
+];
+/* waypoints the impulse travels between, in SVG coordinates */
+const BEAT_PATH = { sa:[100,66], av:[150,118], his:[150,152], branch:[150,186], apex:[150,236] };
+const BEAT_LEG = { sa:['sa','sa'], atria:['sa','av'], av:['av','av'],
+                   his:['av','his'], purkinje:['his','apex'], repol:['apex','apex'], rest:['apex','apex'] };
+
+const phaseAt = t => { let p = BEAT[0]; for (const q of BEAT) if (t >= q.t) p = q; return p; };
+const phaseEnd = i => (i + 1 < BEAT.length ? BEAT[i + 1].t : 1);
+
+const HEART_SVG = `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidden="true">
+  <g class="chambers">
+    <path class="ch atria-l" d="M150 48 C120 42 82 48 74 76 C68 98 70 110 74 118 L148 118 Z"/>
+    <path class="ch atria-r" d="M150 48 C180 42 218 48 226 76 C232 98 230 110 226 118 L152 118 Z"/>
+    <path class="ch vent-l"  d="M74 122 C78 172 100 216 148 250 L148 122 Z"/>
+    <path class="ch vent-r"  d="M226 122 C222 172 200 218 152 250 L152 122 Z"/>
+  </g>
+  <g class="outline" fill="none" stroke="var(--line)" stroke-width="2">
+    <path d="M150 45 C118 37 78 45 70 76 C62 104 64 122 68 142 C76 184 100 226 149 256
+             C198 226 224 184 232 142 C236 122 238 104 230 76 C222 45 182 37 150 45 Z"/>
+    <path d="M74 119 H226"/><path d="M150 119 V250"/>
+  </g>
+  <g class="conduct" fill="none" stroke-linecap="round">
+    <path class="seg internodal" d="M100 66 Q122 94 148 116"/>
+    <path class="seg his" d="M150 122 V152"/>
+    <path class="seg branches" d="M150 152 L126 190 M150 152 L174 190"/>
+    <path class="seg purkinje" d="M126 190 C112 210 106 226 104 236 M126 190 C126 214 130 232 134 242
+                                  M174 190 C188 210 194 226 196 236 M174 190 C174 214 170 232 166 242"/>
+    <circle class="node sa" cx="100" cy="66" r="7"/>
+    <circle class="node av" cx="150" cy="118" r="7"/>
+  </g>
+  <g class="beatlabels" font-size="9" fill="var(--dim)">
+    <text x="88" y="52" text-anchor="end">SA node</text>
+    <text x="163" y="112">AV node</text>
+    <text x="163" y="146">Bundle of His</text>
+    <text x="196" y="196">Purkinje</text>
+  </g>
+</svg>`;
+
+/* ---- ECG traces ------------------------------------------------------------
+   Each rhythm is drawn over a 400-unit window representing about three seconds,
+   so a faster rhythm genuinely shows more complexes in the same space. One
+   PQRST is generated from a start x and a width; pathLength="100" normalises
+   whatever comes out, so revealing the trace is just a dash offset.          */
+const BASE = 60;
+/* The fractions below are deliberately aligned to the BEAT phase boundaries, so
+   the narration always describes the part of the trace being drawn: P wave over
+   the 'atria' phase (.09–.26), the flat PR segment over the AV hold (.26–.46),
+   QRS over his+purkinje (.46–.71), T over repolarization (.71–.90). Changing one
+   without the other puts the words out of step with the waveform. */
+function pqrst(x, w, o = {}){
+  const at = k => (x + w * k).toFixed(1);
+  let d = '';
+  d += o.noP ? `L${at(.26)},${BASE} `
+             : `L${at(.10)},${BASE} Q${at(.17)},44 ${at(.24)},${BASE} L${at(.26)},${BASE} `;
+  d += `L${at(.46)},${BASE} `;                                   /* PR segment: the AV hold */
+  if (o.spike) d += `L${at(.455)},22 L${at(.46)},${BASE} `;      /* pacing spike */
+  d += o.wide ? `L${at(.47)},72 L${at(.56)},20 L${at(.65)},74 L${at(.70)},${BASE} `
+              : `L${at(.47)},66 L${at(.52)},14 L${at(.57)},74 L${at(.62)},${BASE} `;
+  d += o.noT ? `L${at(1)},${BASE} `
+             : `L${at(.71)},${BASE} Q${at(.80)},38 ${at(.90)},${BASE} L${at(1)},${BASE} `;
+  return d;
+}
+/* A ventricular ectopic beat gets its own shape rather than a variant of the
+   normal one. Starting in the ventricle, it misses the fast Purkinje network
+   and spreads muscle-to-muscle, so the complex is broad and points the opposite
+   way — that contrast against the neighbouring beats IS the teaching point. */
+function ectopic(x, w){
+  const at = k => (x + w * k).toFixed(1);
+  return `L${at(.10)},${BASE} L${at(.20)},44 L${at(.40)},108 L${at(.58)},42 L${at(.72)},${BASE} L${at(1)},${BASE} `;
+}
+/* an atrial ectopic beat: normal QRS, but the P is early and mis-shapen */
+function atrialEctopic(x, w){
+  const at = k => (x + w * k).toFixed(1);
+  return `L${at(.08)},${BASE} L${at(.14)},70 Q${at(.19)},48 ${at(.24)},${BASE} `
+       + `L${at(.40)},${BASE} L${at(.44)},66 L${at(.49)},18 L${at(.54)},74 L${at(.59)},${BASE} `
+       + `L${at(.68)},${BASE} Q${at(.78)},40 ${at(.88)},${BASE} L${at(1)},${BASE} `;
+}
+/* evenly spaced beats across the window */
+function regular(n, o = {}){
+  const w = 400 / n;
+  let d = `M0,${BASE} `;
+  for (let i = 0; i < n; i++) d += pqrst(i * w, w, o);
+  return d;
+}
+/* a chaotic wobble — used for fibrillation, where there is no organised complex */
+function chaos(amp, step, seed = 1){
+  let d = `M0,${BASE} `, r = seed;
+  for (let x = step; x <= 400; x += step){
+    r = (r * 9301 + 49297) % 233280;
+    d += `L${x},${(BASE - amp / 2 + (r / 233280) * amp).toFixed(1)} `;
+  }
+  return d;
+}
+
+const RHYTHMS = [
+  /* `cycles` is how many complexes fit the window — that is what makes rate
+     visible — and the conduction phases repeat once per complex, so the
+     narration stays lined up with whichever beat is being drawn. */
+  { id:'nsr', name:'Normal sinus rhythm', rate:'60–100 BPM', sinus:true, heart:'normal', cycles:3,
+    path: regular(3),
+    say:'Every impulse starts in the SA node and takes the normal path. P wave, QRS and T wave in order, evenly spaced.' },
+
+  { id:'brady', name:'Sinus bradycardia', rate:'below 60 BPM', sinus:true, heart:'normal', cycles:2,
+    path: regular(2),
+    say:'The same normal sequence, just slower — fewer complexes across the same stretch of paper. Everything is where it should be; there is simply less of it.' },
+
+  { id:'tachy', name:'Sinus tachycardia', rate:'above 100 BPM', sinus:true, heart:'normal', cycles:5,
+    path: regular(5),
+    say:'The same normal sequence, sped up. The complexes crowd together and the baseline between them shortens.' },
+
+  { id:'pac', name:'Premature atrial contraction', rate:'an early beat', heart:'ectopic-atrial',
+    path: (() => { let d = `M0,${BASE} `;
+      d += pqrst(0, 105);                 /* normal */
+      d += atrialEctopic(105, 78);        /* early beat, differently shaped P */
+      d += `L200,${BASE} `;               /* short pause */
+      d += pqrst(200, 105) + pqrst(305, 105); return d; })(),
+    say:'A cycle arrives before the next one is due, and its P wave is shaped differently because the impulse started somewhere in the atria other than the SA node. Common in healthy people who smoke or use stimulants, though it can point at something more serious.' },
+
+  { id:'pat', name:'Paroxysmal atrial tachycardia', rate:'160–250 BPM', heart:'ectopic-atrial',
+    path: regular(9, { noT:true }),
+    say:'A sudden burst of very rapid atrial beats, lasting only momentarily. Patients describe it as a flutter in the chest. Seen in healthy people as well as in cardiac disease.' },
+
+  { id:'afib', name:'Atrial fibrillation', rate:'atria 400–500 BPM', heart:'atrial-quiver',
+    path: (() => { const w = [0, 96, 210, 300]; let d = chaos(7, 8, 7);
+      w.forEach(x => { d += `M${x},${BASE} ` + pqrst(x, 88, { noP:true }); }); return d; })(),
+    say:'Multiple signals fire chaotically from the atria outside the SA node, so no P wave can be identified — just small irregular complexes on a quivering baseline. The ventricles respond irregularly, which is why the pulse is uneven.',
+    note:'The 400–500 figure is the ATRIAL rate. The AV node blocks most of those impulses, so the pulse you feel is far slower.' },
+
+  { id:'pvc', name:'Premature ventricular contraction', rate:'an early wide beat', heart:'ectopic-vent',
+    path: (() => { let d = `M0,${BASE} `;
+      d += pqrst(0, 95);                  /* normal */
+      d += ectopic(95, 88);               /* early, wide, opposite deflection */
+      d += `L238,${BASE} `;               /* the compensatory pause */
+      d += pqrst(238, 95) + pqrst(333, 95); return d; })(),
+    say:'A beat fires early from inside the ventricle itself, so it bypasses the normal pathway and the QRS comes out wide and bizarre. A compensatory pause follows before the next normal beat.' },
+
+  { id:'vtach', name:'Ventricular tachycardia', rate:'150–250 BPM', heart:'ectopic-vent', danger:true,
+    path: (() => { const w = 400 / 7; let d = `M0,${BASE} `;
+      for (let i = 0; i < 7; i++) d += ectopic(i * w, w); return d; })(),
+    say:'Three or more PVCs in a row. No P waves, and the QRS complexes are wide and imprecise. Life threatening — it often appears during a myocardial infarction.' },
+
+  { id:'vfib', name:'Ventricular fibrillation', rate:'no effective rate', heart:'vent-quiver', danger:true,
+    path: chaos(46, 9, 3),
+    say:'An erratic, jagged rhythm, sometimes called a sawtooth. The ventricles tremor rather than pump, so there is NO cardiac output. Alert the provider immediately.' },
+
+  { id:'paced', name:'Pacemaker rhythm', rate:'set by the device', heart:'normal',
+    path: regular(3, { spike:true, wide:true }),
+    say:'Sharp vertical spikes mark the pacemaker firing, each one followed by the complex it triggered. More visible in unipolar than in bipolar leads.' },
+];
+
+function runBeat(d){
+  if (!session) session = { t: 0, playing: true, speed: 1, last: 0, rhythm: 0 };
+  const s = session;
+  const R = RHYTHMS[s.rhythm];
+
+  /* The conduction walkthrough only makes sense while the impulse still takes
+     the normal path. For the arrhythmias the pathway story breaks down, so the
+     narration switches to the rhythm itself and the heart shows its behaviour. */
+  /* position WITHIN the current complex, so the walkthrough repeats per beat */
+  const cycles = R.cycles || 1;
+  const ct = (s.t * cycles) % 1;
+  const i = BEAT.indexOf(phaseAt(ct));
+  const ph = BEAT[i];
+  let x = 0, y = 0;
+  if (R.sinus){
+    const [a, b] = BEAT_LEG[ph.id];
+    const span = phaseEnd(i) - ph.t;
+    const k = span > 0 ? Math.min(1, Math.max(0, (ct - ph.t) / span)) : 0;
+    const p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
+    x = p0[0] + (p1[0] - p0[0]) * k; y = p0[1] + (p1[1] - p0[1]) * k;
+  }
+
+  app.innerHTML = `
+    <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <div class="bar"><span>${esc(R.name)}</span>
+      <div class="prog"><i style="width:${s.t * 100}%"></i></div>
+      <span>${esc(R.rate)}</span></div>
+
+    <div class="rhythms">
+      ${RHYTHMS.map((q, n) => `<button class="rbtn ${n === s.rhythm ? 'on' : ''} ${q.danger ? 'danger' : ''}"
+        onclick="beatRhythm(${n})">${esc(q.name)}</button>`).join('')}
+    </div>
+
+    <div class="beatwrap">
+      <div class="heart ${R.sinus && ph.chamber ? 'x-' + ph.chamber : ''} ${R.sinus && ph.hold ? 'holding' : ''} h-${R.heart}"
+           data-lit="${R.sinus ? ph.lit.join(' ') : ''}">
+        ${HEART_SVG}
+        ${R.sinus ? `<span class="impulse ${ph.hold ? 'held' : ''}"
+              style="left:${x / 3}%;top:${y / 3}%"></span>` : ''}
+      </div>
+
+      <svg viewBox="0 0 400 90" class="ecg">
+        <line x1="0" y1="60" x2="400" y2="60" class="ecgbase"/>
+        <path d="${R.path}" pathLength="100" class="ecgtrace ${R.danger ? 'danger' : ''}"
+              style="stroke-dasharray:100;stroke-dashoffset:${100 - s.t * 100}"/>
+        <line x1="${s.t * 400}" y1="4" x2="${s.t * 400}" y2="86" class="ecgnow"/>
+      </svg>
+    </div>
+
+    ${R.sinus
+      ? `<div class="phasehead">${esc(ph.name)}${ph.hold ? ' <span class="pause">— holding</span>' : ''}</div>
+         <p class="phasesay">${esc(ph.say)}${ph.wave ? ` <span class="eg">${esc(ph.wave)}</span>` : ''}</p>`
+      : `<div class="phasehead">${esc(R.name)}${R.danger ? ' <span class="pause">— life threatening</span>' : ''}</div>
+         <p class="phasesay">${esc(R.say)}${R.note ? `<span class="note">${esc(R.note)}</span>` : ''}</p>`}
+
+    <div class="row">
+      <button onclick="beatToggle()">${s.playing ? '❚❚ Pause' : '▶ Play'}</button>
+      <button onclick="beatSeek(0)">↺ Restart</button>
+      <button onclick="beatSpeed()">Speed ${s.speed}×</button>
+    </div>
+
+    ${R.sinus ? `<div class="steps" style="margin-top:14px">
+      ${BEAT.map((q, n) => `<button class="step" style="${q.id === ph.id ? 'border-color:var(--accent)' : ''}"
+        onclick="beatSeek(${((q.t + 0.002) / cycles).toFixed(4)})"><b style="color:var(--accent)">${n + 1}</b> &nbsp;${esc(q.name)}</button>`).join('')}
+    </div>` : ''}`;
+
+  keyHandler = e => { if (e.key === ' '){ e.preventDefault(); beatToggle(); } };
+  if (s.playing) scheduleBeat();
+}
+function beatRhythm(n){ session.rhythm = n; session.t = 0; session.last = 0; render(); }
+/* The frame loop MUST break the render cycle: runBeat schedules a tick, the tick
+   advances time and re-renders. Calling the tick directly from runBeat would
+   recurse until the stack blew. One frame may be in flight at a time. */
+function scheduleBeat(){
+  const s = session;
+  if (!s || s.raf) return;
+  s.raf = true;
+  requestAnimationFrame(() => {
+    if (!session) return;
+    session.raf = false;
+    if (view.mode !== 'beat' || !session.playing) return;
+    const now = Date.now();
+    const dt = session.last ? (now - session.last) / 1000 : 0;
+    session.last = now;
+    /* an 8s sweep at 1x — slow enough to read the narration for each phase */
+    session.t += dt * 0.125 * session.speed;
+    if (session.t >= 1) session.t = 0;
+    render();
+  });
+}
+function beatToggle(){ session.playing = !session.playing; session.last = 0; render(); }
+function beatSeek(t){ session.t = t; session.last = 0; render(); }
+function beatSpeed(){ const o = [1, 0.5, 0.25, 2]; session.speed = o[(o.indexOf(session.speed) + 1) % o.length]; render(); }
+
 /* ═══════════════ PUT IN ORDER ═══════════════ */
 /* Steps are worked in stages so the screen stays short on a phone: as items
    move from the pool into the placed list the total on screen stays at STAGE. */
@@ -945,7 +1266,7 @@ function render(){
   if (!d) return go('home');
   if (view.screen === 'deck') return screenDeck();
   ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch,
-     chest: runChest, order: runOrder, browse: runBrowse }[view.mode] || screenDeck)(d);
+     chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse }[view.mode] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }

@@ -80,6 +80,7 @@ const modesFor = d => {
   if (cards) m.push('learn', 'match');
   if (cards || written) m.push('quiz');
   if (d.chest) m.push('chest');
+  if (d.beat) m.push('beat');
   m.push('browse');
   return m;
 };
@@ -234,6 +235,41 @@ function suite(s, label) {
   check(`[${label}] no repeated answer choice`, dupChoice === 0, `${dupChoice} hits, e.g. ${sample}`);
   check(`[${label}] no interchangeable choices`, interchangeable === 0, `${interchangeable} hits, e.g. ${sample}`);
   check(`[${label}] ${quizzes} quizzes ask each card at most once`, quizRepeats === 0, `${quizRepeats} repeated`);
+
+  /* the heartbeat animation: every rhythm must render at every point in the
+     cycle without throwing, and every trace must be a valid path */
+  for (const d of DECKS.filter(x => x.beat)) {
+    const rhythms = vm.runInContext('RHYTHMS.length', s);
+    check(`[${label}] ${d.id} defines rhythms`, rhythms >= 10, `only ${rhythms}`);
+    let broke = '', badPath = '';
+    for (let r = 0; r < rhythms; r++) {
+      for (const t of [0, 0.1, 0.3, 0.5, 0.7, 0.95]) {
+        try {
+          go('run', d.id, 'beat');
+          vm.runInContext(`session.playing=false; session.rhythm=${r}; session.t=${t}; render();`, s);
+          const html = s.__app.innerHTML;
+          if (!/class="ecgtrace/.test(html) && !broke) broke = `rhythm ${r} at t=${t}: no trace rendered`;
+        } catch (e) { if (!broke) broke = `rhythm ${r} at t=${t}: ${e.message}`; }
+      }
+      const p = vm.runInContext(`RHYTHMS[${r}].path`, s);
+      /* a path must start with a move and contain only finite numbers */
+      if (!/^M[\d.]/.test(p.trim()) && !badPath) badPath = `rhythm ${r} path does not start with M`;
+      if (/NaN|undefined|Infinity/.test(p) && !badPath) badPath = `rhythm ${r} path contains NaN/undefined`;
+    }
+    check(`[${label}] ${d.id} every rhythm renders across the cycle`, !broke, broke);
+    check(`[${label}] ${d.id} every rhythm trace is a valid path`, !badPath, badPath);
+
+    /* the conduction walkthrough only runs for sinus rhythms */
+    const sinus = vm.runInContext('RHYTHMS.filter(r=>r.sinus).length', s);
+    check(`[${label}] ${d.id} sinus rhythms carry the conduction walkthrough`, sinus === 3, `got ${sinus}`);
+    const phases = vm.runInContext('BEAT.length', s);
+    check(`[${label}] ${d.id} the beat has its phases`, phases === 7, `got ${phases}`);
+    /* phases must be ordered and cover the whole cycle */
+    const ts = vm.runInContext('JSON.stringify(BEAT.map(p=>p.t))', s);
+    const arr = JSON.parse(ts);
+    check(`[${label}] ${d.id} phases ascend from 0`,
+          arr[0] === 0 && arr.every((v, i) => i === 0 || v > arr[i - 1]), ts);
+  }
 
   /* electrode-placement decks: every electrode must be reachable, uniquely
      positioned, and inside the figure */
