@@ -1426,8 +1426,8 @@ window.DECKS = [
       note: 'Also written AV node.' },
     { term: 'AV node delay', def: 'the roughly 0.1 second pause that lets the atria finish emptying before the ventricles contract' },
     { term: 'Bundle of His', def: 'carries the impulse from the AV node down into the interventricular septum' },
-    { term: 'Bundle branches', def: 'the left and right pathways carrying the impulse down either side of the septum' },
-    { term: 'Purkinje fibers', def: 'the network spreading the impulse through the ventricular walls, making the ventricles contract' },
+    { term: 'Bundle branches', def: 'the left and right pathways carrying the impulse down either side of the septum, all the way to the apex' },
+    { term: 'Purkinje fibers', def: 'the network running from the apex UP through the ventricular walls, making the ventricles contract from the bottom upward' },
     { fact: true, term: 'The conduction pathway in order',
       def: 'SA node → internodal pathways → AV node → bundle of His → bundle branches → Purkinje fibers' },
 

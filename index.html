@@ -147,11 +147,29 @@
   @media(max-width:620px){ .beatwrap{grid-template-columns:1fr} }
   .heart{position:relative;width:100%;aspect-ratio:1}
   .heartsvg{width:100%;height:100%;display:block}
-  .heartsvg .ch{fill:var(--card2);stroke:none;transition:fill .18s}
-  /* chambers light as they depolarise, and ease off as they relax */
-  .heart.x-atria .atria-l,.heart.x-atria .atria-r{fill:color-mix(in srgb,var(--accent) 42%,var(--card2))}
-  .heart.x-ventricles .vent-l,.heart.x-ventricles .vent-r{fill:color-mix(in srgb,var(--accent) 48%,var(--card2))}
-  .heart.x-ventricles-relax .vent-l,.heart.x-ventricles-relax .vent-r{fill:color-mix(in srgb,var(--good) 26%,var(--card2))}
+  /* Chambers light AND squeeze. Scaling about each chamber's own centre reads as
+     a contraction; the wall thickens visually as the cavity draws in. */
+  .heartsvg .ch{fill:var(--card2);stroke:none;transform-box:fill-box;transform-origin:center;
+    transition:fill .25s ease, transform .5s cubic-bezier(.4,0,.3,1)}
+  /* kept shallow on purpose — squeeze far enough and the chambers visibly peel
+     away from the outline, which reads as broken rather than beating */
+  .heart.x-atria .atria-l,.heart.x-atria .atria-r{
+    fill:color-mix(in srgb,var(--accent) 42%,var(--card2));transform:scale(.945)}
+  .heart.x-ventricles .vent-l,.heart.x-ventricles .vent-r{
+    fill:color-mix(in srgb,var(--accent) 48%,var(--card2));transform:scale(.925)}
+  /* relaxing: the ventricles spring back and fill, just past resting size */
+  .heart.x-ventricles-relax .vent-l,.heart.x-ventricles-relax .vent-r{
+    fill:color-mix(in srgb,var(--good) 26%,var(--card2));transform:scale(1.015)}
+  /* the whole heart gives a small lurch as the ventricles eject */
+  .heartsvg{transform-origin:50% 60%;transition:transform .5s cubic-bezier(.4,0,.3,1)}
+  .heart.x-ventricles .heartsvg{transform:scale(.985)}
+  @media (prefers-reduced-motion: reduce){
+    .heartsvg .ch,.heartsvg{transition:fill .25s ease}
+    .heart.x-atria .atria-l,.heart.x-atria .atria-r,
+    .heart.x-ventricles .vent-l,.heart.x-ventricles .vent-r,
+    .heart.x-ventricles-relax .vent-l,.heart.x-ventricles-relax .vent-r,
+    .heart.x-ventricles .heartsvg{transform:none}
+  }
   .heartsvg .seg{stroke:var(--line);stroke-width:3;transition:stroke .15s}
   .heartsvg .node{fill:var(--card);stroke:var(--line);stroke-width:2.5;transition:.15s}
   /* the segment carrying the impulse right now */
@@ -862,10 +880,10 @@ const BEAT = [
     say:'Conduction slows to about 0.05 m/s here, the slowest anywhere in the heart, pausing roughly 0.1 second. That pause is the point: it lets the atria finish emptying before the ventricles contract.',
     wave:'The flat PR segment is this wait.' },
   { id:'his', t:0.46, name:'Down the bundle of His', lit:['av','his','branches'], chamber:null,
-    say:'Released, the impulse races down the bundle of His and splits into the left and right bundle branches at around 2 m/s.',
+    say:'Released, the impulse races down the bundle of His and splits into the left and right bundle branches, which descend either side of the septum all the way to the apex at around 2 m/s.',
     wave:'The QRS complex begins.' },
   { id:'purkinje', t:0.54, name:'Ventricular depolarization', lit:['branches','purkinje'], chamber:'ventricles',
-    say:'The Purkinje fibres carry it through the ventricular walls at about 4 m/s — the fastest conduction in the system — so both ventricles contract almost as one.',
+    say:'From the apex the Purkinje fibres sweep back UP through the ventricular walls at about 4 m/s — the fastest conduction in the system. Starting at the bottom is what lets the ventricles squeeze upward and drive blood out, rather than merely twitching.',
     wave:'This is the QRS complex.' },
   { id:'repol', t:0.62, name:'Ventricular repolarization', lit:[], chamber:'ventricles-relax',
     say:'The ventricles recover electrically and relax, refilling with blood ready for the next beat.',
@@ -874,9 +892,13 @@ const BEAT = [
     say:'The trace returns to the isoelectric baseline. The SA node is already building toward the next impulse.' },
 ];
 /* waypoints the impulse travels between, in SVG coordinates */
-const BEAT_PATH = { sa:[100,66], av:[150,118], his:[150,152], branch:[150,186], apex:[150,236] };
+/* The impulse tracks the real route: down the septum to the apex, then back UP
+   the ventricular wall through the Purkinje network, then home to the SA node
+   ready for the next beat. */
+const BEAT_PATH = { sa:[100,66], av:[150,118], apex:[150,232], wall:[108,176] };
 const BEAT_LEG = { sa:['sa','sa'], atria:['sa','av'], av:['av','av'],
-                   his:['av','his'], purkinje:['his','apex'], repol:['apex','apex'], rest:['apex','apex'] };
+                   his:['av','apex'], purkinje:['apex','wall'],
+                   repol:['wall','wall'], rest:['wall','sa'] };
 
 const phaseAt = t => { let p = BEAT[0]; for (const q of BEAT) if (t >= q.t) p = q; return p; };
 const phaseEnd = i => (i + 1 < BEAT.length ? BEAT[i + 1].t : 1);
@@ -895,18 +917,32 @@ const HEART_SVG = `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidden="true
   </g>
   <g class="conduct" fill="none" stroke-linecap="round">
     <path class="seg internodal" d="M100 66 Q122 94 148 116"/>
-    <path class="seg his" d="M150 122 V152"/>
-    <path class="seg branches" d="M150 152 L126 190 M150 152 L174 190"/>
-    <path class="seg purkinje" d="M126 190 C112 210 106 226 104 236 M126 190 C126 214 130 232 134 242
-                                  M174 190 C188 210 194 226 196 236 M174 190 C174 214 170 232 166 242"/>
+    <path class="seg his" d="M150 122 V158"/>
+    <!-- Bundle branches run DOWN the septum to the apex, hugging it either side -->
+    <path class="seg branches" d="M150 158 L145 230 M150 158 L155 230"/>
+    <!-- Purkinje fibres then sweep back UP the free walls from the apex -->
+    <path class="seg purkinje" d="M145 234 C122 222 100 196 88 158
+                                  M145 234 C128 226 114 206 106 180
+                                  M145 234 C136 226 128 210 123 192
+                                  M155 234 C178 222 200 196 212 158
+                                  M155 234 C172 226 186 206 194 180
+                                  M155 234 C164 226 172 210 177 192"/>
     <circle class="node sa" cx="100" cy="66" r="7"/>
     <circle class="node av" cx="150" cy="118" r="7"/>
+  </g>
+  <!-- labels sit outside the chambers with leader lines, so a contracting
+       chamber never slides out from under its own caption -->
+  <g class="leaders" stroke="var(--line)" stroke-width=".8" fill="none" opacity=".8">
+    <path d="M236 130 L160 148"/><path d="M240 186 L206 182"/><path d="M64 214 L142 206"/>
   </g>
   <g class="beatlabels" font-size="9" fill="var(--dim)">
     <text x="88" y="52" text-anchor="end">SA node</text>
     <text x="163" y="112">AV node</text>
-    <text x="163" y="146">Bundle of His</text>
-    <text x="196" y="196">Purkinje</text>
+    <text x="240" y="122">Bundle</text>
+    <text x="240" y="132">of His</text>
+    <text x="244" y="189">Purkinje</text>
+    <text x="60" y="211" text-anchor="end">Bundle</text>
+    <text x="60" y="221" text-anchor="end">branches</text>
   </g>
 </svg>`;
 
@@ -1028,7 +1064,7 @@ function beatState(){
   const s = session, R = RHYTHMS[s.rhythm], cycles = R.cycles || 1;
   const ct = (s.t * cycles) % 1;
   let i, ph, k;
-  if (R.sinus && s.stage === 'step'){
+  if (R.sinus){
     /* the stepped walkthrough owns which phase is showing, so the narration
        cannot drift away from the impulse the way deriving it from t would */
     i = Math.min(s.stepIdx, BEAT.length - 1); ph = BEAT[i]; k = s.k;
@@ -1043,7 +1079,7 @@ function beatState(){
   const [a, b] = BEAT_LEG[ph.id], p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
   return { R, cycles, i, ph,
            x: p0[0] + (p1[0] - p0[0]) * k, y: p0[1] + (p1[1] - p0[1]) * k,
-           holding: R.sinus && s.stage === 'step' && s.dwell > 0 };
+           holding: R.sinus && s.dwell > 0 };
 }
 
 /* What a full re-render would change. While this is stable, the frame loop
@@ -1052,7 +1088,7 @@ function beatState(){
    click can ever complete. */
 function beatSig(){
   const s = session, b = beatState();
-  return [s.rhythm, s.stage, s.stepIdx, b.ph.id, b.holding, s.playing, s.speed].join('|');
+  return [s.rhythm, s.beat, s.stepIdx, b.ph.id, b.holding, s.playing, s.speed].join('|');
 }
 function paintBeat(){
   const s = session, b = beatState(), px = (s.t * 400).toFixed(2);
@@ -1066,7 +1102,7 @@ function paintBeat(){
 
 function runBeat(d){
   if (!session) session = { t: 0, playing: true, speed: 1, last: 0, rhythm: 0,
-                            stage: 'step', stepIdx: 0, k: 0, dwell: 0 };
+                            beat: 0, stepIdx: 0, k: 0, dwell: 0 };
   const s = session;
   const R = RHYTHMS[s.rhythm];
   const cycles = R.cycles || 1;
@@ -1106,14 +1142,9 @@ function runBeat(d){
       </svg>
     </div>
 
-    ${R.sinus && s.stage === 'sweep'
-      ? `<div class="phasehead">The rhythm continues
-           <span class="stepno">${cycles > 1 ? `${cycles - 1} more beat${cycles > 2 ? 's' : ''} across the strip` : 'end of the strip'}</span></div>
-         <p class="phasesay">That whole sequence repeats for every beat. Watch the spacing — it is what separates a normal rate from bradycardia and tachycardia.</p>
-         <div class="dwell"><i style="width:0%"></i></div>`
-      : R.sinus
+    ${R.sinus
       ? `<div class="phasehead">${esc(ph.name)}
-           <span class="stepno">step ${i + 1} of ${BEAT.length}</span>
+           <span class="stepno">beat ${s.beat + 1} of ${cycles} · step ${i + 1} of ${BEAT.length}</span>
            ${ph.hold ? '<span class="pause">— the AV node is waiting here</span>' : ''}</div>
          <p class="phasesay">${esc(ph.say)}${ph.wave ? ` <span class="eg">${esc(ph.wave)}</span>` : ''}</p>
          <div class="dwell"><i style="width:${holding ? (s.dwell / DWELL) * 100 : 0}%"></i></div>`
@@ -1135,17 +1166,17 @@ function runBeat(d){
   if (s.playing) scheduleBeat();
 }
 function beatRhythm(n){
-  Object.assign(session, { rhythm:n, t:0, last:0, stage:'step', stepIdx:0, k:0, dwell:0 });
+  Object.assign(session, { rhythm:n, t:0, last:0, beat:0, stepIdx:0, k:0, dwell:0 });
   render();
 }
 function beatRestart(){
-  Object.assign(session, { t:0, last:0, stage:'step', stepIdx:0, k:0, dwell:0 });
+  Object.assign(session, { t:0, last:0, beat:0, stepIdx:0, k:0, dwell:0 });
   render();
 }
 /* Conduction phases play as STEPS, not as a continuous sweep: each one animates
    briefly, then holds while you read it. Sweeping through at a readable pace
    would take a minute an unbroken; holding is what makes it legible. */
-const ANIM = 0.9, DWELL = 3.5;   /* seconds to move, then seconds to dwell */
+const ANIM = 0.9, DWELL = 6;   /* seconds to move, then seconds to dwell */
 
 /* The frame loop MUST break the render cycle: runBeat schedules a tick, the tick
    advances and re-renders. Calling the tick directly from runBeat would recurse
@@ -1175,38 +1206,32 @@ function sweepBeat(dt){
   s.t += dt * 0.1 * s.speed;             /* a 10s sweep at 1x */
   if (s.t >= 1) s.t = 0;
 }
+/* Every complex on the strip gets the same seven-step walkthrough — a second
+   beat is not a lesser beat, and rushing the later ones taught nothing. */
 function stepBeat(dt){
   const s = session, R = RHYTHMS[s.rhythm], cycles = R.cycles || 1;
   const d = dt * s.speed;
 
-  if (s.stage === 'sweep'){
-    /* the walkthrough is done — run out the rest of the strip so the rhythm's
-       rate is visible, then start over */
-    s.t += d * 0.3;
-    if (s.t >= 1) Object.assign(s, { t: 0, stage: 'step', stepIdx: 0, k: 0, dwell: 0 });
-    return;
-  }
   if (s.dwell > 0){
     s.dwell = Math.max(0, s.dwell - d);
     if (s.dwell === 0){
       if (s.stepIdx + 1 < BEAT.length){ s.stepIdx++; s.k = 0; }
-      else s.stage = 'sweep';
+      else if (s.beat + 1 < cycles){ s.beat++; s.stepIdx = 0; s.k = 0; }
+      else { s.beat = 0; s.stepIdx = 0; s.k = 0; }      /* strip finished — loop */
     }
   } else {
     s.k = Math.min(1, s.k + d / ANIM);
     if (s.k === 1) s.dwell = DWELL;
   }
-  if (s.stage === 'step'){
-    const ph = BEAT[s.stepIdx];
-    s.t = (ph.t + (phaseEnd(s.stepIdx) - ph.t) * s.k) / cycles;
-  }
+  const ph = BEAT[s.stepIdx];
+  s.t = (s.beat + ph.t + (phaseEnd(s.stepIdx) - ph.t) * s.k) / cycles;
 }
 function beatToggle(){ session.playing = !session.playing; session.last = 0; render(); }
 function beatSeek(n){
   const s = session;
-  Object.assign(s, { stage:'step', stepIdx:n, k:1, dwell:DWELL, last:0 });
+  Object.assign(s, { stepIdx:n, k:1, dwell:DWELL, last:0 });
   const cycles = RHYTHMS[s.rhythm].cycles || 1;
-  s.t = (BEAT[n].t + (phaseEnd(n) - BEAT[n].t)) / cycles;
+  s.t = (s.beat + phaseEnd(n)) / cycles;
   render();
 }
 function beatSpeed(){ const o = [1, 0.5, 0.25, 2]; session.speed = o[(o.indexOf(session.speed) + 1) % o.length]; render(); }
