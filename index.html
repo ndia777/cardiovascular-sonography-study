@@ -183,6 +183,10 @@
   .phasehead .pause{color:var(--warn);font-weight:500;font-size:14px}
   .phasesay{margin:0 0 4px;font-size:14.5px;line-height:1.6;color:var(--dim)}
   .phasesay .eg{color:var(--accent);font-weight:600}
+  .phasehead .stepno{font-size:12px;font-weight:500;color:var(--dim);margin-left:8px}
+  /* drains while the step holds, so the wait reads as deliberate rather than stuck */
+  .dwell{height:3px;background:var(--card2);border-radius:2px;overflow:hidden;margin:10px 0 2px}
+  .dwell i{display:block;height:100%;background:var(--accent);opacity:.55;transition:width .1s linear}
 
   /* ---- put in order ---- */
   .stagehead{display:flex;align-items:baseline;gap:9px;margin:0 0 14px;font-size:13px;
@@ -1016,26 +1020,30 @@ const RHYTHMS = [
 ];
 
 function runBeat(d){
-  if (!session) session = { t: 0, playing: true, speed: 1, last: 0, rhythm: 0 };
+  if (!session) session = { t: 0, playing: true, speed: 1, last: 0, rhythm: 0,
+                            stage: 'step', stepIdx: 0, k: 0, dwell: 0 };
   const s = session;
   const R = RHYTHMS[s.rhythm];
+  const cycles = R.cycles || 1;
 
   /* The conduction walkthrough only makes sense while the impulse still takes
      the normal path. For the arrhythmias the pathway story breaks down, so the
      narration switches to the rhythm itself and the heart shows its behaviour. */
-  /* position WITHIN the current complex, so the walkthrough repeats per beat */
-  const cycles = R.cycles || 1;
-  const ct = (s.t * cycles) % 1;
-  const i = BEAT.indexOf(phaseAt(ct));
-  const ph = BEAT[i];
-  let x = 0, y = 0;
+  let i, ph, x = 0, y = 0, ct = (s.t * cycles) % 1;
   if (R.sinus){
+    /* the stepped walkthrough owns which phase is showing, so the narration
+       cannot drift away from the impulse the way deriving it from t would */
+    i = s.stage === 'sweep' ? BEAT.length - 1 : Math.min(s.stepIdx, BEAT.length - 1);
+    ph = BEAT[i];
     const [a, b] = BEAT_LEG[ph.id];
-    const span = phaseEnd(i) - ph.t;
-    const k = span > 0 ? Math.min(1, Math.max(0, (ct - ph.t) / span)) : 0;
+    const k = s.stage === 'sweep' ? 1 : s.k;
     const p0 = BEAT_PATH[a], p1 = BEAT_PATH[b];
     x = p0[0] + (p1[0] - p0[0]) * k; y = p0[1] + (p1[1] - p0[1]) * k;
+  } else {
+    i = BEAT.indexOf(phaseAt(ct));
+    ph = BEAT[i];
   }
+  const holding = R.sinus && s.stage === 'step' && s.dwell > 0;
 
   app.innerHTML = `
     <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
@@ -1049,7 +1057,7 @@ function runBeat(d){
     </div>
 
     <div class="beatwrap">
-      <div class="heart ${R.sinus && ph.chamber ? 'x-' + ph.chamber : ''} ${R.sinus && ph.hold ? 'holding' : ''} h-${R.heart}"
+      <div class="heart ${R.sinus && ph.chamber ? 'x-' + ph.chamber : ''} ${R.sinus && ph.hold && holding ? 'holding' : ''} h-${R.heart}"
            data-lit="${R.sinus ? ph.lit.join(' ') : ''}">
         ${HEART_SVG}
         ${R.sinus ? `<span class="impulse ${ph.hold ? 'held' : ''}"
@@ -1065,29 +1073,44 @@ function runBeat(d){
     </div>
 
     ${R.sinus
-      ? `<div class="phasehead">${esc(ph.name)}${ph.hold ? ' <span class="pause">— holding</span>' : ''}</div>
-         <p class="phasesay">${esc(ph.say)}${ph.wave ? ` <span class="eg">${esc(ph.wave)}</span>` : ''}</p>`
+      ? `<div class="phasehead">${esc(ph.name)}
+           <span class="stepno">step ${i + 1} of ${BEAT.length}</span>
+           ${ph.hold ? '<span class="pause">— the AV node is waiting here</span>' : ''}</div>
+         <p class="phasesay">${esc(ph.say)}${ph.wave ? ` <span class="eg">${esc(ph.wave)}</span>` : ''}</p>
+         <div class="dwell"><i style="width:${holding ? (s.dwell / DWELL) * 100 : 0}%"></i></div>`
       : `<div class="phasehead">${esc(R.name)}${R.danger ? ' <span class="pause">— life threatening</span>' : ''}</div>
          <p class="phasesay">${esc(R.say)}${R.note ? `<span class="note">${esc(R.note)}</span>` : ''}</p>`}
 
     <div class="row">
       <button onclick="beatToggle()">${s.playing ? '❚❚ Pause' : '▶ Play'}</button>
-      <button onclick="beatSeek(0)">↺ Restart</button>
+      <button onclick="beatRestart()">↺ Restart</button>
       <button onclick="beatSpeed()">Speed ${s.speed}×</button>
     </div>
 
     ${R.sinus ? `<div class="steps" style="margin-top:14px">
       ${BEAT.map((q, n) => `<button class="step" style="${q.id === ph.id ? 'border-color:var(--accent)' : ''}"
-        onclick="beatSeek(${((q.t + 0.002) / cycles).toFixed(4)})"><b style="color:var(--accent)">${n + 1}</b> &nbsp;${esc(q.name)}</button>`).join('')}
+        onclick="beatSeek(${n})"><b style="color:var(--accent)">${n + 1}</b> &nbsp;${esc(q.name)}</button>`).join('')}
     </div>` : ''}`;
 
   keyHandler = e => { if (e.key === ' '){ e.preventDefault(); beatToggle(); } };
   if (s.playing) scheduleBeat();
 }
-function beatRhythm(n){ session.rhythm = n; session.t = 0; session.last = 0; render(); }
+function beatRhythm(n){
+  Object.assign(session, { rhythm:n, t:0, last:0, stage:'step', stepIdx:0, k:0, dwell:0 });
+  render();
+}
+function beatRestart(){
+  Object.assign(session, { t:0, last:0, stage:'step', stepIdx:0, k:0, dwell:0 });
+  render();
+}
+/* Conduction phases play as STEPS, not as a continuous sweep: each one animates
+   briefly, then holds while you read it. Sweeping through at a readable pace
+   would take a minute an unbroken; holding is what makes it legible. */
+const ANIM = 0.9, DWELL = 3.5;   /* seconds to move, then seconds to dwell */
+
 /* The frame loop MUST break the render cycle: runBeat schedules a tick, the tick
-   advances time and re-renders. Calling the tick directly from runBeat would
-   recurse until the stack blew. One frame may be in flight at a time. */
+   advances and re-renders. Calling the tick directly from runBeat would recurse
+   until the stack blew. One frame may be in flight at a time. */
 function scheduleBeat(){
   const s = session;
   if (!s || s.raf) return;
@@ -1097,16 +1120,52 @@ function scheduleBeat(){
     session.raf = false;
     if (view.mode !== 'beat' || !session.playing) return;
     const now = Date.now();
-    const dt = session.last ? (now - session.last) / 1000 : 0;
+    const dt = Math.min(0.1, session.last ? (now - session.last) / 1000 : 0);
     session.last = now;
-    /* an 8s sweep at 1x — slow enough to read the narration for each phase */
-    session.t += dt * 0.125 * session.speed;
-    if (session.t >= 1) session.t = 0;
+    if (RHYTHMS[session.rhythm].sinus) stepBeat(dt); else sweepBeat(dt);
     render();
   });
 }
+/* arrhythmias have one description for the whole strip — just draw it steadily */
+function sweepBeat(dt){
+  const s = session;
+  s.t += dt * 0.1 * s.speed;             /* a 10s sweep at 1x */
+  if (s.t >= 1) s.t = 0;
+}
+function stepBeat(dt){
+  const s = session, R = RHYTHMS[s.rhythm], cycles = R.cycles || 1;
+  const d = dt * s.speed;
+
+  if (s.stage === 'sweep'){
+    /* the walkthrough is done — run out the rest of the strip so the rhythm's
+       rate is visible, then start over */
+    s.t += d * 0.3;
+    if (s.t >= 1) Object.assign(s, { t: 0, stage: 'step', stepIdx: 0, k: 0, dwell: 0 });
+    return;
+  }
+  if (s.dwell > 0){
+    s.dwell = Math.max(0, s.dwell - d);
+    if (s.dwell === 0){
+      if (s.stepIdx + 1 < BEAT.length){ s.stepIdx++; s.k = 0; }
+      else s.stage = 'sweep';
+    }
+  } else {
+    s.k = Math.min(1, s.k + d / ANIM);
+    if (s.k === 1) s.dwell = DWELL;
+  }
+  if (s.stage === 'step'){
+    const ph = BEAT[s.stepIdx];
+    s.t = (ph.t + (phaseEnd(s.stepIdx) - ph.t) * s.k) / cycles;
+  }
+}
 function beatToggle(){ session.playing = !session.playing; session.last = 0; render(); }
-function beatSeek(t){ session.t = t; session.last = 0; render(); }
+function beatSeek(n){
+  const s = session;
+  Object.assign(s, { stage:'step', stepIdx:n, k:1, dwell:DWELL, last:0 });
+  const cycles = RHYTHMS[s.rhythm].cycles || 1;
+  s.t = (BEAT[n].t + (phaseEnd(n) - BEAT[n].t)) / cycles;
+  render();
+}
 function beatSpeed(){ const o = [1, 0.5, 0.25, 2]; session.speed = o[(o.indexOf(session.speed) + 1) % o.length]; render(); }
 
 /* ═══════════════ PUT IN ORDER ═══════════════ */
