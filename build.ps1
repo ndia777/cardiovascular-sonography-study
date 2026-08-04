@@ -55,7 +55,13 @@ if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir | Out
 
 $kb      = [math]::Round((Get-Item $outPath).Length / 1KB)
 $deckNum = ([regex]::Matches($decks, '(?m)^\s+id:\s')).Count
-$cardNum = ([regex]::Matches($decks, '\{\s*term:')).Count
+# Counting cards is fussier than it looks, and this line has been wrong twice.
+# `{ term:` misses every `{ fact: true, term: ... }` card, and dropping the brace
+# still misses the JSON-quoted `"term":` form some decks use. Match the separator
+# plus an optionally quoted key, which covers all three.
+# test/app.test.js re-runs this exact pattern against the real deck data, so a
+# fourth card style breaks the suite instead of silently miscounting again.
+$cardNum = ([regex]::Matches($decks, '[\{,]\s*"?term"?\s*:')).Count
 
 Write-Host ''
 Write-Host ('Built docs\index.html - ' + $kb + ' KB, ' + $deckNum + ' decks, ' + $cardNum + ' terms, zero external files.')

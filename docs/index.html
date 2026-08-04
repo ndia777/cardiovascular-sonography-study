@@ -1555,6 +1555,90 @@ window.DECKS = [
 },
 
 {
+  id: 'blood-flow',
+  course: 'M103 · Medical Procedures',
+  title: 'The Heart — Trace a Drop of Blood',
+  source: 'Notes/TERM 1/M103 LEC .../The Circulatory Systen.md',
+  /* A sequence rather than a vocabulary list, so this gets the "Put in Order"
+     mode. The pathway is the one thing here that is genuinely ORDERED, and
+     dragging it into sequence tests it far better than reciting it as a card.
+
+     The coronary sinus is deliberately NOT a step. It drains the heart muscle
+     straight into the right atrium alongside the venae cavae, so putting it in
+     a single-file chain would rebuild the exact error flagged in Notes Check —
+     it lives in the detail on step 2 instead. */
+  steps: [
+    { text: 'Deoxygenated blood returns from the body through the superior and inferior venae cavae.',
+      detail: 'Superior vena cava from the head, neck and arms; inferior vena cava from the trunk and legs.' },
+    { text: 'It empties into the right atrium.',
+      detail: 'Three separate openings feed this chamber — the two venae cavae, plus the coronary sinus returning blood from the heart muscle itself. They arrive side by side, not one through another.' },
+    { text: 'It passes through the tricuspid valve.',
+      detail: 'The atrioventricular valve of the right side. Three cusps — hence tri-.' },
+    { text: 'It fills the right ventricle.' },
+    { text: 'The right ventricle contracts, ejecting blood through the pulmonic valve.',
+      detail: 'A semilunar valve, guarding the way out of the ventricle.' },
+    { text: 'Blood travels along the main pulmonary artery.',
+      detail: 'The one artery in the body carrying deoxygenated blood — an artery is defined by leading AWAY from the heart, not by what it carries.' },
+    { text: 'It reaches the lungs and picks up oxygen.',
+      detail: 'Gas exchange at the alveolar capillaries. This is the whole point of the pulmonic circulation, which the RIGHT side of the heart drives at low pressure.' },
+    { text: 'Oxygenated blood returns through the four pulmonary veins.',
+      detail: 'The only veins in the body carrying oxygenated blood — a vein is defined by running TOWARD the heart.' },
+    { text: 'It empties into the left atrium.' },
+    { text: 'It passes through the mitral valve.',
+      detail: 'The atrioventricular valve of the left side, also called the bicuspid valve — two cusps rather than three.' },
+    { text: 'It fills the left ventricle.',
+      detail: 'The thickest-walled chamber, because it drives the systemic circulation against far higher pressure than the right side ever meets.' },
+    { text: 'The left ventricle contracts, ejecting blood through the aortic valve.',
+      detail: 'The other semilunar valve.' },
+    { text: 'Blood enters the ascending aorta.',
+      detail: 'The coronary arteries branch off here, at the very base — the heart feeds itself first.' },
+    { text: 'It rounds the aortic arch and out into the systemic circulation.' }
+  ],
+  questions: [
+    { q: 'Which valve does blood cross immediately BEFORE entering the right ventricle?',
+      choices: ['The tricuspid valve', 'The pulmonic valve', 'The mitral valve', 'The aortic valve'], answer: 0,
+      why: 'The tricuspid is the way in, from the right atrium. The pulmonic is the way out, into the pulmonary artery.' },
+
+    { q: 'The pulmonary ARTERY is unusual because:',
+      choices: [
+        'It is an artery carrying deoxygenated blood',
+        'It is an artery carrying blood toward the heart',
+        'It is the only artery without a valve at its opening',
+        'It carries blood at higher pressure than the aorta'
+      ], answer: 0,
+      why: 'Artery and vein describe DIRECTION, not oxygen. Arteries lead away from the heart; the pulmonary artery leads away, toward the lungs, carrying blood that has not been oxygenated yet.' },
+
+    { q: 'How many pulmonary veins return blood to the left atrium?',
+      choices: ['Four', 'Two', 'One', 'Six'], answer: 0 },
+
+    { q: 'Blood in the coronary sinus reaches the right atrium by:',
+      choices: [
+        'Emptying directly into it through its own opening',
+        'Joining the superior vena cava first',
+        'Joining the inferior vena cava first',
+        'Passing through the tricuspid valve'
+      ], answer: 0,
+      why: 'The coronary sinus is the venous drainage of the heart muscle itself, and arrives independently of the venae cavae.' },
+
+    { q: 'A drop of blood has just left the left ventricle. Where is it?',
+      choices: [
+        'Crossing the aortic valve into the ascending aorta',
+        'Crossing the mitral valve into the left atrium',
+        'Crossing the pulmonic valve into the pulmonary artery',
+        'In a pulmonary vein on its way to the lungs'
+      ], answer: 0 },
+
+    { q: 'The right side of the heart drives which circulation?',
+      choices: [
+        'Pulmonic — to the lungs, at low pressure',
+        'Systemic — to the body, at low pressure',
+        'Pulmonic — to the lungs, at high pressure',
+        'Systemic — to the body, at high pressure'
+      ], answer: 0 }
+  ]
+},
+
+{
   id: 'ekg-basics',
   course: 'M103 · Medical Procedures',
   title: 'EKG — Waves, Intervals & Paper',

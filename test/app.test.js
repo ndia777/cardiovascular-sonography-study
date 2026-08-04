@@ -677,6 +677,21 @@ check('index.html has exactly one inline script', srcInline.length === 1, `found
 suite(boot(decksSrc, srcInline[0], 'source'), 'source');
 heartGeometry(srcHtml, 'source');
 
+/* build.ps1 prints a card count from a regex over decks.js, because PowerShell
+   cannot evaluate the deck data. That count has been wrong twice — once missing
+   `{ fact: true, term: ... }` cards, once missing the JSON-quoted `"term":`
+   form. Run the build's own pattern here, where the real total is known, so the
+   next card style that slips past it fails the suite instead of quietly
+   under-reporting. Keep this pattern identical to the one in build.ps1. */
+{
+  const BUILD_PATTERN = /[\{,]\s*"?term"?\s*:/g;
+  const counted = (decksSrc.match(BUILD_PATTERN) || []).length;
+  const bootstrapped = boot(decksSrc, srcInline[0], 'count');
+  const actual = bootstrapped.DECKS.reduce((n, d) => n + (d.cards || []).length, 0);
+  check('build.ps1 counts every card', counted === actual,
+        `build.ps1 would report ${counted}, decks actually hold ${actual} — update the regex in build.ps1 AND here`);
+}
+
 /* The bundle is what actually gets served — test it too, and confirm it is not
    stale, since forgetting to run build.ps1 would silently ship old code. */
 const bundlePath = path.join(ROOT, 'docs', 'index.html');
