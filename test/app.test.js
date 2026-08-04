@@ -108,6 +108,33 @@ function suite(s, label) {
         rendered.length > 1 && JSON.stringify(rendered) === JSON.stringify(expected),
         `rendered: ${rendered.join(' | ')}`);
 
+  /* Inside a section, decks run oldest-added first, so the list follows the
+     order the material was covered. Every deck must carry a date, or it would
+     silently sort to the bottom. Read the rendered order back out of the markup
+     and check it against the dates — sorting the deck list and comparing it to
+     itself would pass however the app behaved. */
+  const undated = DECKS.filter(d => !/^\d{4}-\d{2}-\d{2}$/.test(d.added || ''));
+  check(`[${label}] every deck records when it was added`, !undated.length,
+        undated.map(d => d.id).join(', '));
+  go('home');
+  {
+    const titleToDate = new Map(DECKS.map(d => [d.title, d.added]));
+    const html = s.__app.innerHTML;
+    /* split the page into course sections, then read each section's deck order */
+    const sections = html.split(/class="coursehead"/).slice(1);
+    let broke = '';
+    for (const sec of sections) {
+      const dates = [...sec.matchAll(/<h3>([^<]+)<\/h3>/g)]
+        .map(m => titleToDate.get(m[1].replace(/&amp;/g, '&')))
+        .filter(Boolean);
+      for (let i = 1; i < dates.length; i++)
+        if (dates[i] < dates[i - 1] && !broke)
+          broke = `a ${dates[i]} deck renders after a ${dates[i - 1]} one`;
+      if (dates.length < 2 && !broke && sections.length === 1) broke = 'no deck order to check';
+    }
+    check(`[${label}] decks render oldest-added first within a course`, !broke, broke);
+  }
+
   /* The review sheet lists terms alphabetically, ignoring leading punctuation.
      Read the order out of the rendered table, not out of a re-sorted array. */
   for (const d of DECKS.filter(x => x.cards.length)) {

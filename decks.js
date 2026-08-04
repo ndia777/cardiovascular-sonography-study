@@ -21,6 +21,8 @@ window.DECKS = [
 
 {
   id: 'mt1-roots',
+
+  added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Word Roots',
   source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
@@ -111,6 +113,8 @@ window.DECKS = [
 
 {
   id: 'mt1-suffixes',
+
+  added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Suffixes',
   source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
@@ -174,6 +178,8 @@ window.DECKS = [
 
 {
   id: 'mt1-prefixes',
+
+  added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Prefixes',
   source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
@@ -237,6 +243,8 @@ window.DECKS = [
 
 {
   id: 'mt1-terms',
+
+  added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Medical Terms',
   source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 1.md',
@@ -359,6 +367,8 @@ window.DECKS = [
 
 {
   id: 'mt2-parts',
+
+  added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Word Parts (Body Structure)',
   source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 2.md',
@@ -404,6 +414,8 @@ window.DECKS = [
 
 {
   id: 'mt2-terms',
+
+  added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Body Structure & Disease',
   source: 'Notes/TERM 1/M159 - Medical Terminology 1 (CANVAS)/Chapter 2.md',
@@ -570,6 +582,8 @@ window.DECKS = [
 
 {
   id: 'mt2-overview',
+
+  added: '2026-07-31',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Overview (Lecture Slides)',
   source: 'Assets/Medical Terminology Chapter 2 Powerpoint.pptx',
@@ -876,6 +890,8 @@ window.DECKS = [
 
 {
   id: "bio-ch3",
+
+  added: "2026-07-30",
   course: "BIO101 · Anatomy & Physiology 1 Lecture",
   title: "Ch. 3 — Study Guide",
   source: "Assets/Chap 3 Study Guide Powerpoint.pptx + Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 3.md",
@@ -979,6 +995,8 @@ window.DECKS = [
 
 {
   id: 'bio-ch4',
+
+  added: '2026-07-30',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 4 — Study Guide',
   source: 'Assets/Chap 4 Study Guide Powerpoint.pptx + Notes/TERM 1/BIO101 LEC - Anatomy & Physiology 1 Lec (CANVAS)/Chapter 4.md',
@@ -1167,6 +1185,8 @@ window.DECKS = [
    which chamber a valve sits between, and which way the blood is going. */
 {
   id: 'heart-anatomy',
+
+  added: '2026-08-03',
   course: 'M103 · Medical Procedures',
   title: 'The Heart — Anatomy & Blood Flow',
   source: 'Notes/TERM 1/M103 LEC .../The Circulatory Systen.md',
@@ -1264,6 +1284,8 @@ window.DECKS = [
 
 {
   id: 'blood-flow',
+
+  added: '2026-08-03',
   course: 'M103 · Medical Procedures',
   title: 'The Heart — Trace a Drop of Blood',
   source: 'Notes/TERM 1/M103 LEC .../The Circulatory Systen.md',
@@ -1348,6 +1370,8 @@ window.DECKS = [
 
 {
   id: 'ekg-basics',
+
+  added: '2026-07-29',
   course: 'M103 · Medical Procedures',
   title: 'EKG — Waves, Intervals & Paper',
   source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md  +  M103 LAB .../EKG.md',
@@ -1467,6 +1491,8 @@ window.DECKS = [
 
 {
   id: 'ekg-leads',
+
+  added: '2026-07-29',
   course: 'M103 · Medical Procedures',
   title: 'EKG — The 12 Leads & Electrode Placement',
   source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md',
@@ -1600,6 +1626,8 @@ window.DECKS = [
 
 {
   id: 'ekg-conduction',
+
+  added: '2026-08-03',
   course: 'M103 · Medical Procedures',
   title: 'EKG — The Conduction System',
   source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md, with conduction velocities and intrinsic rates added from standard references',
@@ -1724,6 +1752,8 @@ window.DECKS = [
 
 {
   id: 'ekg-rhythms',
+
+  added: '2026-07-29',
   course: 'M103 · Medical Procedures',
   title: 'EKG — Artifacts & Arrhythmias',
   source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md',
@@ -1808,6 +1838,8 @@ window.DECKS = [
 
 {
   id: 'ekg-procedure',
+
+  added: '2026-07-29',
   course: 'M103 · Medical Procedures',
   title: 'EKG — Performing the Procedure',
   source: 'Notes/TERM 1/M103 LEC .../Chapter 45.md',

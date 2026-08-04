@@ -334,6 +334,13 @@ function toggleTheme(){
 /* ---------- helpers ---------- */
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const sample  = (a, n) => shuffle(a).slice(0, n);
+/* Decks run oldest-first inside a course, so the list follows the order the
+   material was actually covered rather than the order the file happens to be
+   written in. Dates are ISO, so a plain string compare is a date compare.
+   Decks added the same day keep their order in decks.js — sort is stable, so
+   comparing dates alone preserves it. A deck with no date sorts last instead
+   of throwing, and the test suite requires every deck to carry one. */
+const byAdded = (a, b) => String(a.added || '9999-99-99').localeCompare(String(b.added || '9999-99-99'));
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* Definitions read as prose, so a trailing "Example: …" gets its own line and a
@@ -365,8 +372,7 @@ function screenHome(){
     d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
 
   /* Sections run alphabetically by SUBJECT, not by course code — "BIO101 ·
-     Anatomy & Physiology" files under A. Decks keep their order within a
-     section, which is chapter order. */
+     Anatomy & Physiology" files under A. */
   const subject = c => (c.split('·')[1] || c).trim();
   const courses = [...new Set(list.map(d => d.course))]
     .sort((a, b) => subject(a).localeCompare(subject(b)));
@@ -385,7 +391,7 @@ function screenHome(){
 
   courses.forEach(c => {
     html += `<div class="coursehead">${esc(c)}</div><div class="decks">`;
-    list.filter(d => d.course === c).forEach(d => {
+    list.filter(d => d.course === c).sort(byAdded).forEach(d => {
       const p = progress[d.id] || {};
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
       html += `<button class="deck" onclick="go('deck','${d.id}')">
