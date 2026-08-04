@@ -445,6 +445,32 @@ function suite(s, label) {
   }
   check(`[${label}] no compound-list Recall answers`, !unwieldy.length, unwieldy.join('\n      '));
 
+  /* A Recall definition must not contain its own answer. "Lead II strip"
+     defined with "Lead II" in the prompt, or "Large square" defined as "five
+     large squares = 1.0 second", is a typing exercise rather than a test.
+
+     Unlike the trailing-trivia heuristics below, this one is safe because it is
+     narrow: it looks for the WHOLE term, not any word of it, and strips the
+     redundant category tail first so "Tricuspid valve" is judged on
+     "Tricuspid" alone. Run across every deck it flagged five cards, all of
+     them real leaks and none of them defensible. Detail that only makes sense
+     once you have named the thing belongs in `note`, which shows after
+     answering. */
+  const TAIL = /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?|valves?)$/i;
+  const leaks = [];
+  for (const d of DECKS) for (const c of recallableCards(d)) {
+    const def = c.def.toLowerCase();
+    /* comma-separated alternatives are each answerable, so each must stay hidden */
+    for (const form of c.term.split(',').map(x => x.replace(TAIL, '').trim())) {
+      if (form.length > 3 && def.includes(form.toLowerCase())) {
+        leaks.push(`${d.id} / "${c.term}" — the definition contains "${form}"`);
+        break;
+      }
+    }
+  }
+  check(`[${label}] no definition gives away its own answer`, !leaks.length,
+        leaks.join('\n      '));
+
   /* No automated check for "definition trails off into trivia". Flagging a
      semicolon with a long tail was tried and over-fired badly: "pelvic cavity —
      the space formed by the hip bones; contains reproductive and excretory

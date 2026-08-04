@@ -789,7 +789,8 @@ window.DECKS = [
     { term: 'dorsal cavity',    def: 'the cavity running along the back of the body and head, holding the organs of the nervous system' },
     { term: 'cranial',          def: 'pertaining to the skull' },
     { term: 'cranial cavity',   def: 'lies within the skull, surrounding and protecting the brain' },
-    { term: 'spinal cavity',    def: 'lies within the spinal column, surrounding and protecting the spinal cord' },
+    { term: 'spinal cavity',    def: 'lies within the vertebral column, surrounding and protecting the cord that runs from the brain down the back',
+      note: 'Holds the spinal cord.' },
     { term: 'ventral cavity',   def: 'the cavity running along the front of the body, holding the organs that sustain homeostasis' },
     { term: 'abdominopelvic cavity', def: 'the abdominal and pelvic cavities treated as one unit, since no physical division separates them' },
     { term: 'hypochondriac regions', def: 'the left and right regions covered by the lower ribs',
@@ -815,7 +816,8 @@ window.DECKS = [
     { term: 'embryonic stem cells', def: 'undifferentiated cells unlike any specific adult cell, able to form ANY adult cell' },
     { term: 'embryo',           def: 'a developing fetus during its first eight weeks in the womb' },
     { term: 'cord blood',       def: 'the blood in the umbilical cord and placenta of a newborn, harvested as a source of embryonic stem cells' },
-    { term: 'in vitro',         def: 'in the test tube — surplus embryos from in vitro fertilization are another source of embryonic stem cells' },
+    { term: 'in vitro',         def: 'in the test tube — outside the living body, in an artificial environment',
+      note: 'Literally "in glass". Surplus embryos from in vitro fertilization are another source of embryonic stem cells.' },
     { term: 'stem cell therapy', def: 'using stem cells to heal injuries and treat disease — also called regenerative medicine' },
     { term: 'hematopoietic',    def: 'blood-forming — describes the bone marrow tissue stem cells are usually harvested from' },
     { term: 'graft versus host disease', def: 'the rejection that can follow when transplanted stem cells come from another individual' },
@@ -906,7 +908,8 @@ window.DECKS = [
     { fact: true, term: 'The two major body cavities', def: 'the dorsal (back) and the ventral (front)' },
     { term: 'Dorsal cavity', def: 'the cavity along the back of the body and head, holding the organs of the nervous system' },
     { term: 'Cranial cavity', def: 'the space within the skull that surrounds and protects the brain' },
-    { term: 'Spinal cavity', def: 'the space within the spinal column that surrounds and protects the spinal cord' },
+    { term: 'Spinal cavity', def: 'the space within the vertebral column that surrounds and protects the cord running from the brain down the back',
+      note: 'Holds the spinal cord.' },
     { term: 'Ventral cavity', def: 'the cavity along the front of the body, holding the organs that sustain homeostasis' },
     { term: 'Thoracic cavity', def: 'the chest cavity, surrounding and protecting the heart and lungs' },
     { term: 'Diaphragm', def: 'the muscle separating the thoracic cavity from the abdominal cavity' },
@@ -1019,7 +1022,7 @@ window.DECKS = [
     /* ---- modes of transmission ---- */
     { term: 'Direct transmission', def: 'human-to-human contact, or exchange of body fluids' },
     { term: 'Bloodborne transmission', def: 'infected blood or body fluid entering the bloodstream.\nExample: HIV and hepatitis B' },
-    { term: 'Droplet transmission', def: 'infected respiratory droplets reaching someone nearby.\nExample: measles, colds, COVID-19 and flu' },
+    { term: 'Droplet transmission', def: 'infected moisture sprayed from the airway reaching someone standing nearby.\nExample: measles, colds, COVID-19 and flu' },
     { term: 'Indirect contact transmission', def: 'contact with a contaminated surface — which is why hand washing matters so much' },
     { term: 'Airborne transmission', def: 'pathogens floating in the air, which stay aloft and can infect someone long after the infected person has left.\nExample: tuberculosis, measles and chicken pox' },
     { term: 'Foodborne transmission', def: 'consuming contaminated food or water — also called fecal-oral transmission' },
@@ -1713,7 +1716,8 @@ window.DECKS = [
     { term: 'Vertical axis, Y axis',   def: 'records voltage (gain / amplitude) — the HEIGHT of the tracing' },
     { term: 'Horizontal axis, X axis', def: 'records time, set by the paper speed — the WIDTH of the tracing' },
     { term: 'Small square',         def: '1 mm × 1 mm = 0.04 seconds' },
-    { term: 'Large square',         def: '5 mm × 5 mm = 0.2 seconds — five large squares = 1.0 second' },
+    { term: 'Large square',         def: '5 mm × 5 mm on ECG paper = 0.2 seconds',
+      note: 'Five of them make 1.0 second, which is the fastest way to step out a rate.' },
     { term: 'Standardization mark', def: '2 mm wide × 10 mm high at sensitivity 1; should appear in front of each lead' },
     { term: 'Sensitivity ½',        def: 'if the tracing is too LARGE, turn the dial to this setting — the standardization mark then measures 2 mm wide × 5 mm high' },
     { term: 'Sensitivity 2',        def: 'if the tracing is too SMALL, turn the dial to this setting — the standardization mark then measures 2 mm wide × 20 mm high' },
@@ -1840,7 +1844,12 @@ window.DECKS = [
        the prompt, so the honest answer to it was "Lead II", which is already its
        own card. Chapter 45 calls this a rhythm strip; the definition now
        describes it without using either word. */
-    { term: 'Rhythm strip', def: 'the long single-lead recording printed at the bottom of most ECG reports; providers may request an extra two-foot-long one of Lead II alone to assess for abnormalities' },
+    /* The prompt is only what identifies the thing. The two-foot Lead II request
+       is detail that follows once you have named it, so it sits in the note.
+       Neither "rhythm" nor "strip" may appear in the definition — that is the
+       whole reason this card was rewritten. */
+    { term: 'Lead II rhythm strip', def: 'the long single-lead recording printed along the bottom of most ECG reports',
+      note: 'Lead II is not incidental: its axis (+60°) runs almost parallel to the impulse travelling from the SA node, so it gives the tallest, clearest P waves — exactly what you need to read the beat. Providers may request an extra two-foot-long one to assess for abnormalities.' },
     { term: 'V1', def: 'FOURTH intercostal space at the RIGHT margin of the sternum' },
     { term: 'V2', def: 'FOURTH intercostal space at the LEFT margin of the sternum' },
     { term: 'V3', def: 'midway between V2 and V4 — placed AFTER V4' },
