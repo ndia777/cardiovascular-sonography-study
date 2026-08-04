@@ -469,6 +469,13 @@ function suite(s, label) {
     ['heart-anatomy', 'Mitral valve', 'Mitral', 'exact'],
     ['heart-anatomy', 'Aortic valve', 'Aortic', 'exact'],
     ['heart-anatomy', 'Mitral valve', 'Tricuspid', 'wrong'],
+    /* Vertical/horizontal and Y/X name the same two lines, so either is taken.
+       Crossing them is still wrong — vertical is Y, and X is the horizontal one. */
+    ['ekg-basics', 'Vertical axis, Y axis', 'Y axis', 'exact'],
+    ['ekg-basics', 'Vertical axis, Y axis', 'Vertical axis', 'exact'],
+    ['ekg-basics', 'Vertical axis, Y axis', 'X axis', 'wrong'],
+    ['ekg-basics', 'Horizontal axis, X axis', 'X axis', 'exact'],
+    ['ekg-basics', 'Horizontal axis, X axis', 'Y axis', 'wrong'],
   ];
   const deckOf = id => DECKS.find(d => d.id === id);
   for (const [deck, term, typed, want] of spelling) {

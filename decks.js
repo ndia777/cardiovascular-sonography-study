@@ -1384,8 +1384,13 @@ window.DECKS = [
     { term: 'S wave',       def: 'a NEGATIVE deflection wave (after R)' },
     { term: 'T wave',       def: 'VENTRICULAR REPOLARIZATION (relaxation) — recovery time before the next contraction' },
     { term: 'U wave',       def: 'a positive deflection associated with repolarization, only occasionally seen in some patients' },
-    { term: 'Systole',      def: 'contraction' },
-    { term: 'Diastole',     def: 'relaxation' },
+    /* "contraction" and "relaxation" alone were too thin to identify — and
+       "relaxation" invites repolarization, which is the ELECTRICAL recovery,
+       not the mechanical event. Naming the muscle keeps the two apart. */
+    { term: 'Systole',      def: 'contraction — the phase where the heart muscle squeezes and pumps blood out',
+      note: 'MECHANICAL, not electrical. Depolarization is the electrical signal that triggers systole; systole is the squeeze itself.' },
+    { term: 'Diastole',     def: 'relaxation — the phase where the heart muscle relaxes and the chambers refill',
+      note: 'MECHANICAL, not electrical. Repolarization is the electrical recovery that allows diastole; diastole is the relaxation and filling itself. An echo measures diastole; an ECG records repolarization.' },
     { term: 'Isoelectric line', def: 'the flat baseline separating the waves — periods with no current; precedes the P wave and follows the T wave' },
     { term: 'Interval',     def: 'the time between events — a period that includes one segment AND one or more waves' },
     { term: 'Segment',      def: 'the portion of the ECG BETWEEN two waves' },
@@ -1397,7 +1402,10 @@ window.DECKS = [
     { fact: true, term: 'Conduction pathway',   def: 'SA node → AV node → Bundle of His → Purkinje fibers' },
     { term: 'Purkinje fibers',      def: 'cause the ventricles to contract and produce the QRS complex' },
     { term: 'Paper speed',          def: '25 mm/sec is standard; the horizontal axis measures TIME' },
-    { term: 'Vertical axis',        def: 'records voltage (gain / amplitude)' },
+    /* Both namings are accepted — the lecture notes say vertical/horizontal, the
+       lab notes say Y axis / X axis, and either is the same line on the paper. */
+    { term: 'Vertical axis, Y axis',   def: 'records voltage (gain / amplitude) — the HEIGHT of the tracing' },
+    { term: 'Horizontal axis, X axis', def: 'records time, set by the paper speed — the WIDTH of the tracing' },
     { term: 'Small square',         def: '1 mm × 1 mm = 0.04 seconds' },
     { term: 'Large square',         def: '5 mm × 5 mm = 0.2 seconds — five large squares = 1.0 second' },
     { term: 'Standardization mark', def: '2 mm wide × 10 mm high at sensitivity 1; should appear in front of each lead' },
