@@ -262,6 +262,8 @@
   .hidden-def{color:transparent;background:var(--card2);border-radius:4px;cursor:pointer}
   .hidden-def:hover{color:var(--dim)}
   .eg{color:var(--accent);font-weight:650}
+  /* names the category Recall is asking for, where the term declares one */
+  .asks{color:var(--accent);font-weight:650}
   .note{display:block;margin-top:6px;font-size:12.5px;color:var(--warn);line-height:1.5}
   .note::before{content:"⚑ ";}
 
@@ -2551,6 +2553,21 @@ function judge(input, card, deck){
   return 'wrong';
 }
 
+/* A definition can describe a physiological event while the answer is the name
+   of the WAVE that records it — "ventricular repolarization (relaxation)"
+   honestly describes both the T wave and diastole, and only one is the term
+   being asked for. Where a term declares its own category, Recall says which
+   category it wants.
+
+   This gives nothing away. The category word is part of the answer being typed,
+   so naming it removes an ambiguity in the QUESTION without supplying any of
+   the knowledge the card is testing. */
+const ASK_CATEGORY = /\s(waves?|complex|intervals?|segments?|nodes?|valves?|axis)$/i;
+const askFor = card => {
+  const m = ASK_CATEGORY.exec(card.term);
+  return m ? m[1].toLowerCase() : null;
+};
+
 function runRecall(d){
   const pool = recallable(d);
   if (!session) session = { queue: shuffle(pool), total: pool.length, right: 0, wrong: 0,
@@ -2570,9 +2587,11 @@ function runRecall(d){
   app.innerHTML = `
     ${sessionBar(d, s.total - s.queue.length, s.total,
        `Recall · <span style="color:var(--good)">${s.right} correct</span> · <span style="color:var(--bad)">${s.wrong} missed</span>`)}
-    <div class="q" style="font-weight:400">${defHtml(c.def)}</div>
+    <div class="q" style="font-weight:400">${
+      askFor(c) ? `<span class="asks">Which ${esc(askFor(c))} —</span> ` : ''
+    }${defHtml(c.def)}</div>
     <input class="search" id="recall" autocomplete="off" autocapitalize="off" spellcheck="false"
-      placeholder="Type the term…" value="${esc(s.typed)}" ${v ? 'disabled' : ''}
+      placeholder="${askFor(c) ? `Type the ${esc(askFor(c))}…` : 'Type the term…'}" value="${esc(s.typed)}" ${v ? 'disabled' : ''}
       style="${v ? `border-color:${tone}` : ''}">
     ${v ? `
       <div class="why" style="border-left-color:${tone}">

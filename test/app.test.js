@@ -172,6 +172,41 @@ function suite(s, label) {
     check(`[${label}] definitions are still escaped`, !/<script/i.test(html), 'unescaped markup');
   }
 
+  /* Recall shows a definition and asks for the term, so a definition describing
+     a physiological event ("ventricular repolarization") is ambiguous when the
+     answer is the WAVE that records it — diastole is an honest reading of the
+     same words. Where the term declares its own category, the prompt must name
+     it. Read the rendered prompt, not the helper, so removing the lead-in from
+     the markup fails even though the helper still returns a value. */
+  {
+    const wants = [['ekg-basics', 'T wave', 'wave'], ['ekg-basics', 'ST segment', 'segment'],
+                   ['ekg-basics', 'PR interval', 'interval'], ['ekg-basics', 'QRS complex', 'complex'],
+                   ['heart-anatomy', 'Tricuspid valve', 'valve']];
+    let bad = '';
+    for (const [deckId, term, noun] of wants) {
+      const deck = DECKS.find(x => x.id === deckId);
+      const card = deck && deck.cards.find(c => c.term === term);
+      if (!card) { bad = bad || `${deckId} has no card "${term}"`; continue; }
+      go('run', deckId, 'recall');
+      vm.runInContext(`session.queue.unshift(DECKS.find(d=>d.id===${JSON.stringify(deckId)})` +
+        `.cards.find(c=>c.term===${JSON.stringify(term)})); render();`, s);
+      const html = s.__app.innerHTML;
+      if (!new RegExp(`<span class="asks">Which ${noun} —</span>`).test(html) && !bad)
+        bad = `"${term}" prompt does not ask for a ${noun}`;
+    }
+    check(`[${label}] Recall names the category when the term declares one`, !bad, bad);
+
+    /* and stays quiet when it does not — a lead-in on every card would be noise */
+    const plain = DECKS.find(x => x.id === 'ekg-basics').cards.find(c => c.term === 'Diastole');
+    if (plain) {
+      go('run', 'ekg-basics', 'recall');
+      vm.runInContext('session.queue.unshift(DECKS.find(d=>d.id==="ekg-basics")' +
+        '.cards.find(c=>c.term==="Diastole")); render();', s);
+      check(`[${label}] Recall adds no category line where there is no category`,
+            !/class="asks"/.test(s.__app.innerHTML), 'unexpected lead-in on Diastole');
+    }
+  }
+
   /* every deck/mode renders without throwing */
   for (const d of DECKS) {
     for (const m of modesFor(d)) {
