@@ -1442,8 +1442,9 @@ window.DECKS = [
     { fact: true, term: 'Intrinsic rate of the AV node', def: '40–60 beats per minute' },
     { fact: true, term: 'Intrinsic rate of the Purkinje fibers', def: '20–40 beats per minute' },
     { term: 'Escape pacemaker', def: 'a lower site taking over when the site above it fails, pacing at its own slower intrinsic rate' },
-    { fact: true, term: 'Conduction speed through the AV node', def: 'about 0.05 m/s — the slowest anywhere in the heart, which is what creates the delay' },
-    { fact: true, term: 'Conduction speed through the Purkinje fibers', def: 'about 4 m/s — the fastest, so both ventricles fire almost together' }
+    { fact: true, term: 'Conduction speed through the AV node', def: 'about 0.05 metres per second (0.05 m/s) — roughly 5 centimetres a second, the slowest anywhere in the heart, which is what creates the delay',
+      note: 'm/s is metres per SECOND, a speed — not milliseconds. Bigger number = faster.' },
+    { fact: true, term: 'Conduction speed through the Purkinje fibers', def: 'about 4 metres per second (4 m/s) — the fastest anywhere in the heart, about eighty times the AV node, so both ventricles fire almost together' }
   ],
   questions: [
     { q: 'Put the conduction pathway in order.',
