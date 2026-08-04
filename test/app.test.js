@@ -370,6 +370,133 @@ function suite(s, label) {
           arr[0] === 0 && arr.every((v, i) => i === 0 || v > arr[i - 1]), ts);
   }
 
+  /* ---- the rhythm traces are reference images, so measure them -------------
+     These are shown beside a definition as "this is what it looks like", which
+     makes them teaching material rather than decoration. Parse each path, find
+     the R peaks, and check the drawing actually shows what the label claims:
+     the right rate, the right regularity, and P waves only where P waves exist.
+
+     WINDOW must match the figure stated in index.html's trace comment. It is
+     what turns a complex count into BPM, and getting it wrong is not cosmetic —
+     at 3 s the same unchanged traces put sinus tachycardia at exactly 100 for a
+     rhythm defined as "above 100", and ventricular tachycardia at 140 against
+     its own stated 150–250. */
+  {
+    const RHYTHMS = vm.runInContext('typeof RHYTHMS !== "undefined" ? RHYTHMS : null', s);
+    check(`[${label}] rhythm traces are defined`, Array.isArray(RHYTHMS));
+    if (Array.isArray(RHYTHMS)) {
+      const WINDOW = 2.5;
+      const pts = d => {
+        const t = d.match(/[A-Za-z]|-?\d*\.?\d+/g) || [];
+        const out = []; let i = 0, cmd = '', cur = [0, 0];
+        const n = () => parseFloat(t[i++]);
+        while (i < t.length) {
+          if (/^[A-Za-z]$/.test(t[i])) cmd = t[i++];
+          if (cmd === 'M' || cmd === 'L') { cur = [n(), n()]; out.push(cur); }
+          else if (cmd === 'H') { cur = [n(), cur[1]]; out.push(cur); }
+          else if (cmd === 'V') { cur = [cur[0], n()]; out.push(cur); }
+          else if (cmd === 'Q') {   /* P and T waves are quadratics */
+            const p0 = cur, c = [n(), n()], p1 = [n(), n()];
+            for (let k = 1; k <= 12; k++) {
+              const u = k / 12, v = 1 - u;
+              out.push([v*v*p0[0] + 2*v*u*c[0] + u*u*p1[0], v*v*p0[1] + 2*v*u*c[1] + u*u*p1[1]]);
+            }
+            cur = p1;
+          } else i++;
+        }
+        return out;
+      };
+      /* R peaks: upward vertices well clear of baseline, merged at 30 units so a
+         ventricular ectopic's two humps count as one beat while PAT's genuinely
+         separate beats (44 apart) stay separate */
+      const peaks = p => {
+        const raw = [];
+        for (let i = 1; i < p.length - 1; i++) {
+          const [x, y] = p[i];
+          if (60 - y >= 12 && y <= p[i-1][1] && y <= p[i+1][1]) raw.push({ x, h: 60 - y });
+        }
+        const out = [];
+        for (const q of raw) {
+          const last = out[out.length - 1];
+          if (last && q.x - last.x < 30) { if (q.h > last.h) out[out.length - 1] = q; }
+          else out.push(q);
+        }
+        return out;
+      };
+      const cv = a => {
+        if (a.length < 2) return 0;
+        const m = a.reduce((x, y) => x + y, 0) / a.length;
+        return m ? Math.sqrt(a.reduce((n, v) => n + (v - m) ** 2, 0) / a.length) / m : 0;
+      };
+      const by = name => RHYTHMS.find(r => r.name === name);
+      const rateOf = r => {
+        const R = peaks(pts(r.path));
+        return { bpm: Math.round(R.length / WINDOW * 60), R,
+                 cv: cv(R.slice(1).map((p, i) => p.x - R[i].x)) };
+      };
+
+      /* stated rate vs drawn rate — skip A-fib, whose figure is the ATRIAL rate */
+      let offRange = '';
+      for (const r of RHYTHMS) {
+        if (r.id === 'afib' || !/\d/.test(r.rate)) continue;
+        const { bpm } = rateOf(r);
+        const span = /(\d+)\s*[–-]\s*(\d+)/.exec(r.rate);
+        const below = /below\s*(\d+)/i.exec(r.rate);
+        const above = /above\s*(\d+)/i.exec(r.rate);
+        let ok = true;
+        if (span) ok = bpm >= +span[1] && bpm <= +span[2];
+        else if (below) ok = bpm < +below[1];
+        else if (above) ok = bpm > +above[1];
+        if (!ok && !offRange) offRange = `${r.name} draws ~${bpm} BPM against "${r.rate}"`;
+      }
+      check(`[${label}] every trace draws the rate its label claims`, !offRange, offRange);
+
+      /* irregularly irregular is THE sign of A-fib */
+      const afib = by('Atrial fibrillation');
+      if (afib) check(`[${label}] the A-fib trace is irregularly irregular`,
+                      rateOf(afib).cv > 0.15,
+                      `R-R variation is only ${rateOf(afib).cv.toFixed(3)} — reads as regular`);
+
+      /* sinus rhythms are regular by definition */
+      let notRegular = '';
+      for (const id of ['nsr', 'brady', 'tachy']) {
+        const r = RHYTHMS.find(x => x.id === id);
+        if (r && rateOf(r).cv > 0.05 && !notRegular)
+          notRegular = `${r.name} varies by ${rateOf(r).cv.toFixed(3)}`;
+      }
+      check(`[${label}] the sinus traces are regular`, !notRegular, notRegular);
+
+      /* no P waves in ventricular tachycardia — the impulse never reaches the
+         atria in an organised way, and their absence is a recognition point */
+      const vt = by('Ventricular tachycardia');
+      if (vt) {
+        const small = pts(vt.path).filter((p, i, a) =>
+          i > 0 && i < a.length - 1 && 60 - p[1] >= 2 && 60 - p[1] <= 9 &&
+          p[1] <= a[i-1][1] && p[1] <= a[i+1][1]);
+        check(`[${label}] the ventricular tachycardia trace shows no P waves`,
+              small.length === 0, `${small.length} P-sized bumps drawn`);
+      }
+
+      /* a card pointing at a rhythm that does not exist loses its picture
+         silently, which is exactly the kind of thing nobody notices */
+      const missing = DECKS.flatMap(d => d.cards.filter(c => c.trace)
+        .filter(c => !RHYTHMS.some(r => r.name === c.trace))
+        .map(c => `${d.id} / "${c.term}" → "${c.trace}"`));
+      check(`[${label}] every card trace names a real rhythm`, !missing.length, missing.join(', '));
+
+      /* and the picture actually reaches the screen in Recall */
+      const traced = DECKS.flatMap(d => d.cards.filter(c => c.trace && !c.fact).map(c => [d, c]))[0];
+      if (traced) {
+        go('run', traced[0].id, 'recall');
+        vm.runInContext(`session.queue.unshift(DECKS.find(d=>d.id===${JSON.stringify(traced[0].id)})` +
+          `.cards.find(c=>c.term===${JSON.stringify(traced[1].term)})); render();`, s);
+        check(`[${label}] Recall draws the trace for a rhythm card`,
+              /class="ecg cardtrace"/.test(s.__app.innerHTML) && /<path d="M/.test(s.__app.innerHTML),
+              'no tracing rendered beside the definition');
+      }
+    }
+  }
+
   /* electrode-placement decks: every electrode must be reachable, uniquely
      positioned, and inside the figure */
   for (const d of DECKS.filter(x => x.chest)) {

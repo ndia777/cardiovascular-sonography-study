@@ -217,6 +217,8 @@
   .impulse.held{animation:avhold .7s ease-in-out infinite}
 
   .ecg{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  /* the same trace the animation draws, shown beside a rhythm's definition */
+  .cardtrace{margin:14px 0 2px;display:block}
   .ecgbase{stroke:var(--line);stroke-width:1;stroke-dasharray:3 5}
   .ecgtrace{fill:none;stroke:var(--good);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
   .ecgtrace.danger{stroke:var(--bad)}
@@ -2107,19 +2109,19 @@ window.DECKS = [
     { term: 'Alternating current (AC) interference', def: 'ARTIFACT from electrical activity nearby. Fix: keep power cords away from the patient, move the table away from the wall' },
     { term: 'Wandering baseline', def: 'ARTIFACT from improperly applied electrodes or improperly cleaned skin. Fix: remove oils, creams and lotions with an alcohol prep pad' },
     { term: 'Interrupted baseline', def: 'ARTIFACT from an electrode separating from the wire, or a broken lead wire. Fix: reattach securely or repair the wire' },
-    { term: 'Normal sinus rhythm', def: 'a heart rate between 60 and 100 BPM' },
-    { term: 'Sinus bradycardia',   def: 'a heart rate BELOW 60 BPM' },
-    { term: 'Sinus tachycardia',   def: 'a heart rate ABOVE 100 BPM' },
+    { trace: 'Normal sinus rhythm', term: 'Normal sinus rhythm', def: 'a heart rate between 60 and 100 BPM' },
+    { trace: 'Sinus bradycardia', term: 'Sinus bradycardia',   def: 'a heart rate BELOW 60 BPM' },
+    { trace: 'Sinus tachycardia', term: 'Sinus tachycardia',   def: 'a heart rate ABOVE 100 BPM' },
     { term: 'Arrhythmia',          def: 'an irregularity in the heart’s rhythm — not all are dangerous' },
-    { term: 'Premature atrial contraction (PAC)', def: 'a cycle that occurs before the next one is due, with a differently shaped P wave. Seen in healthy people who smoke or use stimulants' },
-    { term: 'Paroxysmal atrial tachycardia (PAT)', def: 'a brief episode of 160–250 BPM; patients describe it as a "flutter" in the heart' },
-    { term: 'Atrial fibrillation (A-fib)', def: 'rapid multiple signals firing from the atria outside the SA node; the P wave cannot be identified, leaving small irregular complexes',
+    { trace: 'Premature atrial contraction', term: 'Premature atrial contraction (PAC)', def: 'a cycle that occurs before the next one is due, with a differently shaped P wave. Seen in healthy people who smoke or use stimulants' },
+    { trace: 'Paroxysmal atrial tachycardia', term: 'Paroxysmal atrial tachycardia (PAT)', def: 'a brief episode of 160–250 BPM; patients describe it as a "flutter" in the heart' },
+    { trace: 'Atrial fibrillation', term: 'Atrial fibrillation (A-fib)', def: 'rapid multiple signals firing from the atria outside the SA node; the P wave cannot be identified, leaving small irregular complexes',
       note: 'The 400–500 BPM figure in your notes is the ATRIAL rate, not the pulse rate — the ventricles respond much more slowly.' },
     { fact: true, term: 'A-fib causes',        def: 'myocardial infarction, hypertension, mitral valve disease, heart failure, thyroid disorders, pulmonary emboli, excessive alcohol' },
-    { term: 'Premature ventricular contraction (PVC)', def: 'a beat occurring EARLY in the cycle, followed by a PAUSE before the next cycle' },
-    { term: 'Ventricular tachycardia', def: 'three or more PVCs at 150–250 BPM, with NO P waves and imprecise QRS complexes — life threatening' },
-    { term: 'Ventricular fibrillation (V-fib)', def: 'an erratic, jagged "sawtooth" rhythm; the ventricles tremor and there is NO cardiac output' },
-    { term: 'Pacemaker arrhythmia', def: 'vertical signals (spikes) representing the pacemaker’s electrical activity; more visible in unipolar than bipolar leads' },
+    { trace: 'Premature ventricular contraction', term: 'Premature ventricular contraction (PVC)', def: 'a beat occurring EARLY in the cycle, followed by a PAUSE before the next cycle' },
+    { trace: 'Ventricular tachycardia', term: 'Ventricular tachycardia', def: 'three or more PVCs at 150–250 BPM, with NO P waves and imprecise QRS complexes — life threatening' },
+    { trace: 'Ventricular fibrillation', term: 'Ventricular fibrillation (V-fib)', def: 'an erratic, jagged "sawtooth" rhythm; the ventricles tremor and there is NO cardiac output' },
+    { trace: 'Pacemaker rhythm', term: 'Pacemaker arrhythmia', def: 'vertical signals (spikes) representing the pacemaker’s electrical activity; more visible in unipolar than bipolar leads' },
     { term: 'Scope of practice', def: 'interpreting ECGs is beyond your scope — but recognizing arrhythmias and alerting the provider is essential' }
   ],
   questions: [
@@ -2593,6 +2595,17 @@ function judge(input, card, deck){
    This gives nothing away. The category word is part of the answer being typed,
    so naming it removes an ambiguity in the QUESTION without supplying any of
    the knowledge the card is testing. */
+/* A rhythm is a SHAPE, and no wording of "erratic, jagged sawtooth" teaches you
+   to recognise one on paper. Cards naming a rhythm draw its actual trace — the
+   same paths the heartbeat animation uses, so there is one definition of each
+   rhythm in the app rather than a picture that can drift from the animation. */
+const traceOf = card => card.trace && RHYTHMS.find(r => r.name === card.trace);
+const traceSvg = r => `<svg viewBox="0 0 400 90" class="ecg cardtrace" role="img"
+    aria-label="ECG tracing">
+  <line x1="0" y1="60" x2="400" y2="60" class="ecgbase"/>
+  <path d="${r.path}" class="ecgtrace ${r.danger ? 'danger' : ''}"/>
+</svg>`;
+
 const ASK_CATEGORY = /\s(waves?|complex|intervals?|segments?|nodes?|valves?|axis)$/i;
 const askFor = card => {
   const m = ASK_CATEGORY.exec(card.term);
@@ -2621,6 +2634,7 @@ function runRecall(d){
     <div class="q" style="font-weight:400">${
       askFor(c) ? `<span class="asks">Which ${esc(askFor(c))} —</span> ` : ''
     }${defHtml(c.def)}</div>
+    ${traceOf(c) ? traceSvg(traceOf(c)) : ''}
     <input class="search" id="recall" autocomplete="off" autocapitalize="off" spellcheck="false"
       placeholder="${askFor(c) ? `Type the ${esc(askFor(c))}…` : 'Type the term…'}" value="${esc(s.typed)}" ${v ? 'disabled' : ''}
       style="${v ? `border-color:${tone}` : ''}">
@@ -3101,8 +3115,16 @@ const heartSvg = fill => `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidde
 </svg>`;
 
 /* ---- ECG traces ------------------------------------------------------------
-   Each rhythm is drawn over a 400-unit window representing about three seconds,
-   so a faster rhythm genuinely shows more complexes in the same space. One
+   Each rhythm is drawn over a 400-unit window representing about two and a half
+   seconds, so a faster rhythm genuinely shows more complexes in the same space.
+
+   That 2.5 is load-bearing, not decorative: it is what converts complex count
+   into the BPM each rhythm claims. At 2.5 s, 2 complexes = 48 BPM, 3 = 72,
+   5 = 120, 7 = 168, 9 = 216 — every rhythm then lands inside its stated range.
+   This comment previously said three seconds, which put sinus tachycardia at
+   exactly 100 ("above 100 BPM") and ventricular tachycardia at 140, below its
+   own stated 150–250. test/app.test.js checks the arithmetic both ways, so
+   changing this number without changing the traces fails the suite. One
    PQRST is generated from a start x and a width; pathLength="100" normalises
    whatever comes out, so revealing the trace is just a dash offset.          */
 const BASE = 60;
@@ -3185,8 +3207,14 @@ const RHYTHMS = [
     say:'A sudden burst of very rapid atrial beats, lasting only momentarily. Patients describe it as a flutter in the chest. Seen in healthy people as well as in cardiac disease.' },
 
   { id:'afib', name:'Atrial fibrillation', rate:'atria 400–500 BPM', heart:'atrial-quiver',
-    path: (() => { const w = [0, 96, 210, 300]; let d = chaos(7, 8, 7);
-      w.forEach(x => { d += `M${x},${BASE} ` + pqrst(x, 88, { noP:true }); }); return d; })(),
+    /* Irregularly irregular is THE recognition feature of A-fib, so the R-R
+       gaps are deliberately uneven — 78, 122, 96 units, a coefficient of
+       variation of 0.18. They were 96/114/90 (CV 0.10), which measured as
+       regular and taught the wrong thing. Complexes are narrow, because
+       conduction below the AV node is normal; it is the atria that are chaotic,
+       which is the quivering baseline underneath. */
+    path: (() => { const w = [0, 78, 200, 296]; let d = chaos(7, 8, 7);
+      w.forEach(x => { d += `M${x},${BASE} ` + pqrst(x, 72, { noP:true }); }); return d; })(),
     say:'Multiple signals fire chaotically from the atria outside the SA node, so no P wave can be identified — just small irregular complexes on a quivering baseline. The ventricles respond irregularly, which is why the pulse is uneven.',
     note:'The 400–500 figure is the ATRIAL rate. The AV node blocks most of those impulses, so the pulse you feel is far slower.' },
 

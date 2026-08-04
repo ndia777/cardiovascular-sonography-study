@@ -217,6 +217,8 @@
   .impulse.held{animation:avhold .7s ease-in-out infinite}
 
   .ecg{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  /* the same trace the animation draws, shown beside a rhythm's definition */
+  .cardtrace{margin:14px 0 2px;display:block}
   .ecgbase{stroke:var(--line);stroke-width:1;stroke-dasharray:3 5}
   .ecgtrace{fill:none;stroke:var(--good);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
   .ecgtrace.danger{stroke:var(--bad)}
@@ -565,6 +567,17 @@ function judge(input, card, deck){
    This gives nothing away. The category word is part of the answer being typed,
    so naming it removes an ambiguity in the QUESTION without supplying any of
    the knowledge the card is testing. */
+/* A rhythm is a SHAPE, and no wording of "erratic, jagged sawtooth" teaches you
+   to recognise one on paper. Cards naming a rhythm draw its actual trace — the
+   same paths the heartbeat animation uses, so there is one definition of each
+   rhythm in the app rather than a picture that can drift from the animation. */
+const traceOf = card => card.trace && RHYTHMS.find(r => r.name === card.trace);
+const traceSvg = r => `<svg viewBox="0 0 400 90" class="ecg cardtrace" role="img"
+    aria-label="ECG tracing">
+  <line x1="0" y1="60" x2="400" y2="60" class="ecgbase"/>
+  <path d="${r.path}" class="ecgtrace ${r.danger ? 'danger' : ''}"/>
+</svg>`;
+
 const ASK_CATEGORY = /\s(waves?|complex|intervals?|segments?|nodes?|valves?|axis)$/i;
 const askFor = card => {
   const m = ASK_CATEGORY.exec(card.term);
@@ -593,6 +606,7 @@ function runRecall(d){
     <div class="q" style="font-weight:400">${
       askFor(c) ? `<span class="asks">Which ${esc(askFor(c))} —</span> ` : ''
     }${defHtml(c.def)}</div>
+    ${traceOf(c) ? traceSvg(traceOf(c)) : ''}
     <input class="search" id="recall" autocomplete="off" autocapitalize="off" spellcheck="false"
       placeholder="${askFor(c) ? `Type the ${esc(askFor(c))}…` : 'Type the term…'}" value="${esc(s.typed)}" ${v ? 'disabled' : ''}
       style="${v ? `border-color:${tone}` : ''}">
@@ -1073,8 +1087,16 @@ const heartSvg = fill => `<svg viewBox="0 0 300 300" class="heartsvg" aria-hidde
 </svg>`;
 
 /* ---- ECG traces ------------------------------------------------------------
-   Each rhythm is drawn over a 400-unit window representing about three seconds,
-   so a faster rhythm genuinely shows more complexes in the same space. One
+   Each rhythm is drawn over a 400-unit window representing about two and a half
+   seconds, so a faster rhythm genuinely shows more complexes in the same space.
+
+   That 2.5 is load-bearing, not decorative: it is what converts complex count
+   into the BPM each rhythm claims. At 2.5 s, 2 complexes = 48 BPM, 3 = 72,
+   5 = 120, 7 = 168, 9 = 216 — every rhythm then lands inside its stated range.
+   This comment previously said three seconds, which put sinus tachycardia at
+   exactly 100 ("above 100 BPM") and ventricular tachycardia at 140, below its
+   own stated 150–250. test/app.test.js checks the arithmetic both ways, so
+   changing this number without changing the traces fails the suite. One
    PQRST is generated from a start x and a width; pathLength="100" normalises
    whatever comes out, so revealing the trace is just a dash offset.          */
 const BASE = 60;
@@ -1157,8 +1179,14 @@ const RHYTHMS = [
     say:'A sudden burst of very rapid atrial beats, lasting only momentarily. Patients describe it as a flutter in the chest. Seen in healthy people as well as in cardiac disease.' },
 
   { id:'afib', name:'Atrial fibrillation', rate:'atria 400–500 BPM', heart:'atrial-quiver',
-    path: (() => { const w = [0, 96, 210, 300]; let d = chaos(7, 8, 7);
-      w.forEach(x => { d += `M${x},${BASE} ` + pqrst(x, 88, { noP:true }); }); return d; })(),
+    /* Irregularly irregular is THE recognition feature of A-fib, so the R-R
+       gaps are deliberately uneven — 78, 122, 96 units, a coefficient of
+       variation of 0.18. They were 96/114/90 (CV 0.10), which measured as
+       regular and taught the wrong thing. Complexes are narrow, because
+       conduction below the AV node is normal; it is the atria that are chaotic,
+       which is the quivering baseline underneath. */
+    path: (() => { const w = [0, 78, 200, 296]; let d = chaos(7, 8, 7);
+      w.forEach(x => { d += `M${x},${BASE} ` + pqrst(x, 72, { noP:true }); }); return d; })(),
     say:'Multiple signals fire chaotically from the atria outside the SA node, so no P wave can be identified — just small irregular complexes on a quivering baseline. The ventricles respond irregularly, which is why the pulse is uneven.',
     note:'The 400–500 figure is the ATRIAL rate. The AV node blocks most of those impulses, so the pulse you feel is far slower.' },
 
