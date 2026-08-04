@@ -1820,11 +1820,21 @@ window.DECKS = [
     { term: 'Lead II',      def: 'BIPOLAR — voltage difference between the RIGHT ARM and the LEFT LEG',
       note: 'The right leg is the GROUND electrode and is never part of any lead — a fast way to sanity-check any lead question.' },
     { term: 'Lead III',     def: 'BIPOLAR — voltage difference between the LEFT ARM and the LEFT LEG' },
-    { term: 'aVR',          def: 'augmented Voltage Right arm — RA vs. a central point between LA and LL' },
-    { term: 'aVL',          def: 'augmented Voltage Left arm — LA vs. a central point between RA and LL' },
-    { term: 'aVF',          def: 'augmented Voltage left leg / Foot — LL vs. a central point between RA and LA' },
+    /* The expansion moved to the note. Spelling out "augmented Voltage Right
+       arm" in the prompt makes typing aVR a transcription exercise; asked by
+       what it measures, it tests the lead. The expansion is still shown, just
+       after answering, where it works as the reason rather than the giveaway. */
+    { term: 'aVR', def: 'the augmented lead measuring the RIGHT ARM against a central point between the left arm and left leg',
+      note: 'Stands for augmented Voltage Right arm — the R names the exploring electrode.' },
+    { term: 'aVL', def: 'the augmented lead measuring the LEFT ARM against a central point between the right arm and left leg',
+      note: 'Stands for augmented Voltage Left arm.' },
+    { term: 'aVF', def: 'the augmented lead measuring the LEFT LEG against a central point between the right arm and left arm',
+      note: 'Stands for augmented Voltage Foot — the foot standing in for the left leg.' },
     { fact: true, term: 'Why "augmented"?', def: 'these three leads produce small impulses that must be amplified (augmented) by the machine to be recorded' },
-    { term: 'Bipolar vs. unipolar', def: 'BIPOLAR (I, II, III) — both poles are real electrodes on the patient. UNIPOLAR (aVR, aVL, aVF, V1–V6) — one real "exploring" electrode measured against a CALCULATED central reference point',
+    /* A contrast, not a term — "Bipolar vs. unipolar" typed exactly, punctuation
+       and all, tests nothing worth testing. It still carries its full weight in
+       flashcards, the review sheet and the quiz. */
+    { fact: true, term: 'Bipolar vs. unipolar', def: 'BIPOLAR (I, II, III) — both poles are real electrodes on the patient. UNIPOLAR (aVR, aVL, aVF, V1–V6) — one real "exploring" electrode measured against a CALCULATED central reference point',
       note: 'All voltage is a difference between two points, so "measures a difference" cannot be what separates them — what separates them is whether the negative pole is a physical electrode or a computed average. By that convention the augmented leads are unipolar, which is how lines 44–46 of your Chapter 45 notes describe them ("a central point between..."). But the heading on that page groups them as bipolar — go with your instructor and textbook on the exam.' },
     { term: 'Lead II strip', def: 'the main lead read for heart rate and rhythm; providers often request an extra two-foot rhythm strip of Lead II alone' },
     { term: 'V1', def: 'FOURTH intercostal space at the RIGHT margin of the sternum' },
@@ -1834,12 +1844,20 @@ window.DECKS = [
     { term: 'V5', def: 'horizontal level of V4 at the left ANTERIOR AXILLARY line' },
     { term: 'V6', def: 'horizontal level of V4 at the left MIDAXILLARY line' },
     { fact: true, term: 'Order of chest placement', def: 'V1 → V2 → V4 → V3 → V5 → V6 (V4 goes on before V3, because V3 is defined by where V4 lands)' },
-    { term: 'RA electrode color', def: 'WHITE' },
-    { term: 'LA electrode color', def: 'BLACK' },
-    { term: 'LL electrode color', def: 'RED' },
-    { term: 'RL electrode color', def: 'GREEN (the ground)' },
-    { term: 'Arm electrode position', def: 'fleshy outer area of the UPPER arm with the connectors pointing DOWN' },
-    { term: 'Leg electrode position', def: 'fleshy inner area of the LOWER leg near the calf with the connectors pointing UP' }
+    /* Asked the other way round. "RL electrode color" defined as "GREEN (the
+       ground)" hands you the colour in the prompt and then makes you type a
+       label nobody says out loud. What is worth knowing is WHICH electrode
+       wears the colour, so the electrode is the answer — by abbreviation or by
+       name, since both get used. */
+    { term: 'RA, Right arm', def: 'the WHITE electrode' },
+    { term: 'LA, Left arm',  def: 'the BLACK electrode' },
+    { term: 'LL, Left leg',  def: 'the RED electrode' },
+    { term: 'RL, Right leg', def: 'the GREEN electrode — the ground',
+      note: 'The ground is never part of any lead, which is the quickest way to rule out a wrong answer on a lead question.' },
+    /* Placement facts, not vocabulary — the term is a heading, so these belong
+       in flashcards and the review sheet rather than as something to type. */
+    { fact: true, term: 'Arm electrode position', def: 'fleshy outer area of the UPPER arm with the connectors pointing DOWN' },
+    { fact: true, term: 'Leg electrode position', def: 'fleshy inner area of the LOWER leg near the calf with the connectors pointing UP' }
   ],
   questions: [
     { q: 'How many electrodes and how many leads are used in a standard 12-lead ECG?',
