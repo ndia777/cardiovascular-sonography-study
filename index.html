@@ -512,7 +512,7 @@ const alternatives = card =>
    "a change in the sequence of a DNA molecule", which never says mutation, so
    that one still needs its full name. */
 const CATEGORY_TAIL =
-  /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?)$/i;
+  /\s+(regions?|cavit(?:y|ies)|planes?|tissues?|glands?|cells?|diseases?|disorders?|syndromes?|systems?|mutations?|transmission|orders?|directives?|valves?)$/i;
 const shortForm = card => {
   const m = CATEGORY_TAIL.exec(card.term);
   if (!m) return null;
@@ -632,15 +632,72 @@ function conflicts(a, b){
   a = a.toLowerCase().trim(); b = b.toLowerCase().trim();
   return a === b || a.includes(b) || b.includes(a);
 }
+/* How much two definitions talk about the same thing, 0 to 1 (shared content
+   words over total distinct content words). Used to pick wrong answers that sit
+   in the same territory as the right one — drawing distractors at random makes
+   three of the four choices obviously irrelevant, and the question answers
+   itself without you knowing the material. */
+const STOP = new Set(('the a an of to in and or is are be by with from that this it its as into ' +
+  'through between over under out up down on at for not no other than then when which what where ' +
+  'how each any all one two both same such more most less least very can does do has have had').split(' '));
+/* Cached: the same handful of definitions get compared thousands of times while
+   building a quiz, and re-splitting them each time is what makes it crawl. */
+const WORDCACHE = new Map();
+const contentWords = s => {
+  let w = WORDCACHE.get(s);
+  if (!w){
+    w = new Set(String(s).toLowerCase()
+      .replace(/<[^>]*>/g, ' ').replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/)
+      .filter(x => x.length >= 3 && !STOP.has(x)));
+    WORDCACHE.set(s, w);
+  }
+  return w;
+};
+function similarity(a, b){
+  const A = contentWords(a), B = contentWords(b);
+  if (!A.size || !B.size) return 0;
+  /* iterate the smaller set — the intersection is the same either way */
+  const [S, L] = A.size <= B.size ? [A, B] : [B, A];
+  let shared = 0;
+  for (const w of S) if (L.has(w)) shared++;
+  return shared / (A.size + B.size - shared);
+}
+/* Above this, a "wrong" answer is close enough to be arguable, and a study tool
+   that marks a defensible answer wrong teaches the wrong thing. Related, not
+   interchangeable, is the target. */
+const TOO_CLOSE = 0.55;
+
 /* Pick n wrong answers that clash with neither the right answer nor each other.
    Checking only against the right answer is not enough: mt2-parts has both
    path/o and -pathy meaning "disease, suffering, feeling, emotion", and neither
    clashes with, say, "before, front" — so both could be drawn, listing the same
-   choice twice. Returns null when the deck can't supply n distinct options. */
-function distractors(pool, n, keyOf, taken){
+   choice twice. Returns null when the deck can't supply n distinct options.
+
+   `nearTo` is the right answer's definition. When given, candidates are ranked
+   by how near they are to it and drawn from a shortlist of the nearest, so the
+   choices stay in the same subject area. The shortlist is several times longer
+   than the slots being filled, so repeat sittings do not serve the same three
+   wrong answers every time. The full pool is appended as a fallback: a small
+   deck, or one whose cards genuinely share no vocabulary, must still be able to
+   fill four slots rather than produce no question at all. */
+function distractors(pool, n, keyOf, taken, nearTo){
+  let ranked = shuffle(pool);
+  if (nearTo){
+    const scored = pool.map(c => ({ c, s: similarity(nearTo, c.def) }));
+    const usable = scored.filter(x => x.s <= TOO_CLOSE).sort((a, b) => b.s - a.s);
+    /* shuffle within the shortlist: near, but not the same near every time */
+    const short = shuffle(usable.slice(0, Math.max(n * 3, 9)).map(x => x.c));
+    const rest  = shuffle(usable.slice(Math.max(n * 3, 9)).map(x => x.c));
+    /* Anything above the threshold goes dead last, so it is only ever reached
+       when the deck cannot fill four slots any other way. */
+    const risky = shuffle(scored.filter(x => x.s > TOO_CLOSE).map(x => x.c));
+    ranked = short.concat(rest, risky);
+  }
   const out = [];
-  for (const c of shuffle(pool)){
+  for (const c of ranked){
     const k = keyOf(c);
+    /* a card reached twice via the shortlist and the fallback is skipped here,
+       because its own key is already sitting in `taken` */
     if (taken.some(t => conflicts(t, k))) continue;
     taken.push(k);
     out.push(c);
@@ -656,7 +713,7 @@ function autoQuestions(d){
 
     /* Each question carries its source card so the quiz can avoid asking the
        same card twice — see runQuiz. */
-    const fwd = distractors(pool, 3, c => c.def, [card.def]);
+    const fwd = distractors(pool, 3, c => c.def, [card.def], card.def);
     if (fwd){
       const ch = shuffle([card.def, ...fwd.map(c => c.def)]);
       /* "What does Parts of ATP mean?" reads badly — a fact card is a topic, so
@@ -671,7 +728,10 @@ function autoQuestions(d){
        "which term means X" would have more than one right answer. A fact card
        has no term to name, so it never gets a reverse question. */
     if (!card.fact && pool.length === d.cards.length - 1){
-      const rev = distractors(pool, 3, c => c.term, [card.term]);
+      /* Ranked on definitions even though the choices are terms: two terms are
+         related when what they MEAN is related, which their names often do not
+         show ("Tricuspid valve" and "Mitral valve" share no words at all). */
+      const rev = distractors(pool, 3, c => c.term, [card.term], card.def);
       if (rev){
         const ch = shuffle([card.term, ...rev.map(c => c.term)]);
         out.push({ card, q:`Which term means: <em>${esc(card.def)}</em>`, choices: ch,

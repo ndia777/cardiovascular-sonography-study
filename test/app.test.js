@@ -231,6 +231,43 @@ function suite(s, label) {
     }
   }
 
+  /* Wrong answers must sit in the same subject area as the right one. Drawing
+     them at random leaves three obviously irrelevant choices and the question
+     answers itself. Measure it: compare how close the chosen distractors are to
+     the right answer against how close an average card in the same deck is.
+     Random selection makes those two numbers equal, so a real margin is the
+     only thing that can produce a pass here. */
+  const sim = s.similarity;
+  check(`[${label}] the engine exposes a similarity measure`, typeof sim === 'function');
+  if (typeof sim === 'function') {
+    let chosenSum = 0, chosenN = 0, poolSum = 0, poolN = 0, tooClose = '';
+    for (const d of DECKS) {
+      if (d.cards.length < 6) continue;
+      for (let r = 0; r < 12; r++) {
+        for (const q of autoQuestions(d)) {
+          /* forward questions only — there the choices are definitions */
+          if (!q.choices.includes(q.card.def)) continue;
+          for (const ch of q.choices) {
+            if (ch === q.card.def) continue;
+            const v = sim(q.card.def, ch);
+            chosenSum += v; chosenN++;
+            if (v > 0.75 && !tooClose)
+              tooClose = `${d.id} / "${q.card.term}": a wrong choice scores ${v.toFixed(2)}`;
+          }
+        }
+      }
+      for (const a of d.cards) for (const b of d.cards) {
+        if (a === b) continue;
+        poolSum += sim(a.def, b.def); poolN++;
+      }
+    }
+    const chosen = chosenSum / chosenN, baseline = poolSum / poolN;
+    check(`[${label}] distractors are drawn from the right answer's subject area`,
+          chosenN > 100 && chosen > baseline * 1.5,
+          `chosen ${chosen.toFixed(3)} vs deck average ${baseline.toFixed(3)} over ${chosenN} choices`);
+    check(`[${label}] no distractor is close enough to be arguable`, !tooClose, tooClose);
+  }
+
   check(`[${label}] ${generated} questions well formed`, badShape === 0, `${badShape} malformed`);
   check(`[${label}] no repeated answer choice`, dupChoice === 0, `${dupChoice} hits, e.g. ${sample}`);
   check(`[${label}] no interchangeable choices`, interchangeable === 0, `${interchangeable} hits, e.g. ${sample}`);
@@ -398,6 +435,13 @@ function suite(s, label) {
     ['mt1-terms', 'hypertension', 'hypotension', 'wrong'],
     ['bio-ch3', 'Metaphase', 'Anaphase', 'wrong'],
     ['mt1-roots', 'gastr/o', '', 'wrong'],
+    /* "valve" is redundant when the definition already says valve, so the bare
+       name counts — same rule that lets "Hypogastric" stand for the region.
+       The four valve names stay distinct, so nothing else claims them. */
+    ['heart-anatomy', 'Tricuspid valve', 'Tricuspid', 'exact'],
+    ['heart-anatomy', 'Mitral valve', 'Mitral', 'exact'],
+    ['heart-anatomy', 'Aortic valve', 'Aortic', 'exact'],
+    ['heart-anatomy', 'Mitral valve', 'Tricuspid', 'wrong'],
   ];
   const deckOf = id => DECKS.find(d => d.id === id);
   for (const [deck, term, typed, want] of spelling) {

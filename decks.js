@@ -1163,6 +1163,105 @@ window.DECKS = [
 
 /* ─────────────────────────  M103 · MEDICAL PROCEDURES  ──────────────────── */
 
+/* Placed first in the course because the EKG decks all assume this anatomy —
+   which chamber a valve sits between, and which way the blood is going. */
+{
+  id: 'heart-anatomy',
+  course: 'M103 · Medical Procedures',
+  title: 'The Heart — Anatomy & Blood Flow',
+  source: 'Notes/TERM 1/M103 LEC .../The Circulatory Systen.md',
+  cards: [
+    { term: 'Endocardium', def: 'the innermost layer of the heart wall — the smooth lining in direct contact with the blood inside the chambers' },
+    { term: 'Myocardium', def: 'the thick middle layer of the heart wall — the cardiac muscle that does the actual contracting' },
+    { term: 'Epicardium', def: 'the outermost layer of the heart wall, covering its external surface' },
+    { term: 'Atrium', def: 'an upper receiving chamber of the heart — there are two, one on each side' },
+    { term: 'Ventricle', def: 'a lower pumping chamber of the heart — there are two, one on each side' },
+    { term: 'Septum', def: 'the muscular wall dividing the right side of the heart from the left' },
+
+    { term: 'Tricuspid valve', def: 'the atrioventricular valve on the RIGHT side, sitting between the right atrium and the right ventricle' },
+    { term: 'Mitral valve', def: 'the atrioventricular valve on the LEFT side, sitting between the left atrium and the left ventricle',
+      note: 'Also called the bicuspid valve — two cusps rather than three.' },
+    { term: 'Pulmonic valve', def: 'the semilunar valve the right ventricle ejects through, at the mouth of the main pulmonary artery' },
+    { term: 'Aortic valve', def: 'the semilunar valve the left ventricle ejects through, at the mouth of the aorta' },
+    { fact: true, term: 'The atrioventricular valves',
+      def: 'the tricuspid on the right and the mitral (bicuspid) on the left — the two valves between an atrium and its ventricle' },
+    { fact: true, term: 'The semilunar valves',
+      def: 'the pulmonic and the aortic — the two valves guarding the exits out of the ventricles' },
+
+    { term: 'Pulmonic circulation', def: 'the circuit driven by the RIGHT side of the heart, carrying deoxygenated blood to the lungs under low pressure' },
+    { term: 'Systemic circulation', def: 'the circuit driven by the LEFT side of the heart, carrying oxygenated blood out to the body under much higher pressure' },
+    { fact: true, term: 'Why the left ventricle is the thickest chamber',
+      def: 'it drives the systemic circulation against far higher pressure, while the right side only has to push blood as far as the lungs' },
+
+    { term: 'Superior vena cava', def: 'the great vein returning deoxygenated blood from the head, neck and arms to the right atrium' },
+    { term: 'Inferior vena cava', def: 'the great vein returning deoxygenated blood from the trunk and legs to the right atrium' },
+    { term: 'Coronary sinus', def: 'the large cardiac vein returning blood from the heart muscle itself, opening directly into the right atrium' },
+    { term: 'Coronary arteries', def: 'the vessels branching off the aorta that supply the heart muscle itself with oxygenated blood' },
+    { term: 'Pulmonary veins', def: 'the four veins carrying oxygenated blood from the lungs back to the left atrium',
+      note: 'The only veins in the body carrying oxygenated blood — veins are defined by flowing TOWARD the heart, not by what they carry.' },
+    { fact: true, term: 'The three openings into the right atrium',
+      def: 'superior vena cava, inferior vena cava and coronary sinus — three separate inlets side by side, not a chain feeding one into the next' },
+
+    { fact: true, term: 'Path of blood through the heart',
+      def: 'vena cavae → right atrium → tricuspid valve → right ventricle → pulmonic valve → pulmonary artery → lungs → pulmonary veins → left atrium → mitral valve → left ventricle → aortic valve → aorta → body' }
+  ],
+  questions: [
+    { q: 'Blood leaving the right ventricle passes through which valve?',
+      choices: ['The pulmonic valve', 'The tricuspid valve', 'The aortic valve', 'The mitral valve'], answer: 0,
+      why: 'The tricuspid sits BEFORE the right ventricle, on the way in. The pulmonic guards the way out, into the pulmonary artery.' },
+
+    { q: 'Which vessels carry OXYGENATED blood into the heart?',
+      choices: [
+        'The pulmonary veins, returning from the lungs to the left atrium',
+        'The venae cavae, returning from the body to the right atrium',
+        'The coronary arteries, returning from the myocardium',
+        'The pulmonary artery, returning from the lungs'
+      ], answer: 0,
+      why: 'A vein is any vessel running toward the heart, whatever it carries. The pulmonary veins are the exception that proves it — oxygenated blood, but still veins.' },
+
+    { q: 'How does blood from the coronary sinus reach the right atrium?',
+      choices: [
+        'It empties straight into the right atrium through its own opening',
+        'It drains into the superior vena cava first, then into the right atrium',
+        'It drains into the inferior vena cava first, then into the right atrium',
+        'It returns through the pulmonary veins'
+      ], answer: 0,
+      why: 'The right atrium has three separate inlets — superior vena cava, inferior vena cava and coronary sinus. The coronary sinus is the myocardium’s own venous drainage and arrives independently, near the tricuspid opening.' },
+
+    { q: 'Why is the myocardium thicker on the left side of the heart?',
+      choices: [
+        'The left side pumps against the higher pressure of the systemic circulation',
+        'The left side holds a larger volume of blood',
+        'The left side has to pump oxygenated blood, which is heavier',
+        'The left side contains more of the conduction system'
+      ], answer: 0 },
+
+    { q: 'The tricuspid and mitral valves are classed together as:',
+      choices: ['The atrioventricular valves', 'The semilunar valves', 'The coronary valves', 'The pulmonary valves'], answer: 0,
+      why: 'Each sits between an atrium and its ventricle. The semilunar pair — pulmonic and aortic — guard the exits out of the ventricles instead.' },
+
+    { q: 'Which sequence is correct?',
+      choices: [
+        'Right ventricle → pulmonic valve → pulmonary artery → lungs',
+        'Right ventricle → pulmonary vein → lungs → pulmonic valve',
+        'Right ventricle → tricuspid valve → pulmonary artery → lungs',
+        'Right ventricle → aortic valve → aorta → lungs'
+      ], answer: 0 },
+
+    { q: 'The right side of the heart drives which circulation, at what pressure?',
+      choices: [
+        'Pulmonic circulation, at low pressure',
+        'Systemic circulation, at low pressure',
+        'Pulmonic circulation, at high pressure',
+        'Systemic circulation, at high pressure'
+      ], answer: 0 },
+
+    { q: 'Which layer of the heart wall is in direct contact with the blood in the chambers?',
+      choices: ['The endocardium', 'The myocardium', 'The epicardium', 'The pericardium'], answer: 0,
+      why: 'Endo- means within. The myocardium is the muscle in the middle, the epicardium the outer surface.' }
+  ]
+},
+
 {
   id: 'ekg-basics',
   course: 'M103 · Medical Procedures',
@@ -1290,6 +1389,9 @@ window.DECKS = [
   chest: true,          /* unlocks the Place the Leads mode */
   cards: [
     { term: '12-lead ECG',  def: '12 recordings of the heart’s electrical activity from different angles, using 10 electrodes — 4 limb, 6 chest' },
+    { fact: true, term: 'What the ECG machine actually is',
+      def: 'a voltmeter — it records the electrical voltages produced when heart muscle depolarizes' },
+    { term: 'Einthoven’s triangle', def: 'the triangle the three standard limb leads (I, II and III) form around the heart, with the right leg serving as ground' },
     { term: 'Lead I',       def: 'BIPOLAR — voltage difference between the LEFT ARM and the RIGHT ARM' },
     { term: 'Lead II',      def: 'BIPOLAR — voltage difference between the RIGHT ARM and the LEFT LEG',
       note: 'The right leg is the GROUND electrode and is never part of any lead — a fast way to sanity-check any lead question.' },
@@ -1444,7 +1546,23 @@ window.DECKS = [
     { term: 'Escape pacemaker', def: 'a lower site taking over when the site above it fails, pacing at its own slower intrinsic rate' },
     { fact: true, term: 'Conduction speed through the AV node', def: 'about 0.05 metres per second (0.05 m/s) — roughly 5 centimetres a second, the slowest anywhere in the heart, which is what creates the delay',
       note: 'm/s is metres per SECOND, a speed — not milliseconds. Bigger number = faster.' },
-    { fact: true, term: 'Conduction speed through the Purkinje fibers', def: 'about 4 metres per second (4 m/s) — the fastest anywhere in the heart, about eighty times the AV node, so both ventricles fire almost together' }
+    { fact: true, term: 'Conduction speed through the Purkinje fibers', def: 'about 4 metres per second (4 m/s) — the fastest anywhere in the heart, about eighty times the AV node, so both ventricles fire almost together' },
+
+    /* from The Circulatory Systen.md — which branch feeds which ventricle, and
+       the AV junction as a named structure rather than a vague region */
+    { term: 'Right bundle branch', def: 'carries the impulse to the RIGHT ventricle' },
+    { term: 'Left bundle branch', def: 'carries the impulse to the LEFT ventricle' },
+    { term: 'AV junction', def: 'the AV node together with the bundle of His — the only electrical connection running from the atria down into the ventricles',
+      note: 'It links TOP to BOTTOM. The septum is the wall separating right from left — a different structure entirely.' },
+
+    { term: 'Polarization', def: 'the heart at rest, with the cells charged and waiting between beats' },
+    { term: 'Automaticity', def: 'the ability of pacemaker cells to start an electrical impulse on their own, without being stimulated from another source' },
+    { term: 'Excitability', def: 'the ability of cardiac muscle cells to respond to an outside stimulus',
+      note: 'Also called irritability.' },
+    { term: 'Conductivity', def: 'the ability of a cardiac cell to receive an electrical stimulus and pass it along to the next cell' },
+    { term: 'Contractility', def: 'the ability of cardiac cells to shorten, producing muscle contraction in response to an electrical stimulus' },
+    { fact: true, term: 'Causes of conduction disturbances',
+      def: 'trauma, drug toxicity, electrolyte disturbances (sodium and potassium), and myocardial ischemia or infarction' }
   ],
   questions: [
     { q: 'Put the conduction pathway in order.',
