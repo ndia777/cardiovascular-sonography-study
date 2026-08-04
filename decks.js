@@ -1524,7 +1524,7 @@ window.DECKS = [
     { term: 'Einthoven’s triangle', def: 'the triangle the three standard limb leads (I, II and III) form around the heart, with the right leg serving as ground' },
     { term: 'Lead I',       def: 'BIPOLAR — voltage difference between the LEFT ARM and the RIGHT ARM' },
     { term: 'Lead II',      def: 'BIPOLAR — voltage difference between the RIGHT ARM and the LEFT LEG',
-      note: 'The right leg is the GROUND electrode and is never part of any lead — a fast way to sanity-check any lead question.' },
+      note: 'This is the main lead read for heart rate and rhythm, and the one a rhythm strip is run from. The right leg is the GROUND electrode and is never part of any lead — a fast way to sanity-check any lead question.' },
     { term: 'Lead III',     def: 'BIPOLAR — voltage difference between the LEFT ARM and the LEFT LEG' },
     /* The expansion moved to the note. Spelling out "augmented Voltage Right
        arm" in the prompt makes typing aVR a transcription exercise; asked by
@@ -1542,7 +1542,11 @@ window.DECKS = [
        flashcards, the review sheet and the quiz. */
     { fact: true, term: 'Bipolar vs. unipolar', def: 'BIPOLAR (I, II, III) — both poles are real electrodes on the patient. UNIPOLAR (aVR, aVL, aVF, V1–V6) — one real "exploring" electrode measured against a CALCULATED central reference point',
       note: 'All voltage is a difference between two points, so "measures a difference" cannot be what separates them — what separates them is whether the negative pole is a physical electrode or a computed average. By that convention the augmented leads are unipolar, which is how lines 44–46 of your Chapter 45 notes describe them ("a central point between..."). But the heading on that page groups them as bipolar — go with your instructor and textbook on the exam.' },
-    { term: 'Lead II strip', def: 'the main lead read for heart rate and rhythm; providers often request an extra two-foot rhythm strip of Lead II alone' },
+    /* Was "Lead II strip" — a name I invented, defined with "Lead II" sitting in
+       the prompt, so the honest answer to it was "Lead II", which is already its
+       own card. Chapter 45 calls this a rhythm strip; the definition now
+       describes it without using either word. */
+    { term: 'Rhythm strip', def: 'the long single-lead recording printed at the bottom of most ECG reports; providers may request an extra two-foot-long one of Lead II alone to assess for abnormalities' },
     { term: 'V1', def: 'FOURTH intercostal space at the RIGHT margin of the sternum' },
     { term: 'V2', def: 'FOURTH intercostal space at the LEFT margin of the sternum' },
     { term: 'V3', def: 'midway between V2 and V4 — placed AFTER V4' },
