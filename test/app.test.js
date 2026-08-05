@@ -748,6 +748,31 @@ function suite(s, label) {
   check(`[${label}] no duplicate or colliding terms in a deck`, !collisions.length,
         collisions.join('\n      '));
 
+  /* Plural tolerance must never let one typed answer satisfy two cards. If two
+     terms in a deck collapse to the same singular, the second is unanswerable —
+     the same trap the duplicate check above exists to prevent. */
+  {
+    const dp = w => w.replace(/ies$/, 'y').replace(/(ss|[sxz]|ch|sh)es$/, '$1').replace(/([^s])s$/, '$1');
+    /* top-level `const` in a vm script never lands on the context object */
+    const alternatives = vm.runInContext('alternatives', s);
+    const normalize = vm.runInContext('normalize', s);
+    const merged = [];
+    for (const d of DECKS) {
+      const seen = new Map();
+      for (const c of recallableCards(d)) {
+        for (const a of alternatives(c)) {
+          const k = dp(normalize(a));
+          if (!k) continue;
+          if (seen.has(k) && seen.get(k) !== c.term)
+            merged.push(`${d.id}: "${seen.get(k)}" and "${c.term}" both answer to "${k}"`);
+          seen.set(k, c.term);
+        }
+      }
+    }
+    check(`[${label}] no two cards collapse to the same plural form`, !merged.length,
+          merged.join('\n      '));
+  }
+
   /* The answer the app displays must always be accepted when typed back. This
      is the invariant that a comma in a term name ("Pores, channels & carriers")
      used to break, trapping the card in an unclearable loop. */
@@ -778,6 +803,14 @@ function suite(s, label) {
     ['heart-anatomy', 'Mitral valve', 'Mitral', 'exact'],
     ['heart-anatomy', 'Aortic valve', 'Aortic', 'exact'],
     ['heart-anatomy', 'Mitral valve', 'Tricuspid', 'wrong'],
+    /* Plural and singular are the same word — an inflection, not a misspelling.
+       Strict spelling still decides everything else. */
+    ['bio-ch4', 'Enzyme', 'enzymes', 'exact'],
+    ['bio-ch4', 'Enzyme', 'Enzyme', 'exact'],
+    ['bio-ch4', 'Enzyme', 'enzime', 'wrong'],
+    ['bio-ch4', 'Enzyme', 'enzymess', 'wrong'],
+    ['mt1-terms', 'hemorrhage', 'hemorages', 'wrong'],
+    ['heart-anatomy', 'Pulmonary veins', 'pulmonary vein', 'exact'],
     /* Vertical/horizontal and Y/X name the same two lines, so either is taken.
        Crossing them is still wrong — vertical is Y, and X is the horizontal one. */
     ['ekg-basics', 'Vertical axis, Y axis', 'Y axis', 'exact'],

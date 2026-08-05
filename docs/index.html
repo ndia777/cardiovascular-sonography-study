@@ -2852,10 +2852,31 @@ const shortForm = card => {
    and spelling is graded, so a near-miss is a miss.
    Case, spacing and the /-o notation are still ignored: "abdomin/o", "Abdomino"
    and "abdomin o" are the same spelling, just written differently. */
+/* Singular and plural are the same word, so "enzymes" for "enzyme" is not a
+   spelling mistake — it is an inflection. Strict spelling still decides
+   everything else: "enzime" and "enzymess" are both still wrong. Applied to
+   both sides, so a card named in the plural accepts its singular too.
+   Irregular plurals (nucleus/nuclei, bacterium/bacteria) are out of scope and
+   simply fall through to strict matching. */
+const deplural = w => w
+  .replace(/ies$/, 'y')
+  .replace(/(ss|[sxz]|ch|sh)es$/, '$1')
+  .replace(/([^s])s$/, '$1');
+
 function judge(input, card, deck){
   const n = normalize(input);
   if (!n) return 'wrong';
   if (alternatives(card).map(normalize).some(t => t && t === n)) return 'exact';
+
+  /* Same guard as the short form: a plural only counts when nothing ELSE in the
+     deck answers to it, so two cards can never take the same typed answer. */
+  const p = deplural(n);
+  if (p && alternatives(card).map(a => deplural(normalize(a))).some(t => t && t === p)){
+    const taken = ((deck && deck.cards) || []).some(o => o !== card && (
+      alternatives(o).map(normalize).some(t => t === n) ||
+      alternatives(o).map(a => deplural(normalize(a))).some(t => t && t === p)));
+    if (!taken) return 'exact';
+  }
 
   /* Accept the short form only when nothing ELSE in the deck answers to it —
      neither another card's full name nor another card's short form.
