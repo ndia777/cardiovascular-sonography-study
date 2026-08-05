@@ -42,6 +42,22 @@
   .coursehead{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
     margin:26px 0 10px;font-weight:600}
   .decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  /* The fold holding everything that is not a study guide. Styled as a quiet
+     line of text rather than a control, so it recedes behind the decks above it
+     and never competes with them for attention. */
+  .more{margin-top:12px}
+  .more summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    font-size:12.5px;color:var(--dim);padding:6px 2px;border-radius:6px;user-select:none}
+  .more summary::-webkit-details-marker{display:none}
+  .more summary:hover{color:var(--text)}
+  .more summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  /* a chevron drawn from a rotated border, so there is no icon font or asset */
+  .more .chev{width:6px;height:6px;border-right:1.5px solid currentColor;
+    border-bottom:1.5px solid currentColor;transform:rotate(-45deg);
+    transition:transform .18s ease;margin-left:2px}
+  .more[open] .chev{transform:rotate(45deg)}
+  .more[open] summary{color:var(--text);margin-bottom:10px}
+  @media (prefers-reduced-motion: reduce){ .more .chev{transition:none} }
   .deck{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:15px 16px;text-align:left;transition:.13s;display:block;width:100%}
   .deck:hover{border-color:var(--accent);transform:translateY(-2px)}
@@ -2614,12 +2630,23 @@ function screenHome(){
 
   if (!list.length) html += `<p style="color:var(--dim)">No decks match that search.</p>`;
 
+  /* Study-guide decks lead each section — they are the tested material — and
+     everything else folds away behind a disclosure so the page stays short as
+     decks pile up. A course with no study guide of its own therefore collapses
+     whole, down to its heading and a count; the decks are one click away and
+     the section still reads as an index entry rather than a wall.
+
+     While a search is running every fold is forced open, so a match can never
+     hide inside a collapsed section. */
+  const openState = load().__open || {};
   courses.forEach(c => {
-    html += `<div class="coursehead">${esc(c)}</div><div class="decks">`;
-    list.filter(d => d.course === c).sort(byAdded).forEach(d => {
+    const inCourse = list.filter(d => d.course === c).sort(byAdded);
+    const lead = inCourse.filter(d => d.exam);
+    const rest = inCourse.filter(d => !d.exam);
+    const deckCard = d => {
       const p = progress[d.id] || {};
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
-      html += `<button class="deck ${d.exam ? 'exam' : ''}" onclick="go('deck','${d.id}')">
+      return `<button class="deck ${d.exam ? 'exam' : ''}" onclick="go('deck','${d.id}')">
         <h3>${esc(d.title)}</h3>
         <div class="meta">${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         <div class="badges">
@@ -2630,11 +2657,34 @@ function screenHome(){
           ${p.learned ? `<span class="badge on">${p.learned} learned</span>` : ''}
           ${!p.last ? `<span class="badge">Not started</span>` : ''}
         </div></button>`;
-    });
-    html += `</div>`;
+    };
+
+    html += `<div class="coursehead">${esc(c)}</div>`;
+    if (lead.length) html += `<div class="decks">${lead.map(deckCard).join('')}</div>`;
+    if (rest.length){
+      /* <details> rather than a hand-rolled toggle: it opens on click or Enter,
+         is announced correctly by screen readers, and survives with no JS. */
+      const open = q || openState[c] ? ' open' : '';
+      html += `<details class="more"${open} data-course="${esc(c)}">
+        <summary><span class="chev" aria-hidden="true"></span>${
+          lead.length ? `${rest.length} more deck${rest.length > 1 ? 's' : ''}`
+                      : `${rest.length} deck${rest.length > 1 ? 's' : ''}`}</summary>
+        <div class="decks">${rest.map(deckCard).join('')}</div>
+      </details>`;
+    }
   });
 
   app.innerHTML = html;
+  /* Remember which sections were left open, so a deck you use daily is not
+     three clicks away every session. Stored under one key beside the progress
+     data rather than in its own, since it is the same kind of local state. */
+  app.querySelectorAll('details.more').forEach(el => {
+    el.addEventListener('toggle', () => {
+      const s = load(), o = Object.assign({}, s.__open);
+      if (el.open) o[el.dataset.course] = 1; else delete o[el.dataset.course];
+      s.__open = o; save(s);
+    });
+  });
   const box = document.getElementById('search');
   box.oninput = e => { session = { q: e.target.value }; const pos = e.target.selectionStart; screenHome();
     const b = document.getElementById('search'); b.focus(); b.setSelectionRange(pos, pos); };

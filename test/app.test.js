@@ -118,21 +118,59 @@ function suite(s, label) {
         undated.map(d => d.id).join(', '));
   go('home');
   {
-    const titleToDate = new Map(DECKS.map(d => [d.title, d.added]));
+    const byTitle = new Map(DECKS.map(d => [d.title, d]));
     const html = s.__app.innerHTML;
-    /* split the page into course sections, then read each section's deck order */
-    const sections = html.split(/class="coursehead"/).slice(1);
-    let broke = '';
-    for (const sec of sections) {
-      const dates = [...sec.matchAll(/<h3>([^<]+)<\/h3>/g)]
-        .map(m => titleToDate.get(m[1].replace(/&amp;/g, '&')))
-        .filter(Boolean);
-      for (let i = 1; i < dates.length; i++)
-        if (dates[i] < dates[i - 1] && !broke)
-          broke = `a ${dates[i]} deck renders after a ${dates[i - 1]} one`;
-      if (dates.length < 2 && !broke && sections.length === 1) broke = 'no deck order to check';
+    /* Each course renders up to two grids: study-guide decks first, then the
+       rest inside the fold. Chronological order holds WITHIN a grid — across
+       the two it does not, because the study guides are deliberately promoted
+       past older decks. So check each grid separately. */
+    const grids = html.split(/<div class="decks">/).slice(1)
+      .map(g => [...g.split('</div>')[0].matchAll(/<h3>([^<]+)<\/h3>/g)]
+        .map(m => byTitle.get(m[1].replace(/&amp;/g, '&'))).filter(Boolean));
+    check(`[${label}] the home screen renders deck grids`, grids.length > 1, `${grids.length} grids`);
+    let broke = '', mixed = '';
+    for (const g of grids) {
+      for (let i = 1; i < g.length; i++)
+        if (g[i].added < g[i - 1].added && !broke)
+          broke = `a ${g[i].added} deck renders after a ${g[i - 1].added} one`;
+      /* a grid is either all study guides or none of them — never a mix */
+      if (g.length && g.some(d => d.exam) && g.some(d => !d.exam) && !mixed)
+        mixed = `grid mixes "${g.find(d => d.exam).title}" with "${g.find(d => !d.exam).title}"`;
     }
-    check(`[${label}] decks render oldest-added first within a course`, !broke, broke);
+    check(`[${label}] decks render oldest-added first within a grid`, !broke, broke);
+    check(`[${label}] study-guide decks are not mixed in with the rest`, !mixed, mixed);
+
+    /* Study-guide decks are never collapsible. They are the tested material and
+       must be on screen the moment the page opens, not one click behind a
+       disclosure. Read the inside of every <details> and assert none of them is
+       in there — an index comparison would pass if the fold markup moved. */
+    const insideFolds = html.split('<details class="more"').slice(1)
+      .map(f => f.split('</details>')[0]).join('\n');
+    const buried = DECKS.filter(d => d.exam)
+      .filter(d => insideFolds.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
+      .map(d => d.title);
+    check(`[${label}] no study-guide deck sits inside a collapsible fold`, !buried.length,
+          buried.join(', '));
+
+    /* Every deck must still be reachable from the home screen — folded is fine,
+       dropped is not. This is the check that catches a filtering slip turning
+       "collapse" into "lose". */
+    const shown = new Set([...html.matchAll(/<h3>([^<]+)<\/h3>/g)]
+      .map(m => m[1].replace(/&amp;/g, '&')));
+    const lost = DECKS.filter(d => !shown.has(d.title)).map(d => d.id);
+    check(`[${label}] every deck is still listed on the home screen`, !lost.length, lost.join(', '));
+
+    /* A search must not leave a match sealed inside a collapsed fold. Set the
+       query the way the search box does — go() nulls the session, so calling it
+       after would wipe the query being tested. */
+    go('home');
+    vm.runInContext('session = { q: "purkinje" }; screenHome();', s);
+    const searched = s.__app.innerHTML;
+    const folds = [...searched.matchAll(/<details class="more"([^>]*)>/g)].map(m => m[1]);
+    check(`[${label}] searching opens every fold`,
+          folds.length > 0 && folds.every(f => / open/.test(f)),
+          `${folds.filter(f => !/ open/.test(f)).length} of ${folds.length} stayed shut`);
+    go('home');
   }
 
   /* Study-guide decks are marked so they stand out — that is the material being
