@@ -100,13 +100,21 @@ function suite(s, label) {
      out of the markup the app actually produced — comparing a sorted list to
      itself would pass no matter what the app did. */
   go('home');
-  const rendered = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
-    .map(m => m[1].trim())
-    .map(c => (c.split('·')[1] || c).trim());
-  const expected = [...rendered].sort((a, b) => a.localeCompare(b));
-  check(`[${label}] course sections render alphabetically by subject`,
-        rendered.length > 1 && JSON.stringify(rendered) === JSON.stringify(expected),
-        `rendered: ${rendered.join(' | ')}`);
+  const renderedCourses = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
+    .map(m => m[1].trim().replace(/&amp;/g, '&'));
+  const guided = c => DECKS.some(d => d.course === c && d.exam);
+  const subj = c => (c.split('·')[1] || c).trim();
+  /* Courses with a study guide form the first tier; alphabetical by subject
+     decides the rest and the order inside each tier. Derived from the deck data
+     rather than a fixed list, so it keeps holding when a course gains a guide. */
+  const expected = [...renderedCourses]
+    .sort((a, b) => (guided(b) - guided(a)) || subj(a).localeCompare(subj(b)));
+  check(`[${label}] study-guide courses lead, then alphabetical by subject`,
+        renderedCourses.length > 1 && JSON.stringify(renderedCourses) === JSON.stringify(expected),
+        `rendered: ${renderedCourses.map(subj).join(' | ')}`);
+  check(`[${label}] the tiers are actually distinguishable`,
+        renderedCourses.some(guided) && renderedCourses.some(c => !guided(c)),
+        'every course is on the same tier — this check would pass vacuously');
 
   /* Inside a section, decks run oldest-added first, so the list follows the
      order the material was covered. Every deck must carry a date, or it would
@@ -171,6 +179,34 @@ function suite(s, label) {
           folds.length > 0 && folds.every(f => / open/.test(f)),
           `${folds.filter(f => !/ open/.test(f)).length} of ${folds.length} stayed shut`);
     go('home');
+
+    /* A course with no study guide has nothing to defer to, so its sections are
+       open on arrival — the decks are simply visible, which is the whole point
+       of not burying the main class of the term. */
+    const openHtml = s.__app.innerHTML;
+    let shut = '';
+    for (const c of renderedCourses.filter(x => !guided(x))) {
+      const sec = openHtml.split(`class="coursehead">${c.replace(/&/g, '&amp;')}<`)[1] || '';
+      const upto = sec.split('class="coursehead"')[0];
+      for (const f of upto.matchAll(/<details class="more"([^>]*)>[\s\S]*?<summary>.*?<\/span>([^<]*)</g))
+        if (!/ open/.test(f[1]) && !shut) shut = `"${f[2]}" in ${subj(c)} starts closed`;
+    }
+    check(`[${label}] a course without study guides opens its sections by default`, !shut, shut);
+
+    /* and those sections are named by subject rather than being one long run */
+    const grouped = DECKS.filter(d => !d.exam && d.group);
+    if (grouped.length) {
+      const names = [...new Set(grouped.map(d => d.group))];
+      check(`[${label}] subject group headings render`,
+            names.every(g => openHtml.includes(`</span>${g}</summary>`)),
+            `expected: ${names.join(', ')}`);
+      /* every deck in a grouped course must carry a group, or it silently
+         lands in a catch-all section nobody intended */
+      const courses = [...new Set(grouped.map(d => d.course))];
+      const ungrouped = DECKS.filter(d => courses.includes(d.course) && !d.exam && !d.group);
+      check(`[${label}] no deck is left out of its course's grouping`,
+            !ungrouped.length, ungrouped.map(d => d.id).join(', '));
+    }
   }
 
   /* Study-guide decks are marked so they stand out — that is the material being

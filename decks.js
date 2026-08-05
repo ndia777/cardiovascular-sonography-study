@@ -1373,6 +1373,7 @@ window.DECKS = [
    which chamber a valve sits between, and which way the blood is going. */
 {
   id: 'heart-anatomy',
+  group: 'The Heart',
 
   added: '2026-08-03',
   course: 'M103 · Medical Procedures',
@@ -1472,6 +1473,7 @@ window.DECKS = [
 
 {
   id: 'blood-flow',
+  group: 'The Heart',
 
   added: '2026-08-03',
   course: 'M103 · Medical Procedures',
@@ -1558,6 +1560,7 @@ window.DECKS = [
 
 {
   id: 'ekg-basics',
+  group: 'EKG',
 
   added: '2026-07-29',
   course: 'M103 · Medical Procedures',
@@ -1700,6 +1703,7 @@ window.DECKS = [
 
 {
   id: 'ekg-leads',
+  group: 'EKG',
 
   added: '2026-07-29',
   course: 'M103 · Medical Procedures',
@@ -1862,6 +1866,7 @@ window.DECKS = [
 
 {
   id: 'ekg-conduction',
+  group: 'EKG',
 
   added: '2026-08-03',
   course: 'M103 · Medical Procedures',
@@ -1988,6 +1993,7 @@ window.DECKS = [
 
 {
   id: 'ekg-rhythms',
+  group: 'EKG',
 
   added: '2026-07-29',
   course: 'M103 · Medical Procedures',
@@ -2074,6 +2080,7 @@ window.DECKS = [
 
 {
   id: 'ekg-procedure',
+  group: 'EKG',
 
   added: '2026-07-29',
   course: 'M103 · Medical Procedures',

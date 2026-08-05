@@ -400,10 +400,18 @@ function screenHome(){
     d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
 
   /* Sections run alphabetically by SUBJECT, not by course code — "BIO101 ·
-     Anatomy & Physiology" files under A. */
+     Anatomy & Physiology" files under A — but courses that HAVE a study guide
+     come first as a tier.
+
+     That rule, not a hardcoded exception, is what puts Medical Procedures last
+     today: it is the only course with no study guide. Pinning it there by name
+     would go stale the moment it gets one, and would quietly stop making sense
+     to anyone reading this later. Alphabetical still decides everything within
+     a tier. */
   const subject = c => (c.split('·')[1] || c).trim();
+  const hasGuide = c => list.some(d => d.course === c && d.exam);
   const courses = [...new Set(list.map(d => d.course))]
-    .sort((a, b) => subject(a).localeCompare(subject(b)));
+    .sort((a, b) => (hasGuide(b) - hasGuide(a)) || subject(a).localeCompare(subject(b)));
   let html = `
     <header class="top">
       <div>
@@ -448,17 +456,41 @@ function screenHome(){
 
     html += `<div class="coursehead">${esc(c)}</div>`;
     if (lead.length) html += `<div class="decks">${lead.map(deckCard).join('')}</div>`;
-    if (rest.length){
-      /* <details> rather than a hand-rolled toggle: it opens on click or Enter,
-         is announced correctly by screen readers, and survives with no JS. */
-      const open = q || openState[c] ? ' open' : '';
-      html += `<details class="more"${open} data-course="${esc(c)}">
-        <summary><span class="chev" aria-hidden="true"></span>${
-          lead.length ? `${rest.length} more deck${rest.length > 1 ? 's' : ''}`
-                      : `${rest.length} deck${rest.length > 1 ? 's' : ''}`}</summary>
-        <div class="decks">${rest.map(deckCard).join('')}</div>
+
+    /* <details> rather than a hand-rolled toggle: it opens on click or Enter,
+       is announced correctly by screen readers, and survives with no JS.
+
+       A fold starts CLOSED only when something more important sits above it.
+       With study guides leading, the rest is secondary and folds away; with no
+       study guide in the course there is nothing to defer to, so its sections
+       open by default and the decks are simply visible. */
+    const fold = (key, title, decks, openByDefault) => {
+      const saved = openState[key];
+      const isOpen = q || (saved === undefined ? openByDefault : saved);
+      return `<details class="more"${isOpen ? ' open' : ''} data-key="${esc(key)}">
+        <summary><span class="chev" aria-hidden="true"></span>${esc(title)}</summary>
+        <div class="decks">${decks.map(deckCard).join('')}</div>
       </details>`;
+    };
+
+    if (!rest.length) return;
+    if (lead.length){
+      html += fold(c, `${rest.length} more deck${rest.length > 1 ? 's' : ''}`, rest, false);
+      return;
     }
+    /* No study guide here, so break the decks up by subject instead — a flat run
+       of seven is harder to scan than two named groups. Groups are ordered by
+       their oldest deck, which keeps the same chronological reading as the
+       decks inside them. */
+    const groups = [...new Set(rest.map(d => d.group || 'Decks'))]
+      .sort((a, b) => {
+        const first = g => rest.find(d => (d.group || 'Decks') === g).added || '';
+        return first(a).localeCompare(first(b));
+      });
+    groups.forEach(g => {
+      const inGroup = rest.filter(d => (d.group || 'Decks') === g);
+      html += fold(`${c}/${g}`, g, inGroup, true);
+    });
   });
 
   app.innerHTML = html;
@@ -468,7 +500,10 @@ function screenHome(){
   app.querySelectorAll('details.more').forEach(el => {
     el.addEventListener('toggle', () => {
       const s = load(), o = Object.assign({}, s.__open);
-      if (el.open) o[el.dataset.course] = 1; else delete o[el.dataset.course];
+      /* store the boolean rather than deleting on close, so "I shut this on
+         purpose" is distinguishable from "never touched it" and a default-open
+         section stays shut once it has been shut */
+      o[el.dataset.key] = el.open;
       s.__open = o; save(s);
     });
   });
