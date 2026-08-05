@@ -889,6 +889,187 @@ window.DECKS = [
   ]
 },
 
+/* The two instructor study guides are Q-and-A sheets: each line poses a prompt
+   and gives the answer. That maps straight onto Recall, so the prompt becomes
+   the definition and the answer becomes the term. Kept as their own decks per
+   chapter, because being asked the way the exam will ask is the point. */
+{
+  id: 'mt1-guide',
+  added: '2026-08-05',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 1 — Study Guide',
+  source: 'Assets/M159 Chapter 1 Study guide.docx',
+  cards: [
+    { term: 'disease', def: 'a condition in which one or more body parts are not functioning normally' },
+    { term: 'word root', def: 'the foundation of a medical term, carrying its primary meaning' },
+    { term: 'appendectomy', def: 'the surgical removal of the appendix' },
+    { term: '-pathy', def: 'the suffix meaning disease',
+      note: 'As in myopathy — disease of muscle tissue.' },
+    { term: 'symptom', def: 'a change in the body that the PATIENT notices and reports, such as pain' },
+    { term: 'arteriosclerosis', def: 'the abnormal hardening of the walls of an artery or arteries' },
+    { fact: true, term: 'The four types of word parts',
+      def: 'word roots, combining forms, suffixes and prefixes' },
+    { term: 'gastritis', def: 'an inflammation of the stomach lining' },
+    { term: 'myelopathy', def: 'any pathologic change or disease in the spinal cord' },
+    { term: 'myopathy', def: 'any pathologic change or disease of muscle tissue' },
+    { term: 'natal', def: 'pertaining to birth' },
+    { term: 'trauma', def: 'a wound or injury' },
+    { term: 'mycosis', def: 'any abnormal condition or disease caused by a fungus' },
+    { term: 'cyanosis', def: 'blue discoloration of the skin caused by a lack of adequate oxygen in the blood' },
+    { term: 'hypertension', def: 'higher-than-normal blood pressure' },
+    { term: 'hypotension', def: 'lower-than-normal blood pressure' },
+    { term: 'suppuration', def: 'the formation or discharge of pus' },
+    { term: 'angiography', def: 'the process of producing a radiographic study of blood vessels after contrast injection' },
+    { term: 'myorrhexis', def: 'the rupture of a muscle',
+      note: 'my/o means muscle, -rrhexis means rupture. Neither this term nor -rrhexis appears in your chapter notes — it comes from the study guide only.' },
+    { term: 'pathology', def: 'the study of all aspects of diseases' },
+    { term: 'abdominocentesis', def: 'the surgical puncture of the abdominal cavity to remove fluid' },
+    { term: 'gastralgia', def: 'pain in the stomach, also known as a stomachache' },
+    { term: 'pyrosis', def: 'discomfort caused by stomach acid regurgitating up into the esophagus',
+      note: 'Better known as heartburn, which is how the study guide asks for it.' },
+    { term: 'neonatology', def: 'the study of disorders of the newborn' },
+    { term: 'interstitial', def: 'between, but not within, the parts of a tissue' },
+    { term: 'melanosis', def: 'any condition of unusual deposits of black pigment',
+      note: 'melan/o means black — it is in your Chapter 1 word-root table — and -osis means abnormal condition.' },
+    { term: 'poliomyelitis', def: 'a viral infection of the gray nerve tissue of the spinal cord' },
+    { term: 'dys-', def: 'bad, painful, difficult, or abnormal' }
+  ],
+  questions: [
+    { q: 'Pain is classified as which of these?',
+      choices: ['A symptom', 'A sign', 'A syndrome', 'A diagnosis'], answer: 0,
+      why: 'A symptom is what the PATIENT feels and reports. A sign is what an examiner can observe or measure.' },
+
+    { q: 'Which term means the rupture of a muscle?',
+      choices: ['Myorrhexis', 'Myopathy', 'Myelopathy', 'Myalgia'], answer: 0,
+      why: '-rrhexis is rupture. -pathy is disease, and myel/o points at the spinal cord rather than muscle.' },
+
+    { q: 'Myelopathy and myopathy differ in which way?',
+      choices: [
+        'Myelopathy affects the spinal cord; myopathy affects muscle tissue',
+        'Myelopathy affects muscle; myopathy affects the spinal cord',
+        'Myelopathy is acute; myopathy is chronic',
+        'They mean the same thing'
+      ], answer: 0,
+      why: 'One letter block changes the organ: myel/o is spinal cord (or bone marrow), my/o is muscle.' },
+
+    { q: 'Which describes an abnormal condition caused by a fungus?',
+      choices: ['Mycosis', 'Melanosis', 'Cyanosis', 'Suppuration'], answer: 0 },
+
+    { q: 'A patient is described as cyanotic. What are you seeing?',
+      choices: [
+        'Blue discoloration of the skin from inadequate oxygen in the blood',
+        'Yellow discoloration of the skin from excess bilirubin',
+        'Unusual deposits of black pigment',
+        'Discharge of pus from a wound'
+      ], answer: 0 }
+  ]
+},
+
+{
+  id: 'mt2-guide',
+  added: '2026-08-05',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 2 — Study Guide',
+  source: 'Assets/M159 Chapter 2 Study guide.docx',
+  cards: [
+    { term: 'cell', def: 'the basic structural and functional unit of the body' },
+    { term: 'cytoplasm', def: 'the material within the cell membrane, not counting the nucleus' },
+    { term: 'adenoma', def: 'a benign tumor that arises in or resembles glandular tissue',
+      note: 'Your notes are more specific: it starts in the epithelial tissue of a gland or gland-like structure.' },
+    { term: 'Adenocarcinoma', def: 'a malignant tumor of glandular tissue' },
+    { term: 'Adenomalacia', def: 'the abnormal softening of a gland' },
+    { term: 'adenosclerosis', def: 'the abnormal hardening of a gland' },
+    { term: 'endocrine glands', def: 'the glands that produce hormones and have no ducts' },
+    { term: 'exocrine glands', def: 'the glands that secrete substances into ducts, such as sweat glands' },
+
+    { term: 'dysplasia', def: 'the abnormal development or growth of cells, tissues or organs — a change in the structure of cells and in their orientation to each other' },
+    { term: 'hypertrophy', def: 'a general increase in bulk due to increased cell size' },
+    { term: 'hyperplasia', def: 'enlargement due to an increased number of cells' },
+    { term: 'hypoplasia', def: 'incomplete development of an organ or tissue',
+      note: 'Usually due to a deficiency in the NUMBER of cells — the opposite of hyperplasia.' },
+
+    { term: 'epidemic', def: 'a sudden and widespread outbreak of a disease within a specific population group or area' },
+    { term: 'pandemic', def: 'a worldwide outbreak',
+      note: 'Your notes put it more broadly: an outbreak over a large geographic area, sometimes even worldwide.' },
+    { term: 'endemic', def: 'the ongoing presence of a disease' },
+    { term: 'communicable', def: 'describing a disease passed from one person to another by direct or indirect contact' },
+    { term: 'congenital', def: 'describing an abnormal condition that exists at the time of birth' },
+    { term: 'idiopathic disease', def: 'an illness without known cause' },
+    { term: 'nosocomial infection', def: 'a disease acquired in a hospital or clinical setting' },
+    { term: 'vector-borne transmission', def: 'transmission of disease by the bite of a carrier such as a mosquito or tick' },
+    { term: 'hemophilia', def: 'a group of hereditary bleeding disorders',
+      note: 'Specifically, a blood-clotting factor is missing.' },
+    { term: 'Phenylketonuria (PKU)', def: 'an inherited metabolic disorder',
+      note: 'Autosomal recessive: the enzyme phenylalanine hydroxylase is missing, so phenylalanine builds up and can damage the central nervous system. This is why every newborn is screened for it.' },
+
+    { term: 'abdominal cavity', def: 'the cavity containing the major organs of digestion' },
+    { term: 'pelvic cavity', def: 'the cavity formed by the hip bones',
+      note: 'It holds the organs of the reproductive and excretory systems.' },
+    { term: 'thoracic cavity', def: 'the cavity of the chest, also called the thorax',
+      note: 'It surrounds and protects the heart and lungs.' },
+    { term: 'ventral cavity', def: 'the cavity located along the front of the body' },
+    { term: 'mesentery', def: 'a fused double layer of the parietal peritoneum' },
+    { term: 'epigastric region', def: 'the region located above the stomach' },
+    { term: 'inguinal', def: 'relating to the groin and lower abdomen' },
+
+    { term: 'body planes', def: 'the imaginary flat surfaces that divide the anatomy into sections for description' },
+    { term: 'midsagittal plane', def: 'the plane running down the midline, dividing the body into equal left and right halves' },
+    { term: 'directional terms', def: 'the words that describe where structures sit in relation to one another' },
+    { term: 'anterior', def: 'situated toward the front of the body — the belly side' },
+    { term: 'posterior', def: 'situated toward the back of the body' },
+    { term: 'cephalad', def: 'toward the head' },
+    { term: 'caudal', def: 'toward the lower part of the body' },
+    { term: 'medial', def: 'toward the midline' },
+    { term: 'proximal', def: 'nearest the midline or the beginning of a body structure',
+      note: 'Your study guide shortens this to "nearest the midline". Strictly, proximal measures distance from the point of ATTACHMENT — the thigh is proximal to the knee because it is nearer the hip. Medial and lateral are the midline pair. Answer the way your course phrases it, but keep the two ideas apart.' },
+    { term: 'distal', def: 'farthest from the midline or the beginning of a body structure',
+      note: 'Same caution as proximal: strictly this is distance from the point of ATTACHMENT, not from the midline. The foot is distal to the knee. See the note on proximal.' }
+  ],
+  questions: [
+    { q: 'Hyperplasia and hypertrophy both enlarge a tissue. What is the difference?',
+      choices: [
+        'Hyperplasia is more cells; hypertrophy is bigger cells',
+        'Hyperplasia is bigger cells; hypertrophy is more cells',
+        'Hyperplasia is benign; hypertrophy is malignant',
+        'Hyperplasia affects glands only; hypertrophy affects muscle only'
+      ], answer: 0,
+      why: '-plasia is about formation and number, -trophy is about growth and bulk. Hypoplasia, by the same logic, is too few or underdeveloped.' },
+
+    { q: 'An outbreak spreading worldwide is called:',
+      choices: ['A pandemic', 'An epidemic', 'An endemic disease', 'A nosocomial infection'], answer: 0,
+      why: 'Epidemic is a sudden outbreak in one population or area; endemic is a disease that is simply always present there.' },
+
+    { q: 'A patient develops an infection during a hospital admission. This is:',
+      choices: [
+        'A nosocomial infection',
+        'An idiopathic disease',
+        'A congenital disorder',
+        'A communicable disease'
+      ], answer: 0 },
+
+    { q: 'Which pair of terms is measured from the MIDLINE?',
+      choices: [
+        'Medial and lateral',
+        'Proximal and distal',
+        'Anterior and posterior',
+        'Cephalad and caudal'
+      ], answer: 0,
+      why: 'Strictly, proximal and distal measure from the point of attachment — the hip for a leg. Your study guide phrases them with "midline" as well, so answer that way if the exam does, but medial and lateral are the true midline pair.' },
+
+    { q: 'Endocrine and exocrine glands differ how?',
+      choices: [
+        'Endocrine glands have no ducts and release hormones; exocrine glands secrete into ducts',
+        'Endocrine glands secrete into ducts; exocrine glands have no ducts',
+        'Endocrine glands are benign; exocrine glands are malignant',
+        'Only exocrine glands are found in the abdomen'
+      ], answer: 0,
+      why: 'Endo- is within: the secretion goes straight into the bloodstream. Exo- is outward, through a duct — sweat, saliva, tears.' },
+
+    { q: 'Which cavity contains the major organs of digestion?',
+      choices: ['The abdominal cavity', 'The thoracic cavity', 'The pelvic cavity', 'The spinal cavity'], answer: 0 }
+  ]
+},
+
 /* ─────────────────────────  BIO101 · ANATOMY & PHYSIOLOGY 1  ─────────────── */
 
 {
