@@ -607,6 +607,27 @@ function suite(s, label) {
      definitions to stay green is worse than no check. Detail that genuinely
      does not belong in the prompt goes in `note`, which shows after answering. */
 
+  /* This app is shared with classmates, so nothing on a card may address the
+     one person who built it. "Your notes say…", "worth checking your slides",
+     or a `source` naming a file path on somebody's disk all read as noise to
+     everyone else — and a source line is displayed on every deck screen.
+     Second person is fine in the ordinary instructional sense ("you judge a
+     segment by its shape"); what is banned is pointing at private material. */
+  const PRIVATE = /\byour (?:notes?|slides?|chapter|study guide|instructor|course materials)\b|\bin your \w+ notes\b|Notes\/TERM|Assets\//i;
+  const personal = [];
+  for (const d of DECKS) {
+    if (PRIVATE.test(d.source || '')) personal.push(`${d.id} source: "${d.source}"`);
+    for (const c of d.cards) {
+      if (PRIVATE.test(c.note || '')) personal.push(`${d.id} / "${c.term}" note`);
+      if (PRIVATE.test(c.def)) personal.push(`${d.id} / "${c.term}" definition`);
+    }
+    for (const q of d.questions || [])
+      if (PRIVATE.test(q.why || '') || PRIVATE.test(q.q || ''))
+        personal.push(`${d.id} question: "${String(q.q).slice(0, 40)}…"`);
+  }
+  check(`[${label}] nothing addresses one reader's private material`, !personal.length,
+        personal.join('\n      '));
+
   /* No deck may define the same term twice, and no two Recall cards may reduce
      to the same typed answer — "DNA" and "DNA", or two terms differing only in
      a parenthetical. Either way the second card is unanswerable: whatever you

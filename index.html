@@ -1188,7 +1188,7 @@ const RHYTHMS = [
     path: (() => { const w = [0, 78, 200, 296]; let d = chaos(7, 8, 7);
       w.forEach(x => { d += `M${x},${BASE} ` + pqrst(x, 72, { noP:true }); }); return d; })(),
     say:'Multiple signals fire chaotically from the atria outside the SA node, so no P wave can be identified — just small irregular complexes on a quivering baseline. The ventricles respond irregularly, which is why the pulse is uneven.',
-    note:'The 400–500 figure is the ATRIAL rate. The AV node blocks most of those impulses, so the pulse you feel is far slower.' },
+    note:'The 400–500 figure is the ATRIAL rate. The AV node blocks most of those impulses, so the pulse is far slower.' },
 
   { id:'pvc', name:'Premature ventricular contraction', rate:'an early wide beat', heart:'ectopic-vent',
     path: (() => { let d = `M0,${BASE} `;
