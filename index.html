@@ -45,6 +45,14 @@
   .deck{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:15px 16px;text-align:left;transition:.13s;display:block;width:100%}
   .deck:hover{border-color:var(--accent);transform:translateY(-2px)}
+  /* Decks built from a study guide — the material actually being tested — carry
+     a thin coloured edge so they stand out in the grid. Warn rather than accent,
+     because accent is already the hover colour and the two would cancel out.
+     Hover still brightens the same edge, so the signal survives the interaction
+     instead of being replaced by it. */
+  .deck.exam{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
+  .deck.exam:hover{border-color:var(--warn)}
+  .badge.exam{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));color:var(--warn)}
   .deck h3{margin:0 0 6px;font-size:15.5px;font-weight:600;line-height:1.35}
   .deck .meta{font-size:12.5px;color:var(--dim)}
   .badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
@@ -398,10 +406,11 @@ function screenHome(){
     list.filter(d => d.course === c).sort(byAdded).forEach(d => {
       const p = progress[d.id] || {};
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
-      html += `<button class="deck" onclick="go('deck','${d.id}')">
+      html += `<button class="deck ${d.exam ? 'exam' : ''}" onclick="go('deck','${d.id}')">
         <h3>${esc(d.title)}</h3>
         <div class="meta">${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         <div class="badges">
+          ${d.exam ? `<span class="badge exam">Study guide</span>` : ''}
           ${p.recallBest != null ? `<span class="badge ${p.recallBest>=80?'on':''}">Recall ${p.recallBest}%</span>` : ''}
           ${p.quizBest != null ? `<span class="badge ${p.quizBest>=80?'on':''}">Quiz best ${p.quizBest}%</span>` : ''}
           ${p.matchBest != null ? `<span class="badge on">Match ${p.matchBest}s</span>` : ''}

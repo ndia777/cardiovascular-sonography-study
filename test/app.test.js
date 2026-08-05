@@ -135,6 +135,32 @@ function suite(s, label) {
     check(`[${label}] decks render oldest-added first within a course`, !broke, broke);
   }
 
+  /* Study-guide decks are marked so they stand out — that is the material being
+     tested. Read the rendered markup: a flag in the data that never reaches a
+     class attribute would look right in the deck file and show nothing. The
+     badge matters as much as the border, because a 1px colour difference is
+     invisible to a colour-blind reader and this app is shared. */
+  go('home');
+  {
+    const html = s.__app.innerHTML;
+    const marked = DECKS.filter(d => d.exam);
+    check(`[${label}] some decks are flagged as study-guide material`, marked.length > 0);
+    const cards = [...html.matchAll(/<button class="deck ([^"]*)"[\s\S]*?<h3>([^<]+)<\/h3>/g)]
+      .map(m => ({ cls: m[1], title: m[2].replace(/&amp;/g, '&') }));
+    let wrong = '';
+    for (const c of cards) {
+      const deck = DECKS.find(d => d.title === c.title);
+      if (!deck) continue;
+      const styled = /\bexam\b/.test(c.cls);
+      if (!!deck.exam !== styled && !wrong)
+        wrong = `"${c.title}" ${deck.exam ? 'is flagged but renders unstyled' : 'renders styled but is not flagged'}`;
+    }
+    check(`[${label}] study-guide decks render with the exam border`, !wrong, wrong);
+    check(`[${label}] the border is paired with a readable label`,
+          (html.match(/class="badge exam">Study guide</g) || []).length === marked.length,
+          'colour alone would not reach a colour-blind reader');
+  }
+
   /* The review sheet lists terms alphabetically, ignoring leading punctuation.
      Read the order out of the rendered table, not out of a re-sorted array. */
   for (const d of DECKS.filter(x => x.cards.length)) {

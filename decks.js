@@ -895,6 +895,7 @@ window.DECKS = [
    chapter, because being asked the way the exam will ask is the point. */
 {
   id: 'mt1-guide',
+  exam: true,
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Study Guide',
@@ -967,6 +968,7 @@ window.DECKS = [
 
 {
   id: 'mt2-guide',
+  exam: true,
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Study Guide',
@@ -1074,6 +1076,7 @@ window.DECKS = [
 
 {
   id: "bio-ch3",
+  exam: true,
 
   added: "2026-07-30",
   course: "BIO101 · Anatomy & Physiology 1 Lecture",
@@ -1179,6 +1182,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch4',
+  exam: true,
 
   added: '2026-07-30',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
