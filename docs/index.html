@@ -117,6 +117,15 @@
     padding:13px 15px;text-align:left;display:flex;gap:12px;align-items:flex-start;
     line-height:1.45;font-size:15px;transition:.1s}
   .choice:hover:not(:disabled){border-color:var(--accent)}
+  /* two big targets rather than a list of four — the whole point of the mode is
+     that the decision is binary and quick */
+  .tfrow{gap:12px;margin-top:18px}
+  .tf{flex:1;padding:16px;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--card);font-size:16px;font-weight:600;transition:.13s}
+  .tf:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .tf.correct{border-color:var(--good);color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--card))}
+  .tf.wrong{border-color:var(--bad);color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card))}
+  .tf:disabled{cursor:default}
   .choice .k{flex:0 0 22px;height:22px;border-radius:5px;background:var(--card2);
     color:var(--dim);font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
   .choice.correct{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--card))}
@@ -3180,6 +3189,7 @@ function screenHome(){
           ${d.exam ? `<span class="badge exam">Study guide</span>` : ''}
           ${p.recallBest != null ? `<span class="badge ${p.recallBest>=80?'on':''}">Recall ${p.recallBest}%</span>` : ''}
           ${p.quizBest != null ? `<span class="badge ${p.quizBest>=80?'on':''}">Quiz best ${p.quizBest}%</span>` : ''}
+          ${p.tfBest != null ? `<span class="badge ${p.tfBest>=80?'on':''}">T/F ${p.tfBest}%</span>` : ''}
           ${p.matchBest != null ? `<span class="badge on">Match ${p.matchBest}s</span>` : ''}
           ${p.learned ? `<span class="badge on">${p.learned} learned</span>` : ''}
           ${!p.last ? `<span class="badge">Not started</span>` : ''}
@@ -3258,6 +3268,10 @@ function screenDeck(){
     modes.push(['learn','Flashcards','Flip through the terms and grade yourself. Missed cards come back around.']);
   if (d.cards.length || (d.questions || []).length)
     modes.push(['quiz','Multiple Choice','Written concept questions plus auto-generated term questions, with explanations.']);
+  /* needs four cards to build a statement — below that every wrong pairing
+     would come from the same tiny handful and the answer becomes guessable */
+  if (d.cards.length >= 4)
+    modes.push(['tf','True or False','A term paired with a definition — decide whether it belongs to it.']);
   if (d.cards.length)
     modes.push(['match','Matching','Pair each term with its definition against the clock, six at a time.']);
   if (d.chest)
@@ -3627,6 +3641,79 @@ function autoQuestions(d){
   });
   return out;
 }
+/* ═══════════════ TRUE / FALSE ═══════════════ */
+/* A statement pairs a term with a definition and asks whether they belong
+   together. The false half is where the difficulty lives: pairing a term with a
+   definition drawn at random makes every false statement obvious, so the wrong
+   definition is chosen from the same subject area, exactly as quiz distractors
+   are. `conflicts` still guards it — a definition that could honestly describe
+   the term would make a "false" statement actually true. */
+function tfStatements(d){
+  const pool = d.cards;
+  if (pool.length < 4) return [];
+  return pool.map(card => {
+    const others = pool.filter(c => c !== card && !conflicts(c.def, card.def));
+    if (!others.length) return null;
+    /* half true, half false, decided per card */
+    if (Math.random() < 0.5)
+      return { card, def: card.def, answer: true };
+    const wrong = distractors(others, 1, c => c.def, [card.def], card.def);
+    return wrong ? { card, def: wrong[0].def, answer: false, actually: wrong[0].term } : null;
+  }).filter(Boolean);
+}
+function runTF(d){
+  if (!session){
+    const all = tfStatements(d);
+    session = { qs: sample(all, Math.min(20, all.length)), i: 0, score: 0, picked: null, missed: [] };
+  }
+  const s = session;
+
+  if (!s.qs.length) return screenDeck();
+  if (s.i >= s.qs.length){
+    const pct = Math.round(s.score / s.qs.length * 100);
+    const prev = load()[d.id] || {};
+    record(d.id, { tfBest: Math.max(prev.tfBest || 0, pct) });
+    return results(d, pct + '%', `${s.score} of ${s.qs.length} correct`, s.missed, 'tf');
+  }
+
+  const q = s.qs[s.i], done = s.picked !== null;
+  const right = done && s.picked === q.answer;
+  app.innerHTML = `
+    ${sessionBar(d, s.i, s.qs.length, `True or False · ${s.score} correct`)}
+    <div class="q" style="font-weight:400"><b>${esc(q.card.term)}</b> means:<br>${defHtml(q.def)}</div>
+    <div class="row tfrow">
+      <button class="tf ${done && q.answer === true ? 'correct' : ''} ${done && s.picked === true && !right ? 'wrong' : ''}"
+        ${done ? 'disabled' : ''} onclick="answerTF(true)">True</button>
+      <button class="tf ${done && q.answer === false ? 'correct' : ''} ${done && s.picked === false && !right ? 'wrong' : ''}"
+        ${done ? 'disabled' : ''} onclick="answerTF(false)">False</button>
+    </div>
+    ${done ? `<div class="why" style="border-left-color:${right ? 'var(--good)' : 'var(--bad)'}">
+        <b style="color:${right ? 'var(--good)' : 'var(--bad)'}">${right ? '✓ Correct' : '✗ Not quite'}</b><br>
+        ${q.answer
+          ? `That is the definition of <b>${esc(q.card.term)}</b>.`
+          : `That is the definition of <b>${esc(q.actually)}</b>. <b>${esc(q.card.term)}</b> means ${esc(q.card.def)}`}
+        ${q.card.note ? `<span class="note">${esc(q.card.note)}</span>` : ''}
+      </div>
+      <button class="next" onclick="nextTF()">${s.i + 1 < s.qs.length ? 'Next statement →' : 'See results →'}</button>` : ''}`;
+
+  keyHandler = e => {
+    if (!done && (e.key === 't' || e.key === 'T' || e.key === '1')) answerTF(true);
+    else if (!done && (e.key === 'f' || e.key === 'F' || e.key === '2')) answerTF(false);
+    else if (done && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextTF(); }
+  };
+}
+function answerTF(v){
+  const s = session;
+  if (s.picked !== null) return;
+  s.picked = v;
+  const q = s.qs[s.i];
+  if (v === q.answer) s.score++;
+  else s.missed.push({ q: `<b>${esc(q.card.term)}</b> means: ${esc(q.def)}`,
+                       a: q.answer ? 'True' : `False — that defines ${q.actually}` });
+  render();
+}
+function nextTF(){ session.i++; session.picked = null; render(); }
+
 function runQuiz(d){
   if (!session){
     const written = (d.questions || []).map(q => Object.assign({}, q, { written: true }));
@@ -4414,7 +4501,7 @@ function render(){
   const d = deckById(view.deck);
   if (!d) return go('home');
   if (view.screen === 'deck') return screenDeck();
-  ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch,
+  ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
      chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse }[view.mode] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {

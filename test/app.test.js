@@ -78,6 +78,7 @@ const modesFor = d => {
   if (steps) m.push('order');
   if (recallableCards(d).length) m.push('recall');
   if (cards) m.push('learn', 'match');
+  if (cards >= 4) m.push('tf');
   if (cards || written) m.push('quiz');
   if (d.chest) m.push('chest');
   if (d.beat) m.push('beat');
@@ -428,6 +429,55 @@ function suite(s, label) {
           chosenN > 100 && chosen > baseline * 1.5,
           `chosen ${chosen.toFixed(3)} vs deck average ${baseline.toFixed(3)} over ${chosenN} choices`);
     check(`[${label}] no distractor is close enough to be arguable`, !tooClose, tooClose);
+  }
+
+  /* True/False. Two things can quietly ruin this mode. A "false" statement whose
+     definition would honestly describe the term is not false at all, so the
+     answer key is wrong. And a run that comes out all-true or all-false is
+     guessable without reading anything. Generate many rounds and check both. */
+  {
+    const tfStatements = vm.runInContext('typeof tfStatements === "function" ? tfStatements : null', s);
+    const conflicts = vm.runInContext('conflicts', s);
+    check(`[${label}] the true/false generator exists`, typeof tfStatements === 'function');
+    if (typeof tfStatements === 'function') {
+      let bogus = '', trues = 0, total = 0, empty = '';
+      const sim = s.similarity, related = [];
+      for (const d of DECKS.filter(x => x.cards.length >= 4)) {
+        for (let r = 0; r < 25; r++) {
+          const st = tfStatements(d);
+          if (!st.length && !empty) empty = `${d.id} generated nothing`;
+          for (const q of st) {
+            total++;
+            if (q.answer) { trues++; if (q.def !== q.card.def && !bogus) bogus = `${d.id}/${q.card.term}: "true" statement is not the card's own definition`; }
+            else {
+              /* the wrong definition must not also fit the term */
+              if (conflicts(q.def, q.card.def) && !bogus)
+                bogus = `${d.id}/${q.card.term}: "false" statement uses a definition that also fits`;
+              if (q.def === q.card.def && !bogus)
+                bogus = `${d.id}/${q.card.term}: "false" statement uses the card's own definition`;
+              if (!q.actually && !bogus) bogus = `${d.id}/${q.card.term}: false statement has no attributed source`;
+              related.push(sim(q.card.def, q.def));
+            }
+          }
+        }
+      }
+      check(`[${label}] every true/false deck produces statements`, !empty, empty);
+      check(`[${label}] ${total} true/false statements are correctly keyed`, !bogus, bogus);
+      /* roughly balanced — a 50/50 coin over thousands of draws should land far
+         inside these bounds, and a stuck generator lands outside immediately */
+      const share = trues / total;
+      check(`[${label}] true and false are roughly balanced`, share > 0.4 && share < 0.6,
+            `${(share * 100).toFixed(1)}% of statements are true`);
+      /* and the wrong definitions come from the same subject area, as with
+         quiz distractors — otherwise every false one is obvious */
+      const avg = related.reduce((a, b) => a + b, 0) / related.length;
+      let poolAvg = 0, n = 0;
+      for (const d of DECKS.filter(x => x.cards.length >= 6))
+        for (const a of d.cards) for (const b of d.cards) { if (a !== b) { poolAvg += sim(a.def, b.def); n++; } }
+      check(`[${label}] false statements are drawn from the right subject area`,
+            avg > (poolAvg / n) * 1.5,
+            `chosen ${avg.toFixed(3)} vs deck average ${(poolAvg / n).toFixed(3)}`);
+    }
   }
 
   check(`[${label}] ${generated} questions well formed`, badShape === 0, `${badShape} malformed`);
