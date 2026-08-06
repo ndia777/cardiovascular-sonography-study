@@ -1398,11 +1398,15 @@ window.DECKS = [
    copyrightable — that squamous cell carcinoma arises in the epidermis is simply
    true), while every definition below is written from scratch. Same practice as
    the other slide-derived decks. */
+/* Chapter 12 runs to roughly 200 terms, which is more than one Recall sitting
+   should ever be. Split along the chapter's own divisions — structure, then the
+   three pathology blocks it separates, then procedures — so each deck is a
+   session rather than a marathon. Every title still names Chapter 12. */
 {
-  id: 'mt12-skin',
+  id: 'mt12-structure',
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
-  title: 'Ch. 12 — Skin & the Integumentary System',
+  title: 'Ch. 12 — Skin: Structure & Function',
   source: 'Chapter 12 — lecture slides',
   cards: [
     /* ---- structure ---- */
@@ -1450,6 +1454,51 @@ window.DECKS = [
     { term: 'Plastic surgeon', def: 'the physician who surgically restores and reconstructs body structures' },
     { term: 'Cosmetic surgery', def: 'operations performed for appearance rather than medical need, such as liposuction or a facelift' },
 
+  ],
+  questions: [
+    { q: 'Which layer of the skin can you actually see and touch?',
+      choices: ['The epidermis', 'The dermis', 'The subcutaneous layer', 'The basal layer'], answer: 0,
+      why: 'Epi- means upon. The dermis lies beneath it, and the basal layer is the deepest stratum of the epidermis itself.' },
+
+    { q: 'Melanin is produced by which cells?',
+      choices: ['Melanocytes', 'Lipocytes', 'Mast cells', 'Squamous epithelial cells'], answer: 0,
+      why: 'Lipocytes store fat; mast cells release heparin and histamine.' },
+
+    { q: 'Sebum is produced by which glands, and what does it do?',
+      choices: [
+        'Sebaceous glands — it lubricates the surface and discourages bacteria',
+        'Sudoriferous glands — it cools the body',
+        'Apocrine glands — it regulates water content',
+        'Mammary glands — it lubricates the surface'
+      ], answer: 0,
+      why: 'Sudoriferous, apocrine and eccrine glands all deal with perspiration. Sebum is oil, and its slight acidity is what discourages bacterial growth.' },
+
+    { q: 'Apocrine and eccrine glands differ how?',
+      choices: [
+        'Apocrine glands open into hair follicles; eccrine glands open onto the surface',
+        'Apocrine glands open onto the surface; eccrine glands open into hair follicles',
+        'Apocrine glands make oil; eccrine glands make perspiration',
+        'Apocrine glands are found only on the palms and soles'
+      ], answer: 0 },
+
+    { q: 'What is the lunula?',
+      choices: [
+        'The pale half-moon at the base of a nail, where new keratin cells form',
+        'The skin lying directly under the nail plate',
+        'The band of epidermis attached to the nail surface',
+        'The part of the nail not attached to the bed underneath'
+      ], answer: 0,
+      why: 'Those describe the nail bed, the cuticle and the free edge.' }
+  ]
+},
+
+{
+  id: 'mt12-glands-hair-nails',
+  added: '2026-08-06',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 12 — Skin: Disorders of the Glands, Hair & Nails',
+  source: 'Chapter 12 — lecture slides',
+  cards: [
     /* ---- sebaceous and sweat pathology ---- */
     { term: 'Acne vulgaris', def: 'pustular eruptions triggered by hormones at puberty, driven by overproduction of oil around the hair shaft' },
     { term: 'Comedo', def: 'a non-infected blocked follicle — a whitehead when closed, a blackhead when open' },
@@ -1482,6 +1531,52 @@ window.DECKS = [
     { term: 'Onycholysis', def: 'a nail lifting away from the bed it normally sits on' },
     { term: 'Paronychia', def: 'an infection of the soft tissue bordering a nail, either sudden or long-standing' },
 
+  ],
+  questions: [
+    { q: 'Which term means an inability to perspire in response to heat?',
+      choices: ['Anhidrosis', 'Hyperhidrosis', 'Diaphoresis', 'Hidrosis'], answer: 0,
+      why: 'An- is without. Hyper- is excessive, diaphoresis is profuse sweating, and hidrosis is the normal process.' },
+
+    { q: 'Onychomycosis affects which structure, and what causes it?',
+      choices: [
+        'The nail, caused by a fungus',
+        'The nail, caused by bacteria',
+        'The hair follicle, caused by a fungus',
+        'The sebaceous gland, caused by a fungus'
+      ], answer: 0,
+      why: 'Onych/o is nail and myc/o is fungus. Follicle inflammation is folliculitis.' },
+
+    { q: 'Which describes alopecia universalis?',
+      choices: [
+        'Complete loss of hair from every part of the body',
+        'Complete loss of all scalp hair',
+        'Patchy loss caused by an autoimmune attack on the follicles',
+        'A receding hairline in men and thinning in women'
+      ], answer: 0,
+      why: 'Those are alopecia totalis, alopecia areata and androgenic alopecia.' },
+
+    { q: 'A patient has an ingrown toenail. The term is:',
+      choices: ['Onychocryptosis', 'Onycholysis', 'Onychia', 'Koilonychia'], answer: 0,
+      why: 'Crypt- is hidden. Onycholysis is a nail lifting away, onychia is inflammation of the bed, koilonychia is a spooned nail.' },
+
+    { q: 'What distinguishes a comedo from a pustule?',
+      choices: [
+        'A comedo is a blocked follicle with no infection; a pustule contains pus',
+        'A comedo contains pus; a pustule is a blocked follicle',
+        'A comedo appears only on the face',
+        'They are two names for the same lesion'
+      ], answer: 0,
+      why: 'A whitehead is a closed comedo, a blackhead an open one. Neither is infected — that is what separates them from a pustule.' }
+  ]
+},
+
+{
+  id: 'mt12-lesions',
+  added: '2026-08-06',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 12 — Skin: Lesions, Wounds & Skin Marks',
+  source: 'Chapter 12 — lecture slides',
+  cards: [
     /* ---- pigmentation ---- */
     { term: 'Albinism', def: 'a genetic condition producing a deficiency or complete absence of pigment' },
     { term: 'Vitiligo', def: 'patchy loss of colour caused by destruction of the pigment-producing cells' },
@@ -1534,6 +1629,52 @@ window.DECKS = [
     { term: 'Capillary hemangioma', def: 'a raised, spongy red birthmark of clustered vessels, commonly called a strawberry mark' },
     { term: 'Port-wine stain', def: 'a flat vascular birthmark made of dilated capillaries' },
 
+  ],
+  questions: [
+    { q: 'Petechiae, purpura and ecchymosis are all bleeding into the skin. Which is largest?',
+      choices: ['Ecchymosis', 'Purpura', 'Petechiae', 'They are all the same size'], answer: 0,
+      why: 'Smallest to largest: petechiae are pinpoint, purpura sit in between, ecchymosis is the large irregular bruise.' },
+
+    { q: 'A vesicle and a bulla differ in what way?',
+      choices: [
+        'Size — a vesicle is under 0.5 cm, a bulla is larger',
+        'Contents — a vesicle holds pus, a bulla holds water',
+        'Depth — a vesicle is superficial, a bulla reaches the dermis',
+        'Cause — a vesicle is viral, a bulla is bacterial'
+      ], answer: 0,
+      why: 'Both are blisters of watery fluid. Only the size separates them. A pus-filled lesion is a pustule.' },
+
+    { q: 'Which lesion is flat rather than raised?',
+      choices: ['A macule', 'A papule', 'A nodule', 'A wheal'], answer: 0,
+      why: 'A freckle is the standard example of a macule. Papules, nodules and wheals are all raised.' },
+
+    { q: 'Vitiligo results from:',
+      choices: [
+        'Destruction of the pigment-producing cells, leaving pale patches',
+        'A genetic absence of pigment throughout the body',
+        'Darkening of the face during pregnancy',
+        'Flat brown spots on sun-exposed skin'
+      ], answer: 0,
+      why: 'Those describe albinism, chloasma and lentigines.' },
+
+    { q: 'A pressure ulcer is caused by:',
+      choices: [
+        'Prolonged pressure on one area, breaking the skin open',
+        'A scrape removing the superficial layers',
+        'A crack-like break in the surface',
+        'An accidental puncture from a used needle'
+      ], answer: 0,
+      why: 'Also called a decubitus ulcer or bedsore. The others are an abrasion, a fissure and a needlestick injury.' }
+  ]
+},
+
+{
+  id: 'mt12-conditions',
+  added: '2026-08-06',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 12 — Skin: Conditions, Infections & Cancer',
+  source: 'Chapter 12 — lecture slides',
+  cards: [
     /* ---- dermatitis and erythema ---- */
     { term: 'Contact dermatitis', def: 'a localized rash from repeated exposure to an irritant' },
     { term: 'Intertrigo', def: 'inflammation caused by two surfaces rubbing together' },
@@ -1606,6 +1747,66 @@ window.DECKS = [
     { fact: true, term: 'What determines the severity of a burn',
       def: 'two things — how much of the body is involved, with anything past 15% counted serious, and how deep the injury reaches through the layers' },
 
+  ],
+  questions: [
+    { q: 'A patient has a fungal infection between the toes. The term is:',
+      choices: ['Tinea pedis', 'Tinea cruris', 'Tinea capitis', 'Tinea corporis'], answer: 0,
+      why: 'Ped- is foot. Cruris is the groin, capitis the scalp, corporis the body.' },
+
+    { q: 'Which is the most serious form of skin cancer?',
+      choices: [
+        'Malignant melanoma, arising in the pigment-producing cells',
+        'Basal cell carcinoma, arising in the deepest epidermal layer',
+        'Squamous cell carcinoma, arising in the upper epidermis',
+        'Actinic keratosis, arising on sun-damaged skin'
+      ], answer: 0,
+      why: 'Actinic keratosis is precancerous rather than cancer. Basal cell carcinoma is the most common but rarely spreads.' },
+
+    { q: 'Which describes a keloid?',
+      choices: [
+        'A scar raised or thickened well beyond the original wound',
+        'A normal, flat scar',
+        'The new tissue that forms while a wound heals',
+        'A thickened patch caused by repeated friction'
+      ], answer: 0,
+      why: 'A normal scar is a cicatrix, healing tissue is granulation tissue, and a friction thickening is a callus.' },
+
+    { q: 'What does the D stand for in the ABCDE signs of melanoma?',
+      choices: [
+        'Diameter larger than a pencil eraser',
+        'Depth of invasion into the dermis',
+        'Discolouration around the border',
+        'Duration of more than six months'
+      ], answer: 0,
+      why: 'Asymmetry, Border irregularity, Colour variation, Diameter, Evolving.' },
+
+    { q: 'A carbuncle is best described as:',
+      choices: [
+        'A cluster of connected furuncles',
+        'A single large boil',
+        'A rapidly spreading infection of the deeper layers',
+        'A highly contagious infection producing honey-coloured crusts'
+      ], answer: 0,
+      why: 'Those are a furuncle, cellulitis and impetigo.' },
+
+    { q: 'Psoriasis is recognised by:',
+      choices: [
+        'Red papules covered with silvery scales',
+        'Tiny red pimples and enlarged vessels across the face',
+        'Thickened, hardened connective tissue',
+        'Dry, thickened, scaly skin over the whole body'
+      ], answer: 0,
+      why: 'Those describe rosacea, scleroderma and ichthyosis.' }
+  ]
+},
+
+{
+  id: 'mt12-procedures',
+  added: '2026-08-06',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 12 — Skin: Procedures & Abbreviations',
+  source: 'Chapter 12 — lecture slides',
+  cards: [
     /* ---- diagnostic procedures ---- */
     { term: 'Biopsy', def: 'taking a sample of living tissue so it can be examined and a diagnosis settled' },
     { term: 'Incisional biopsy', def: 'removal of only a portion of a tumour or lesion' },
@@ -1654,71 +1855,6 @@ window.DECKS = [
     { term: 'NF', def: 'necrotizing fasciitis' }
   ],
   questions: [
-    { q: 'Which layer of the skin can you actually see and touch?',
-      choices: ['The epidermis', 'The dermis', 'The subcutaneous layer', 'The basal layer'], answer: 0,
-      why: 'Epi- means upon. The dermis lies beneath it, and the basal layer is the deepest stratum of the epidermis itself.' },
-
-    { q: 'Melanin is produced by which cells?',
-      choices: ['Melanocytes', 'Lipocytes', 'Mast cells', 'Squamous epithelial cells'], answer: 0,
-      why: 'Lipocytes store fat; mast cells release heparin and histamine.' },
-
-    { q: 'A patient has a fungal infection between the toes. The term is:',
-      choices: ['Tinea pedis', 'Tinea cruris', 'Tinea capitis', 'Tinea corporis'], answer: 0,
-      why: 'Ped- is foot. Cruris is the groin, capitis the scalp, corporis the body.' },
-
-    { q: 'Which is the most serious form of skin cancer?',
-      choices: [
-        'Malignant melanoma, arising in the pigment-producing cells',
-        'Basal cell carcinoma, arising in the deepest epidermal layer',
-        'Squamous cell carcinoma, arising in the upper epidermis',
-        'Actinic keratosis, arising on sun-damaged skin'
-      ], answer: 0,
-      why: 'Actinic keratosis is precancerous rather than cancer. Basal cell carcinoma is the most common but rarely spreads.' },
-
-    { q: 'Petechiae, purpura and ecchymosis are all bleeding into the skin. Which is largest?',
-      choices: ['Ecchymosis', 'Purpura', 'Petechiae', 'They are all the same size'], answer: 0,
-      why: 'Smallest to largest: petechiae are pinpoint, purpura sit in between, ecchymosis is the large irregular bruise.' },
-
-    { q: 'A vesicle and a bulla differ in what way?',
-      choices: [
-        'Size — a vesicle is under 0.5 cm, a bulla is larger',
-        'Contents — a vesicle holds pus, a bulla holds water',
-        'Depth — a vesicle is superficial, a bulla reaches the dermis',
-        'Cause — a vesicle is viral, a bulla is bacterial'
-      ], answer: 0,
-      why: 'Both are blisters of watery fluid. Only the size separates them. A pus-filled lesion is a pustule.' },
-
-    { q: 'Which term means an inability to perspire in response to heat?',
-      choices: ['Anhidrosis', 'Hyperhidrosis', 'Diaphoresis', 'Hidrosis'], answer: 0,
-      why: 'An- is without. Hyper- is excessive, diaphoresis is profuse sweating, and hidrosis is the normal process.' },
-
-    { q: 'Onychomycosis affects which structure, and what causes it?',
-      choices: [
-        'The nail, caused by a fungus',
-        'The nail, caused by bacteria',
-        'The hair follicle, caused by a fungus',
-        'The sebaceous gland, caused by a fungus'
-      ], answer: 0,
-      why: 'Onych/o is nail and myc/o is fungus. Follicle inflammation is folliculitis.' },
-
-    { q: 'Which describes a keloid?',
-      choices: [
-        'A scar raised or thickened well beyond the original wound',
-        'A normal, flat scar',
-        'The new tissue that forms while a wound heals',
-        'A thickened patch caused by repeated friction'
-      ], answer: 0,
-      why: 'A normal scar is a cicatrix, healing tissue is granulation tissue, and a friction thickening is a callus.' },
-
-    { q: 'What does the D stand for in the ABCDE signs of melanoma?',
-      choices: [
-        'Diameter larger than a pencil eraser',
-        'Depth of invasion into the dermis',
-        'Discolouration around the border',
-        'Duration of more than six months'
-      ], answer: 0,
-      why: 'Asymmetry, Border irregularity, Colour variation, Diameter, Evolving.' },
-
     { q: 'Mohs surgery is distinctive because:',
       choices: [
         'Tissue is removed and examined one layer at a time until no malignant cells remain',
@@ -1728,14 +1864,43 @@ window.DECKS = [
       ], answer: 0,
       why: 'Those others describe cryosurgery, electrodesiccation and chemabrasion.' },
 
-    { q: 'Sebum is produced by which glands, and what does it do?',
+    { q: 'An incisional and an excisional biopsy differ how?',
       choices: [
-        'Sebaceous glands — it lubricates the surface and discourages bacteria',
-        'Sudoriferous glands — it cools the body',
-        'Apocrine glands — it regulates water content',
-        'Mammary glands — it lubricates the surface'
+        'Incisional takes part of the lesion; excisional takes all of it plus surrounding tissue',
+        'Incisional takes all of it; excisional takes only part',
+        'Incisional uses a hollow needle; excisional uses a scalpel',
+        'Incisional is diagnostic; excisional is cosmetic'
       ], answer: 0,
-      why: 'Sudoriferous, apocrine and eccrine glands all deal with perspiration. Sebum is oil, and its slight acidity is what discourages bacterial growth.' }
+      why: 'A needle biopsy is the third kind — a core of tissue drawn through a hollow needle.' },
+
+    { q: 'Which destroys tissue by freezing?',
+      choices: ['Cryosurgery', 'Cauterization', 'Electrodesiccation', 'Curettage'], answer: 0,
+      why: 'Cauterization burns, electrodesiccation uses an electric spark, and curettage scrapes.' },
+
+    { q: 'What does SPF measure?',
+      choices: [
+        'How much protection a sunscreen provides',
+        'How long a sunscreen stays on in water',
+        'The percentage of skin surface a burn covers',
+        'The depth of a burn through the skin layers'
+      ], answer: 0 },
+
+    { q: 'Isotretinoin and tretinoin are both:',
+      choices: [
+        'Retinoids, derived from vitamin A',
+        'Topical steroids, derived from corticosteroid hormones',
+        'Topical chemotherapy creams',
+        'Photosensitizing drugs used in blue-light therapy'
+      ], answer: 0,
+      why: 'Isotretinoin treats severe acne; tretinoin treats sun damage, acne and wrinkles. Fluorouracil is the chemotherapy cream.' },
+
+    { q: 'BCC, SCC and MM stand for which three, in that order?',
+      choices: [
+        'Basal cell carcinoma, squamous cell carcinoma, malignant melanoma',
+        'Basal cell carcinoma, sebaceous cell carcinoma, malignant melanoma',
+        'Benign cell carcinoma, squamous cell carcinoma, malignant mole',
+        'Basal cell carcinoma, squamous cell carcinoma, molluscum'
+      ], answer: 0 }
   ]
 },
 
