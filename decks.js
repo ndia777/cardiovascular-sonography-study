@@ -1072,6 +1072,353 @@ window.DECKS = [
   ]
 },
 
+/* Built from the Chapter 12 lecture slides, which carry an all-rights-reserved
+   notice and an explicit bar on posting to a public website. This app is public,
+   so nothing here reproduces the slides: the FACTS are taken (a fact is not
+   copyrightable — that squamous cell carcinoma arises in the epidermis is simply
+   true), while every definition below is written from scratch. Same practice as
+   the other slide-derived decks. */
+{
+  id: 'mt12-skin',
+  added: '2026-08-06',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 12 — Skin & the Integumentary System',
+  source: 'Chapter 12 — lecture slides',
+  cards: [
+    /* ---- structure ---- */
+    { term: 'Integumentary system', def: 'the organ system made up of the skin together with the hair, nails and glands attached to it' },
+    { term: 'Epidermis', def: 'the outermost layer of skin, the one you can see and touch' },
+    { term: 'Dermis', def: 'the layer beneath the outer surface, carrying vessels, nerves and connective tissue',
+      note: 'Also called the corium.' },
+    { term: 'Subcutaneous layer', def: 'the fatty layer lying under the dermis' },
+    { term: 'Basal layer', def: 'the deepest stratum of the epidermis, where new cells are generated' },
+    { term: 'Squamous epithelial tissue', def: 'the flat, scale-like tissue forming the upper part of the epidermis' },
+    { term: 'Keratin', def: 'the tough, water-repellent protein that hardens skin, hair and nails' },
+    { term: 'Melanocytes', def: 'the cells that manufacture and hold the pigment giving skin its colour' },
+    { term: 'Melanin', def: 'the pigment that determines how dark or light skin and hair appear' },
+    { term: 'Collagen', def: 'the fibrous protein that makes the dermis both tough and flexible' },
+    { term: 'Mast cells', def: 'dermal cells that release heparin and histamine' },
+    { term: 'Heparin', def: 'an anticoagulant released in response to injury' },
+    { term: 'Histamine', def: 'the substance released in response to allergens that drives the allergic reaction' },
+    { term: 'Adipose tissue', def: 'body fat' },
+    { term: 'Lipocytes', def: 'the cells that manufacture and store fat' },
+    { term: 'Cellulite', def: 'dimpled fat, typically over the buttocks and thighs' },
+    { term: 'Sensory nerve endings', def: 'the receptors in the dermis that pick up touch, pressure and temperature' },
+
+    /* ---- glands, hair, nails ---- */
+    { term: 'Sebaceous glands', def: 'the glands, sitting beside hair follicles, that release an oily lubricant onto the surface' },
+    { term: 'Sebum', def: 'the oily secretion that lubricates the surface and, being slightly acidic, discourages bacteria' },
+    { term: 'Sudoriferous glands', def: 'the tiny coiled glands that produce perspiration' },
+    { term: 'Apocrine glands', def: 'the perspiration glands that open into hair follicles' },
+    { term: 'Eccrine glands', def: 'the perspiration glands that open directly onto the surface' },
+    { term: 'Pores', def: 'the openings on the surface through which perspiration escapes' },
+    { term: 'Perspiration', def: 'the fluid secreted to cool the body, up to about a quart a day' },
+    { term: 'Hidrosis', def: 'the production and excretion of perspiration' },
+    { term: 'Mammary glands', def: 'milk-producing modified perspiration glands' },
+    { term: 'Hair follicle', def: 'the sac holding the root of each strand, its shape deciding whether growth is straight or curly' },
+    { term: 'Arrector pili', def: 'the tiny muscle fibres that contract in cold or fright and stand the hair on end' },
+    { term: 'Unguis', def: 'the keratin plate protecting the back of the last bone of a finger or toe' },
+    { term: 'Nail plate', def: 'the translucent, moulded surface of the unguis' },
+    { term: 'Nail bed', def: 'the skin lying directly underneath the plate' },
+    { term: 'Free edge', def: 'the part of the unguis not attached to the bed underneath' },
+    { term: 'Lunula', def: 'the pale half-moon at the base of the unguis, where new keratin cells form' },
+    { term: 'Cuticle', def: 'the band of epidermis attached to the surface of the unguis' },
+    { term: 'Nail root', def: 'the part fastening the unguis to the finger or toe' },
+
+    /* ---- specialists ---- */
+    { term: 'Dermatologist', def: 'the physician who diagnoses and treats disorders of the skin' },
+    { term: 'Plastic surgeon', def: 'the physician who surgically restores and reconstructs body structures' },
+    { term: 'Cosmetic surgery', def: 'operations performed for appearance rather than medical need, such as liposuction or a facelift' },
+
+    /* ---- sebaceous and sweat pathology ---- */
+    { term: 'Acne vulgaris', def: 'pustular eruptions triggered by hormones at puberty, driven by overproduction of oil around the hair shaft' },
+    { term: 'Comedo', def: 'a non-infected blocked follicle — a whitehead when closed, a blackhead when open' },
+    { term: 'Epidermoid cyst', def: 'a closed sac just under the surface containing yellow fatty material' },
+    { term: 'Seborrheic dermatitis', def: 'inflammation caused by overactive oil glands' },
+    { term: 'Seborrheic keratosis', def: 'a benign growth with a waxy, stuck-on appearance' },
+    { term: 'Anhidrosis', def: 'an inability to perspire normally in response to heat' },
+    { term: 'Diaphoresis', def: 'profuse perspiration' },
+    { term: 'Hyperhidrosis', def: 'perspiring far more than normal' },
+    { term: 'Sleep hyperhidrosis', def: 'drenching perspiration at night, commonly called night sweats' },
+    { term: 'Heat rash', def: 'an intensely itchy rash brought on by blocked perspiration ducts' },
+    { term: 'Heat stroke', def: 'a life-threatening collapse of temperature control after too long in extreme heat' },
+
+    /* ---- hair pathology ---- */
+    { term: 'Folliculitis', def: 'inflammation of the sacs the hair grows from' },
+    { term: 'Trichomycosis axillaris', def: 'a superficial bacterial infection of the shafts of underarm hair' },
+    { term: 'Hirsutism', def: 'excessive facial and body hair in women, usually in a male pattern' },
+    { term: 'Alopecia', def: 'loss of hair, commonly called baldness' },
+    { term: 'Alopecia areata', def: 'an autoimmune disorder attacking the follicles, producing patchy loss' },
+    { term: 'Alopecia totalis', def: 'complete loss of all scalp hair' },
+    { term: 'Alopecia universalis', def: 'complete loss of hair from every part of the body' },
+    { term: 'Androgenic alopecia', def: 'the commonest pattern of hair loss — a receding hairline in men, thinning in women' },
+
+    /* ---- nail pathology ---- */
+    { term: 'Clubbing', def: 'abnormal curving of the nails, often a sign of chronic low oxygen' },
+    { term: 'Koilonychia', def: 'a nail whose outer surface is concave, sometimes called spoon nail' },
+    { term: 'Onychia', def: 'inflammation of the bed beneath the nail' },
+    { term: 'Onychocryptosis', def: 'an ingrown toenail' },
+    { term: 'Onychomycosis', def: 'a fungal infection of the nail' },
+    { term: 'Onycholysis', def: 'a nail lifting away from the bed it normally sits on' },
+    { term: 'Paronychia', def: 'an infection of the soft tissue bordering a nail, either sudden or long-standing' },
+
+    /* ---- pigmentation ---- */
+    { term: 'Albinism', def: 'a genetic condition producing a deficiency or complete absence of pigment' },
+    { term: 'Vitiligo', def: 'patchy loss of colour caused by destruction of the pigment-producing cells' },
+    { term: 'Chloasma', def: 'patchy darkening of the face during pregnancy, also called melasma or the mask of pregnancy' },
+    { term: 'Lentigo', def: 'a flat brown spot on sun-exposed skin, commonly called an age spot or liver spot' },
+    { term: 'Acanthosis nigricans', def: 'dark, velvety thickening in body folds, often linked to insulin resistance' },
+
+    /* ---- bleeding into the skin ---- */
+    { term: 'Contusion', def: 'an injury that pools blood beneath an unbroken surface' },
+    { term: 'Ecchymosis', def: 'a large, irregular purplish patch — a bruise' },
+    { term: 'Purpura', def: 'multiple purple discolorations, larger than pinpoint but smaller than a bruise' },
+    { term: 'Petechiae', def: 'very small pinpoint hemorrhages' },
+    { term: 'Hematoma', def: 'a pocket of clotted blood collected inside tissue, usually following an injury' },
+
+    /* ---- surface lesions ---- */
+    { term: 'Lesion', def: 'any pathologic change in tissue caused by disease or injury' },
+    { term: 'Crust', def: 'dried serum and blood hardened over a healing wound — a scab' },
+    { term: 'Eschar', def: 'the dark, crust-like tissue covering a full-thickness wound' },
+    { term: 'Erosion', def: 'the wearing away of a surface' },
+    { term: 'Macule', def: 'a flat discoloured spot under 1 cm across, such as a freckle' },
+    { term: 'Nodule', def: 'a solid raised lump, deeper and firmer than a papule' },
+    { term: 'Papule', def: 'a small raised red bump' },
+    { term: 'Plaque', def: 'a scaly, solid raised area' },
+    { term: 'Scales', def: 'flakes or dry patches shedding from the surface' },
+    { term: 'Verrucae', def: 'small hard growths caused by a virus, commonly called warts' },
+    { term: 'Wheal', def: 'a small itching bump, a welt; many together appear as hives' },
+    { term: 'Urticaria', def: 'an outbreak of itchy welts caused by an allergic reaction, commonly called hives' },
+
+    /* ---- fluid-filled lesions ---- */
+    { term: 'Abscess', def: 'a closed pocket of pus produced by a bacterial infection' },
+    { term: 'Purulent', def: 'producing or containing pus' },
+    { term: 'Exudate', def: 'fluid leaking out of an infected wound' },
+    { term: 'Cyst', def: 'an abnormal sac holding gas, fluid or semisolid material' },
+    { term: 'Pustule', def: 'a small circumscribed lesion filled with pus — a pimple' },
+    { term: 'Vesicle', def: 'a small blister of watery fluid, under 0.5 cm across' },
+    { term: 'Bulla', def: 'a blister bigger than half a centimetre across' },
+
+    /* ---- lesions through the skin ---- */
+    { term: 'Abrasion', def: 'a scrape that removes the superficial layers' },
+    { term: 'Fissure', def: 'a groove or crack-like break' },
+    { term: 'Laceration', def: 'a wound with torn, ragged edges, or an accidental cut' },
+    { term: 'Pressure ulcer', def: 'an open wound caused by prolonged pressure, also called a bedsore or decubitus ulcer' },
+    { term: 'Needlestick injury', def: 'an accidental puncture from a used hypodermic needle' },
+    { term: 'Ulcer', def: 'an open lesion with tissue loss around its edges' },
+
+    /* ---- birthmarks ---- */
+    { term: 'Nevus', def: 'a small dark growth developing from pigment cells — a mole' },
+    { term: 'Slate grey nevus', def: 'a benign blue-grey birthmark' },
+    { term: 'Macular stains', def: 'flat, red, irregularly shaped birthmarks, also called salmon patches or angel kisses' },
+    { term: 'Capillary hemangioma', def: 'a raised, spongy red birthmark of clustered vessels, commonly called a strawberry mark' },
+    { term: 'Port-wine stain', def: 'a flat vascular birthmark made of dilated capillaries' },
+
+    /* ---- dermatitis and erythema ---- */
+    { term: 'Contact dermatitis', def: 'a localized rash from repeated exposure to an irritant' },
+    { term: 'Intertrigo', def: 'inflammation caused by two surfaces rubbing together' },
+    { term: 'Eczema', def: 'an itchy inflammatory condition arising from an immune malfunction, also called atopic dermatitis' },
+    { term: 'Exfoliative dermatitis', def: 'widespread scaling and shedding over the body' },
+    { term: 'Pruritus', def: 'itching' },
+    { term: 'Erythema infectiosum', def: 'a viral infection producing a red, lace-like rash, also called fifth disease' },
+    { term: 'Erythema multiforme', def: 'a generalized allergic reaction producing target-shaped lesions' },
+    { term: 'Erythema pernio', def: 'purple-red inflammation caused by cold exposure, also called chilblains' },
+    { term: 'Erythroderma', def: 'abnormal redness covering the entire body surface' },
+    { term: 'Exanthem', def: 'a widespread rash, most often seen in children' },
+    { term: 'Sunburn', def: 'damage to skin cells from ultraviolet exposure' },
+
+    /* ---- general conditions ---- */
+    { term: 'Dermatosis', def: 'any lesion or eruption not involving inflammation' },
+    { term: 'Ichthyosis', def: 'dry, thickened, scaly skin' },
+    { term: 'Lipedema', def: 'a painful build-up of fat and fluid in the tissues beneath the surface' },
+    { term: 'Systemic lupus erythematosus', def: 'an autoimmune disease producing a red scaly rash across the face and upper trunk' },
+    { term: 'Psoriasis', def: 'red papules covered with silvery scales' },
+    { term: 'Rosacea', def: 'tiny red pimples and enlarged vessels across the face, sometimes called adult acne' },
+    { term: 'Rhinophyma', def: 'overgrowth of the tissues of the nose, usually in older men with advanced rosacea' },
+    { term: 'Scleroderma', def: 'an autoimmune disorder in which connective tissues thicken and harden' },
+    { term: 'Xeroderma', def: 'excessively dry skin' },
+
+    /* ---- infections ---- */
+    /* a three-part name nobody could type as an answer, so it earns its keep in
+       flashcards and the review sheet rather than in Recall */
+    { fact: true, term: 'Hand, foot and mouth disease', def: 'a viral illness producing sores in the mouth and throat with a rash on the hands and feet' },
+    { term: 'Molluscum contagiosum', def: 'a viral infection producing small raised lesions' },
+    { term: 'Cellulitis', def: 'an acute, rapidly spreading bacterial infection of the deeper layers' },
+    { term: 'Furuncles', def: 'large, tender, swollen staphylococcal lesions, commonly called boils' },
+    { term: 'Carbuncle', def: 'a cluster of connected furuncles' },
+    { term: 'Gangrene', def: 'death of tissue' },
+    { term: 'Impetigo', def: 'a highly contagious bacterial infection producing honey-coloured crusts' },
+    { term: 'Necrotizing fasciitis', def: 'a group A strep infection destroying tissue rapidly, known popularly as flesh-eating bacteria' },
+    { term: 'Pyoderma', def: 'any acute pus-forming bacterial infection of the skin' },
+    { term: 'Mycosis', def: 'any condition caused by a fungus' },
+    { term: 'Tinea', def: 'a fungal infection commonly called ringworm' },
+    { term: 'Tinea capitis', def: 'ringworm of the scalp' },
+    { term: 'Tinea corporis', def: 'ringworm on the body' },
+    { term: 'Tinea cruris', def: 'ringworm of the genital area, known as jock itch' },
+    { term: 'Tinea pedis', def: 'ringworm between the toes, known as athlete’s foot' },
+    { term: 'Tinea versicolor', def: 'painless discoloured patches caused by a yeast overgrowth' },
+    { term: 'Infestation', def: 'microscopic parasites dwelling on the outer surface of the body' },
+    { term: 'Pediculosis', def: 'an infestation of lice' },
+    { term: 'Pediculosis capitis', def: 'head lice' },
+    { term: 'Pediculosis corporis', def: 'body lice' },
+    { term: 'Pediculosis pubis', def: 'lice in the pubic region' },
+    { term: 'Scabies', def: 'an infestation of itch mites that burrow into the top layer to lay eggs' },
+
+    /* ---- growths ---- */
+    { term: 'Callus', def: 'a thickened patch formed by repeated friction or pressure' },
+    { term: 'Cicatrix', def: 'a normal scar' },
+    { term: 'Granulation tissue', def: 'the new tissue that normally forms while a wound heals' },
+    { term: 'Keloid', def: 'a scar raised or thickened well beyond the original wound' },
+    { term: 'Keratosis', def: 'an overgrowth and thickening of the skin' },
+    { term: 'Lipoma', def: 'a benign, slow-growing fatty tumour' },
+    { term: 'Dysplastic nevi', def: 'atypical moles, irregular in shape or colour' },
+    { term: 'Papilloma', def: 'a benign, superficial, wart-like growth' },
+    { term: 'Polyp', def: 'a mushroom-like growth projecting from a surface' },
+    { term: 'Skin tags', def: 'small flesh-coloured or light-brown polyps hanging by a fine stalk' },
+
+    /* ---- cancer and burns ---- */
+    { term: 'Actinic keratosis', def: 'a precancerous growth arising on sun-damaged skin, also called solar keratosis' },
+    { term: 'Basal cell carcinoma', def: 'a malignant tumour of the deepest layer of the epidermis' },
+    { term: 'Squamous cell carcinoma', def: 'a malignancy beginning as a lesion that looks like a sore refusing to heal, often crusted' },
+    { term: 'Malignant melanoma', def: 'the most serious skin cancer, arising in the pigment-producing cells' },
+    { fact: true, term: 'The ABCDE signs of melanoma',
+      def: 'Asymmetry, Border irregularity, Colour variation, Diameter larger than a pencil eraser, and Evolving — changing in size, shape or shade' },
+    { fact: true, term: 'What determines the severity of a burn',
+      def: 'two things — how much of the body is involved, with anything past 15% counted serious, and how deep the injury reaches through the layers' },
+
+    /* ---- diagnostic procedures ---- */
+    { term: 'Biopsy', def: 'taking a sample of living tissue so it can be examined and a diagnosis settled' },
+    { term: 'Incisional biopsy', def: 'removal of only a portion of a tumour or lesion' },
+    { term: 'Excisional biopsy', def: 'removal of an entire tumour or lesion together with surrounding tissue' },
+    { term: 'Needle biopsy', def: 'removal of a core of tissue through a hollow needle' },
+    { term: 'Exfoliative cytology', def: 'scraping cells from a surface to examine them microscopically' },
+    { term: 'Exfoliation', def: 'removal of dead epidermal cells, often by sanding, sometimes for cosmetic reasons' },
+
+    /* ---- treatment ---- */
+    { term: 'Sun protection factor', def: 'the rating describing how much protection a sunscreen gives' },
+    { term: 'Dermatoplasty', def: 'replacement of damaged skin with healthy tissue — a graft' },
+    { term: 'Cauterization', def: 'destruction of tissue by burning' },
+    { term: 'Chemabrasion', def: 'removal of the outer layers using a chemical solution — a peel' },
+    { term: 'Cryosurgery', def: 'destruction of abnormal tissue by freezing' },
+    { term: 'Curettage', def: 'removal of material from a surface by scraping' },
+    { term: 'Debridement', def: 'cleaning a wound out — taking away dead tissue, grit and anything foreign left behind' },
+    { term: 'Dermabrasion', def: 'sanding a surface smooth with a revolving wire brush or abrasive paper' },
+    { term: 'Electrodesiccation', def: 'destroying tissue with an electric spark and then scraping it away' },
+    { fact: true, term: 'Incision and drainage', def: 'cutting a lesion open and letting the contents out — abbreviated I&D' },
+    { term: 'Mohs surgery', def: 'removing and examining tissue one layer at a time until no malignant cells remain' },
+    { term: 'Phototherapy', def: 'using natural or artificial light to treat conditions such as vitiligo and eczema' },
+    { term: 'Photodynamic therapy', def: 'a light-sensitizing drug activated by blue light, generating reactive oxygen that destroys the cells around it' },
+    { term: 'Fluorouracil', def: 'a topical chemotherapy cream targeting fast-growing cells in basal cell carcinoma and actinic keratoses' },
+    { term: 'Retinoids', def: 'a class of compounds derived from vitamin A, used against acne and sun damage' },
+    { term: 'Isotretinoin', def: 'the retinoid used for severe acne, sold as Accutane' },
+    { term: 'Tretinoin', def: 'the retinoid used for sun-damaged skin, acne and wrinkles' },
+    { term: 'Topical steroids', def: 'hydrocortisone and stronger relatives, which can permanently thin the skin with prolonged use' },
+    { term: 'Blepharoplasty', def: 'trimming away drooping lid skin, sometimes to clear the field of vision' },
+    { term: 'Collagen replacement therapy', def: 'soft-tissue augmentation by injection' },
+    { term: 'Electrolysis', def: 'using electric current to destroy hair follicles permanently' },
+    { term: 'Lipectomy', def: 'surgical removal of fat from beneath the skin' },
+    { term: 'Liposuction', def: 'suction-assisted removal of fat' },
+    { term: 'Rhytidectomy', def: 'taking away slack skin and fat so wrinkles pull flat — a facelift' },
+    { term: 'Sclerotherapy', def: 'injection treatment for spider veins' },
+
+    /* ---- abbreviations ---- */
+    { term: 'AK', def: 'actinic keratosis' },
+    { term: 'AT', def: 'alopecia totalis' },
+    { term: 'BCC', def: 'basal cell carcinoma' },
+    { term: 'CD', def: 'contact dermatitis' },
+    { term: 'MM', def: 'malignant melanoma' },
+    { term: 'Ps', def: 'psoriasis' },
+    { term: 'SCC', def: 'squamous cell carcinoma' },
+    { term: 'SLE', def: 'systemic lupus erythematosus' },
+    { term: 'SPF', def: 'sun protection factor' },
+    { term: 'NF', def: 'necrotizing fasciitis' }
+  ],
+  questions: [
+    { q: 'Which layer of the skin can you actually see and touch?',
+      choices: ['The epidermis', 'The dermis', 'The subcutaneous layer', 'The basal layer'], answer: 0,
+      why: 'Epi- means upon. The dermis lies beneath it, and the basal layer is the deepest stratum of the epidermis itself.' },
+
+    { q: 'Melanin is produced by which cells?',
+      choices: ['Melanocytes', 'Lipocytes', 'Mast cells', 'Squamous epithelial cells'], answer: 0,
+      why: 'Lipocytes store fat; mast cells release heparin and histamine.' },
+
+    { q: 'A patient has a fungal infection between the toes. The term is:',
+      choices: ['Tinea pedis', 'Tinea cruris', 'Tinea capitis', 'Tinea corporis'], answer: 0,
+      why: 'Ped- is foot. Cruris is the groin, capitis the scalp, corporis the body.' },
+
+    { q: 'Which is the most serious form of skin cancer?',
+      choices: [
+        'Malignant melanoma, arising in the pigment-producing cells',
+        'Basal cell carcinoma, arising in the deepest epidermal layer',
+        'Squamous cell carcinoma, arising in the upper epidermis',
+        'Actinic keratosis, arising on sun-damaged skin'
+      ], answer: 0,
+      why: 'Actinic keratosis is precancerous rather than cancer. Basal cell carcinoma is the most common but rarely spreads.' },
+
+    { q: 'Petechiae, purpura and ecchymosis are all bleeding into the skin. Which is largest?',
+      choices: ['Ecchymosis', 'Purpura', 'Petechiae', 'They are all the same size'], answer: 0,
+      why: 'Smallest to largest: petechiae are pinpoint, purpura sit in between, ecchymosis is the large irregular bruise.' },
+
+    { q: 'A vesicle and a bulla differ in what way?',
+      choices: [
+        'Size — a vesicle is under 0.5 cm, a bulla is larger',
+        'Contents — a vesicle holds pus, a bulla holds water',
+        'Depth — a vesicle is superficial, a bulla reaches the dermis',
+        'Cause — a vesicle is viral, a bulla is bacterial'
+      ], answer: 0,
+      why: 'Both are blisters of watery fluid. Only the size separates them. A pus-filled lesion is a pustule.' },
+
+    { q: 'Which term means an inability to perspire in response to heat?',
+      choices: ['Anhidrosis', 'Hyperhidrosis', 'Diaphoresis', 'Hidrosis'], answer: 0,
+      why: 'An- is without. Hyper- is excessive, diaphoresis is profuse sweating, and hidrosis is the normal process.' },
+
+    { q: 'Onychomycosis affects which structure, and what causes it?',
+      choices: [
+        'The nail, caused by a fungus',
+        'The nail, caused by bacteria',
+        'The hair follicle, caused by a fungus',
+        'The sebaceous gland, caused by a fungus'
+      ], answer: 0,
+      why: 'Onych/o is nail and myc/o is fungus. Follicle inflammation is folliculitis.' },
+
+    { q: 'Which describes a keloid?',
+      choices: [
+        'A scar raised or thickened well beyond the original wound',
+        'A normal, flat scar',
+        'The new tissue that forms while a wound heals',
+        'A thickened patch caused by repeated friction'
+      ], answer: 0,
+      why: 'A normal scar is a cicatrix, healing tissue is granulation tissue, and a friction thickening is a callus.' },
+
+    { q: 'What does the D stand for in the ABCDE signs of melanoma?',
+      choices: [
+        'Diameter larger than a pencil eraser',
+        'Depth of invasion into the dermis',
+        'Discolouration around the border',
+        'Duration of more than six months'
+      ], answer: 0,
+      why: 'Asymmetry, Border irregularity, Colour variation, Diameter, Evolving.' },
+
+    { q: 'Mohs surgery is distinctive because:',
+      choices: [
+        'Tissue is removed and examined one layer at a time until no malignant cells remain',
+        'The entire lesion is frozen before removal',
+        'The lesion is destroyed with an electric spark',
+        'A chemical solution dissolves the outer layers'
+      ], answer: 0,
+      why: 'Those others describe cryosurgery, electrodesiccation and chemabrasion.' },
+
+    { q: 'Sebum is produced by which glands, and what does it do?',
+      choices: [
+        'Sebaceous glands — it lubricates the surface and discourages bacteria',
+        'Sudoriferous glands — it cools the body',
+        'Apocrine glands — it regulates water content',
+        'Mammary glands — it lubricates the surface'
+      ], answer: 0,
+      why: 'Sudoriferous, apocrine and eccrine glands all deal with perspiration. Sebum is oil, and its slight acidity is what discourages bacterial growth.' }
+  ]
+},
+
 /* ─────────────────────────  BIO101 · ANATOMY & PHYSIOLOGY 1  ─────────────── */
 
 {
