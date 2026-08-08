@@ -198,15 +198,41 @@ function suite(s, label) {
     const grouped = DECKS.filter(d => !d.exam && d.group);
     if (grouped.length) {
       const names = [...new Set(grouped.map(d => d.group))];
-      check(`[${label}] subject group headings render`,
-            names.every(g => openHtml.includes(`</span>${g}</summary>`)),
-            `expected: ${names.join(', ')}`);
+      /* the heading may be followed by the "current" badge, so match the
+         summary's contents rather than assuming the name ends it */
+      const summaries = [...openHtml.matchAll(/<summary>([\s\S]*?)<\/summary>/g)]
+        .map(m => m[1].replace(/<[^>]*>/g, '').trim());
+      const missingHead = names.filter(g => !summaries.some(t => t.startsWith(g)));
+      check(`[${label}] subject group headings render`, !missingHead.length,
+            `missing: ${missingHead.join(', ')} — saw: ${summaries.join(' | ')}`);
       /* every deck in a grouped course must carry a group, or it silently
          lands in a catch-all section nobody intended */
       const courses = [...new Set(grouped.map(d => d.course))];
       const ungrouped = DECKS.filter(d => courses.includes(d.course) && !d.exam && !d.group);
       check(`[${label}] no deck is left out of its course's grouping`,
             !ungrouped.length, ungrouped.map(d => d.id).join(', '));
+    }
+
+    /* The chapter being worked on now must be open on arrival, even though it
+       sits behind study guides that would otherwise fold it away. Read the
+       rendered fold, since a `current` flag that never reaches the markup would
+       look right in the deck file and change nothing on screen. */
+    const currentDecks = DECKS.filter(d => d.current);
+    if (currentDecks.length) {
+      const groupsWithCurrent = [...new Set(currentDecks.map(d => d.group))];
+      check(`[${label}] every current deck declares a group to open`,
+            groupsWithCurrent.every(Boolean),
+            currentDecks.filter(d => !d.group).map(d => d.id).join(', '));
+      let closed = '';
+      for (const m of openHtml.matchAll(/<details class="more"([^>]*)>\s*<summary>([\s\S]*?)<\/summary>/g)) {
+        const name = m[2].replace(/<[^>]*>/g, '').trim();
+        if (groupsWithCurrent.some(g => name.startsWith(g)) && !/ open/.test(m[1]) && !closed)
+          closed = `"${name}" holds the current chapter but renders closed`;
+      }
+      check(`[${label}] the current chapter's section is open on arrival`, !closed, closed);
+      check(`[${label}] the current chapter is labelled as such`,
+            /<span class="now">current<\/span>/.test(openHtml),
+            'an open section with no label reads as one somebody forgot to close');
     }
   }
 

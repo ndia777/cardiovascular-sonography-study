@@ -57,6 +57,11 @@
     transition:transform .18s ease;margin-left:2px}
   .more[open] .chev{transform:rotate(45deg)}
   .more[open] summary{color:var(--text);margin-bottom:10px}
+  /* marks the chapter being worked on now, so an open section reads as
+     deliberate rather than as one somebody forgot to close */
+  .more .now{margin-left:8px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    padding:2px 7px;border-radius:20px;color:var(--accent);
+    border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line))}
   @media (prefers-reduced-motion: reduce){ .more .chev{transition:none} }
   .deck{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:15px 16px;text-align:left;transition:.13s;display:block;width:100%}
@@ -468,39 +473,44 @@ function screenHome(){
     if (lead.length) html += `<div class="decks">${lead.map(deckCard).join('')}</div>`;
 
     /* <details> rather than a hand-rolled toggle: it opens on click or Enter,
-       is announced correctly by screen readers, and survives with no JS.
-
-       A fold starts CLOSED only when something more important sits above it.
-       With study guides leading, the rest is secondary and folds away; with no
-       study guide in the course there is nothing to defer to, so its sections
-       open by default and the decks are simply visible. */
+       is announced correctly by screen readers, and survives with no JS. */
     const fold = (key, title, decks, openByDefault) => {
       const saved = openState[key];
       const isOpen = q || (saved === undefined ? openByDefault : saved);
       return `<details class="more"${isOpen ? ' open' : ''} data-key="${esc(key)}">
-        <summary><span class="chev" aria-hidden="true"></span>${esc(title)}</summary>
+        <summary><span class="chev" aria-hidden="true"></span>${esc(title)}${
+          decks.some(d => d.current) ? '<span class="now">current</span>' : ''}</summary>
         <div class="decks">${decks.map(deckCard).join('')}</div>
       </details>`;
     };
 
     if (!rest.length) return;
-    if (lead.length){
-      html += fold(c, `${rest.length} more deck${rest.length > 1 ? 's' : ''}`, rest, false);
-      return;
-    }
-    /* No study guide here, so break the decks up by subject instead — a flat run
-       of seven is harder to scan than two named groups. Groups are ordered by
-       their oldest deck, which keeps the same chronological reading as the
-       decks inside them. */
-    const groups = [...new Set(rest.map(d => d.group || 'Decks'))]
+
+    /* Where decks declare a group, break them into named sections — a flat run
+       of a dozen is harder to scan than three labelled chapters. Sections are
+       ordered by their oldest deck, keeping the chronological reading. */
+    const groups = [...new Set(rest.map(d => d.group).filter(Boolean))]
       .sort((a, b) => {
-        const first = g => rest.find(d => (d.group || 'Decks') === g).added || '';
+        const first = g => rest.find(d => d.group === g).added || '';
         return first(a).localeCompare(first(b));
       });
+
+    if (!groups.length){
+      html += fold(c, `${rest.length} more deck${rest.length > 1 ? 's' : ''}`, rest, !lead.length);
+      return;
+    }
+
+    /* A section opens on arrival when it is the chapter being worked on now, or
+       when nothing more important sits above it to defer to. Everything else
+       starts folded, which is the whole point of having the fold. */
     groups.forEach(g => {
-      const inGroup = rest.filter(d => (d.group || 'Decks') === g);
-      html += fold(`${c}/${g}`, g, inGroup, true);
+      const inGroup = rest.filter(d => d.group === g);
+      html += fold(`${c}/${g}`, g, inGroup, inGroup.some(d => d.current) || !lead.length);
     });
+    /* anything left ungrouped still needs a home */
+    const loose = rest.filter(d => !d.group);
+    if (loose.length)
+      html += fold(`${c}/other`, `${loose.length} more deck${loose.length > 1 ? 's' : ''}`, loose, !lead.length);
   });
 
   app.innerHTML = html;

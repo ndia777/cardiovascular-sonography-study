@@ -21,6 +21,7 @@ window.DECKS = [
 
 {
   id: 'mt1-roots',
+  group: 'Chapter 1',
 
   added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
@@ -113,6 +114,7 @@ window.DECKS = [
 
 {
   id: 'mt1-suffixes',
+  group: 'Chapter 1',
 
   added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
@@ -178,6 +180,7 @@ window.DECKS = [
 
 {
   id: 'mt1-prefixes',
+  group: 'Chapter 1',
 
   added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
@@ -243,6 +246,7 @@ window.DECKS = [
 
 {
   id: 'mt1-terms',
+  group: 'Chapter 1',
 
   added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
@@ -367,6 +371,7 @@ window.DECKS = [
 
 {
   id: 'mt2-parts',
+  group: 'Chapter 2',
 
   added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
@@ -414,6 +419,7 @@ window.DECKS = [
 
 {
   id: 'mt2-terms',
+  group: 'Chapter 2',
 
   added: '2026-07-29',
   course: 'M159 · Medical Terminology 1',
@@ -584,6 +590,7 @@ window.DECKS = [
 
 {
   id: 'mt2-overview',
+  group: 'Chapter 2',
 
   added: '2026-07-31',
   course: 'M159 · Medical Terminology 1',
@@ -1084,6 +1091,8 @@ window.DECKS = [
    session rather than a marathon. Every title still names Chapter 12. */
 {
   id: 'mt12-structure',
+  group: 'Chapter 12',
+  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Structure & Function',
@@ -1174,6 +1183,8 @@ window.DECKS = [
 
 {
   id: 'mt12-glands-hair-nails',
+  group: 'Chapter 12',
+  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Disorders of the Glands, Hair & Nails',
@@ -1252,6 +1263,8 @@ window.DECKS = [
 
 {
   id: 'mt12-lesions',
+  group: 'Chapter 12',
+  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Lesions, Wounds & Skin Marks',
@@ -1350,6 +1363,8 @@ window.DECKS = [
 
 {
   id: 'mt12-conditions',
+  group: 'Chapter 12',
+  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Conditions, Infections & Cancer',
@@ -1482,6 +1497,8 @@ window.DECKS = [
 
 {
   id: 'mt12-procedures',
+  group: 'Chapter 12',
+  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Procedures & Abbreviations',
