@@ -298,6 +298,12 @@
   table.browse{width:100%;border-collapse:collapse;font-size:14.5px}
   table.browse td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
   table.browse td.t{font-weight:600;width:34%;color:var(--accent)}
+  /* which deck a row came from — present but quiet, so it explains an overlap
+     without competing with the term or the definition */
+  table.browse.chapter td.t{width:26%}
+  table.browse td.src{width:18%;font-size:11.5px;color:var(--dim);line-height:1.45;
+    text-align:right;vertical-align:top}
+  @media(max-width:560px){ table.browse td.src{display:none} }
   table.browse tr:hover td{background:var(--card)}
   .hidden-def{color:transparent;background:var(--card2);border-radius:4px;cursor:pointer}
   .hidden-def:hover{color:var(--dim)}
@@ -1236,6 +1242,7 @@ window.DECKS = [
    chapter, because being asked the way the exam will ask is the point. */
 {
   id: 'mt1-guide',
+  group: 'Chapter 1',
   exam: true,
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
@@ -1309,6 +1316,7 @@ window.DECKS = [
 
 {
   id: 'mt2-guide',
+  group: 'Chapter 2',
   exam: true,
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
@@ -3308,6 +3316,11 @@ function screenDeck(){
   modes.push(['browse','Review Sheet', d.steps.length
     ? 'The full procedure in order, with the rationale for each step.'
     : 'The whole list in one table. Hide the definitions to self-test.']);
+  /* Only where the chapter actually spans more than this deck — otherwise it
+     would just be the Review Sheet above under a grander name. */
+  if (chapterDecks(d).length > 1)
+    modes.push(['chapter', `Whole Chapter Sheet`,
+      `Every term across all ${chapterDecks(d).length} ${d.group} decks in one table, labelled by source.`]);
 
   app.innerHTML = `
     <button class="back" onclick="go('home')">← All decks</button>
@@ -4441,6 +4454,65 @@ function placeStep(i){
 }
 
 /* ═══════════════ BROWSE ═══════════════ */
+/* ═══════════════ WHOLE CHAPTER SHEET ═══════════════ */
+/* Every deck sharing a course and a chapter, in one table. Studying Chapter 1
+   otherwise means bouncing between five decks; this is the one place to read it
+   all straight through. The per-deck Review Sheet stays exactly as it is — for
+   a study guide that is the tested scope, and collapsing it into the chapter
+   would lose that distinction. */
+const chapterDecks = d => (d.group ? DECKS.filter(o => o.course === d.course && o.group === d.group) : [d]);
+function runChapter(d){
+  if (!session) session = { hide: false, filter: '' };
+  const s = session;
+  const f = s.filter.toLowerCase();
+  const decks = chapterDecks(d);
+
+  /* One term can legitimately appear in several decks — notes re-covering a
+     lecture, a study guide restating a word list. Identical entries collapse to
+     one row; genuinely different definitions stay separate and are labelled, so
+     the overlap reads as two sources rather than a duplicate. */
+  const seen = new Map();
+  for (const deck of decks)
+    for (const c of deck.cards){
+      const k = (c.term + '|' + c.def).toLowerCase();
+      if (seen.has(k)) seen.get(k).from.push(deck.title);
+      else seen.set(k, { card: c, from: [deck.title] });
+    }
+
+  const alpha = t => t.toLowerCase().replace(/^[^a-z0-9]+/, '');
+  const all = [...seen.values()].sort((a, b) => alpha(a.card.term).localeCompare(alpha(b.card.term)));
+  const rows = all.filter(r => !f ||
+    (r.card.term + ' ' + r.card.def + ' ' + r.from.join(' ')).toLowerCase().includes(f));
+
+  /* the deck name shown against a row — trimmed of the chapter prefix the
+     heading already states, so the column stays narrow and scannable */
+  const short = t => t.replace(/^Ch\.\s*\d+\s*[—-]\s*/, '').replace(/^[^—-]*[—-]\s*/, '');
+
+  app.innerHTML = `
+    <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
+    <h2 class="title">${esc(d.group)} — everything</h2>
+    <div class="srcline">${esc(d.course)} · ${all.length} terms across ${decks.length} decks</div>
+    <div class="bar">
+      <button class="iconbtn" onclick="session.hide=!session.hide;render()">
+        ${s.hide ? '👁 Show definitions' : '🙈 Hide definitions'}</button>
+      <span>${rows.length} of ${all.length}</span>
+    </div>
+    <input class="search" id="cfilter" placeholder="Filter…" value="${esc(s.filter)}">
+    <table class="browse chapter"><tbody>
+      ${rows.map(r => `<tr>
+        <td class="t">${esc(r.card.term)}</td>
+        <td class="${s.hide ? 'hidden-def' : ''}" onclick="this.classList.remove('hidden-def')">
+          ${defHtml(r.card.def)}${r.card.note && !s.hide ? `<span class="note">${esc(r.card.note)}</span>` : ''}</td>
+        <td class="src">${r.from.map(t => esc(short(t))).join('<br>')}</td></tr>`).join('')}
+    </tbody></table>
+    ${!rows.length ? '<p style="color:var(--dim)">Nothing matches that filter.</p>' : ''}`;
+
+  const cf = document.getElementById('cfilter');
+  cf.oninput = e => { const p = e.target.selectionStart; s.filter = e.target.value; runChapter(d);
+    const n = document.getElementById('cfilter'); n.focus(); n.setSelectionRange(p, p); };
+  keyHandler = null;
+}
+
 function runBrowse(d){
   if (!session) session = { hide: false, filter: '' };
   const s = session;
@@ -4529,7 +4601,8 @@ function render(){
   if (!d) return go('home');
   if (view.screen === 'deck') return screenDeck();
   ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
-     chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse }[view.mode] || screenDeck)(d);
+     chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse,
+     chapter: runChapter }[view.mode] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }

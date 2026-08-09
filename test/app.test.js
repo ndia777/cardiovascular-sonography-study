@@ -70,6 +70,11 @@ function boot(decksSrc, engineSrc, label) {
 /* Mirrors the mode list the deck menu builds: card modes only for decks with
    cards, the ordering mode only for decks with steps. */
 const recallableCards = d => (d.cards || []).filter(c => !c.fact);
+/* modesFor needs to see sibling decks to know whether the chapter sheet applies;
+   set per suite run, since source and bundle carry their own deck objects */
+let ALL_DECKS = [];
+/* terms are HTML-escaped before rendering, so compare against escaped forms */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const modesFor = d => {
   const cards = (d.cards || []).length;
   const steps = (d.steps || []).length;
@@ -80,6 +85,10 @@ const modesFor = d => {
   if (cards) m.push('learn', 'match');
   if (cards >= 4) m.push('tf');
   if (cards || written) m.push('quiz');
+  /* the whole-chapter sheet only appears where the chapter spans more than one
+     deck — otherwise it would duplicate the per-deck review sheet */
+  if (d.group && ALL_DECKS.filter(o => o.course === d.course && o.group === d.group).length > 1)
+    m.push('chapter');
   if (d.chest) m.push('chest');
   if (d.beat) m.push('beat');
   m.push('browse');
@@ -96,6 +105,7 @@ function suite(s, label) {
 
   check(`[${label}] decks load`, DECKS && DECKS.length > 0, `got ${DECKS && DECKS.length}`);
   if (!DECKS || !DECKS.length) return;
+  ALL_DECKS = DECKS;
 
   /* Course sections must RENDER alphabetically by subject name. Read the order
      out of the markup the app actually produced — comparing a sorted list to
@@ -272,6 +282,56 @@ function suite(s, label) {
     check(`[${label}] ${d.id} review sheet is alphabetical`,
           shown.length > 1 && JSON.stringify(shown) === JSON.stringify(ordered),
           `first few: ${shown.slice(0, 4).join(' | ')}`);
+  }
+
+  /* The whole-chapter sheet gathers every deck sharing a course and chapter.
+     Three things have to hold, and none of them can be checked from the deck
+     data alone — read the rendered table.
+       1. nothing from the chapter is missing, or it is not a chapter sheet;
+       2. nothing from OUTSIDE the chapter leaks in;
+       3. the per-deck Review Sheet is untouched, because for a study guide that
+          is the tested scope and the whole point was not to lose it. */
+  for (const d of DECKS.filter(x => modesFor(x).includes('chapter'))) {
+    const siblings = DECKS.filter(o => o.course === d.course && o.group === d.group);
+    go('run', d.id, 'chapter');
+    const html = s.__app.innerHTML;
+    const shown = [...html.matchAll(/<td class="t">([^<]*)</g)].map(m => m[1].trim());
+    /* Two decks can carry the same term with different capitalisation — a word
+       list saying "transverse plane" and lecture slides saying "Transverse
+       plane". Identical entries merge to one row under whichever spelling came
+       first, so presence is judged case-insensitively. */
+    const lower = new Set(shown.map(t => t.toLowerCase()));
+    const want = new Set(siblings.flatMap(o => o.cards.map(c => esc(c.term).toLowerCase())));
+    const missing = [...want].filter(t => !lower.has(t));
+    check(`[${label}] ${d.id} chapter sheet holds every term in ${d.group}`,
+          !missing.length, `${missing.length} missing, e.g. ${missing.slice(0, 3).join(', ')}`);
+
+    const outside = new Set(DECKS.filter(o => o.course !== d.course || o.group !== d.group)
+      .flatMap(o => o.cards.map(c => esc(c.term).toLowerCase()))
+      .filter(t => !want.has(t)));
+    const leaked = [...lower].filter(t => outside.has(t));
+    check(`[${label}] ${d.id} chapter sheet holds nothing from outside ${d.group}`,
+          !leaked.length, leaked.slice(0, 3).join(', '));
+
+    /* alphabetical, same rule as the per-deck sheet */
+    const key = t => t.toLowerCase().replace(/^[^a-z0-9]+/, '');
+    const ordered = [...shown].sort((a, b) => key(a).localeCompare(key(b)));
+    check(`[${label}] ${d.id} chapter sheet is alphabetical`,
+          JSON.stringify(shown) === JSON.stringify(ordered),
+          `first few: ${shown.slice(0, 4).join(' | ')}`);
+
+    /* every row says where it came from */
+    const srcs = [...html.matchAll(/<td class="src">([\s\S]*?)<\/td>/g)];
+    check(`[${label}] ${d.id} every chapter row names its source deck`,
+          srcs.length === shown.length && srcs.every(m => m[1].trim()),
+          `${srcs.length} source cells for ${shown.length} rows`);
+
+    /* and the deck's own review sheet still shows only its own terms */
+    go('run', d.id, 'browse');
+    const own = [...s.__app.innerHTML.matchAll(/<td class="t">([^<]*)</g)].map(m => m[1].trim());
+    check(`[${label}] ${d.id} keeps its own Review Sheet unchanged`,
+          own.length === d.cards.length,
+          `review sheet shows ${own.length} of the deck's ${d.cards.length} terms`);
   }
 
   /* Sequence decks keep procedure order — alphabetising a procedure is wrong */

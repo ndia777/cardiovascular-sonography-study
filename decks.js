@@ -902,6 +902,7 @@ window.DECKS = [
    chapter, because being asked the way the exam will ask is the point. */
 {
   id: 'mt1-guide',
+  group: 'Chapter 1',
   exam: true,
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
@@ -975,6 +976,7 @@ window.DECKS = [
 
 {
   id: 'mt2-guide',
+  group: 'Chapter 2',
   exam: true,
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
