@@ -4539,7 +4539,7 @@ function runChapter(d){
   app.innerHTML = `
     <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
     <h2 class="title">${esc(d.group)} — everything</h2>
-    <div class="srcline">${esc(d.course)} · ${decks.length} decks</div>
+    <div class="srcline">${esc(d.course)} · ${decks.length} deck${decks.length === 1 ? '' : 's'}</div>
     <div class="bar">
       <div class="seg">
         <button class="${s.bydeck ? '' : 'on'}" onclick="chapterOrder(false)">A–Z</button>
