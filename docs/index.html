@@ -2498,6 +2498,24 @@ window.DECKS = [
     { term: 'Large square',         def: '5 mm × 5 mm on ECG paper = 0.2 seconds',
       note: 'Five of them make 1.0 second, which is the fastest way to step out a rate.' },
     { term: 'Standardization mark', def: '2 mm wide × 10 mm high at sensitivity 1; should appear in front of each lead' },
+
+    /* --- added from The Circulatory System notes --- */
+    { term: 'Waveform', def: 'any movement away from the baseline, upward for a positive deflection or downward for a negative one' },
+    { term: 'J point', def: 'the junction where the QRS complex ends and the ST segment begins' },
+    { term: 'TP segment', def: 'the flat segment running from the end of one T wave to the start of the next P wave' },
+    { term: 'Cardiac cycle', def: 'one complete heartbeat, start of one beat to the start of the next — about 0.8 seconds' },
+    { term: 'Calibration', def: '1 millivolt of input should produce exactly 10 mm of height on the paper',
+      note: 'The lecture notes write this as 1 mV = 1 mm, which cannot be right — the same page says the standardization mark is 10 mm high, and that mark IS the 1 mV signal. Standard gain is 10 mm per millivolt.' },
+    { fact: true, term: 'What an ECG can show you',
+      def: 'the orientation of the heart in the chest, conduction disturbances, the electrical effects of medications and electrolytes, the mass of cardiac muscle, and any ischemic damage' },
+    { fact: true, term: 'Normal T wave height',
+      def: 'no more than 5 mm in any limb lead, and no more than 10 mm in any chest lead; the shape is slightly asymmetrical' },
+    { fact: true, term: 'What an inverted T wave suggests', def: 'myocardial ischemia' },
+    { fact: true, term: 'What tall, peaked T waves suggest', def: 'hyperkalemia — too much potassium in the blood' },
+    { fact: true, term: 'How the QT interval changes with heart rate',
+      def: 'it shortens as the rate climbs and lengthens as the rate falls; it also varies with age and gender' },
+    { fact: true, term: 'The T wave after an abnormal QRS',
+      def: 'usually points the opposite way to that QRS complex' },
     { term: 'Sensitivity ½',        def: 'if the tracing is too LARGE, turn the dial to this setting — the standardization mark then measures 2 mm wide × 5 mm high' },
     { term: 'Sensitivity 2',        def: 'if the tracing is too SMALL, turn the dial to this setting — the standardization mark then measures 2 mm wide × 20 mm high' },
     { term: 'Galvanometer',         def: 'transforms the electrical current into mechanical motion inside the machine' },
@@ -2650,7 +2668,23 @@ window.DECKS = [
     /* Placement facts, not vocabulary — the term is a heading, so these belong
        in flashcards and the review sheet rather than as something to type. */
     { fact: true, term: 'Arm electrode position', def: 'fleshy outer area of the UPPER arm with the connectors pointing DOWN' },
-    { fact: true, term: 'Leg electrode position', def: 'fleshy inner area of the LOWER leg near the calf with the connectors pointing UP' }
+    { fact: true, term: 'Leg electrode position', def: 'fleshy inner area of the LOWER leg near the calf with the connectors pointing UP' },
+
+    /* --- added from The Circulatory System notes --- */
+    { term: 'Frontal plane leads', def: 'the six that view the heart from the front as though the body were flat — three bipolar and three augmented',
+      note: 'They see superior, inferior, right and left.' },
+    { term: 'Horizontal plane leads', def: 'the six chest leads, viewing the heart as though the body were sliced across',
+      note: 'They see anterior, posterior, right and left.' },
+    { fact: true, term: 'Polarity of the limb electrodes',
+      def: 'in the standard limb leads the right arm is negative and the left leg is positive; the right leg is the ground and is never part of a lead',
+      note: 'The "right arm is always negative" rule holds for Leads I and II only. In aVR the right arm is the POSITIVE exploring electrode — that is what the R in aVR means, and it is why aVR normally points downward while the other leads point up.' },
+    { term: 'Semi-Fowler’s position', def: 'propped at roughly 30 to 45 degrees — used when a patient is short of breath' },
+    { term: 'Full Fowler’s position', def: 'sitting upright at 60 to 90 degrees, effectively straight up at the top of that range',
+      note: 'Also called high Fowler’s. Ranges vary between sources; 45 and 90 are the round numbers usually taught.' },
+    { fact: true, term: 'Where sensors must never be placed',
+      def: 'on wounds, open areas, sutures or staples' },
+    { fact: true, term: 'Patients needing modified placement',
+      def: 'those who are obese, have a limb amputation, or are in a cast' }
   ],
   questions: [
     { q: 'How many electrodes and how many leads are used in a standard 12-lead ECG?',
@@ -2902,7 +2936,15 @@ window.DECKS = [
     { trace: 'Ventricular tachycardia', term: 'Ventricular tachycardia', def: 'three or more PVCs at 150–250 BPM, with NO P waves and imprecise QRS complexes — life threatening' },
     { trace: 'Ventricular fibrillation', term: 'Ventricular fibrillation (V-fib)', def: 'an erratic, jagged "sawtooth" rhythm; the ventricles tremor and there is NO cardiac output' },
     { trace: 'Pacemaker rhythm', term: 'Pacemaker arrhythmia', def: 'vertical signals (spikes) representing the pacemaker’s electrical activity; more visible in unipolar than bipolar leads' },
-    { term: 'Scope of practice', def: 'interpreting ECGs is beyond your scope — but recognizing arrhythmias and alerting the provider is essential' }
+    { term: 'Scope of practice', def: 'interpreting ECGs is beyond your scope — but recognizing arrhythmias and alerting the provider is essential' },
+
+    /* --- rate analysis, added from The Circulatory System notes --- */
+    { fact: true, term: 'Finding the ventricular rate',
+      def: 'measure the R-R intervals — for the ATRIAL rate, measure the P-P intervals instead' },
+    { fact: true, term: 'The 1500 method',
+      def: 'find an R wave sitting on a heavy line, count the small squares to the next R wave, then divide 1500 by that count. 18 small squares gives about 83 BPM' },
+    { fact: true, term: 'Strip lengths on ECG paper',
+      def: '15 large squares span 3 seconds and 30 large squares span 6 seconds — count the complexes across a six-second strip and multiply by 10 for the rate' }
   ],
   questions: [
     { q: 'You get a tracing with a wandering baseline. What is the most likely cause?',
