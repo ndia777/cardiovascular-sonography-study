@@ -2383,7 +2383,17 @@ window.DECKS = [
     { term: 'Event monitor',        def: 'a version the patient activates only when symptoms occur; can be worn for several days' },
     { term: 'Stress test',          def: 'exercise ECG for patients at high risk of heart disease; no food, smoking, caffeine or alcohol for 3+ hours before' },
     { term: 'Echocardiography',     def: 'a noninvasive diagnostic tool that tests the STRUCTURE and FUNCTION of the heart using sound waves' },
-    { term: 'Defibrillator',        def: 'delivers a countershock to convert cardiac arrhythmias back into a regular sinus rhythm' }
+    { term: 'Defibrillator',        def: 'delivers a countershock to convert cardiac arrhythmias back into a regular sinus rhythm' },
+
+    /* --- added from the test-review section of the notes --- */
+    { term: 'Cardioversion', def: 'the procedure that resets a fast, irregular rhythm back to a normal one' },
+    { term: 'Thallium stress test', def: 'the exercise test requiring an injection of a radioactive tracer so blood flow to the muscle can be imaged' },
+    { fact: true, term: 'Electrodes used for a Holter monitor', def: '6 to 7' },
+    { term: 'Coronary balloon angioplasty', def: 'threading a catheter with a balloon at its tip, usually in through the femoral artery, and inflating it to press plaque aside and reopen the vessel',
+      note: 'The lecture notes call this "balloon angiography", which conflates two procedures. Angiography is the diagnostic picture — catheter, contrast dye and x-ray. Angioplasty is the balloon that treats what the picture found. Both go in through the femoral artery, which is probably where the wires crossed.' },
+    { term: 'Coronary artery bypass', def: 'grafting a length of vein into the heart’s own circulation to carry blood around a blocked stretch' },
+    { term: 'Implantable cardioverter defibrillator', def: 'a small implanted device that watches the rhythm and shocks the heart back into line when it turns dangerous',
+      note: 'Abbreviated ICD. Worth keeping apart from a pacemaker: a pacemaker sends small, regular impulses to set the rate, while an ICD sits quiet and delivers a real shock only when a life-threatening rhythm appears.' }
   ],
   questions: [
     { q: 'One cardiac cycle on an ECG consists of:',
@@ -2542,6 +2552,8 @@ window.DECKS = [
       note: 'Also called high Fowler’s. Ranges vary between sources; 45 and 90 are the round numbers usually taught.' },
     { fact: true, term: 'Where sensors must never be placed',
       def: 'on wounds, open areas, sutures or staples' },
+    { term: 'Electrolyte gel', def: 'the conductive medium between electrode and patient, needed because dry skin resists electricity badly enough to swamp the signal',
+      note: 'The lecture notes read "the skin is a core conductor of electricity" — almost certainly POOR, mistyped. Skin is a poor conductor; that is the entire reason the gel exists. Applying it drops skin impedance from roughly 8,600 ohms to about 2,000.' },
     { fact: true, term: 'Patients needing modified placement',
       def: 'those who are obese, have a limb amputation, or are in a cast' }
   ],
@@ -2779,7 +2791,8 @@ window.DECKS = [
   source: 'Chapter 45 — lecture notes',
   cards: [
     { term: 'Somatic tremor',     def: 'ARTIFACT from shivering — nervousness, cold, or neurological conditions like Parkinson’s. Fix: place arm electrodes closer to the shoulders' },
-    { term: 'Alternating current (AC) interference', def: 'ARTIFACT from electrical activity nearby. Fix: keep power cords away from the patient, move the table away from the wall' },
+    { term: 'Alternating current (AC) interference', def: 'ARTIFACT from electrical activity nearby. Fix: keep power cords away from the patient, move the table away from the wall',
+      note: 'Improper grounding of the machine, and a power cord running under the patient’s table, both show up here — NOT as somatic tremor. Somatic tremor comes from the patient moving.' },
     { term: 'Wandering baseline', def: 'ARTIFACT from improperly applied electrodes or improperly cleaned skin. Fix: remove oils, creams and lotions with an alcohol prep pad' },
     { term: 'Interrupted baseline', def: 'ARTIFACT from an electrode separating from the wire, or a broken lead wire. Fix: reattach securely or repair the wire' },
     { trace: 'Normal sinus rhythm', term: 'Normal sinus rhythm', def: 'a heart rate between 60 and 100 BPM' },
