@@ -1087,6 +1087,70 @@ window.DECKS = [
    copyrightable — that squamous cell carcinoma arises in the epidermis is simply
    true), while every definition below is written from scratch. Same practice as
    the other slide-derived decks. */
+/* From the course notes rather than the slides, and the one part of Chapter 12
+   the slides never covered. Chapters 1 and 2 each have a word-parts deck; this
+   is the same thing for Chapter 12, and it leads the chapter because the terms
+   in every other Chapter 12 deck are built out of these pieces. */
+{
+  id: 'mt12-parts',
+  group: 'Chapter 12',
+  current: true,
+  added: '2026-08-10',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 12 — Skin: Word Parts',
+  source: 'Chapter 12 — course notes',
+  cards: [
+    { term: 'cutane/o', def: 'skin' },
+    { term: 'derm/o, dermat/o', def: 'skin' },
+    { term: 'seb/o', def: 'sebum, the oily secretion of the skin' },
+    { term: 'hidr/o', def: 'sweat' },
+    { term: 'pil/i, pil/o', def: 'hair' },
+    { term: 'hirsut/o', def: 'hairy, rough' },
+    { term: 'onych/o', def: 'fingernail or toenail' },
+    { term: 'ungu/o', def: 'nail' },
+    { term: 'melan/o', def: 'black, dark' },
+    { term: 'myc/o', def: 'fungus' },
+    { term: 'py/o', def: 'pus' },
+    { term: 'lip/o', def: 'fat, lipid' },
+    { term: 'xer/o', def: 'dry' },
+    { term: 'rhytid/o', def: 'wrinkle' },
+    { term: 'urtic/o', def: 'rash, hives' },
+    { term: 'cry/o', def: 'cold' },
+    { fact: true, term: 'Two roots that both mean skin', def: 'cutane/o and derm/o (dermat/o)' },
+    { fact: true, term: 'Two roots that both mean nail', def: 'onych/o and ungu/o' }
+  ],
+  questions: [
+    { q: 'Onychomycosis breaks down into which parts?',
+      choices: [
+        'onych/o (nail) + myc/o (fungus) — a fungal nail infection',
+        'onych/o (nail) + myc/o (pus) — a pus-filled nail infection',
+        'onych/o (hair) + myc/o (fungus) — a fungal hair infection',
+        'onych/o (nail) + myc/o (dry) — a brittle nail'
+      ], answer: 0 },
+
+    { q: 'Rhytidectomy removes what?',
+      choices: ['Wrinkles — rhytid/o means wrinkle', 'Fat — rhytid/o means fat',
+                'Hair — rhytid/o means hair', 'Dry skin — rhytid/o means dry'], answer: 0,
+      why: 'Add -ectomy, surgical removal, and you have the facelift.' },
+
+    { q: 'Which root would you expect in a term about excessive sweating?',
+      choices: ['hidr/o', 'hirsut/o', 'seb/o', 'xer/o'], answer: 0,
+      why: 'Hyperhidrosis. Careful with hirsut/o, which looks similar but means hairy.' },
+
+    { q: 'Xeroderma describes skin that is:',
+      choices: ['Excessively dry', 'Unusually dark', 'Covered in hives', 'Producing too much oil'], answer: 0,
+      why: 'xer/o is dry. Those others would call for melan/o, urtic/o and seb/o.' },
+
+    { q: 'Pyoderma is an infection producing:',
+      choices: ['Pus', 'Wrinkles', 'Scales', 'Cold sores'], answer: 0,
+      why: 'py/o is pus — the same root behind pyrosis is NOT related; that one comes from fire.' },
+
+    { q: 'Cryosurgery destroys tissue by which means?',
+      choices: ['Freezing', 'Burning', 'An electric spark', 'A chemical solution'], answer: 0,
+      why: 'cry/o is cold.' }
+  ]
+},
+
 /* Chapter 12 runs to roughly 200 terms, which is more than one Recall sitting
    should ever be. Split along the chapter's own divisions — structure, then the
    three pathology blocks it separates, then procedures — so each deck is a
@@ -1275,7 +1339,9 @@ window.DECKS = [
     /* ---- pigmentation ---- */
     { term: 'Albinism', def: 'a genetic condition producing a deficiency or complete absence of pigment' },
     { term: 'Vitiligo', def: 'patchy loss of colour caused by destruction of the pigment-producing cells' },
-    { term: 'Chloasma', def: 'patchy darkening of the face during pregnancy, also called melasma or the mask of pregnancy' },
+    /* one condition, two names — an accepted alternative rather than a second
+       card that would sit beside its own synonym in a quiz */
+    { term: 'Chloasma, melasma', def: 'patchy darkening of the face during pregnancy, also called the mask of pregnancy' },
     { term: 'Lentigo', def: 'a flat brown spot on sun-exposed skin, commonly called an age spot or liver spot' },
     { term: 'Acanthosis nigricans', def: 'dark, velvety thickening in body folds, often linked to insulin resistance' },
 
@@ -1395,6 +1461,9 @@ window.DECKS = [
     { term: 'Rhinophyma', def: 'overgrowth of the tissues of the nose, usually in older men with advanced rosacea' },
     { term: 'Scleroderma', def: 'an autoimmune disorder in which connective tissues thicken and harden' },
     { term: 'Xeroderma', def: 'excessively dry skin' },
+    /* --- from the course notes, not on the slides --- */
+    { term: 'Dermatitis', def: 'inflammation of the skin, whatever the cause' },
+    { term: 'Erythema', def: 'redness caused by the capillaries widening beneath the surface' },
 
     /* ---- infections ---- */
     /* a three-part name nobody could type as an answer, so it earns its keep in
@@ -1895,6 +1964,150 @@ window.DECKS = [
     { q: 'How much of the human genome sequence is identical between any two people?',
       choices: ['99.9%', '75%', '50%', '100%'], answer: 0,
       why: 'The 0.1% that varies covers health, appearance, and a great many differences with no observable effect at all.' }
+  ]
+},
+
+/* Chapter 5 from the course notes. The notes stop partway through 5.3, so the
+   connective-tissue half is only sketched here — this deck grows as they do. */
+{
+  id: 'bio-ch5',
+  group: 'Chapter 5',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 5 — Tissues',
+  source: 'Chapter 5 — course notes',
+  cards: [
+    /* ---- the four tissue types ---- */
+    { term: 'Tissue', def: 'a group of similar cells working together on the same job' },
+    { term: 'Epithelial tissue', def: 'the type that protects, secretes, absorbs and excretes — covering body surfaces, lining organs and composing glands',
+      note: 'Has no blood vessels of its own, divides readily, and its cells sit tightly packed.' },
+    { term: 'Connective tissue', def: 'the type that binds, supports, fills spaces, stores fat and produces blood cells',
+      note: 'Mostly well supplied with blood, and its cells sit far apart with extracellular matrix between them. The most abundant type by weight.' },
+    { term: 'Muscle tissue', def: 'the type that generates the forces for movement, able to contract in response to a stimulus' },
+    { term: 'Nervous tissue', def: 'the type that conducts impulses for coordination, regulation, integration and sensory reception' },
+    { fact: true, term: 'Where nervous tissue is found', def: 'the brain, the spinal cord and the nerves' },
+
+    /* ---- junctions ---- */
+    { term: 'Intercellular junctions', def: 'the structures forming the site of union between neighbouring cells' },
+    { term: 'Desmosome', def: 'a junction that rivets cells together like a spot weld, letting them act as one reinforced unit' },
+
+    /* ---- epithelial general ---- */
+    { term: 'Free surface', def: 'the exposed side of an epithelium, facing either the outside or an open internal space',
+      note: 'Also called the apical surface.' },
+    { term: 'Basement membrane', def: 'the thin extracellular layer anchoring an epithelium to the connective tissue beneath it' },
+    { fact: true, term: 'How epithelium is fed without blood vessels',
+      def: 'nutrients diffuse into it from the connective tissue underneath' },
+    { term: 'Lumen', def: 'the hollow interior of a tubular structure such as a vessel or the intestine' },
+    { term: 'Microvilli', def: 'tiny cylindrical projections that multiply the surface area available for absorption' },
+    { term: 'Goblet cells', def: 'scattered secretory cells that produce mucus, which the cilia then sweep along' },
+    { term: 'Keratinization', def: 'the process where cells pushed toward the surface fill with protein, harden and die, forming a dry, tough, waterproof covering' },
+
+    /* ---- shapes and layers ---- */
+    { term: 'Squamous', def: 'flattened and scale-like — the thinnest of the three cell shapes' },
+    { term: 'Cuboidal', def: 'cube-shaped, roughly as tall as it is wide' },
+    { term: 'Columnar', def: 'elongated, taller than it is wide' },
+    { term: 'Simple', def: 'one layer only, with every cell touching the basement membrane and reaching the free surface' },
+    { term: 'Stratified', def: 'two or more layers, where only the deepest touches the basement membrane and only the top reaches the free surface' },
+
+    /* ---- the eight epithelia ---- */
+    { term: 'Simple squamous epithelium', def: 'a single layer of thin flat cells, built for diffusion and filtration — the alveoli, capillary walls and the linings of blood and lymph vessels' },
+    { term: 'Simple cuboidal epithelium', def: 'a single layer of cube-shaped cells with round central nuclei, lining kidney tubules, thyroid follicles and the surface of the ovaries' },
+    { term: 'Simple columnar epithelium', def: 'a single layer of tall cells lining the uterus, stomach and intestines, secreting digestive fluids and absorbing nutrients' },
+    { term: 'Pseudostratified columnar epithelium', def: 'looks layered but is not — every cell reaches the basement membrane while the nuclei sit at different heights; lines the respiratory passages' },
+    { term: 'Stratified squamous epithelium', def: 'many layers with the outermost flattened, forming the epidermis and lining the mouth, esophagus, vagina and anal canal' },
+    { term: 'Stratified cuboidal epithelium', def: 'two or three layers of cube-shaped cells lining the ducts of the mammary, sweat and salivary glands and the pancreas' },
+    { term: 'Stratified columnar epithelium', def: 'several layers, tall cells on top and cube-shaped ones beneath, found in part of the male urethra' },
+    { term: 'Transitional epithelium', def: 'the stretchable lining of the bladder and ureters, bunched into several layers when relaxed and thinned out when the organ fills' },
+
+    /* ---- glands ---- */
+    { term: 'Glandular epithelium', def: 'cells specialized to produce and secrete substances, sitting within columnar or cuboidal tissue' },
+    { term: 'Gland', def: 'one or more secretory cells acting together to produce a substance' },
+    { term: 'Exocrine gland', def: 'one that releases its product into a duct opening onto a surface, such as the skin or the digestive lining' },
+    { term: 'Endocrine gland', def: 'one that releases its product into tissue fluid or blood rather than into a duct' },
+    { term: 'Unicellular gland', def: 'a single secretory cell sitting in otherwise non-secretory tissue — the goblet cell is the common example' },
+    { term: 'Multicellular gland', def: 'one built from many cells, which is what most exocrine glands are' },
+    { term: 'Simple gland', def: 'one whose duct runs to the surface without branching on the way' },
+    { term: 'Compound gland', def: 'one whose duct branches repeatedly before it reaches the secretory portion' },
+    { term: 'Tubular gland', def: 'one whose secretory portion is an epithelium-lined tube' },
+    { term: 'Alveolar gland', def: 'one whose secretory portion swells into saclike dilations',
+      note: 'Also called an acinar gland.' },
+
+    /* ---- modes of secretion ---- */
+    { term: 'Merocrine glands', def: 'those releasing a fluid product through the cell membrane by exocytosis, the cell itself staying intact',
+      note: 'Also called eccrine glands. Salivary, pancreatic and sweat glands. Most secretory cells work this way.' },
+    { term: 'Apocrine glands', def: 'those that pinch off part of the cell body along with the product — the mammary glands and the wax glands of the ear canal' },
+    { term: 'Holocrine glands', def: 'those releasing whole cells, which then burst to liberate what they held — the sebaceous glands of the skin' },
+    { term: 'Serous fluid', def: 'a watery, slippery secretion, associated with the membranes lining the thoracic and abdominopelvic cavities' },
+    { term: 'Mucus', def: 'the thick protective secretion rich in the glycoprotein mucin, produced by the linings of the digestive, respiratory and reproductive systems' },
+    { term: 'Mucin', def: 'the glycoprotein that makes mucus what it is' },
+
+    /* ---- connective tissue (5.3, still being written) ---- */
+    { fact: true, term: 'The two categories of connective tissue',
+      def: 'connective tissue proper, and the specialized connective tissues' }
+  ],
+  questions: [
+    { q: 'Which tissue type has no blood vessels of its own?',
+      choices: ['Epithelial', 'Connective', 'Muscle', 'Nervous'], answer: 0,
+      why: 'It is fed by diffusion from the connective tissue beneath it, which is well supplied.' },
+
+    { q: 'Simple versus stratified describes what about an epithelium?',
+      choices: [
+        'The number of cell layers',
+        'The shape of the cells',
+        'Whether it has cilia',
+        'Whether it lines a duct'
+      ], answer: 0,
+      why: 'Shape is the other axis — squamous, cuboidal or columnar. The two combine to name each tissue.' },
+
+    { q: 'Gas exchange in the alveoli happens across which epithelium?',
+      choices: [
+        'Simple squamous',
+        'Simple cuboidal',
+        'Stratified squamous',
+        'Transitional'
+      ], answer: 0,
+      why: 'One layer of the flattest cells is the shortest path a gas can cross. Thin means fragile, which is why it damages easily.' },
+
+    { q: 'Pseudostratified columnar epithelium is called "pseudo" because:',
+      choices: [
+        'It looks layered, but every cell actually reaches the basement membrane',
+        'It has layers that come and go with stretching',
+        'Its cells change shape depending on the organ',
+        'It is a mix of cuboidal and columnar cells'
+      ], answer: 0,
+      why: 'The nuclei sit at different heights, which reads as layering. Some cells do not reach the free surface, but all of them touch the base.' },
+
+    { q: 'Which epithelium lines the urinary bladder?',
+      choices: ['Transitional', 'Simple columnar', 'Stratified squamous', 'Pseudostratified columnar'], answer: 0,
+      why: 'It has to change shape as the bladder fills, and it also stops urine diffusing back into the body.' },
+
+    { q: 'An exocrine gland differs from an endocrine gland how?',
+      choices: [
+        'Exocrine secretes into a duct; endocrine secretes into tissue fluid or blood',
+        'Exocrine secretes into blood; endocrine secretes into a duct',
+        'Exocrine glands are unicellular; endocrine glands are multicellular',
+        'Exocrine glands produce mucus; endocrine glands produce serous fluid'
+      ], answer: 0,
+      why: 'Exo- is outward, through a duct to a surface. Endo- is within — straight into the internal environment.' },
+
+    { q: 'Merocrine, apocrine and holocrine describe:',
+      choices: [
+        'How much of the cell is given up during secretion',
+        'The shape of the gland’s secretory portion',
+        'Whether the duct branches',
+        'Whether the product is watery or thick'
+      ], answer: 0,
+      why: 'Merocrine gives up nothing, apocrine pinches off part of the cell, holocrine sacrifices the whole cell. Sebaceous glands are the holocrine example.' },
+
+    { q: 'Keratinization produces what, and where does it NOT occur?',
+      choices: [
+        'A dry, tough waterproof covering — absent from the lining of the mouth, esophagus and vagina',
+        'A layer of mucus — absent from the skin',
+        'A stretchable lining — absent from the bladder',
+        'A layer of cilia — absent from the respiratory tract'
+      ], answer: 0,
+      why: 'Those linings are stratified squamous too, but stay soft, moist and alive at the surface.' }
   ]
 },
 
