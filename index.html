@@ -301,6 +301,20 @@
   /* which deck a row came from — present but quiet, so it explains an overlap
      without competing with the term or the definition */
   table.browse.chapter td.t{width:26%}
+  table.browse.chapter.grouped td.t{width:32%}
+  /* a deck heading inside the chapter table — reads as a divider, not a row */
+  table.browse tr.secthead td{background:var(--card2);font-weight:650;font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+    padding:9px 12px;border-top:1px solid var(--line)}
+  table.browse tr.secthead:first-child td{border-top:0}
+  table.browse tr.secthead span{float:right;font-weight:500;letter-spacing:0;
+    text-transform:none;color:var(--dim)}
+  /* two-way switch for the ordering */
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{padding:6px 12px;font-size:12.5px;color:var(--dim);background:var(--card)}
+  .seg button:hover{color:var(--text)}
+  .seg button.on{background:var(--accent);color:#04161c;font-weight:650}
+  html[data-theme="light"] .seg button.on{color:#fff}
   table.browse td.src{width:18%;font-size:11.5px;color:var(--dim);line-height:1.45;
     text-align:right;vertical-align:top}
   @media(max-width:560px){ table.browse td.src{display:none} }
@@ -1709,52 +1723,84 @@ function placeStep(i){
    all straight through. The per-deck Review Sheet stays exactly as it is — for
    a study guide that is the tested scope, and collapsing it into the chapter
    would lose that distinction. */
-const chapterDecks = d => (d.group ? DECKS.filter(o => o.course === d.course && o.group === d.group) : [d]);
+/* Decks of a chapter, study guides first — the tested scope leads, same order
+   the home screen uses. Only decks that actually hold terms: a procedure is a
+   numbered sequence, and it would contribute a heading with nothing under it
+   while inflating the deck count in the subtitle. */
+const chapterDecks = d => (d.group
+  ? DECKS.filter(o => o.course === d.course && o.group === d.group && o.cards.length)
+         .slice().sort((a, b) => (b.exam ? 1 : 0) - (a.exam ? 1 : 0))
+  : (d.cards.length ? [d] : []));
+/* the deck name shown against a row — trimmed of the chapter prefix the heading
+   already states, so it stays narrow and scannable */
+const shortDeck = t => t.replace(/^Ch\.\s*\d+\s*[—-]\s*/, '').replace(/^[^—-]*[—-]\s*/, '');
+const alphaKey = t => t.toLowerCase().replace(/^[^a-z0-9]+/, '');
+function chapterOrder(v){ session.bydeck = v; render(); }
+
 function runChapter(d){
-  if (!session) session = { hide: false, filter: '' };
+  if (!session) session = { hide: false, filter: '', bydeck: false };
   const s = session;
   const f = s.filter.toLowerCase();
   const decks = chapterDecks(d);
+  const hit = c => !f || (c.term + ' ' + c.def).toLowerCase().includes(f);
 
-  /* One term can legitimately appear in several decks — notes re-covering a
-     lecture, a study guide restating a word list. Identical entries collapse to
-     one row; genuinely different definitions stay separate and are labelled, so
-     the overlap reads as two sources rather than a duplicate. */
-  const seen = new Map();
-  for (const deck of decks)
-    for (const c of deck.cards){
-      const k = (c.term + '|' + c.def).toLowerCase();
-      if (seen.has(k)) seen.get(k).from.push(deck.title);
-      else seen.set(k, { card: c, from: [deck.title] });
+  const cell = c => `<td class="t">${esc(c.term)}</td>
+    <td class="${s.hide ? 'hidden-def' : ''}" onclick="this.classList.remove('hidden-def')">
+      ${defHtml(c.def)}${c.note && !s.hide ? `<span class="note">${esc(c.note)}</span>` : ''}</td>`;
+
+  let body = '', shown = 0, total = 0;
+
+  if (s.bydeck){
+    /* Grouped by deck, so word parts of a kind stay together — every prefix in
+       one block rather than scattered through the alphabet. Nothing is merged
+       here: a term in two decks belongs under BOTH headings, which is the whole
+       point of reading it this way. The source column goes, since the heading
+       above each block already says it. */
+    for (const deck of decks){
+      const rows = deck.cards.filter(hit).sort((a, b) => alphaKey(a.term).localeCompare(alphaKey(b.term)));
+      total += deck.cards.length;
+      if (!rows.length) continue;
+      shown += rows.length;
+      body += `<tr class="secthead"><td colspan="2">${esc(shortDeck(deck.title))}
+        <span>${rows.length} term${rows.length > 1 ? 's' : ''}</span></td></tr>`;
+      body += rows.map(c => `<tr>${cell(c)}</tr>`).join('');
     }
-
-  const alpha = t => t.toLowerCase().replace(/^[^a-z0-9]+/, '');
-  const all = [...seen.values()].sort((a, b) => alpha(a.card.term).localeCompare(alpha(b.card.term)));
-  const rows = all.filter(r => !f ||
-    (r.card.term + ' ' + r.card.def + ' ' + r.from.join(' ')).toLowerCase().includes(f));
-
-  /* the deck name shown against a row — trimmed of the chapter prefix the
-     heading already states, so the column stays narrow and scannable */
-  const short = t => t.replace(/^Ch\.\s*\d+\s*[—-]\s*/, '').replace(/^[^—-]*[—-]\s*/, '');
+  } else {
+    /* Straight A–Z across the chapter. One term can legitimately appear in
+       several decks — notes re-covering a lecture, a study guide restating a
+       word list — so identical entries collapse to one row naming both sources,
+       while genuinely different wordings stay separate and labelled. */
+    const seen = new Map();
+    for (const deck of decks)
+      for (const c of deck.cards){
+        const k = (c.term + '|' + c.def).toLowerCase();
+        if (seen.has(k)) seen.get(k).from.push(deck.title);
+        else seen.set(k, { card: c, from: [deck.title] });
+      }
+    const all = [...seen.values()].sort((a, b) => alphaKey(a.card.term).localeCompare(alphaKey(b.card.term)));
+    total = all.length;
+    const rows = all.filter(r => hit(r.card) || r.from.join(' ').toLowerCase().includes(f));
+    shown = rows.length;
+    body = rows.map(r => `<tr>${cell(r.card)}
+      <td class="src">${r.from.map(t => esc(shortDeck(t))).join('<br>')}</td></tr>`).join('');
+  }
 
   app.innerHTML = `
     <button class="back" onclick="go('deck','${d.id}')">← ${esc(d.title)}</button>
     <h2 class="title">${esc(d.group)} — everything</h2>
-    <div class="srcline">${esc(d.course)} · ${all.length} terms across ${decks.length} decks</div>
+    <div class="srcline">${esc(d.course)} · ${decks.length} decks</div>
     <div class="bar">
+      <div class="seg">
+        <button class="${s.bydeck ? '' : 'on'}" onclick="chapterOrder(false)">A–Z</button>
+        <button class="${s.bydeck ? 'on' : ''}" onclick="chapterOrder(true)">By deck</button>
+      </div>
       <button class="iconbtn" onclick="session.hide=!session.hide;render()">
         ${s.hide ? '👁 Show definitions' : '🙈 Hide definitions'}</button>
-      <span>${rows.length} of ${all.length}</span>
+      <span>${shown} of ${total}</span>
     </div>
     <input class="search" id="cfilter" placeholder="Filter…" value="${esc(s.filter)}">
-    <table class="browse chapter"><tbody>
-      ${rows.map(r => `<tr>
-        <td class="t">${esc(r.card.term)}</td>
-        <td class="${s.hide ? 'hidden-def' : ''}" onclick="this.classList.remove('hidden-def')">
-          ${defHtml(r.card.def)}${r.card.note && !s.hide ? `<span class="note">${esc(r.card.note)}</span>` : ''}</td>
-        <td class="src">${r.from.map(t => esc(short(t))).join('<br>')}</td></tr>`).join('')}
-    </tbody></table>
-    ${!rows.length ? '<p style="color:var(--dim)">Nothing matches that filter.</p>' : ''}`;
+    <table class="browse chapter ${s.bydeck ? 'grouped' : ''}"><tbody>${body}</tbody></table>
+    ${!shown ? '<p style="color:var(--dim)">Nothing matches that filter.</p>' : ''}`;
 
   const cf = document.getElementById('cfilter');
   cf.oninput = e => { const p = e.target.selectionStart; s.filter = e.target.value; runChapter(d);

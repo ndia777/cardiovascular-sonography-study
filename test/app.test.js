@@ -87,7 +87,9 @@ const modesFor = d => {
   if (cards || written) m.push('quiz');
   /* the whole-chapter sheet only appears where the chapter spans more than one
      deck — otherwise it would duplicate the per-deck review sheet */
-  if (d.group && ALL_DECKS.filter(o => o.course === d.course && o.group === d.group).length > 1)
+  /* only decks holding terms count — a procedure has no glossary to contribute */
+  if (d.group && ALL_DECKS.filter(o => o.course === d.course && o.group === d.group
+                                    && (o.cards || []).length).length > 1)
     m.push('chapter');
   if (d.chest) m.push('chest');
   if (d.beat) m.push('beat');
@@ -292,7 +294,8 @@ function suite(s, label) {
        3. the per-deck Review Sheet is untouched, because for a study guide that
           is the tested scope and the whole point was not to lose it. */
   for (const d of DECKS.filter(x => modesFor(x).includes('chapter'))) {
-    const siblings = DECKS.filter(o => o.course === d.course && o.group === d.group);
+    /* term-bearing decks only, matching what the sheet gathers */
+    const siblings = DECKS.filter(o => o.course === d.course && o.group === d.group && o.cards.length);
     go('run', d.id, 'chapter');
     const html = s.__app.innerHTML;
     const shown = [...html.matchAll(/<td class="t">([^<]*)</g)].map(m => m[1].trim());
@@ -325,6 +328,41 @@ function suite(s, label) {
     check(`[${label}] ${d.id} every chapter row names its source deck`,
           srcs.length === shown.length && srcs.every(m => m[1].trim()),
           `${srcs.length} source cells for ${shown.length} rows`);
+
+    /* Grouped by deck: every card sits under its own deck's heading, alphabetical
+       within the block, and nothing is merged away — a term in two decks belongs
+       under both. Read the rendered table, since the grouping is a render-time
+       decision the deck data says nothing about. */
+    go('run', d.id, 'chapter');
+    vm.runInContext('chapterOrder(true);', s);
+    const grouped = s.__app.innerHTML;
+    const heads = [...grouped.matchAll(/<tr class="secthead"><td colspan="2">([^<]*)</g)]
+      .map(m => m[1].trim());
+    check(`[${label}] ${d.id} by-deck view heads every deck in ${d.group}`,
+          heads.length === siblings.length,
+          `${heads.length} headings for ${siblings.length} decks`);
+
+    /* card total must equal the sum of the decks — no merging, none dropped */
+    const groupedRows = [...grouped.matchAll(/<td class="t">([^<]*)</g)].length;
+    const expected = siblings.reduce((n, o) => n + o.cards.length, 0);
+    check(`[${label}] ${d.id} by-deck view keeps every card from every deck`,
+          groupedRows === expected, `${groupedRows} rows against ${expected} cards`);
+
+    /* alphabetical WITHIN each block, not across the table */
+    const blocks = grouped.split('<tr class="secthead">').slice(1);
+    let outOfOrder = '';
+    for (const b of blocks) {
+      const ts = [...b.matchAll(/<td class="t">([^<]*)</g)].map(m => m[1].trim());
+      const sorted = [...ts].sort((x, y) => key(x).localeCompare(key(y)));
+      if (JSON.stringify(ts) !== JSON.stringify(sorted) && !outOfOrder)
+        outOfOrder = `block starting "${ts[0]}" is not alphabetical`;
+    }
+    check(`[${label}] ${d.id} by-deck blocks are alphabetical inside`, !outOfOrder, outOfOrder);
+
+    /* the source column is redundant once each block is headed, and dropping it
+       is what buys the width back */
+    check(`[${label}] ${d.id} by-deck view drops the source column`,
+          !/<td class="src">/.test(grouped), 'source column still rendered under deck headings');
 
     /* and the deck's own review sheet still shows only its own terms */
     go('run', d.id, 'browse');
