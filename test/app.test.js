@@ -132,9 +132,31 @@ function suite(s, label, srcCss) {
   check(`[${label}] study-guide courses lead, then alphabetical by subject`,
         renderedCourses.length > 1 && JSON.stringify(renderedCourses) === JSON.stringify(expected),
         `rendered: ${renderedCourses.map(subj).join(' | ')}`);
-  check(`[${label}] the tiers are actually distinguishable`,
-        renderedCourses.some(guided) && renderedCourses.some(c => !guided(c)),
-        'every course is on the same tier — this check would pass vacuously');
+  /* The assertion above only proves the tier rule while some course lacks a
+     guide; once they all have one it silently degrades to "alphabetical". It
+     used to fail in that situation, which is a check that breaks when the
+     material improves. So prove the tiering directly instead: take the guide
+     away from one course, re-render, and confirm it drops below the courses
+     that still have one. That holds however the decks are flagged. */
+  const demoted = renderedCourses.find(guided);
+  const stillGuided = renderedCourses.filter(c => c !== demoted && guided(c));
+  if (demoted && stillGuided.length) {
+    const stripped = DECKS.filter(d => d.course === demoted && d.exam);
+    stripped.forEach(d => { d.exam = false; });
+    go('home');
+    const after = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
+      .map(m => m[1].trim().replace(/&amp;/g, '&'));
+    stripped.forEach(d => { d.exam = true; });   // restore before asserting
+    go('home');
+
+    const lastGuided = Math.max(...stillGuided.map(c => after.indexOf(c)));
+    check(`[${label}] a course that loses its guide falls below those that keep one`,
+          after.indexOf(demoted) > lastGuided && lastGuided >= 0,
+          `with ${subj(demoted)} unguided the order was: ${after.map(subj).join(' | ')}`);
+  } else {
+    check(`[${label}] the tier rule can be exercised`, false,
+          'need at least two courses with a study guide to demote one and observe it');
+  }
 
   /* Inside a section, decks run oldest-added first, so the list follows the
      order the material was covered. Every deck must carry a date, or it would

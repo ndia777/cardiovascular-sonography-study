@@ -3127,7 +3127,9 @@ window.DECKS = [
     /* --- added from the test-review section of the notes --- */
     { term: 'Cardioversion', def: 'the procedure that resets a fast, irregular rhythm back to a normal one' },
     { term: 'Thallium stress test', def: 'the exercise test requiring an injection of a radioactive tracer so blood flow to the muscle can be imaged' },
-    { fact: true, term: 'Electrodes used for a Holter monitor', def: '6 to 7' },
+    { fact: true, term: 'Electrodes used for a Holter monitor',
+      def: 'fewer than a 12-lead ECG uses, and placed on the chest and torso rather than the limbs, so ordinary walking does not corrupt a 24-hour recording',
+      note: 'The test review counts “6 to 7 electrodes” as the statement that is NOT true. How many are used depends on how many channels the recorder runs, so a fixed number is not a safe answer.' },
     { term: 'Coronary balloon angioplasty', def: 'threading a catheter with a balloon at its tip, usually in through the femoral artery, and inflating it to press plaque aside and reopen the vessel',
       note: 'The lecture notes call this "balloon angiography", which conflates two procedures. Angiography is the diagnostic picture — catheter, contrast dye and x-ray. Angioplasty is the balloon that treats what the picture found. Both go in through the femoral artery, which is probably where the wires crossed.' },
     { term: 'Coronary artery bypass', def: 'grafting a length of vein into the heart’s own circulation to carry blood around a blocked stretch' },
@@ -3751,6 +3753,159 @@ window.DECKS = [
         'No exercise for 24 hours beforehand'
       ], answer: 0 }
   ]
+},
+
+/* ───────────────────────────────  M103 · REVIEW SET  ─────────────────────── */
+
+{
+  id: 'ekg-test-review',
+  group: 'EKG',
+  exam: true,
+
+  added: '2026-08-11',
+  course: 'M103 · Medical Procedures',
+  title: 'Test Review — Cardiology, EKG & Stress Tests',
+  source: 'the in-class test review',
+  /* These are the questions the instructor read out from the test, with the
+     answers given in class, so the wording is worth keeping close.
+
+     Cards are term-first, because that is the direction this app studies in —
+     it shows the description and asks for the name. But the questions asked in
+     the negative ("which is NOT true of...") are kept in `questions` in their
+     original form as well, since that is how they will appear on the paper. A
+     negative answer read off a flashcard teaches the false statement as fact,
+     which is exactly how "6 to 7 electrodes" ended up wrong in ekg-basics.
+     Ordering and reasoning live in `questions` too: no term/definition shape. */
+  cards: [
+    { term: 'Right atrium',        def: 'the chamber deoxygenated blood enters when it returns to the heart' },
+    { term: 'P wave',              def: 'atrial depolarization' },
+    { term: 'QRS complex',         def: 'ventricular depolarization' },
+    { term: 'T wave',              def: 'ventricular repolarization' },
+    { term: 'SA node',             def: 'the body’s natural pacemaker' },
+    { term: 'Cardiac cycle',       def: 'one heartbeat' },
+    { term: 'Cardioversion',       def: 'the procedure that turns a cardiac arrhythmia back into a normal sinus rhythm' },
+    { term: 'Normal sinus rhythm', def: 'an ECG reading within normal limits' },
+
+    { term: 'Standard limb leads',           def: 'Lead I, Lead II and Lead III' },
+    { term: 'Precordial leads, chest leads', def: 'V1 through V6' },
+    { term: '10 mm',                         def: 'the height of a proper standardization mark on an ECG' },
+    { term: 'Electrolyte gel',               def: 'applied under each electrode because skin conducts electricity poorly' },
+    { term: 'Single-channel EKG',            def: 'the machine that records one lead at a time rather than several at once' },
+
+    { term: 'AC interference',     def: 'the artifact produced by electrical current in nearby equipment or wiring' },
+    { term: 'Wandering baseline',  def: 'the artifact that poor-quality electrolyte gel produces' },
+    { term: 'Interrupted baseline',def: 'what appears on the tracing when the metal tip of a lead wire comes away from its electrode' },
+
+    { term: 'Thallium stress test', def: 'the test requiring an injection of a radioactive substance' },
+    { term: 'Femoral artery',       def: 'the vessel a catheter with a deflated balloon is threaded into for a coronary balloon angioplasty' },
+    { term: 'Coronary artery bypass', def: 'the surgery that takes a length of vein and grafts it onto the heart’s own vessels to carry blood past a blockage' },
+    { term: 'ICD', def: 'the implanted device that senses a dangerous rhythm and sends a small dose of electricity to restore a normal one',
+      note: 'Implantable cardioverter-defibrillator — cardioverter, not “cardioversion”.' },
+
+    { term: 'Atrial fibrillation', def: 'the arrhythmia in which the upper chambers contract extremely rapidly and incompletely' },
+    { term: 'PVC, premature ventricular contraction', def: 'the commonest disturbance of rhythm arising from the lower chambers — an early beat, ahead of the one due next' },
+  ],
+
+  questions: [
+    { q: 'Starting at the SA node, what path does the impulse take through the conduction system?',
+      choices: [
+        'SA node → AV node → bundle of His → bundle branches → Purkinje fibers',
+        'SA node → bundle of His → AV node → bundle branches → Purkinje fibers',
+        'SA node → Purkinje fibers → AV node → bundle of His → bundle branches',
+        'AV node → SA node → bundle of His → bundle branches → Purkinje fibers',
+      ], answer: 0,
+      why: 'The SA node fires, the AV node holds the impulse for a fraction of a second so the atria can finish emptying, then it runs down the bundle of His, splits into the right and left bundle branches, and spreads through the Purkinje fibers to contract the ventricles.' },
+
+    { q: 'How many leads and how many electrode placements does a standard ECG use?',
+      choices: [
+        '12 leads from 10 placements',
+        '10 leads from 12 placements',
+        '12 leads from 12 placements',
+        '10 leads from 10 placements',
+      ], answer: 0,
+      why: 'Ten electrodes — one on each limb and six across the chest — produce twelve different views of the heart’s electrical activity.' },
+
+    { q: 'Why should an ECG be run in a quiet room?',
+      choices: [
+        'To reduce artifacts',
+        'Because the machine picks up sound',
+        'To keep the machine from overheating',
+        'To speed the recording up',
+      ], answer: 0,
+      why: 'A calm room keeps the patient still and relaxed. Talking, moving and nervousness all put somatic tremor on the tracing.' },
+
+    { q: 'Why are the limb electrodes placed on the fleshy part of the limb?',
+      choices: [
+        'To minimize artifacts',
+        'Because bone conducts too strongly',
+        'To keep the lead wires from tangling',
+        'To make the electrodes easier to peel off',
+      ], answer: 0,
+      why: 'A flat, fleshy area gives the electrode steady contact. Over bone or a thin, bony surface the contact is poor and picks up tremor.' },
+
+    { q: 'Where should the machine’s power cord be positioned, and why?',
+      choices: [
+        'Pointing away from the patient, to reduce AC interference',
+        'Under the patient’s table, to keep it out of the way',
+        'Coiled beside the patient, to stop it pulling on the leads',
+        'Across the patient’s legs, to keep the wires together',
+      ], answer: 0,
+      why: 'Current flowing in the cord induces interference in the lead wires. A power cord running under the patient’s table is a classic cause of AC interference, and it counts as an error in technique.' },
+
+    { q: 'Which of these would NOT result in somatic tremor artifact?',
+      choices: [
+        'Improper grounding of the ECG machine',
+        'A patient shivering because the room is cold',
+        'A patient who is nervous and tense on the table',
+        'A patient with Parkinson’s disease',
+      ], answer: 0,
+      why: 'Somatic tremor comes from the patient’s own muscles — shivering, nerves, a tremor disorder. Grounding is an electrical fault, so it shows up as AC interference instead.' },
+
+    { q: 'Which of these is NOT true of a multi-channel EKG?',
+      choices: [
+        'It records one lead at a time',
+        'It records several leads at the same time',
+        'It shortens the time the patient spends on the table',
+        'It produces the full tracing in a single run',
+      ], answer: 0,
+      why: 'Recording one lead at a time is the single-channel machine. A multi-channel unit takes several leads simultaneously, which is why it is quicker.' },
+
+    { q: 'Which of these is NOT true about Holter monitor electrodes?',
+      choices: [
+        'Six to seven electrodes are used',
+        'They go on the chest and torso rather than the limbs',
+        'The skin is cleaned, and may be shaved, before they are applied',
+        'They stay in place for the whole recording period',
+      ], answer: 0,
+      why: 'The review keys the electrode count as the false statement. How many are used depends on how many channels the recorder runs, so no fixed figure is safe — the other three are all true of Holter electrodes.' },
+
+    { q: 'What is an important part of patient education for a Holter monitor?',
+      choices: [
+        'To document any pain and keep a diary',
+        'To remove the electrodes before sleeping',
+        'To avoid drinking water while wearing it',
+        'To stay in bed for the whole recording',
+      ], answer: 0,
+      why: 'The recording is only useful if symptoms can be matched against it, so the patient logs activities and any chest pain with the time each one happened.' },
+
+    { q: 'What is true of a treadmill stress test?',
+      choices: [
+        'It must be monitored closely by the provider',
+        'The patient is left alone once walking',
+        'It is performed while the patient is sedated',
+        'No ECG is recorded during the test itself',
+      ], answer: 0,
+      why: 'The whole point is to stress the heart until symptoms or ECG changes appear, so the provider stays present throughout in case an arrhythmia or infarction develops.' },
+
+    { q: 'What should you do after running an ECG on a patient?',
+      choices: [
+        'Assist the patient as needed',
+        'Leave immediately to process the tracing',
+        'Send the patient to reception still gowned',
+        'Leave the electrodes on in case a repeat is needed',
+      ], answer: 0,
+      why: 'The patient is partly undressed and lying flat. Help them sit up, dress and get down off the table before you go and deal with the tracing.' },
+  ],
 }
 
 ];
