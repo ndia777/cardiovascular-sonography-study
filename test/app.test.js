@@ -102,7 +102,7 @@ const clashes = (a, b) => {
   return a === b || a.includes(b) || b.includes(a);
 };
 
-function suite(s, label) {
+function suite(s, label, srcCss) {
   const { DECKS, go, judge, autoQuestions, $ } = s;
 
   check(`[${label}] decks load`, DECKS && DECKS.length > 0, `got ${DECKS && DECKS.length}`);
@@ -287,6 +287,16 @@ function suite(s, label) {
       check(`[${label}] cards inside a labelled section do not repeat the label`,
             !folds.some(f => /class="badge now"/.test(f)),
             'a section heading and its cards both claim to be current');
+
+      /* Two deck grids can now render back to back, with no heading or fold
+         between them to space them apart. Where that happens the stylesheet has
+         to separate them, or the two rows of cards touch. Only assert the rule
+         when the markup actually produces the situation. */
+      const adjacent = /<\/button><\/div>\s*<div class="decks">/.test(openHtml);
+      if (adjacent)
+        check(`[${label}] adjacent deck grids are spaced apart`,
+              /\.decks\s*\+\s*\.decks\s*\{[^}]*margin/.test(srcCss),
+              'two grids render back to back with no rule separating them');
       check(`[${label}] the current chapter is labelled as such`,
             /<span class="now">current<\/span>/.test(openHtml) || /class="badge now"/.test(openHtml),
             'nothing on screen says which chapter is current');
@@ -1269,7 +1279,7 @@ const decksSrc = read('decks.js');
 const srcInline = inlineScripts(srcHtml);
 check('index.html has exactly one inline script', srcInline.length === 1, `found ${srcInline.length}`);
 
-suite(boot(decksSrc, srcInline[0], 'source'), 'source');
+suite(boot(decksSrc, srcInline[0], 'source'), 'source', srcHtml);
 heartGeometry(srcHtml, 'source');
 
 /* build.ps1 prints a card count from a regex over decks.js, because PowerShell
@@ -1296,7 +1306,7 @@ if (!fs.existsSync(bundlePath)) {
   const bundle = read('docs/index.html');
   const parts = inlineScripts(bundle);
   check('docs/index.html has two inline scripts', parts.length === 2, `found ${parts.length}`);
-  if (parts.length === 2) suite(boot(parts[0], parts[1], 'bundle'), 'bundle');
+  if (parts.length === 2) suite(boot(parts[0], parts[1], 'bundle'), 'bundle', bundle);
   heartGeometry(bundle, 'bundle');
 
   /* Reproduce exactly what build.ps1 would emit and compare the whole file.

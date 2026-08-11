@@ -42,6 +42,11 @@
   .coursehead{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
     margin:26px 0 10px;font-weight:600}
   .decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+  /* Two grids can now sit directly on top of each other — the study guides and
+     then the single-deck chapters — with no heading or fold between them to
+     provide spacing. Slightly more than the 12px inside a grid, so the break
+     reads as a break rather than as one continuous run of cards. */
+  .decks + .decks{margin-top:20px}
   /* The fold holding everything that is not a study guide. Styled as a quiet
      line of text rather than a control, so it recedes behind the decks above it
      and never competes with them for attention. */
