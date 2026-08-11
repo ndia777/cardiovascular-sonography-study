@@ -2401,9 +2401,11 @@ window.DECKS = [
   title: 'The Heart — Anatomy & Blood Flow',
   source: 'The Circulatory System — lecture notes',
   /* Positions are percentages of the 650x650 diagram, so they hold at any size.
-     Where a dot alone would be ambiguous — four valves sit within a few dozen
-     units of each other in the middle of the figure — the dot moves out to
-     legible space and `to` runs a leader line to the exact structure. */
+     The four valves used to be pushed out into open space with leader lines,
+     because a dot as wide as the hotspot then was covered the leaflet it was
+     meant to mark. Now that the ring is drawn smaller than its hit area, each
+     valve dot sits on its own cusp — which is what the question is actually
+     asking for — and none of them collide. */
   figure: {
     name: 'heart',
     parts: [
@@ -2425,13 +2427,13 @@ window.DECKS = [
         about: 'receives oxygenated blood back from the lungs through the four pulmonary veins' },
       { id: 'Left ventricle', x: 67.1, y: 68.9,
         about: 'pumps oxygenated blood to the entire body, which is why its wall is the thickest of the four chambers' },
-      { id: 'Tricuspid valve', x: 33.8, y: 76.9, to: [38.5, 71.5],
+      { id: 'Tricuspid valve', x: 36.9, y: 72.3,
         about: 'the atrioventricular valve on the RIGHT — blood crosses it leaving the right atrium' },
-      { id: 'Mitral valve', x: 78.5, y: 47.7, to: [70.5, 52.3],
+      { id: 'Mitral valve', x: 65.0, y: 53.8,
         about: 'the atrioventricular valve on the LEFT, also called the bicuspid valve' },
-      { id: 'Pulmonic valve', x: 38.5, y: 60.0, to: [45.4, 55.4],
+      { id: 'Pulmonic valve', x: 44.3, y: 58.1,
         about: 'the semilunar valve guarding the way out of the right ventricle into the pulmonary trunk' },
-      { id: 'Aortic valve', x: 60.8, y: 61.5, to: [55.4, 54.6],
+      { id: 'Aortic valve', x: 55.2, y: 59.6,
         about: 'the semilunar valve guarding the way out of the left ventricle into the aorta' },
       { id: 'Interventricular septum', x: 61.5, y: 79.4,
         about: 'the muscular wall separating the right ventricle from the left' },

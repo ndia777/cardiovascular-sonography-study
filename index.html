@@ -220,6 +220,20 @@
   .dot.correct{border-color:var(--good);background:var(--good);color:#04120b}
   .dot.wrong{border-color:var(--bad);background:var(--bad);color:#fff}
   .dot.muted{opacity:.4}
+  /* On the anatomical figures the ring is drawn smaller than the button. A dot
+     wide enough to tap comfortably is also wide enough to cover the valve it is
+     pointing at and to swallow its own leader line, which made the four valves
+     ambiguous. So the hit area stays 5.2% — thumbs need that, and it is what
+     keeps neighbouring hotspots from overlapping — and only the visible ring
+     shrinks, to about 3.2% of the figure. The faint halo keeps it legible
+     against artwork that is busy and light in places and dark in others. */
+  .figure .dot{border:none;background:none}
+  .figure .dot::before{content:'';position:absolute;inset:19%;border-radius:50%;
+    border:2px solid var(--accent);
+    background:color-mix(in srgb,var(--accent) 34%,var(--bg));
+    box-shadow:0 0 0 1.5px color-mix(in srgb,var(--bg) 62%,transparent)}
+  .figure .dot.correct::before{border-color:var(--good);background:var(--good)}
+  .figure .dot.wrong::before{border-color:var(--bad);background:var(--bad)}
 
   /* ---- watch a heartbeat ---- */
   .rhythms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
