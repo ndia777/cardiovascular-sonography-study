@@ -1676,6 +1676,32 @@ window.DECKS = [
 
 {
   id: "bio-ch3",
+  /* Percentages of the figure box. Two structures take a leader out to legible
+     space: the nucleolus, because anything sitting inside the nucleus lands too
+     close to the nucleus dot to be a separate target, and the cytoskeleton,
+     because it is a hair-thin thread. The rest are big enough to point at
+     directly. Positions were measured off a percent grid laid over the artwork
+     and then checked by rendering the dots and looking at them — the first set
+     was estimated by eye off a crop and every one of them was wrong. */
+  figure: {
+    name: 'cell',
+    parts: [
+      { id: 'Nucleus', x: 44.4, y: 27.1, about: 'the control centre, holding the cell’s DNA and directing everything it does' },
+      { id: 'Nucleolus', x: 59.3, y: 41.1, to: [46.2, 33.5], about: 'the dense region inside the nucleus where ribosomes are assembled' },
+      { id: 'Nuclear envelope', x: 51.3, y: 30.6, about: 'the double membrane enclosing the nucleus, pierced by pores that let material in and out' },
+      { id: 'Golgi apparatus', x: 56.2, y: 16.4, about: 'the stack that modifies, sorts and packages proteins for delivery' },
+      { id: 'Mitochondria', x: 30.7, y: 29.9, about: 'the sites of aerobic respiration, where most of the cell’s ATP is produced' },
+      { id: 'Rough ER', x: 37.3, y: 25, about: 'the folded membrane studded with ribosomes, where proteins are made and processed' },
+      { id: 'Ribosomes', x: 47.9, y: 45.5, about: 'the specks that assemble amino acids into proteins, free in the cytosol or stuck to the ER' },
+      { id: 'Centrioles', x: 65.3, y: 31.6, about: 'the paired bundles of microtubules that organise the spindle during cell division' },
+      { id: 'Lysosomes', x: 31.7, y: 58, about: 'sacs of digestive enzymes that break down worn-out parts and engulfed material' },
+      { id: 'Vesicles', x: 67.4, y: 16.8, about: 'small membrane sacs that carry material between compartments and to the surface' },
+      { id: 'Cytoplasm', x: 73, y: 28.5, about: 'everything between the membrane and the nucleus — the fluid plus the organelles suspended in it' },
+      { id: 'Cell membrane', x: 18.7, y: 35.5, about: 'the selectively permeable boundary deciding what enters and leaves' },
+      { id: 'Flagellum', x: 10.4, y: 89, about: 'the long whip-like tail that propels the cell' },
+      { id: 'Cytoskeleton', x: 27, y: 47.4, to: [21.2, 43.1], about: 'the protein framework that holds the cell’s shape and moves organelles about' },
+    ],
+  },
   exam: true,
 
   added: "2026-07-30",

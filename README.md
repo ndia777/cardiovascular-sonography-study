@@ -153,7 +153,7 @@ the heartbeat animation are all written or drawn from scratch, and every
 definition is worded independently of the textbooks and lecture slides the facts
 came from.
 
-One piece is not:
+Two pieces are not — both anatomical diagrams, both from Wikimedia Commons:
 
 > **Heart diagram** — *"Diagram of the human heart (clean)"* by **Wnauta**, after
 > **Wapcaplet**, from
@@ -165,6 +165,19 @@ One piece is not:
 >
 > That figure remains under CC BY-SA 3.0. The credit also appears on screen
 > beneath the diagram wherever it is shown.
+
+> **Cell diagram** — *"Animal cell structure no text"* by **LadyofHats**
+> (Mariana Ruiz), from
+> [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Animal_cell_structure_no_text.svg),
+> released into the **public domain**. Changes: editor metadata and fixed pixel
+> dimensions stripped, and the viewBox tightened to the drawing so it fills the
+> space instead of floating in a wide margin. The artwork itself is unaltered;
+> the labels in the app are ours.
+>
+> Public domain means nothing is owed here — the credit is courtesy, and it
+> appears on screen beneath the diagram too. It was picked over better-looking
+> candidates because it is genuinely unlabelled, which a mode about naming the
+> parts requires.
 
 ## Also here
 

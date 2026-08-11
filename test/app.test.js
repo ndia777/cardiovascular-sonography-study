@@ -946,7 +946,9 @@ function suite(s, label, srcCss) {
      that cannot be played — and the attribution, which is a licence
      obligation and the one thing here with consequences outside the app. */
   for (const d of DECKS.filter(x => x.figure)) {
-    const svg = vm.runInContext(`FIGURES[${JSON.stringify(d.figure.name)}]`, s);
+    /* a figure entry carries its artwork, caption and credit — the drawing is
+       the `art` field, not the entry itself */
+    const svg = vm.runInContext(`FIGURES[${JSON.stringify(d.figure.name)}].art`, s);
     check(`[${label}] ${d.id} the ${d.figure.name} figure exists`, !!svg);
     if (!svg) continue;
     const P = d.figure.parts;
@@ -956,7 +958,7 @@ function suite(s, label, srcCss) {
 
     /* dots are 5.2% of figure WIDTH, so centres must be that far apart in
        width-relative units or they overlap on screen */
-    const box = /viewBox="0 0 (d+(?:.d+)?) (d+(?:.d+)?)"/.exec(svg);
+    const box = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(svg);
     const ratio = box ? Number(box[2]) / Number(box[1]) : 1;
     let tooClose = '';
     for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
@@ -981,6 +983,17 @@ function suite(s, label, srcCss) {
 
     go('run', d.id, 'figure');
     const html = s.__app.innerHTML;
+    /* The dots are positioned in percentages of the container, so the container
+       must have the artwork's own aspect ratio. Get that wrong and the SVG
+       letterboxes inside the box while every label stays put — the whole set
+       slides off the drawing by the size of the gap, which is exactly what
+       happened when a second figure with a different shape arrived. */
+    const boxAspect = (/class="figure" style="aspect-ratio:([\d.]+)\/([\d.]+)"/.exec(html) || []).slice(1);
+    check(`[${label}] ${d.id} the figure box matches the artwork's aspect ratio`,
+          boxAspect.length === 2 && box &&
+          Math.abs(Number(boxAspect[0]) / Number(boxAspect[1]) - Number(box[1]) / Number(box[2])) < 0.001,
+          `box ${boxAspect.join(':')} against viewBox ${box ? box[1] + ':' + box[2] : '?'}`);
+
     check(`[${label}] ${d.id} the figure renders with its dots`,
           /<svg/.test(html) && (html.match(/class="dot /g) || []).length === P.length,
           'figure or dots missing');
@@ -988,11 +1001,18 @@ function suite(s, label, srcCss) {
           (html.match(/<line x1=/g) || []).length === P.filter(p => p.to).length,
           'leader count does not match');
 
-    /* the licence asks for credit, so the credit is a test, not a good intention */
-    check(`[${label}] ${d.id} the diagram is credited on screen`,
-          /class="figcredit"/.test(html) && /creativecommons\.org\/licenses/.test(html) &&
-          /commons\.wikimedia\.org/.test(html),
-          'attribution or licence link missing from the figure screen');
+    /* Credit is a test rather than a good intention, because for a licensed
+       figure it is an obligation. Every figure must name its source; one that
+       is NOT public domain must additionally link the licence it is used
+       under, since that is what the licence itself asks for. */
+    const credit = (/<p class="figcredit">([\s\S]*?)<\/p>/.exec(html) || [])[1] || '';
+    check(`[${label}] ${d.id} the diagram names its source`,
+          /commons\.wikimedia\.org|href=/.test(credit) && credit.replace(/<[^>]*>/g, '').trim().length > 20,
+          'no attribution rendered beneath the figure');
+    if (!/public domain/i.test(credit))
+      check(`[${label}] ${d.id} a licensed diagram links its licence`,
+            /creativecommons\.org\/licenses/.test(credit),
+            'figure is not public domain but carries no licence link');
 
     let guard = 0;
     while ($('session.i') < P.length && guard++ < 40) {
