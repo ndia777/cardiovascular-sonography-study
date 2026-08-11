@@ -209,14 +209,35 @@ function suite(s, label) {
     /* and those sections are named by subject rather than being one long run */
     const grouped = DECKS.filter(d => !d.exam && d.group);
     if (grouped.length) {
-      const names = [...new Set(grouped.map(d => d.group))];
-      /* the heading may be followed by the "current" badge, so match the
-         summary's contents rather than assuming the name ends it */
+      /* Only chapters holding more than one deck get a section of their own. A
+         single-deck chapter is rendered bare, because a heading would repeat
+         what the deck title already says and a stacked section of one wastes
+         the width. */
+      const multi = [...new Set(grouped.map(d => d.group))]
+        .filter(g => grouped.filter(d => d.group === g).length > 1);
       const summaries = [...openHtml.matchAll(/<summary>([\s\S]*?)<\/summary>/g)]
         .map(m => m[1].replace(/<[^>]*>/g, '').trim());
-      const missingHead = names.filter(g => !summaries.some(t => t.startsWith(g)));
-      check(`[${label}] subject group headings render`, !missingHead.length,
+      const missingHead = multi.filter(g => !summaries.some(t => t.startsWith(g)));
+      check(`[${label}] multi-deck chapters render a heading`, !missingHead.length,
             `missing: ${missingHead.join(', ')} — saw: ${summaries.join(' | ')}`);
+
+      const singles = [...new Set(grouped.map(d => d.group))]
+        .filter(g => grouped.filter(d => d.group === g).length === 1);
+      const headed = singles.filter(g => summaries.some(t => t.startsWith(g)));
+      check(`[${label}] single-deck chapters get no section of their own`, !headed.length,
+            `${headed.join(', ')} rendered a heading for one deck`);
+      /* And they share a grid, so they sit beside each other rather than stacked.
+         Test it by looking for a container boundary BETWEEN the two — a deck card
+         has its own </div> from the badges row, so splitting on that would cut
+         the grid short and report a false failure. */
+      if (singles.length > 1) {
+        const solo = singles.map(g => grouped.find(d => d.group === g).title);
+        const at = solo.map(t => openHtml.indexOf(`<h3>${t.replace(/&/g, '&amp;')}</h3>`)).sort((a, b) => a - b);
+        const between = openHtml.slice(at[0], at[at.length - 1]);
+        const split = /<div class="decks">|<details class="more"|class="coursehead"/.exec(between);
+        check(`[${label}] single-deck chapters share one grid`, at[0] >= 0 && !split,
+              split ? `${solo.join(' / ')} are separated by ${split[0]}` : 'a title was not rendered');
+      }
       /* every deck in a grouped course must carry a group, or it silently
          lands in a catch-all section nobody intended */
       const courses = [...new Set(grouped.map(d => d.course))];
@@ -242,9 +263,33 @@ function suite(s, label) {
           closed = `"${name}" holds the current chapter but renders closed`;
       }
       check(`[${label}] the current chapter's section is open on arrival`, !closed, closed);
+
+      /* Every current deck must be visible without a click — either its section
+         is open, or it sits outside any section at all. And it must be labelled
+         either way, or an open section reads as one somebody forgot to close. */
+      const folds = openHtml.split('<details class="more"').slice(1).map(f => f.split('</details>')[0]);
+      let hidden = '', unlabelled = '';
+      for (const d of currentDecks) {
+        const tag = `<h3>${d.title.replace(/&/g, '&amp;')}</h3>`;
+        const inFold = folds.find(f => f.includes(tag));
+        if (inFold && !/^[^>]* open/.test(inFold) && !hidden) hidden = `${d.title} sits in a closed section`;
+        if (!inFold) {
+          /* rendered bare, so the deck card itself has to carry the marker */
+          const card = openHtml.split(tag)[1] || '';
+          if (!/class="badge now"/.test(card.split('</button>')[0]) && !unlabelled)
+            unlabelled = `${d.title} renders bare with no current badge`;
+        }
+      }
+      check(`[${label}] every current deck is visible without a click`, !hidden, hidden);
+      check(`[${label}] a bare current deck carries its own label`, !unlabelled, unlabelled);
+      /* and inside a section it does NOT — the heading already says it, and a
+         badge on every card of a six-deck chapter is just noise */
+      check(`[${label}] cards inside a labelled section do not repeat the label`,
+            !folds.some(f => /class="badge now"/.test(f)),
+            'a section heading and its cards both claim to be current');
       check(`[${label}] the current chapter is labelled as such`,
-            /<span class="now">current<\/span>/.test(openHtml),
-            'an open section with no label reads as one somebody forgot to close');
+            /<span class="now">current<\/span>/.test(openHtml) || /class="badge now"/.test(openHtml),
+            'nothing on screen says which chapter is current');
     }
   }
 
