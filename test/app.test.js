@@ -84,6 +84,13 @@ const modesFor = d => {
   if (recallableCards(d).length) m.push('recall');
   if (cards) m.push('learn', 'match');
   if (cards >= 4) m.push('tf');
+  /* identifying a tracing needs four of them, for four choices */
+  if ((d.cards || []).filter(c => c.trace).length >= 4) m.push('trace');
+  /* naming a marked span needs four nameable spans present as cards */
+  const PART_TERMS = ['p wave','pr segment','pr interval','qrs complex','st segment',
+                      't wave','qt interval','tp segment','j point'];
+  if ((d.cards || []).filter(c => PART_TERMS.includes(c.term.toLowerCase())).length >= 4)
+    m.push('parts');
   if (cards || written) m.push('quiz');
   /* the whole-chapter sheet only appears where the chapter spans more than one
      deck — otherwise it would duplicate the per-deck review sheet */
@@ -824,6 +831,104 @@ function suite(s, label, srcCss) {
               'no tracing rendered beside the definition');
       }
     }
+  }
+
+  /* Name the Rhythm. The whole mode rests on the tracing being on screen and
+     the choices being real alternatives, so check both from the rendered page —
+     a question with the right answer but no picture is not this mode at all. */
+  for (const d of DECKS.filter(x => modesFor(x).includes('trace'))) {
+    go('run', d.id, 'trace');
+    const html = s.__app.innerHTML;
+    check(`[${label}] ${d.id} trace mode draws a tracing`,
+          /class="ecg cardtrace"/.test(html) && /<path d="M/.test(html),
+          'no tracing rendered');
+    const choices = [...html.matchAll(/onclick="answerTrace\((\d)\)"[\s\S]*?<span>([^<]*)</g)]
+      .map(m => m[2].trim());
+    check(`[${label}] ${d.id} offers four distinct rhythms`,
+          choices.length === 4 && new Set(choices).size === 4, choices.join(' | '));
+    /* every choice must be a real card in the deck, not a stray string */
+    const terms = new Set(d.cards.map(c => esc(c.term)));
+    check(`[${label}] ${d.id} every choice names a deck card`,
+          choices.every(c => terms.has(c)), choices.filter(c => !terms.has(c)).join(', '));
+
+    /* a full run must be answerable and must score */
+    const n = vm.runInContext('session.qs.length', s);
+    check(`[${label}] ${d.id} asks about every traced rhythm`,
+          n === d.cards.filter(c => c.trace).length, `${n} questions`);
+    let guard = 0;
+    while (vm.runInContext('session.i < session.qs.length', s) && guard++ < 40) {
+      s.answerTrace(vm.runInContext('session.qs[session.i].answer', s));
+      s.nextTrace();
+    }
+    check(`[${label}] ${d.id} a perfect run scores every rhythm`,
+          vm.runInContext('session.score', s) === n,
+          `${vm.runInContext('session.score', s)} of ${n}`);
+  }
+
+  /* Spot the Segment. The mode is only worth anything if the highlighted band
+     lands on the feature it names, and that cannot be eyeballed from the deck
+     data — the band comes from ECG_PARTS while the wave comes from pqrst().
+     Sample the drawn path inside each band and check the shape is right:
+     a wave must leave the baseline, a segment must stay on it. */
+  for (const d of DECKS.filter(x => modesFor(x).includes('parts'))) {
+    const PARTS = vm.runInContext('ECG_PARTS', s);
+    const W = vm.runInContext('PARTW', s);
+    const path = vm.runInContext(`"M0,60 " + pqrst(0, ${W}) + pqrst(${W}, ${W})`, s);
+    /* sample the polyline, including the quadratic P and T humps */
+    const pts = [];
+    {
+      const t = path.match(/[A-Za-z]|-?\d*\.?\d+/g);
+      let i = 0, cmd = '', cur = [0, 0];
+      const num = () => parseFloat(t[i++]);
+      while (i < t.length) {
+        if (/^[A-Za-z]$/.test(t[i])) cmd = t[i++];
+        if (cmd === 'M' || cmd === 'L') { cur = [num(), num()]; pts.push(cur); }
+        else if (cmd === 'Q') {
+          const p0 = cur, c = [num(), num()], p1 = [num(), num()];
+          for (let k = 1; k <= 12; k++) {
+            const u = k / 12, v = 1 - u;
+            pts.push([v*v*p0[0] + 2*v*u*c[0] + u*u*p1[0], v*v*p0[1] + 2*v*u*c[1] + u*u*p1[1]]);
+          }
+          cur = p1;
+        } else i++;
+      }
+    }
+    const excursion = (from, to) => {
+      const inBand = pts.filter(p => p[0] >= from * W - 0.5 && p[0] <= to * W + 0.5);
+      return inBand.length ? Math.max(...inBand.map(p => Math.abs(p[1] - 60))) : -1;
+    };
+    let wrong = '';
+    for (const p of PARTS) {
+      const e = excursion(p.from, p.to);
+      if (e < 0) { wrong = wrong || `${p.term}: band covers no part of the trace`; continue; }
+      /* a segment is flat baseline; a wave or interval must contain a deflection */
+      const flat = /segment$/i.test(p.term);
+      if (flat && e > 3 && !wrong) wrong = `${p.term} is a segment but its band covers a ${e.toFixed(0)}-unit deflection`;
+      if (!flat && !/point$/i.test(p.term) && e < 6 && !wrong)
+        wrong = `${p.term} should contain a deflection but its band is flat`;
+    }
+    check(`[${label}] ${d.id} each highlight sits on the feature it names`, !wrong, wrong);
+
+    /* the P wave must fall inside the PR interval, and QRS and T inside QT —
+       an interval is its parts plus the segment between them */
+    const by = t => PARTS.find(p => p.term === t);
+    const inside = (a, b) => by(a) && by(b) && by(a).from >= by(b).from - 1e-9 && by(a).to <= by(b).to + 1e-9;
+    check(`[${label}] ${d.id} the P wave sits inside the PR interval`, inside('P wave', 'PR interval'));
+    check(`[${label}] ${d.id} the QRS and T wave sit inside the QT interval`,
+          inside('QRS complex', 'QT interval') && inside('T wave', 'QT interval'));
+
+    go('run', d.id, 'parts');
+    const html = s.__app.innerHTML;
+    check(`[${label}] ${d.id} parts mode draws a highlighted tracing`,
+          /class="parthi"/.test(html) && /class="ecgtrace"/.test(html), 'no highlight rendered');
+    const n = vm.runInContext('session.qs.length', s);
+    let guard = 0;
+    while (vm.runInContext('session.i < session.qs.length', s) && guard++ < 40) {
+      s.answerParts(vm.runInContext('session.qs[session.i].answer', s));
+      s.nextParts();
+    }
+    check(`[${label}] ${d.id} a perfect run scores every segment`,
+          vm.runInContext('session.score', s) === n && n >= 4, `${vm.runInContext('session.score', s)} of ${n}`);
   }
 
   /* electrode-placement decks: every electrode must be reachable, uniquely
