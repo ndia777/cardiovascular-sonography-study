@@ -2374,6 +2374,43 @@ window.DECKS = [
   course: 'M103 · Medical Procedures',
   title: 'The Heart — Anatomy & Blood Flow',
   source: 'The Circulatory System — lecture notes',
+  /* Positions are percentages of the 650x650 diagram, so they hold at any size.
+     Where a dot alone would be ambiguous — four valves sit within a few dozen
+     units of each other in the middle of the figure — the dot moves out to
+     legible space and `to` runs a leader line to the exact structure. */
+  figure: {
+    name: 'heart',
+    parts: [
+      { id: 'Superior vena cava', x: 29.2, y: 16.6,
+        about: 'brings deoxygenated blood down from the head, neck and arms into the right atrium' },
+      { id: 'Inferior vena cava', x: 28.8, y: 86.2,
+        about: 'brings deoxygenated blood up from the trunk and legs into the right atrium' },
+      { id: 'Aorta', x: 40.3, y: 17.2,
+        about: 'carries oxygenated blood from the left ventricle out to the body; the branches off its arch supply the head and arms' },
+      { id: 'Pulmonary trunk', x: 46.2, y: 36.6,
+        about: 'carries deoxygenated blood from the right ventricle to the lungs, dividing into a left and a right pulmonary artery' },
+      { id: 'Pulmonary veins', x: 19.1, y: 44.8,
+        about: 'return oxygenated blood from the lungs to the left atrium — the only veins in the body carrying oxygenated blood' },
+      { id: 'Right atrium', x: 32.9, y: 50.8,
+        about: 'receives deoxygenated blood from the whole body through the venae cavae and the coronary sinus' },
+      { id: 'Right ventricle', x: 46.2, y: 74.8,
+        about: 'pumps deoxygenated blood the short distance to the lungs, so its wall is thinner than the left' },
+      { id: 'Left atrium', x: 66.2, y: 46.2,
+        about: 'receives oxygenated blood back from the lungs through the four pulmonary veins' },
+      { id: 'Left ventricle', x: 67.1, y: 68.9,
+        about: 'pumps oxygenated blood to the entire body, which is why its wall is the thickest of the four chambers' },
+      { id: 'Tricuspid valve', x: 33.8, y: 76.9, to: [38.5, 71.5],
+        about: 'the atrioventricular valve on the RIGHT — blood crosses it leaving the right atrium' },
+      { id: 'Mitral valve', x: 78.5, y: 47.7, to: [70.5, 52.3],
+        about: 'the atrioventricular valve on the LEFT, also called the bicuspid valve' },
+      { id: 'Pulmonic valve', x: 38.5, y: 60.0, to: [45.4, 55.4],
+        about: 'the semilunar valve guarding the way out of the right ventricle into the pulmonary trunk' },
+      { id: 'Aortic valve', x: 60.8, y: 61.5, to: [55.4, 54.6],
+        about: 'the semilunar valve guarding the way out of the left ventricle into the aorta' },
+      { id: 'Interventricular septum', x: 61.5, y: 79.4,
+        about: 'the muscular wall separating the right ventricle from the left' },
+    ],
+  },
   cards: [
     { term: 'Endocardium', def: 'the innermost layer of the heart wall — the smooth lining in direct contact with the blood inside the chambers' },
     { term: 'Myocardium', def: 'the thick middle layer of the heart wall — the cardiac muscle that does the actual contracting' },

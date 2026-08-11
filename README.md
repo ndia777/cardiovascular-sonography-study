@@ -146,6 +146,26 @@ deck id.
   address, so no personal email or real name appears in the public history.
 - To undo all of this: delete the `.git` folder.
 
+## Credits
+
+Almost everything here is original: the engine, the decks, the ECG tracings and
+the heartbeat animation are all written or drawn from scratch, and every
+definition is worded independently of the textbooks and lecture slides the facts
+came from.
+
+One piece is not:
+
+> **Heart diagram** — *"Diagram of the human heart (clean)"* by **Wnauta**, after
+> **Wapcaplet**, from
+> [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Diagram_of_the_human_heart_(clean).svg),
+> used under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
+> Changes: the XML prolog, editor metadata and fixed pixel dimensions were
+> stripped and a viewBox added so it scales. The artwork itself is unaltered;
+> the labels in the app are ours.
+>
+> That figure remains under CC BY-SA 3.0. The credit also appears on screen
+> beneath the diagram wherever it is shown.
+
 ## Also here
 
 - **`Notes Check.md`** — spots where the source notes disagree with the standard,

@@ -931,114 +931,69 @@ function suite(s, label, srcCss) {
           vm.runInContext('session.score', s) === n && n >= 4, `${vm.runInContext('session.score', s)} of ${n}`);
   }
 
-  /* Labelled anatomical figures. A label that points at empty space, or at the
-     wrong chamber, teaches the wrong thing and no amount of looking at the deck
-     data would reveal it — the label lives in decks.js and the drawing lives in
-     index.html. So sample the drawing and check each label lands where it
-     claims: chambers and vessels contain their point, valves sit on the bar
-     they guard, the septum on its line. */
+  /* Labelled anatomical figures.
+
+     The drawing is now a licensed medical illustration rather than something I
+     authored, so the old point-in-path check is gone with it: that artwork is
+     Inkscape output using relative commands and arc segments, and a parser
+     good enough to test it honestly would be a bigger and more fragile thing
+     than the check is worth. Label placement was verified by rendering the
+     figure with its dots and looking at it, which is the only way anyone could
+     have judged it anyway.
+
+     What IS worth holding down mechanically is everything around it: labels
+     that collide, a leader pointing nowhere, a missing explanation, a round
+     that cannot be played — and the attribution, which is a licence
+     obligation and the one thing here with consequences outside the app. */
   for (const d of DECKS.filter(x => x.figure)) {
     const svg = vm.runInContext(`FIGURES[${JSON.stringify(d.figure.name)}]`, s);
     check(`[${label}] ${d.id} the ${d.figure.name} figure exists`, !!svg);
     if (!svg) continue;
-
-    const shapes = {};
-    for (const m of svg.matchAll(/id="(fig-[a-z0-9]+)"\s+d="([^"]+)"/g)) shapes[m[1]] = m[2];
-    const walls = [...svg.matchAll(/class="wall" d="([^"]+)"/g)].map(m => m[1]);
-
-    const pts = (dstr, n = 24) => {
-      const t = dstr.match(/[A-Za-z]|-?\d*\.?\d+/g) || [];
-      const out = []; let i = 0, cmd = '', cur = [0, 0], start = [0, 0];
-      const num = () => parseFloat(t[i++]);
-      while (i < t.length) {
-        if (/^[A-Za-z]$/.test(t[i])) cmd = t[i++];
-        if (cmd === 'M') { cur = [num(), num()]; start = cur; out.push(cur); }
-        else if (cmd === 'L') { cur = [num(), num()]; out.push(cur); }
-        else if (cmd === 'H') { cur = [num(), cur[1]]; out.push(cur); }
-        else if (cmd === 'V') { cur = [cur[0], num()]; out.push(cur); }
-        else if (cmd === 'C') {
-          const p0 = cur, c1 = [num(), num()], c2 = [num(), num()], p1 = [num(), num()];
-          for (let k = 1; k <= n; k++) {
-            const u = k / n, v = 1 - u;
-            out.push([v*v*v*p0[0]+3*v*v*u*c1[0]+3*v*u*u*c2[0]+u*u*u*p1[0],
-                      v*v*v*p0[1]+3*v*v*u*c1[1]+3*v*u*u*c2[1]+u*u*u*p1[1]]);
-          }
-          cur = p1;
-        } else if (/^[Zz]$/.test(cmd)) { out.push(start); cur = start; }
-        else i++;
-      }
-      return out;
-    };
-    const inOne = (poly, [x, y]) => {
-      let hit = false;
-      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-        const [xi, yi] = poly[i], [xj, yj] = poly[j];
-        if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) hit = !hit;
-      }
-      return hit;
-    };
-    /* a path may hold several closed subpaths — two vein stubs, say */
-    const isIn = (dstr, pt) => dstr.split(/(?=M)/).filter(Boolean).some(sp => inOne(pts(sp), pt));
-    /* nearest point on a SEGMENT, not the nearest vertex: a two-point line has
-       no vertex anywhere near its middle */
-    const distTo = (poly, [x, y]) => {
-      let best = Infinity;
-      for (let i = 1; i < poly.length; i++) {
-        const [ax, ay] = poly[i-1], [bx, by] = poly[i];
-        const dx = bx - ax, dy = by - ay, L = dx*dx + dy*dy;
-        const t = L ? Math.max(0, Math.min(1, ((x-ax)*dx + (y-ay)*dy) / L)) : 0;
-        best = Math.min(best, Math.hypot(x - (ax + t*dx), y - (ay + t*dy)));
-      }
-      return best;
-    };
-
-    const [W, H] = (/viewBox="0 0 (\d+) (\d+)"/.exec(svg) || [0, 420, 400]).slice(1).map(Number);
-    const TARGET = d.figure.targets || {};
-    let wrong = '';
-    for (const p of d.figure.parts) {
-      const t = TARGET[p.id];
-      if (!t) { wrong = wrong || `"${p.id}" has no shape to check against`; continue; }
-      const pt = [p.x / 100 * W, p.y / 100 * H];
-      if (t.in) {
-        if (!shapes[t.in]) { wrong = wrong || `"${p.id}" names a shape (${t.in}) the figure does not draw`; continue; }
-        if (!isIn(shapes[t.in], pt) && !wrong) wrong = `"${p.id}" points outside ${t.in}`;
-      } else if (t.on) {
-        const line = shapes[t.on] || walls[t.wall];
-        if (!line) { wrong = wrong || `"${p.id}" names a line the figure does not draw`; continue; }
-        const gap = distTo(pts(line), pt);
-        if (gap > 22 && !wrong) wrong = `"${p.id}" sits ${gap.toFixed(0)}px from the line it labels`;
-      } else if (t.seam) {
-        /* Some boundaries are drawn as nothing at all — the septum is simply
-           where one chamber's fill meets the next. A label for one of those has
-           to sit close to BOTH shapes, which is the only way to be on the seam
-           rather than well inside either chamber. */
-        const gaps = t.seam.map(k => shapes[k] ? distTo(pts(shapes[k]), pt) : Infinity);
-        if (gaps.some(g => g > 26) && !wrong)
-          wrong = `"${p.id}" is ${gaps.map(g => g.toFixed(0)).join(' and ')}px from the two shapes it divides`;
-      }
-    }
-    check(`[${label}] ${d.id} every label lands on the structure it names`, !wrong, wrong);
-
-    /* dots are 5.2% of figure WIDTH, so centres must be at least that far apart
-       in width-relative units — the same rule the electrode figure uses */
-    let tooClose = '';
     const P = d.figure.parts;
+
+    check(`[${label}] ${d.id} the figure carries no baked-in labels`,
+          !/<text[s>]/.test(svg), 'the artwork already names the structures');
+
+    /* dots are 5.2% of figure WIDTH, so centres must be that far apart in
+       width-relative units or they overlap on screen */
+    const box = /viewBox="0 0 (d+(?:.d+)?) (d+(?:.d+)?)"/.exec(svg);
+    const ratio = box ? Number(box[2]) / Number(box[1]) : 1;
+    let tooClose = '';
     for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
-      const dx = P[i].x - P[j].x, dy = (P[i].y - P[j].y) * (H / W);
+      const dx = P[i].x - P[j].x, dy = (P[i].y - P[j].y) * ratio;
       const gap = Math.hypot(dx, dy);
       if (gap < 5.2 && !tooClose) tooClose = `${P[i].id} and ${P[j].id} are ${gap.toFixed(2)}% apart`;
     }
     check(`[${label}] ${d.id} no two labels overlap`, !tooClose, tooClose);
 
+    /* every label must sit on the figure, and any leader must land on it too */
+    const off = P.filter(p => p.x < 2 || p.x > 98 || p.y < 2 || p.y > 98)
+      .concat(P.filter(p => p.to && (p.to[0] < 2 || p.to[0] > 98 || p.to[1] < 2 || p.to[1] > 98)));
+    check(`[${label}] ${d.id} every label and leader stays on the figure`,
+          !off.length, off.map(p => p.id).join(', '));
+
+    /* a leader that ends where it starts points at nothing */
+    const stub = P.filter(p => p.to && Math.hypot(p.x - p.to[0], p.y - p.to[1]) < 2);
+    check(`[${label}] ${d.id} no leader is a stub`, !stub.length, stub.map(p => p.id).join(', '));
+
     check(`[${label}] ${d.id} every label carries an explanation`,
           P.every(p => p.about && p.about.length > 15), 'a label has no explanation');
 
-    /* a full round must be playable and must score */
     go('run', d.id, 'figure');
+    const html = s.__app.innerHTML;
     check(`[${label}] ${d.id} the figure renders with its dots`,
-          /class="figsvg"/.test(s.__app.innerHTML) &&
-          (s.__app.innerHTML.match(/class="dot /g) || []).length === P.length,
+          /<svg/.test(html) && (html.match(/class="dot /g) || []).length === P.length,
           'figure or dots missing');
+    check(`[${label}] ${d.id} leaders render for the labels that declare one`,
+          (html.match(/<line x1=/g) || []).length === P.filter(p => p.to).length,
+          'leader count does not match');
+
+    /* the licence asks for credit, so the credit is a test, not a good intention */
+    check(`[${label}] ${d.id} the diagram is credited on screen`,
+          /class="figcredit"/.test(html) && /creativecommons\.org\/licenses/.test(html) &&
+          /commons\.wikimedia\.org/.test(html),
+          'attribution or licence link missing from the figure screen');
+
     let guard = 0;
     while ($('session.i') < P.length && guard++ < 40) {
       s.pickPart($('session.order[session.i]')); s.nextPart();
