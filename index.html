@@ -167,6 +167,27 @@
   /* ---- chest game ---- */
   .torso{position:relative;max-width:460px;margin:0 auto;aspect-ratio:200/240}
   .torso svg{width:100%;height:100%;display:block}
+  /* Labelled anatomical figures. Same dot mechanics as the electrode torso, so
+     the two modes behave identically under the hand. */
+  .figure{position:relative;max-width:470px;margin:14px auto 0;aspect-ratio:420/400}
+  .figure svg{width:100%;height:100%;display:block}
+  .figsvg .chamber{stroke:none}
+  /* Vessels are outlined because several of them pass over a chamber of the same
+     colour — the aorta across the left atrium, the trunk across the right. Fill
+     alone left them reading as one continuous red or blue mass. */
+  .figsvg .vessel{stroke:var(--line);stroke-width:1.5;stroke-linejoin:round}
+  /* Deoxygenated blue, oxygenated red — the convention every textbook uses, and
+     the quickest way to read which side of the heart you are looking at. Mixed
+     toward the card colour so neither shouts in dark mode. */
+  .figsvg .deoxyc{fill:color-mix(in srgb,#4b7fd4 46%,var(--card))}
+  .figsvg .deoxyv{fill:color-mix(in srgb,#4b7fd4 32%,var(--card))}
+  .figsvg .oxyc  {fill:color-mix(in srgb,#d4564b 44%,var(--card))}
+  .figsvg .oxyv  {fill:color-mix(in srgb,#d4564b 30%,var(--card))}
+  .figsvg .outline{fill:none;stroke:var(--line);stroke-width:2.5}
+  .figsvg .wall{fill:none;stroke:var(--line);stroke-width:2}
+  .figsvg .valves path{fill:none;stroke:var(--text);stroke-width:3;stroke-linecap:round;opacity:.75}
+  .figsvg .figflow path{fill:none;stroke:var(--dim);stroke-width:1.6;opacity:.85}
+  .figcap{color:var(--dim);font-size:12.5px;text-align:center;margin-top:16px;line-height:1.6}
   /* Sized as a share of the figure, not fixed px, so the spacing between
      electrodes stays proportional and dots never collide on a narrow screen. */
   .dot{position:absolute;width:5.2%;aspect-ratio:1;transform:translate(-50%,-50%);
@@ -503,6 +524,7 @@ function screenHome(){
           ${p.tfBest != null ? `<span class="badge ${p.tfBest>=80?'on':''}">T/F ${p.tfBest}%</span>` : ''}
           ${p.traceBest != null ? `<span class="badge ${p.traceBest>=80?'on':''}">Rhythms ${p.traceBest}%</span>` : ''}
           ${p.partsBest != null ? `<span class="badge ${p.partsBest>=80?'on':''}">Segments ${p.partsBest}%</span>` : ''}
+          ${p.figureBest != null ? `<span class="badge ${p.figureBest>=80?'on':''}">Diagram ${p.figureBest}%</span>` : ''}
           ${p.matchBest != null ? `<span class="badge on">Match ${p.matchBest}s</span>` : ''}
           ${p.learned ? `<span class="badge on">${p.learned} learned</span>` : ''}
           ${!p.last ? `<span class="badge">Not started</span>` : ''}
@@ -610,6 +632,9 @@ function screenDeck(){
     modes.push(['match','Matching','Pair each term with its definition against the clock, six at a time.']);
   if (d.chest)
     modes.push(['chest','Place the Electrodes','Click where each of the 10 electrodes goes — 4 limb and 6 chest.']);
+  if (d.figure)
+    modes.push(['figure','Label the Diagram',
+      `Point to each of the ${d.figure.parts.length} structures on the diagram.`]);
   if (d.beat)
     modes.push(['beat','Watch a Heartbeat','See the impulse travel the conduction system while the ECG draws in step — then switch rhythms to compare the arrhythmias.']);
   modes.push(['browse','Review Sheet', d.steps.length
@@ -980,6 +1005,137 @@ function autoQuestions(d){
   });
   return out;
 }
+/* ═══════════════ LABELLED FIGURES ═══════════════ */
+/* Drawn rather than sourced. An inline SVG costs a few kilobytes against the
+   megabytes a textbook-quality raster would add, recolours itself for the light
+   and dark themes, stays sharp at any zoom, and raises no copyright question.
+   It is also the only version that can be CHECKED: the suite samples these
+   paths and confirms every label sits inside the structure it names.
+
+   ANTERIOR VIEW, so the patient's right is on your left — the same convention
+   as the electrode figure. Schematic, not a dissection: the vessels are given
+   separate territory rather than shown spiralling around one another, but every
+   attachment, chamber and valve is where it belongs, and the aortic arch turns
+   toward the patient's left as it does in life. */
+/* The silhouette is the single source of truth for the heart's shape, and every
+   chamber is CLIPPED to it. Drawing each chamber as its own free-standing
+   polygon meant they spilled past the outline and the whole thing read as a
+   stack of blocks; clipped, a chamber can only ever fill its share of the real
+   shape, and moving the outline moves all four with it. */
+const HEART_SIL = 'M126,86 C92,92 68,134 72,190 '
+                + 'C76,248 100,300 148,326 C186,346 226,352 252,346 '
+                + 'C304,332 340,288 351,232 C361,182 354,124 338,98 '
+                + 'C329,86 312,82 292,82 Z';
+const HEART_FIG = `<svg viewBox="0 0 420 400" class="figsvg" role="img"
+    aria-label="Anterior view of the heart with chambers, valves and great vessels">
+  <defs>
+    <marker id="flow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,1 L8,5 L0,9 Z" fill="var(--dim)"/>
+    </marker>
+    <clipPath id="heartclip"><path d="${HEART_SIL}"/></clipPath>
+  </defs>
+
+  <!-- The venae cavae and the pulmonary veins run BEHIND the heart mass, so
+       they are drawn first and the silhouette covers where they tuck in. -->
+  <path class="vessel deoxyv" id="fig-svc" d="M118,14 H152 V120 H118 Z"/>
+  <path class="vessel deoxyv" id="fig-ivc" d="M46,352 V214 C46,186 60,170 90,164
+                                              L98,190 C78,196 70,204 70,220 V352 Z"/>
+  <path class="vessel oxyv"   id="fig-pv"  d="M404,132 V154 L336,148 V134 Z
+                                              M404,164 V186 L336,178 V166 Z"/>
+
+  <!-- Chambers. Each is a plain region CLIPPED to the silhouette, so none of
+       them can spill outside the heart and all four move together if it does. -->
+  <g clip-path="url(#heartclip)">
+    <path class="chamber deoxyc" id="fig-ra" d="M40,50 H220 V181 H40 Z"/>
+    <path class="chamber oxyc"   id="fig-la" d="M220,50 H380 V181 H220 Z"/>
+    <path class="chamber deoxyc" id="fig-rv" d="M40,181 H206 L240,360 H40 Z"/>
+    <path class="chamber oxyc"   id="fig-lv" d="M206,181 H380 V360 H240 Z"/>
+  </g>
+
+  <!-- The outflow tracts pass in FRONT of the atria on their way out, which is
+       both where they really sit and the only way to draw them without the
+       atria appearing to swallow them. -->
+  <path class="vessel deoxyv" id="fig-pt" d="M174,180 H214 L222,72 C222,56 208,48 196,48
+                                             C184,48 172,56 174,72 Z"/>
+  <path class="vessel oxyv"   id="fig-ao" d="M232,180 V134 C232,98 264,74 304,74
+                                             C338,74 362,90 374,114 L348,126
+                                             C340,110 324,100 304,100 C280,100 266,116 266,140
+                                             V180 Z"/>
+
+  <!-- No drawn walls. The valve plane and the septum are already visible as the
+       boundary where blue meets red, and stroked lines on top of that boundary
+       only ever half-aligned with it — the fills clip to the silhouette but a
+       stroke is centred on its path, so it overhung the edge by half its width
+       at both ends. Letting the colour do the work is both cleaner and correct. -->
+  <path class="outline" d="${HEART_SIL}"/>
+
+  <!-- valves, as short bars across the opening each one guards -->
+  <g class="valves">
+    <path id="fig-tv"  d="M104,181 H160"/>
+    <path id="fig-pv2" d="M178,181 H210"/>
+    <path id="fig-av"  d="M230,181 H262"/>
+    <path id="fig-mv"  d="M282,181 H340"/>
+  </g>
+
+  <!-- direction of flow: down the venae cavae, out the trunk, in the veins, out the aorta -->
+  <g class="figflow">
+    <path d="M135,40 V86" marker-end="url(#flow)"/>
+    <path d="M196,120 V70" marker-end="url(#flow)"/>
+    <path d="M372,146 H340" marker-end="url(#flow)"/>
+    <path d="M246,148 V108" marker-end="url(#flow)"/>
+  </g>
+</svg>`;
+
+const FIGURES = { heart: HEART_FIG };
+
+function runFigure(d){
+  const fig = d.figure, parts = fig.parts;
+  if (!session) session = { order: shuffle(parts.map(p => p.id)), i: 0, score: 0, picked: null, missed: [] };
+  const s = session;
+
+  if (s.i >= s.order.length){
+    const pct = Math.round(s.score / s.order.length * 100);
+    const prev = load()[d.id] || {};
+    record(d.id, { figureBest: Math.max(prev.figureBest || 0, pct) });
+    return results(d, `${s.score}/${s.order.length}`, `of ${s.order.length} structures found`, s.missed, 'figure');
+  }
+
+  const target = s.order[s.i], done = s.picked !== null;
+  const targetPart = parts.find(p => p.id === target);
+
+  app.innerHTML = `
+    ${sessionBar(d, s.i, s.order.length, `Label the Diagram · ${s.score} correct`)}
+    <div class="q">Where is the <b>${esc(target)}</b>?</div>
+    <div class="figure">
+      ${FIGURES[fig.name]}
+      ${parts.map(p => {
+        let cls = '';
+        if (done && p.id === target) cls = 'correct';
+        else if (done && p.id === s.picked) cls = 'wrong';
+        else if (done) cls = 'muted';
+        return `<button class="dot ${cls}" style="left:${p.x}%;top:${p.y}%"
+          ${done ? 'disabled' : ''} onclick="pickPart('${esc(p.id)}')"
+          aria-label="${esc(p.id)}"></button>`;
+      }).join('')}
+    </div>
+    ${done ? `<div class="why"><b>${esc(target)}:</b> ${esc(targetPart.about)}</div>
+      <button class="next" onclick="nextPart()">
+        ${s.i + 1 < s.order.length ? 'Next structure →' : 'See results →'}</button>` : ''}
+    <p class="figcap">Anterior view — the patient is facing you, so their right side is on your left.
+      Blue carries deoxygenated blood, red oxygenated. Arrows show the direction of flow.</p>`;
+  keyHandler = e => { if (done && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); nextPart(); } };
+}
+function pickPart(id){
+  const s = session;
+  if (s.picked !== null) return;
+  s.picked = id;
+  const target = s.order[s.i];
+  if (id === target) s.score++;
+  else s.missed.push({ q: `You pointed at <b>${esc(id)}</b>`, a: target });
+  render();
+}
+function nextPart(){ session.i++; session.picked = null; render(); }
+
 /* ═══════════════ NAME THE RHYTHM ═══════════════ */
 /* Recognising a strip is the actual clinical skill, and it is not the same
    skill as reciting a definition — you can know that A-fib has no identifiable
@@ -2093,7 +2249,8 @@ function render(){
   if (view.screen === 'deck') return screenDeck();
   ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
      chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse,
-     chapter: runChapter, trace: runTrace, parts: runParts }[view.mode] || screenDeck)(d);
+     chapter: runChapter, trace: runTrace, parts: runParts,
+     figure: runFigure }[view.mode] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }
