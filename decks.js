@@ -1754,7 +1754,21 @@ window.DECKS = [
     {"term":"Metastasize","def":"to spread from the original site to somewhere else in the body"},
     {"term":"Oncogene","def":"a faulty version of a gene that drives the cell cycle, stuck switched ON far too strongly"},
     {"term":"Tumor suppressor gene","def":"normally puts the BRAKES on mitosis; lose it or switch it off and division runs unchecked"},
-    {"fact":true,"term":"The two gene types behind cancer","def":"oncogenes, which are overactive, and tumor suppressor genes, which are disabled"}
+    {"fact":true,"term":"The two gene types behind cancer","def":"oncogenes, which are overactive, and tumor suppressor genes, which are disabled"},
+
+    /* --- from the full Chapter 3 lecture deck, beyond the study guide --- */
+    { term: 'Osmotic pressure', def: 'the pull a solution exerts on water — it rises as the concentration of solutes that cannot cross the membrane rises, and water always moves toward the higher one' },
+    { term: 'Tonicity', def: 'the power of a solution outside a cell to change the volume of water inside it' },
+    { term: 'Microtubules', def: 'hollow tubes of tubulin that hold the cell’s shape, shift organelles about, and build cilia, flagella and centrioles' },
+    { term: 'Peroxisomes', def: 'membranous sacs resembling lysosomes, holding enzymes that break down lipids, alcohol and hydrogen peroxide' },
+    { term: 'Inclusions', def: 'stored chemicals found only in certain cell types and not required for survival — melanin granules in the epidermis, fat in fat cells' },
+    { term: 'Cleavage furrow', def: 'the constriction that pinches a dividing cell into two during cytoplasmic division' },
+    { term: 'Contact inhibition', def: 'the way healthy cells stop dividing once they become crowded' },
+    { term: 'Telomeres', def: 'the chromosome tips that shorten with every division, acting as a mitotic clock' },
+    { term: 'Selectins', def: 'adhesion proteins coating white blood cells, giving them the friction to anchor against a capillary wall' },
+    { term: 'Integrins', def: 'the adhesion receptors that bind the anchoring proteins and help a white blood cell squeeze out of a capillary' },
+    { fact: true, term: 'What makes a tumor malignant rather than benign',
+      def: 'loss of contact inhibition, the ability to recruit its own blood supply, invasiveness, and the ability to spread' }
   ],
   questions: [
     {"q":"The cytoskeleton is built from which three thread-like structures?","choices":["Microfilaments, microtubules and intermediate filaments","Cilia, flagella and centrioles","Ribosomes, vesicles and lysosomes","Actin, keratin and collagen fibres"],"answer":0,"why":"Centrioles are separate — they build the spindle fibres during cell division, not the cytoskeleton."},
@@ -1825,7 +1839,7 @@ window.DECKS = [
     { fact: true, term: 'Fat storage', def: 'excess glucose can also be converted into fat and stored in adipose tissue' },
 
     { term: 'DNA',         def: 'deoxyribonucleic acid — the genetic material, whose sequence stores the instructions for building proteins' },
-    { fact: true, term: 'What DNA codes for', def: 'enzymes, blood proteins, the structural proteins of muscle and connective tissue, antibodies, and cell membrane components' },
+    { fact: true, term: 'What DNA codes for', def: 'enzymes, blood proteins, antibodies, the parts a cell membrane is assembled from, and the proteins that give muscle and connective tissue their structure' },
     { term: 'Nucleotides', def: 'the building blocks that DNA is assembled from' },
     { term: 'Double helix', def: 'a ladder twisted into a spiral — the two-stranded shape DNA takes' },
     { term: 'Gene',        def: 'a stretch of DNA carrying the information for making ONE protein' },
@@ -1840,7 +1854,7 @@ window.DECKS = [
     { fact: true, term: 'Steps of transcription', def: 'DNA unwinds to expose the gene, complementary mRNA nucleotides pair with the exposed bases, then the new strand is released and the DNA rewinds' },
     { term: 'mRNA',        def: 'messenger RNA — carries the genetic code from the DNA out to a ribosome' },
     { fact: true, term: 'How mRNA leaves the nucleus', def: 'through a nuclear pore, then attaches to a ribosome in the cytoplasm' },
-    { term: 'Translation', def: 'converting the genetic code carried by mRNA into a sequence of amino acids — happens in the CYTOPLASM' },
+    { term: 'Translation', def: 'reading the messenger strand three bases at a time and stringing together the amino acids it calls for — happens in the CYTOPLASM' },
     { fact: true, term: 'Where protein synthesis happens', def: 'on the ribosomes' },
     { term: 'tRNA',        def: 'transfer RNA — carries an amino acid to the ribosome and binds the mRNA to add it to the growing chain' },
 
@@ -1850,7 +1864,23 @@ window.DECKS = [
     { term: 'Duchenne muscular dystrophy', def: 'caused by a mutation in the gene for dystrophin — muscle cells collapse, producing severe weakness' },
     { fact: true, term: 'A beneficial mutation', def: 'rarely one helps: an incomplete receptor leaves some people protected against HIV' },
     { fact: true, term: 'How alike human genomes are', def: '99.9% of the sequence is identical between any two people' },
-    { fact: true, term: 'What the varying 0.1% includes', def: 'sequences affecting health, sequences affecting appearance, and variations with no observable effect' }
+    { fact: true, term: 'What the varying 0.1% includes', def: 'sequences affecting health, sequences affecting appearance, and variations with no observable effect' },
+
+    /* --- from the full Chapter 4 lecture deck, beyond the study guide --- */
+    { term: 'Dehydration synthesis', def: 'joining smaller molecules into a larger one, releasing water in the process — how polysaccharides, proteins and triglycerides get built' },
+    { term: 'Active site', def: 'the pocket on an enzyme whose shape decides which substrate it can recognize and hold' },
+    { term: 'Substrate', def: 'the molecule an enzyme acts on',
+      note: 'Many enzymes are named for theirs, with -ase on the end: lipase works on lipids.' },
+    { term: 'Metabolic pathway', def: 'a chain of enzyme-controlled reactions where each product becomes the next reaction’s starting material, every step run by a different enzyme' },
+    { term: 'Cofactor', def: 'a non-protein helper that switches an enzyme on, either by folding its pocket into shape or by helping it grip' },
+    { term: 'Coenzyme', def: 'an organic cofactor — most are vitamins, which is why the diet has to supply them' },
+    { term: 'Denaturation', def: 'the irreversible change in shape that inactivates a protein, leaving an enzyme unable to grip what it acts on' },
+    { fact: true, term: 'Where ATP keeps its usable energy',
+      def: 'in the high-energy bonds holding the second and third phosphates, which can be handed off quickly' },
+    { term: 'Lactic acid', def: 'what pyruvic acid becomes when oxygen runs short; it builds up, shuts glycolysis down and cuts energy production' },
+    { term: 'Codon', def: 'a three-base sequence on the messenger strand that specifies one amino acid' },
+    { term: 'Anticodon', def: 'the matching three-base sequence on a transfer molecule, which pairs it to the right spot on the messenger strand' },
+    { term: 'ATP synthase', def: 'the enzyme that takes the energy stripped from electrons and uses it to bolt a third phosphate back onto ADP' }
   ],
   questions: [
     { q: 'Which correctly pairs the two halves of metabolism?',
@@ -1985,7 +2015,7 @@ window.DECKS = [
     { term: 'Connective tissue', def: 'the type that binds, supports, fills spaces, stores fat and produces blood cells',
       note: 'Mostly well supplied with blood, and its cells sit far apart with extracellular matrix between them. The most abundant type by weight.' },
     { term: 'Muscle tissue', def: 'the type that generates the forces for movement, able to contract in response to a stimulus' },
-    { term: 'Nervous tissue', def: 'the type that conducts impulses for coordination, regulation, integration and sensory reception' },
+    { term: 'Nervous tissue', def: 'the type that carries signals — sensing the world, then coordinating, integrating and regulating what the body does about it' },
     { fact: true, term: 'Where nervous tissue is found', def: 'the brain, the spinal cord and the nerves' },
 
     /* ---- junctions ---- */
@@ -2044,7 +2074,60 @@ window.DECKS = [
 
     /* ---- connective tissue (5.3, still being written) ---- */
     { fact: true, term: 'The two categories of connective tissue',
-      def: 'connective tissue proper, and the specialized connective tissues' }
+      def: 'connective tissue proper, and the specialized connective tissues' },
+
+    /* --- the rest of the chapter, from the lecture slides. The notes stopped
+           partway through 5.3, so everything below was missing. --- */
+    { term: 'Histology', def: 'the study of tissues' },
+    { term: 'Tight junctions', def: 'joins where the membranes of neighbouring cells fuse outright, sealing the gap — as in the lining of the small intestine and the blood-brain barrier' },
+    { term: 'Gap junctions', def: 'tubular channels letting molecules pass directly between neighbouring cells, as in cardiac muscle' },
+
+    { term: 'Extracellular matrix', def: 'the non-cellular material filling the space between cells, made of protein fibres and ground substance, ranging from fluid to semisolid to solid' },
+    { term: 'Ground substance', def: 'the non-fibrous portion of the matrix — protein, other molecules and a varying amount of fluid — filling the space around cells and fibres' },
+    { term: 'Fibroblasts', def: 'the large star-shaped cells, commonest of the fixed cells, that secrete the fibres of the matrix' },
+    { term: 'Macrophages', def: 'the wandering scavengers that clear foreign particles by engulfing them and defend against infection',
+      note: 'Also called histiocytes. Usually attached to fibres, but able to detach and move.' },
+    { term: 'Collagen fibres', def: 'thick threads of the protein that gives the body most of its structure — enormously strong under a pull, only slightly stretchy, and the bulk of ligaments and tendons',
+      note: 'Also called white fibres.' },
+    { term: 'Elastic fibres', def: 'branching threads of elastin that stretch and spring back, weaker than collagen, found in the vocal cords and airways',
+      note: 'Also called yellow fibres.' },
+    { term: 'Reticular fibres', def: 'thin branching threads of collagen forming delicate supporting networks in the spleen and liver' },
+
+    { term: 'Areolar connective tissue', def: 'thin delicate membrane of mostly fibroblasts in a gel-like ground substance, sitting in the subcutaneous layer and beneath most epithelia, which it nourishes' },
+    { term: 'Adipose tissue', def: 'fat-storing cells whose contents push the nucleus to one side, cushioning and insulating beneath the skin, behind the eyeballs and around the kidneys and heart' },
+    { term: 'Reticular connective tissue', def: 'a supporting web of thin fibres holding up the walls of internal organs such as the liver and spleen' },
+    { term: 'Dense regular connective tissue', def: 'closely packed parallel collagen, very strong against pulling, forming tendons and ligaments — poorly supplied with blood, so slow to heal' },
+    { term: 'Dense irregular connective tissue', def: 'thick collagen interwoven at random so it withstands tension from any direction, forming the deep layer of skin and the wrapping around skeletal muscles' },
+    { term: 'Elastic connective tissue', def: 'abundant yellow fibres giving stretch, found between the bones of the spinal column and in the walls of large arteries and airways' },
+
+    { term: 'Cartilage', def: 'a rigid specialized tissue with collagen in a gel-like matrix, giving support and framework, and serving as the model on which bone develops',
+      note: 'Has no blood supply of its own and heals slowly. The perichondrium covering it supplies some nutrients.' },
+    { term: 'Chondrocytes', def: 'cartilage cells, each sitting in a small chamber surrounded by matrix' },
+    { term: 'Lacunae', def: 'the small chambers that house cartilage or bone cells within the matrix' },
+    { term: 'Hyaline cartilage', def: 'the commonest kind, with fine collagen fibres — the ends of bones at joints, the nose, the respiratory passages and the embryonic skeleton' },
+    { term: 'Elastic cartilage', def: 'the flexible kind, carrying elastic fibres in its matrix — the external ear and part of the larynx' },
+    { term: 'Fibrocartilage', def: 'the toughest kind, packed with collagen and acting as a shock absorber — the intervertebral discs and the pads of the knee and pelvis' },
+
+    { term: 'Bone', def: 'the most rigid connective tissue, its solid matrix of mineral salts and collagen supporting and protecting, producing blood cells, storing calcium and anchoring muscles',
+      note: 'Also called osseous tissue. Comes in compact and spongy forms.' },
+    { term: 'Osteocytes', def: 'bone cells, each occupying a lacuna within the solid matrix' },
+    { term: 'Osteon', def: 'the cylindrical unit of compact bone — rings of matrix around a central canal, with the cells between them' },
+    { fact: true, term: 'Why bone heals faster than cartilage',
+      def: 'the central canals of compact bone carry blood vessels, so it is well nourished; cartilage has no blood supply at all' },
+    { term: 'Blood', def: 'the connective tissue whose cells are suspended in a fluid matrix, carrying gases, defending against infection and clotting' },
+    { term: 'Plasma', def: 'the fluid matrix that the cells of blood are suspended in' },
+
+    { term: 'Serous membranes', def: 'the linings of cavities that do not open to the outside, secreting a watery fluid that reduces friction on the organs they cover' },
+    { term: 'Mucous membranes', def: 'the linings of the passages that do open to the outside — digestive, respiratory, urinary and reproductive — where goblet cells produce a protective coating' },
+    { term: 'Cutaneous membrane', def: 'the covering over the whole body surface, better known as the skin' },
+    { term: 'Synovial membranes', def: 'the linings of joint cavities, made entirely of connective tissue rather than including an epithelium' },
+
+    { term: 'Skeletal muscle tissue', def: 'long cylindrical cells with many nuclei, striated and under voluntary control, attached to bone' },
+    { term: 'Smooth muscle tissue', def: 'spindle-shaped cells without striations, working involuntarily in the walls of hollow organs and blood vessels' },
+    { term: 'Cardiac muscle tissue', def: 'branching striated cells joined by intercalated discs, working involuntarily and found only in the wall of the heart' },
+    { term: 'Intercalated discs', def: 'the junctions joining the branching cells of heart muscle end to end' },
+    { term: 'Neurons', def: 'the cells specialized for communication, conducting impulses to coordinate, integrate and regulate the body' },
+    { term: 'Neuroglia', def: 'the supporting cells that nourish and hold up the impulse-conducting ones' }
   ],
   questions: [
     { q: 'Which tissue type has no blood vessels of its own?',
@@ -2108,6 +2191,174 @@ window.DECKS = [
         'A layer of cilia — absent from the respiratory tract'
       ], answer: 0,
       why: 'Those linings are stratified squamous too, but stay soft, moist and alive at the surface.' }
+  ]
+},
+
+/* Chapter 6 lecture slides. Same treatment as every other publisher deck: the
+   facts are taken, the wording is written from scratch, because the slides carry
+   an all-rights-reserved notice and this app is public.
+
+   Worth knowing this overlaps Medical Terminology Chapter 12, which is also the
+   integumentary system. That is not duplication to clean up — one course tests
+   the anatomy and physiology, the other tests the vocabulary, and they are
+   examined separately. */
+{
+  id: 'bio-ch6',
+  group: 'Chapter 6',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 6 — The Integumentary System',
+  source: 'Chapter 6 — lecture slides',
+  cards: [
+    /* ---- layers ---- */
+    { term: 'Integumentary system', def: 'the skin together with its accessory structures — hair, nails, glands and sensory receptors' },
+    { fact: true, term: 'The two layers of the skin', def: 'the epidermis on the outside and the dermis beneath it' },
+    { term: 'Epidermis', def: 'the outer layer, built of stratified squamous epithelium and carrying no blood vessels of its own' },
+    { term: 'Dermis', def: 'the inner layer, thicker than the one above, holding connective tissue, muscle, blood and nervous tissue' },
+    { term: 'Subcutaneous layer', def: 'the insulating layer of areolar and adipose tissue beneath the skin, carrying the vessels that supply it',
+      note: 'Also called the hypodermis. Not counted as part of the skin itself.' },
+
+    /* ---- epidermal strata ---- */
+    { term: 'Stratum basale', def: 'the deepest epidermal layer — a single row of dividing cuboidal or columnar cells, and where the pigment cells live' },
+    { term: 'Stratum spinosum', def: 'the many-layered stratum above the deepest, its cells holding large oval nuclei and beginning to build keratin' },
+    { term: 'Stratum granulosum', def: 'a band of three to five flattened layers, grainy with shrunken protein fibres, the nuclei already shrivelling' },
+    { term: 'Stratum lucidum', def: 'the clear stratum found only in thick skin, on the soles and palms, where nuclei and organelles are no longer visible' },
+    { term: 'Stratum corneum', def: 'the outermost stratum — many layers of dead, flattened, keratinized cells with no nuclei, continually shed' },
+    { term: 'Keratinocytes', def: 'the epidermal cells that flatten and die as they are pushed away from their blood supply' },
+    { term: 'Keratinization', def: 'the hardening and drying that fills a cell with tough protein as it migrates toward the surface' },
+
+    /* ---- special cells and colour ---- */
+    { term: 'Melanocytes', def: 'the pigment-producing cells of the deepest epidermal layer, whose product is passed to neighbouring cells to shield their DNA' },
+    { term: 'Eumelanin', def: 'the brownish-black pigment of the epidermis' },
+    { term: 'Pheomelanin', def: 'the reddish-yellow pigment found in certain areas' },
+    { term: 'Dendritic cells', def: 'phagocytes sitting in the spiny stratum, defending the skin and the tissue beneath it from infection',
+      note: 'Also called Langerhans cells.' },
+    { term: 'Tactile cells', def: 'sensory receptors in the deepest stratum that register light touch, working with nerve endings in the layer below',
+      note: 'Also called Merkel cells.' },
+    { fact: true, term: 'Why people differ in skin colour',
+      def: 'not the NUMBER of pigment cells, which is the same in everyone, but how much pigment they make and how it is distributed — under genetic control' },
+    { fact: true, term: 'Physiological factors that change skin colour',
+      def: 'how oxygenated the dermal blood is, whether those vessels are dilated or constricted, dietary carotene, and jaundice' },
+
+    /* ---- dermis ---- */
+    { term: 'Dermal papillae', def: 'the projections between the ridges above them, which form fingerprints' },
+    { term: 'Papillary layer', def: 'the thinner, superficial half of the dermis, made of areolar connective tissue' },
+    { term: 'Reticular layer', def: 'the thicker, deeper half of the dermis, made of dense irregular connective tissue' },
+    { term: 'Lamellated corpuscles', def: 'the dermal receptors that register pressure',
+      note: 'Also called Pacinian corpuscles.' },
+    { term: 'Tactile corpuscles', def: 'the dermal receptors that register light touch',
+      note: 'Also called Meissner’s corpuscles.' },
+
+    /* ---- accessory structures ---- */
+    { term: 'Nail plate', def: 'the visible keratinized portion lying over the bed beneath it' },
+    { term: 'Nail matrix', def: 'the hidden growth region at the proximal end of the bed, where new cells are produced' },
+    { term: 'Hair follicle', def: 'the tube-like depression of epidermal cells, reaching down into the dermis, from which a strand develops' },
+    { term: 'Hair bulb', def: 'the deepest part of the root, holding the dividing cells that build the strand' },
+    { term: 'Hair shaft', def: 'the portion extending beyond the surface, made of dead epidermal cells' },
+    { term: 'Hair papilla', def: 'the projection carrying the blood vessels that nourish a growing strand' },
+    { term: 'Arrector pili', def: 'the small muscle attached to a follicle that contracts in cold or fear, raising goosebumps' },
+    { fact: true, term: 'Where hair does not grow',
+      def: 'the palms, the soles, the lips, the nipples and parts of the external reproductive organs' },
+
+    /* ---- glands ---- */
+    { term: 'Sebaceous glands', def: 'holocrine glands beside the hair follicles, producing an oily mix of fat and cell debris that keeps hair and skin soft and waterproof',
+      note: 'Absent from the palms and soles. Excess output is what produces acne.' },
+    { term: 'Eccrine glands', def: 'the most numerous sweat glands, opening onto the surface through pores and responding to a rise in body temperature',
+      note: 'Also called merocrine glands. Their secretion is mostly water with some salts and waste, and it is odourless.' },
+    { term: 'Apocrine sweat glands', def: 'the sweat glands of the armpit and groin, opening into hair follicles and responding to emotion and pain rather than heat',
+      note: 'Their secretions are the ones that develop an odour. Despite the name they secrete by exocytosis.' },
+    { term: 'Ceruminous glands', def: 'modified sweat glands of the ear canal that produce wax' },
+
+    /* ---- functions and temperature ---- */
+    { fact: true, term: 'The five functions of the skin',
+      def: 'a protective barrier, sensation, excretion of some wastes, the start of vitamin D production, and regulation of body temperature' },
+    { fact: true, term: 'Normal deep body temperature',
+      def: 'about 37 degrees Celsius, or 98.6 Fahrenheit, held to a set point monitored by the hypothalamus' },
+    { term: 'Radiation', def: 'the main route of heat loss — infrared rays travelling from warmer skin into cooler surroundings' },
+    { term: 'Conduction', def: 'heat moving from the skin directly into a cooler object it touches' },
+    { term: 'Convection', def: 'heat carried away from the skin by moving air' },
+    { term: 'Evaporation', def: 'heat carried off as sweat turns to vapour' },
+    { fact: true, term: 'What the body does when it overheats',
+      def: 'thermoreceptors signal the hypothalamus, the dermal vessels dilate while the deep ones constrict, and the sweat glands switch on' },
+    { term: 'Hyperthermia', def: 'abnormally high body temperature — the skin turns dry and the person becomes weak, dizzy and nauseous with a rapid pulse' },
+    { term: 'Hypothermia', def: 'abnormally low body temperature, progressing through shivering to confusion, lethargy and loss of consciousness' },
+    { term: 'Pyrogens', def: 'substances released by phagocytes that push the hypothalamic set point up, producing a fever that helps destroy pathogens' },
+
+    /* ---- wounds and burns ---- */
+    { term: 'Inflammation', def: 'the normal response to injury — vessels widen and leak fluid into the damaged tissue, leaving it red, swollen, warm and painful' },
+    { fact: true, term: 'How a deep cut heals',
+      def: 'a clot of fibrin, blood cells and platelets forms and dries into a scab; epithelial cells multiply to fill the gap while fibroblasts lay down collagen, and phagocytes clear the debris before the scab falls away' },
+    { term: 'Scar', def: 'the raised mass left where excess collagen fibres formed during healing' },
+    { term: 'Superficial partial-thickness burn', def: 'a burn injuring only the outer layer, as sunburn does — red, hot and inflamed, healing in days to weeks with no scarring',
+      note: 'First degree.' },
+    { term: 'Deep partial-thickness burn', def: 'a burn destroying the outer layer and some of the one beneath, often blistering; stem cells surviving in follicles and glands regenerate the surface',
+      note: 'Second degree.' },
+    { term: 'Full-thickness burn', def: 'a burn destroying both layers and the accessory structures, healing only from the margins and usually needing a graft',
+      note: 'Third degree.' },
+    { term: 'Rule of Nines', def: 'the method dividing the body surface into regions of nine percent, used to estimate how much area a burn covers so fluid and skin replacement can be planned' }
+  ],
+  questions: [
+    { q: 'Which layer of the epidermis is the only one whose cells divide?',
+      choices: ['Stratum basale', 'Stratum corneum', 'Stratum granulosum', 'Stratum lucidum'], answer: 0,
+      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
+
+    { q: 'Which stratum is found ONLY in thick skin?',
+      choices: ['Stratum lucidum', 'Stratum spinosum', 'Stratum granulosum', 'Stratum basale'], answer: 0,
+      why: 'Palms and soles only.' },
+
+    { q: 'Two people differ in skin colour. What differs between them?',
+      choices: [
+        'How much pigment their melanocytes produce, not how many melanocytes they have',
+        'The number of melanocytes in the epidermis',
+        'The thickness of the stratum corneum',
+        'The number of layers in the dermis'
+      ], answer: 0,
+      why: 'Everyone has roughly the same number of pigment cells. Output and distribution are what vary, and both are under genetic control.' },
+
+    { q: 'The subcutaneous layer is:',
+      choices: [
+        'Beneath the dermis, and not counted as part of the skin',
+        'Between the epidermis and dermis',
+        'The deepest layer of the epidermis',
+        'The outermost layer of the dermis'
+      ], answer: 0,
+      why: 'Also called the hypodermis. It insulates and carries the vessels that supply the skin above it.' },
+
+    { q: 'Which glands respond to emotion rather than to heat?',
+      choices: ['Apocrine sweat glands', 'Eccrine sweat glands', 'Sebaceous glands', 'Ceruminous glands'], answer: 0,
+      why: 'Eccrine glands answer to a rise in temperature. Apocrine glands sit in the armpit and groin, open into follicles, and their secretions are the ones that develop odour.' },
+
+    { q: 'What is the PRIMARY route by which the skin loses heat?',
+      choices: ['Radiation', 'Conduction', 'Convection', 'Evaporation'], answer: 0,
+      why: 'Infrared rays travelling from warm skin to cooler surroundings. The others contribute, and evaporation takes over when the air is as warm as you are.' },
+
+    { q: 'A second-degree burn is best described as:',
+      choices: [
+        'Destroying the epidermis and part of the dermis, often blistering',
+        'Injuring only the epidermis, like sunburn',
+        'Destroying epidermis, dermis and accessory structures',
+        'Affecting only the subcutaneous layer'
+      ], answer: 0,
+      why: 'It usually recovers without scarring, because stem cells surviving in the follicles and glands regenerate the surface.' },
+
+    { q: 'Why does a full-thickness burn usually need a graft?',
+      choices: [
+        'The accessory structures are destroyed, so there are no stem cells left to regenerate skin',
+        'The burn is too painful to heal naturally',
+        'The subcutaneous layer cannot produce collagen',
+        'Inflammation is absent in third-degree burns'
+      ], answer: 0,
+      why: 'Follicles and glands are the reservoir a partial-thickness burn heals from. Lose them and healing can only creep in from the margins.' },
+
+    { q: 'A fever differs from hyperthermia how?',
+      choices: [
+        'In fever the set point itself is raised deliberately; in hyperthermia the set point is normal and the body cannot keep up',
+        'Fever is always more dangerous than hyperthermia',
+        'Hyperthermia is caused by infection, fever by heat exposure',
+        'They are two names for the same thing'
+      ], answer: 0,
+      why: 'Phagocytes release pyrogens and the hypothalamus raises the target, which helps destroy pathogens. In hyperthermia the target never moved — heat simply built up faster than it could be shed.' }
   ]
 },
 
