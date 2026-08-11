@@ -3367,11 +3367,21 @@ window.DECKS = [
 
     { term: 'Standard limb leads',           def: 'Lead I, Lead II and Lead III — bipolar, and recorded before the augmented ones' },
     { term: 'Unipolar leads',                def: 'what aVR, aVL and aVF are — each reads one electrode against a central reference point',
-      note: 'The Chapter 45 heading calls the augmented leads bipolar. They are unipolar; the bipolar ones are the standard limb leads I, II and III, which read two electrodes against each other.' },
+      note: 'Easy pair to swap. Unipolar is the three augmented leads; bipolar is the standard limb leads I, II and III, which read two electrodes against each other.' },
     { term: 'Precordial leads, chest leads', def: 'V1 through V6' },
+    /* "What's V1 - V6? Know each one?" is question 9, and the transcript leaves
+       it unanswered. The six placements are worded exactly as in ekg-leads, so
+       the two decks cannot drift apart and say different things. */
+    { term: 'V1', def: 'FOURTH intercostal space at the RIGHT margin of the sternum' },
+    { term: 'V2', def: 'FOURTH intercostal space at the LEFT margin of the sternum' },
+    { term: 'V3', def: 'midway between V2 and V4 — placed AFTER V4' },
+    { term: 'V4', def: 'FIFTH intercostal space at the junction of the left midclavicular line' },
+    { term: 'V5', def: 'horizontal level of V4 at the left ANTERIOR AXILLARY line' },
+    { term: 'V6', def: 'horizontal level of V4 at the left MIDAXILLARY line' },
     { term: '10 mm',                         def: 'the height of a proper standardization mark, which confirms the machine is working properly' },
     { term: 'Electrocardiograph paper',      def: 'heat-sensitive — the heated stylus burns the tracing straight into it' },
-    { term: 'Electrolyte gel',               def: 'applied under each electrode because skin conducts electricity poorly' },
+    { term: 'Electrolyte gel',               def: 'applied under each electrode because skin conducts electricity poorly',
+      note: 'The review words this as skin being a “core conductor”. Poor is the fact — gel exists precisely because skin conducts badly — but expect the review’s wording on the paper.' },
     { term: 'Single-channel EKG',            def: 'the machine that records one lead at a time rather than several at once' },
 
     { term: 'AC interference',     def: 'the artifact produced by electrical current in nearby equipment or wiring' },
@@ -3473,12 +3483,12 @@ window.DECKS = [
 
     { q: 'What is true of a treadmill stress test?',
       choices: [
-        'It must be monitored closely by the provider — a doctor',
+        'It has to be monitored by a doctor',
         'The patient is left alone once walking',
         'It is performed while the patient is sedated',
         'No ECG is recorded during the test itself',
       ], answer: 0,
-      why: 'The whole point is to stress the heart until symptoms or ECG changes appear, so the provider stays present throughout in case an arrhythmia or infarction develops.' },
+      why: 'The whole point is to stress the heart until symptoms or ECG changes appear, so the doctor stays present throughout in case an arrhythmia or infarction develops. Some versions word this as “the provider” — same answer.' },
 
     { q: 'What should you do after running an ECG on a patient?',
       choices: [

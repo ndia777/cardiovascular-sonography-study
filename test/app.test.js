@@ -1119,6 +1119,23 @@ function suite(s, label, srcCss) {
   }
   check(`[${label}] no compound-list Recall answers`, !unwieldy.length, unwieldy.join('\n      '));
 
+  /* Decks are allowed — encouraged, even — to cover the same ground in their own
+     words, so shared terms generally may differ. The chest leads are the one
+     exception: the six placements were copied verbatim into the test review so
+     both decks teach the same landmarks, and two decks quietly disagreeing about
+     where V4 goes is the kind of thing you only discover in a lab practical. */
+  const leadDef = t => (DECKS.find(d => d.id === 'ekg-leads') || { cards: [] })
+    .cards.find(c => c.term === t);
+  const drift = [];
+  for (const c of (DECKS.find(d => d.id === 'ekg-test-review') || { cards: [] }).cards) {
+    if (!/^V[1-6]$/.test(c.term)) continue;
+    const src = leadDef(c.term);
+    if (!src) drift.push(`${c.term} is missing from ekg-leads`);
+    else if (src.def !== c.def) drift.push(`${c.term}: "${c.def}" vs ekg-leads "${src.def}"`);
+  }
+  check(`[${label}] the two decks agree on where the chest leads go`,
+        !drift.length, drift.join('\n      '));
+
   /* A Recall definition must not contain its own answer. "Lead II strip"
      defined with "Lead II" in the prompt, or "Large square" defined as "five
      large squares = 1.0 second", is a typing exercise rather than a test.
