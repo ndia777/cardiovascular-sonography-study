@@ -3604,10 +3604,11 @@ window.DECKS = [
   cards: [
     { term: 'Osmosis', def: 'PASSIVE — water moves through a selectively permeable membrane toward the side holding more solute that cannot cross',
       note: 'The notes put it best: where salt goes, water follows. No ATP — the water is driven by its own molecular motion.' },
-    { term: 'Aquaporins', def: 'the protein channels water crosses the membrane through, rather than squeezing between the phospholipids' },
+    { term: 'Aquaporins', def: 'the protein channels that let water cross the cell membrane',
+      note: 'Water has two ways across in osmosis: through these, or by slipping between the phospholipids of the membrane itself.' },
     { term: 'Selectively permeable', def: 'describing a barrier that lets some substances through while blocking others' },
-    { term: 'Impermeant solute', def: 'a dissolved particle that cannot cross the membrane, so water has to move instead of it' },
-    { term: 'Osmotic pressure', def: 'the pull a solution exerts on water — it rises as the concentration of particles that cannot cross the membrane rises, and water always moves toward the higher one' },
+    { term: 'Impermeant solute', def: 'a dissolved particle the membrane will not let through, so water moves instead' },
+    { term: 'Osmotic pressure', def: 'the pull a solution exerts on water — the more trapped solute it holds, the stronger the pull, and water always moves toward the stronger side' },
     { term: 'Tonicity', def: 'the power of a solution outside a cell to change the volume of water inside it' },
 
     { term: 'Isotonic solution', def: 'the SAME solute concentration as the cell — equal salt inside and out, so the cell keeps its shape' },
@@ -3618,7 +3619,7 @@ window.DECKS = [
 
     { term: 'Diffusion', def: 'PASSIVE — molecules spread through the bilayer from higher to lower concentration under their own kinetic energy. Example: oxygen and carbon dioxide exchanging in the lungs' },
     { term: 'Facilitated diffusion', def: 'PASSIVE — "helped" movement high to low, but through channels or carrier proteins because the particle cannot cross the bilayer alone. Example: glucose entering a cell' },
-    { term: 'Filtration', def: 'PASSIVE — smaller molecules forced through a porous membrane by PRESSURE, from high pressure to low' },
+    { term: 'Filtration', def: 'PASSIVE — smaller molecules forced through a porous membrane by PRESSURE, from the high side to the low' },
     { term: 'Physiological steady state', def: 'concentrations of diffusing substances are unequal but STABLE — what living organisms reach instead of true equilibrium' },
   ],
 
