@@ -902,8 +902,7 @@ window.DECKS = [
    chapter, because being asked the way the exam will ask is the point. */
 {
   id: 'mt1-guide',
-  group: 'Chapter 1',
-  exam: true,
+  group: 'Chapter 1',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Study Guide',
@@ -976,8 +975,7 @@ window.DECKS = [
 
 {
   id: 'mt2-guide',
-  group: 'Chapter 2',
-  exam: true,
+  group: 'Chapter 2',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Study Guide',
@@ -3498,6 +3496,95 @@ window.DECKS = [
         'Leave the electrodes on in case a repeat is needed',
       ], answer: 0,
       why: 'The patient is partly undressed and lying flat. Help them sit up, dress and get down off the table before you go and deal with the tracing.' },
+  ],
+},
+
+{
+  id: 'mt12-guide',
+  group: 'Chapter 12',
+  exam: true,
+  current: true,
+  added: '2026-08-12',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 12 — Study Guide',
+  source: 'Chapter 12 — instructor study guide (skin)',
+  /* The guide is 65 flat "X is Y" statements, so these are near-verbatim, only
+     turned around into term/definition. Where the guide gives an "also known
+     as" name, it is kept as a comma alternate so Recall accepts either — except
+     where that alias would appear in its own definition, in which case the
+     alias moves into the definition instead and the term stays single. */
+  cards: [
+    { term: 'Cicatrix', def: 'a normal scar resulting from the healing of a wound' },
+    { term: 'Keloid', def: 'an abnormally raised or thickened scar that expands beyond the boundaries of the original incision' },
+    { term: 'Hemangioma', def: 'also called a strawberry birthmark — a soft, raised, pink or red vascular birthmark' },
+    { term: 'Macule', def: 'a discolored flat spot less than 1 cm in diameter' },
+    { term: 'Papule', def: 'a small, raised red lesion less than 0.5 cm in diameter that does not contain pus' },
+    { term: 'Pustule, pimple', def: 'a small, circumscribed lesion containing pus' },
+    { term: 'Wheal, welt', def: 'a small bump that itches' },
+    { term: 'Bulla', def: 'a large blister, more than half a centimeter in diameter' },
+    { term: 'Comedo', def: 'a noninfected lesion formed by the buildup of sebum and keratin in a hair follicle, often associated with acne vulgaris' },
+    { term: 'Exudate', def: 'a fluid, such as pus, that leaks out of an infected wound' },
+    { term: 'Contusion', def: 'an injury to the underlying tissues that does not break the skin, marked by discoloration and pain' },
+    { term: 'Hematoma', def: 'a swelling of clotted blood trapped in the tissues, usually caused by an injury' },
+    { term: 'Ecchymosis, bruise', def: 'a large, irregular area of purplish discoloration caused by bleeding under the skin' },
+    { term: 'Purpura', def: 'multiple purple discolorations caused by bleeding underneath the skin' },
+    { term: 'Petechiae', def: 'very small, pinpoint hemorrhages less than 2 mm in diameter' },
+    { term: 'Erythema', def: 'redness of the skin due to capillary dilation' },
+    { term: 'Erythroderma', def: 'abnormal redness of the entire skin surface' },
+
+    { term: 'Basal cell carcinoma', def: 'a malignant tumor arising in the deepest layer of the epidermis' },
+    { term: 'Squamous cell carcinoma', def: 'a malignant tumor of the flat, scaly cells of the epithelium' },
+    { term: 'Melanoma', def: 'a skin cancer that arises in the pigment-producing cells' },
+    { term: 'Dysplastic nevi', def: 'atypical moles that can develop into skin cancer' },
+    { term: 'Actinic keratosis', def: 'a precancerous skin growth that occurs on sun-damaged skin' },
+    { term: 'Keratosis', def: 'any skin growth, such as a wart or callus, in which there is overgrowth and thickening of the skin' },
+    { term: 'Papilloma', def: 'a benign, superficial, wart-like growth on epithelial tissue' },
+    { term: 'Lipoma', def: 'a benign fatty tumor under the skin that causes a bump' },
+    { term: 'Granuloma', def: 'a small, knot-like swelling of granulation tissue in the epidermis' },
+
+    { term: 'Dermatitis', def: 'inflammation of the skin' },
+    { term: 'Eczema', def: 'a form of dermatitis with itching, redness, blistering and oozing' },
+    { term: 'Psoriasis', def: 'a common skin disorder marked by flare-ups of red papules covered with silvery scales' },
+    { term: 'Rosacea, adult acne', def: 'tiny red pimples and broken blood vessels, usually across the face' },
+    { term: 'Urticaria, hives', def: 'itchy wheals caused by an allergic reaction' },
+    { term: 'Pruritus, itching', def: 'the symptom that makes a patient scratch, associated with most forms of dermatitis' },
+    { term: 'Xeroderma, xerosis', def: 'excessively dry skin' },
+    { term: 'Ichthyosis', def: 'a group of hereditary disorders causing widespread dry, thickened, scaly skin',
+      note: 'The study guide defines this twice — once as widespread scaling, once as the hereditary disorders behind it. Both descriptions are of the same condition; this card carries both halves.' },
+    { term: 'Scleroderma', def: 'an autoimmune disorder causing thickened and hardened connective tissue' },
+    { term: 'Systemic lupus erythematosus, SLE', def: 'an autoimmune disorder characterized by a red, scaly rash' },
+    { term: 'Vitiligo', def: 'loss of colour in patches, caused by destruction of the melanocytes for unknown reasons' },
+    { term: 'Albinism', def: 'a genetic condition characterized by a deficiency or absence of pigment' },
+    { term: 'Chloasma, melasma', def: 'a pigmentation disorder characterized by brownish spots on the face' },
+    { term: 'Lipedema', def: 'also called painful fat syndrome — a chronic accumulation of fat and fluid in the tissues under the skin' },
+
+    { term: 'Cellulitis', def: 'an acute, rapidly spreading bacterial infection within the connective tissues' },
+    { term: 'Impetigo', def: 'a highly contagious bacterial skin infection characterized by pustules that crust and rupture' },
+    { term: 'Necrotizing fasciitis', def: 'the infection popularly called flesh-eating bacteria, which can destroy body tissue and be fatal' },
+    { term: 'Furuncle, boil', def: 'a large, tender, swollen area caused by a staphylococcal infection around a hair follicle or sebaceous gland' },
+    { term: 'Carbuncle', def: 'a cluster of connected furuncles' },
+    { term: 'Folliculitis', def: 'inflammation of the hair follicles' },
+    { term: 'Tinea', def: 'a fungal infection that can grow on the skin, hair or nails' },
+    { term: 'Scabies', def: 'a skin infection caused by an infestation of itch mites' },
+    { term: 'Pediculosis', def: 'an infestation with lice' },
+    { term: 'Verrucae, warts', def: 'small, hard skin lesions caused by the human papillomavirus' },
+    { term: 'Exanthem', def: 'a widespread rash, usually in children' },
+
+    { term: 'Alopecia', def: 'baldness' },
+    { term: 'Hirsutism', def: 'excessive body and facial hair in women, usually in a male pattern' },
+    { term: 'Seborrhea', def: 'overactivity of the sebaceous glands resulting in excessive sebum production' },
+    { term: 'Hyperhidrosis', def: 'profuse sweating' },
+
+    { term: 'Onychomycosis', def: 'a fungal infection of the nail' },
+    { term: 'Onychia, onychitis', def: 'inflammation of the bed of the nail that often results in loss of the nail' },
+    { term: 'Paronychia', def: 'an acute or chronic infection of the skin fold around a nail' },
+    { term: 'Onychocryptosis', def: 'the medical term for an ingrown toenail' },
+    { term: 'Koilonychia', def: 'also called spoon nail — a malformation in which the nail is concave' },
+
+    { term: 'Debridement', def: 'the removal of dirt, foreign objects, damaged tissue and cellular debris from a wound' },
+    { term: 'Rhytidectomy', def: 'also called a facelift — the surgical removal of excess skin and fat to eliminate wrinkles' },
+    { term: 'Blepharoplasty', def: 'the surgical reduction of the upper and lower eyelids by removing sagging skin' },
+    { term: 'Purulent', def: 'producing or containing pus' },
   ],
 }
 
