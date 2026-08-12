@@ -1325,7 +1325,7 @@ window.DECKS = [
    chapter, because being asked the way the exam will ask is the point. */
 {
   id: 'mt1-guide',
-  group: 'Chapter 1',
+  group: 'Chapter 1',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Study Guide',
@@ -1398,7 +1398,7 @@ window.DECKS = [
 
 {
   id: 'mt2-guide',
-  group: 'Chapter 2',
+  group: 'Chapter 2',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Study Guide',
@@ -4008,6 +4008,97 @@ window.DECKS = [
     { term: 'Rhytidectomy', def: 'also called a facelift — the surgical removal of excess skin and fat to eliminate wrinkles' },
     { term: 'Blepharoplasty', def: 'the surgical reduction of the upper and lower eyelids by removing sagging skin' },
     { term: 'Purulent', def: 'producing or containing pus' },
+  ],
+},
+
+{
+  id: 'bio-osmosis',
+  exam: true,
+  added: '2026-08-12',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Osmosis — Focused Review',
+  source: 'Chapter 3.3 — Movements Into and Out of the Cell',
+  /* Osmosis only, pulled out of the Chapter 3 guide because a test on one topic
+     is badly served by 83 cards on the whole chapter. Scope is osmosis and what
+     bears on it: what moves, what drives it, and what it does to a cell. The
+     other passive mechanisms are here as contrast, because "which of these is
+     osmosis" is the question a paper actually asks. The active mechanisms are
+     deliberately left out — they are in bio-ch3, and they are not osmosis. */
+  cards: [
+    { term: 'Osmosis', def: 'PASSIVE — water moves through a selectively permeable membrane toward the side holding more solute that cannot cross',
+      note: 'The notes put it best: where salt goes, water follows. No ATP — the water is driven by its own molecular motion.' },
+    { term: 'Aquaporins', def: 'the protein channels water crosses the membrane through, rather than squeezing between the phospholipids' },
+    { term: 'Selectively permeable', def: 'describing a barrier that lets some substances through while blocking others' },
+    { term: 'Impermeant solute', def: 'a dissolved particle that cannot cross the membrane, so water has to move instead of it' },
+    { term: 'Osmotic pressure', def: 'the pull a solution exerts on water — it rises as the concentration of particles that cannot cross the membrane rises, and water always moves toward the higher one' },
+    { term: 'Tonicity', def: 'the power of a solution outside a cell to change the volume of water inside it' },
+
+    { term: 'Isotonic solution', def: 'the SAME solute concentration as the cell — equal salt inside and out, so the cell keeps its shape' },
+    { term: 'Hypertonic solution', def: 'a HIGHER solute concentration than body fluids — more salt outside, so water leaves and the cell SHRINKS' },
+    { term: 'Hypotonic solution', def: 'a LOWER solute concentration than body fluids — less salt outside, so water enters and the cell SWELLS or bursts' },
+    { term: 'Crenation', def: 'the shrivelling of a cell after water has left it' },
+    { term: 'Hemolysis', def: 'the bursting of a red blood cell that has taken on too much water' },
+
+    { term: 'Diffusion', def: 'PASSIVE — molecules spread through the bilayer from higher to lower concentration under their own kinetic energy. Example: oxygen and carbon dioxide exchanging in the lungs' },
+    { term: 'Facilitated diffusion', def: 'PASSIVE — "helped" movement high to low, but through channels or carrier proteins because the particle cannot cross the bilayer alone. Example: glucose entering a cell' },
+    { term: 'Filtration', def: 'PASSIVE — smaller molecules forced through a porous membrane by PRESSURE, from high pressure to low' },
+    { term: 'Physiological steady state', def: 'concentrations of diffusing substances are unequal but STABLE — what living organisms reach instead of true equilibrium' },
+  ],
+
+  questions: [
+    { q: 'In osmosis, which way does water move?',
+      choices: [
+        'Toward the side with more solute that cannot cross the membrane',
+        'Toward the side with less solute',
+        'Toward the side with more water molecules',
+        'Equally in both directions until the solute concentrations match',
+      ], answer: 0,
+      why: 'Water follows the solute it cannot dilute by any other route. Where salt goes, water follows — so the side with the greater osmotic pressure draws water in.' },
+
+    { q: 'What separates osmosis from ordinary diffusion?',
+      choices: [
+        'Osmosis is specifically water crossing a selectively permeable membrane',
+        'Osmosis requires ATP and diffusion does not',
+        'Osmosis moves particles from low to high concentration',
+        'Osmosis only happens in red blood cells',
+      ], answer: 0,
+      why: 'Both are passive and both run down a gradient. Osmosis is the special case where the thing moving is water and the membrane blocks the solute.' },
+
+    { q: 'A red blood cell is placed in a hypertonic solution. What happens?',
+      choices: [
+        'Water leaves the cell and it shrivels — crenation',
+        'Water enters the cell and it bursts — hemolysis',
+        'Nothing; the cell keeps its shape',
+        'Salt is pumped out of the cell to compensate',
+      ], answer: 0,
+      why: 'Hypertonic means more solute outside than in. Water leaves toward the higher concentration and the cell shrinks. Hyper — the outside is "hyped up" with salt.' },
+
+    { q: 'A red blood cell is placed in a hypotonic solution. What happens?',
+      choices: [
+        'Water enters the cell and it swells or bursts — hemolysis',
+        'Water leaves the cell and it shrivels — crenation',
+        'Nothing; the cell keeps its shape',
+        'The cell membrane becomes impermeable to water',
+      ], answer: 0,
+      why: 'Hypotonic means less solute outside than in, so water moves inward toward the saltier inside. Distilled water entering a cell is the textbook example.' },
+
+    { q: 'Does osmosis require the cell to spend ATP?',
+      choices: [
+        'No — it is passive, driven by molecular motion',
+        'Yes — carrier proteins burn ATP to move the water',
+        'Only when moving water out of the cell',
+        'Only across the membranes of red blood cells',
+      ], answer: 0,
+      why: 'Osmosis is a passive mechanism. ATP is what separates active transport, endocytosis and exocytosis from the passive group of diffusion, facilitated diffusion, osmosis and filtration.' },
+
+    { q: 'Why does diffusional equilibrium NOT normally occur in a living organism?',
+      choices: [
+        'Cells keep consuming and producing substances, so concentrations stay unequal but stable',
+        'Cell membranes block diffusion completely',
+        'Body temperature is too low for molecules to move',
+        'Equilibrium is reached instantly, so it is never observed',
+      ], answer: 0,
+      why: 'That stable-but-unequal condition is the physiological steady state. A cell that reached true equilibrium with its surroundings would be dead.' },
   ],
 }
 
