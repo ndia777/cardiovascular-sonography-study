@@ -4177,12 +4177,19 @@ function screenHome(){
     if (!rest.length) return;
 
     /* Where decks declare a group, break them into named sections — a flat run
-       of a dozen is harder to scan than three labelled chapters. Sections are
-       ordered by their oldest deck, keeping the chronological reading. */
+       of a dozen is harder to scan than three labelled chapters.
+
+       The chapter being worked on now comes first; everything else follows in
+       the order it was covered. Chronological alone was right while the course
+       ran forwards, but it buries the current chapter deeper every time one is
+       added, which is exactly backwards — the finished chapters are the ones
+       that should sink. Sections already open themselves when they hold the
+       current chapter, so this puts the open one where it is first seen. */
     const groups = [...new Set(rest.map(d => d.group).filter(Boolean))]
       .sort((a, b) => {
+        const current = g => rest.some(d => d.group === g && d.current) ? 0 : 1;
         const first = g => rest.find(d => d.group === g).added || '';
-        return first(a).localeCompare(first(b));
+        return (current(a) - current(b)) || first(a).localeCompare(first(b));
       });
 
     if (!groups.length){

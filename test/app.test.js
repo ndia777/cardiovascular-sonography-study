@@ -250,6 +250,33 @@ function suite(s, label, srcCss) {
       check(`[${label}] multi-deck chapters render a heading`, !missingHead.length,
             `missing: ${missingHead.join(', ')} — saw: ${summaries.join(' | ')}`);
 
+      /* The chapter being worked on now leads its course; the ones already
+         covered sink below it. Read the order out of the rendered summaries
+         rather than re-deriving it, so a change to the sort actually fails
+         here. Longest-prefix match on the heading matters: "Chapter 1" is a
+         prefix of "Chapter 12", and matching loosely would credit the wrong
+         section and let a real misordering through. */
+      const misordered = [];
+      for (const c of renderedCourses) {
+        const sec = (openHtml.split(`class="coursehead">${c.replace(/&/g, '&amp;')}<`)[1] || '')
+          .split('class="coursehead"')[0];
+        const inCourse = [...new Set(DECKS.filter(d => d.course === c && !d.exam && d.group)
+          .map(d => d.group))];
+        const groupOf = t => inCourse.filter(g => t.startsWith(g))
+          .sort((a, b) => b.length - a.length)[0];
+        const isNow = g => DECKS.some(d => d.course === c && d.group === g && !d.exam && d.current);
+
+        const order = [...sec.matchAll(/<summary>([\s\S]*?)<\/summary>/g)]
+          .map(m => groupOf(m[1].replace(/<[^>]*>/g, '').trim()))
+          .filter(Boolean);
+        const lastNow = order.reduce((acc, g, i) => (isNow(g) ? i : acc), -1);
+        const firstStale = order.findIndex(g => !isNow(g));
+        if (lastNow >= 0 && firstStale >= 0 && firstStale < lastNow)
+          misordered.push(`${subj(c)}: ${order.join(' | ')}`);
+      }
+      check(`[${label}] the current chapter's section leads its course`,
+            !misordered.length, misordered.join('\n      '));
+
       const singles = [...new Set(grouped.map(d => d.group))]
         .filter(g => grouped.filter(d => d.group === g).length === 1);
       const headed = singles.filter(g => summaries.some(t => t.startsWith(g)));
