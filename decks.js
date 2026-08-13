@@ -2108,7 +2108,8 @@ window.DECKS = [
 
     { term: 'Extracellular matrix', def: 'the non-cellular material filling the space between cells, made of protein fibres and ground substance, ranging from fluid to semisolid to solid' },
     { term: 'Ground substance', def: 'the non-fibrous portion of the matrix — protein, other molecules and a varying amount of fluid — filling the space around cells and fibres' },
-    { term: 'Fibroblasts', def: 'the large star-shaped cells, commonest of the fixed cells, that secrete the fibres of the matrix' },
+    { term: 'Fibroblasts', def: 'the large star-shaped cells, commonest of the fixed cells, that secrete the fibres of the matrix',
+      note: 'They multiply and step up fibre production after an injury, and they build the scar tissue that replaces damaged muscle after a heart attack.' },
     { term: 'Macrophages', def: 'the wandering scavengers that clear foreign particles by engulfing them and defend against infection',
       note: 'Also called histiocytes. Usually attached to fibres, but able to detach and move.' },
     { term: 'Collagen fibres', def: 'thick threads of the protein that gives the body most of its structure — enormously strong under a pull, only slightly stretchy, and the bulk of ligaments and tendons',
@@ -2151,7 +2152,22 @@ window.DECKS = [
     { term: 'Cardiac muscle tissue', def: 'branching striated cells joined by intercalated discs, working involuntarily and found only in the wall of the heart' },
     { term: 'Intercalated discs', def: 'the junctions joining the branching cells of heart muscle end to end' },
     { term: 'Neurons', def: 'the cells specialized for communication, conducting impulses to coordinate, integrate and regulate the body' },
-    { term: 'Neuroglia', def: 'the supporting cells that nourish and hold up the impulse-conducting ones' }
+    { term: 'Neuroglia', def: 'the supporting cells that nourish and hold up the impulse-conducting ones, carry on phagocytosis, and link them to blood vessels',
+      note: 'Unlike neurons they divide by mitosis — which is why most brain tumours arise from these rather than from nerve cells.' },
+    /* ---- connective tissue cells the deck was missing ---- */
+    { term: 'Mast cells', def: 'the large fixed cells scattered through connective tissue, usually close to blood vessels, that release heparin and histamine' },
+    { term: 'Heparin', def: 'the compound released by mast cells that stops blood from clotting' },
+    { term: 'Histamine', def: 'the compound released by mast cells that drives the inflammatory response' },
+    { term: 'Adipocytes', def: 'the cells that store fat in droplets until their nuclei are pushed to one side' },
+
+    /* ---- the parts of a neuron ---- */
+    { term: 'Cell body, soma', def: 'the part of a nerve cell holding the nucleus and most of the organelles' },
+    { term: 'Dendrites', def: 'the short, numerous, branching processes that RECEIVE stimuli',
+      note: 'From dendro, “tree”. The branching is the giveaway.' },
+    { term: 'Axon', def: 'the single long process that carries the signal AWAY toward other cells' },
+
+    { term: 'Metaplasia', def: 'the replacement of one mature tissue by another — as in the airways of smokers, where the ciliated lining gives way to layers of flat cells',
+      note: 'Protective but costly: the replacement has neither cilia nor mucus, so the airway loses the mechanism that sweeps debris out.' },
   ],
   questions: [
     { q: 'Which tissue type has no blood vessels of its own?',
@@ -2214,7 +2230,51 @@ window.DECKS = [
         'A stretchable lining — absent from the bladder',
         'A layer of cilia — absent from the respiratory tract'
       ], answer: 0,
-      why: 'Those linings are stratified squamous too, but stay soft, moist and alive at the surface.' }
+      why: 'Those linings are stratified squamous too, but stay soft, moist and alive at the surface.' },
+    { q: 'Carcinogens act mainly on cells that are dividing. Which tissue is therefore most vulnerable?',
+      choices: [
+        'Epithelium, which replaces itself continuously',
+        'Nervous tissue',
+        'Cartilage',
+        'Dense regular connective tissue',
+      ], answer: 0,
+      why: 'Epithelium regenerates constantly, which is why most cancers are carcinomas. Nervous tissue is the least vulnerable, because neurons barely divide — and that is also why brain tumours usually arise from neuroglia, which do divide.' },
+
+    { q: 'Why are shoulder, elbow and knee injuries so often slow to heal?',
+      choices: [
+        'Those joints are largely cartilage and dense regular connective tissue, both poorly supplied with blood',
+        'Joints have no nerve supply, so damage goes unnoticed',
+        'Synovial fluid keeps repair cells from reaching the injury',
+        'Cartilage cells divide too quickly to organise properly',
+      ], answer: 0,
+      why: 'Repair depends on blood delivering cells and nutrients. Cartilage has no blood supply of its own at all — it feeds by diffusion from the perichondrium around it — and dense regular connective tissue is poorly vascular. Little blood means slow healing.' },
+
+    { q: 'In the airways of smokers, the ciliated lining is replaced by layers of flat cells. Why does that matter?',
+      choices: [
+        'The replacement has neither cilia nor mucus, so debris is no longer swept out',
+        'The replacement is thinner and tears more easily',
+        'The replacement cannot absorb oxygen',
+        'The replacement blocks the airway mechanically',
+      ], answer: 0,
+      why: 'Pseudostratified ciliated columnar epithelium traps particles in mucus and sweeps them up and out. Stratified squamous is tougher, but it has no cilia and no goblet cells, so the airway loses its cleaning mechanism. A protective change that costs a function.' },
+
+    { q: 'Which description identifies cardiac muscle?',
+      choices: [
+        'Striated, branched, involuntary, with intercalated discs',
+        'Striated, unbranched, voluntary, many nuclei per cell',
+        'Unstriated, spindle-shaped, involuntary, one central nucleus',
+        'Unstriated, branched, voluntary',
+      ], answer: 0,
+      why: 'Take them one distinguishing feature at a time: skeletal is the only voluntary type, smooth is the only one without striations, and cardiac is the only one with intercalated discs — and the only one confined to a single organ.' },
+
+    { q: 'Which membrane is built entirely of connective tissue, with no epithelium at all?',
+      choices: [
+        'Synovial',
+        'Serous',
+        'Mucous',
+        'Cutaneous',
+      ], answer: 0,
+      why: 'Serous, mucous and cutaneous membranes are all epithelium sitting on connective tissue. The synovial membrane lining a joint is the exception — connective tissue only.' },
   ]
 },
 
