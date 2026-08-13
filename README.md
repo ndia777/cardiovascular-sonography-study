@@ -153,7 +153,7 @@ the heartbeat animation are all written or drawn from scratch, and every
 definition is worded independently of the textbooks and lecture slides the facts
 came from.
 
-Two pieces are not — both anatomical diagrams, both from Wikimedia Commons:
+Three pieces are not — all anatomical diagrams, all from Wikimedia Commons:
 
 > **Heart diagram** — *"Diagram of the human heart (clean)"* by **Wnauta**, after
 > **Wapcaplet**, from
@@ -178,6 +178,18 @@ Two pieces are not — both anatomical diagrams, both from Wikimedia Commons:
 > appears on screen beneath the diagram too. It was picked over better-looking
 > candidates because it is genuinely unlabelled, which a mode about naming the
 > parts requires.
+
+> **Skin diagram** — *"Human skin structure"* by **Tomáš Kebert & umimeto.org**,
+> from
+> [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Human_skin_structure.svg),
+> used under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+> Changes: the two label layers were removed, the drawing cropped to the block
+> itself, and coordinates rounded from six decimal places to two — invisible at
+> this size, and it halved the file. The artwork itself is unaltered; the labels
+> in the app are ours.
+>
+> That figure remains under CC BY-SA 4.0, and the credit appears on screen
+> beneath the diagram as well as here.
 
 ## Also here
 
