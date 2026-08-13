@@ -2750,8 +2750,8 @@ window.DECKS = [
     { term: 'Evaporation', def: 'heat carried off as sweat turns to vapour' },
     { fact: true, term: 'What the body does when it overheats',
       def: 'thermoreceptors signal the hypothalamus, the dermal vessels dilate while the deep ones constrict, and the sweat glands switch on' },
-    { term: 'Hyperthermia', def: 'abnormally high body temperature — the skin turns dry and the person becomes weak, dizzy and nauseous with a rapid pulse' },
-    { term: 'Hypothermia', def: 'abnormally low body temperature, progressing through shivering to confusion, lethargy and loss of consciousness' },
+    { term: 'Hyperthermia', def: 'body temperature ABOVE 101°F — the skin turns dry and the person becomes weak, dizzy and nauseous with a rapid pulse' },
+    { term: 'Hypothermia', def: 'body temperature BELOW 95°F, progressing through shivering to confusion, lethargy and loss of consciousness' },
     { term: 'Pyrogens', def: 'substances released by phagocytes that push the hypothalamic set point up, producing a fever that helps destroy pathogens' },
 
     /* ---- wounds and burns ---- */
@@ -2765,12 +2765,40 @@ window.DECKS = [
       note: 'Second degree.' },
     { term: 'Full-thickness burn', def: 'a burn destroying both layers and the accessory structures, healing only from the margins and usually needing a graft',
       note: 'Third degree.' },
-    { term: 'Rule of Nines', def: 'the method dividing the body surface into regions of nine percent, used to estimate how much area a burn covers so fluid and skin replacement can be planned' }
+    { term: 'Rule of Nines', def: 'the method dividing the body surface into regions of nine percent, used to estimate how much area a burn covers so fluid and skin replacement can be planned' },
+    /* ---- added from the notes/practice-question gap check ---- */
+    { term: 'Desmosomes', def: 'the junctions that thicken in older keratinocytes and fasten them tightly to one another' },
+    { term: 'Calluses', def: 'the thickened areas raised on palms and soles where skin is rubbed or pressed regularly, from increased cell division' },
+    { term: 'Corns', def: 'the keratinized conical masses that form on the toes' },
+    { term: 'Psoriasis', def: 'the chronic disease in which epidermal cells divide about seven times faster than normal, leaving bright red patches under silvery scales',
+      note: 'The scales are the excess keratinized cells. Treated with drugs that block tumor necrosis factor, an inflammatory protein.' },
+    { term: 'Pressure ulcer', def: 'the breakdown that follows when body weight presses skin against a surface long enough to cut off its blood supply, killing the tissue',
+      note: 'Also called a decubitus ulcer or bedsore. Forms over bony points — hip, heel, elbow, shoulder. Prevented by shifting position often, massaging those areas, motorised beds, clean skin, good diet and not smoking.' },
+
+    { term: 'ABCDE rule', def: 'the five warning signs of melanoma: asymmetry, an irregular border, more than one colour, a diameter over 6 mm, and evolution or change' },
+    { term: 'Cyanosis', def: 'the bluish cast the skin takes on when its blood is poorly oxygenated' },
+
+    { term: 'Nail bed', def: 'the skin surface lying directly beneath the visible part of a nail' },
+    { term: 'Free edge', def: 'the part of the nail plate that extends past the bed it grew over' },
+    { term: 'Hair bulge', def: 'the region near the bottom of a follicle where its epidermal stem cells originate' },
+    { fact: true, term: 'What determines hair colour', def: 'the type and amount of melanin present' },
+
+    { fact: true, term: 'How sweat helps protect the skin', def: 'it is slightly acidic, which inhibits the growth of certain microorganisms' },
+    { term: 'Dehydrocholesterol', def: 'the precursor made by skin cells that sunlight converts into an inactive form of vitamin D' },
+    { fact: true, term: 'How vitamin D becomes active', def: 'sunlight converts the skin’s precursor into an inactive form, then the liver and kidneys modify that into the active vitamin' },
+
+    { term: 'Intradermal injection', def: 'an injection given into the skin itself' },
+    { term: 'Subcutaneous injection', def: 'an injection given through a hollow needle into the fatty layer beneath the skin',
+      note: 'Absorbed faster than an intradermal one, because that layer is richly supplied with blood vessels while the epidermis has none at all.' },
+
+    { term: 'Allograft', def: 'skin taken from another person as a TEMPORARY covering for a deep burn — it shrinks the wound, holds off infection and protects the tissue beneath while healing starts',
+      note: 'Replaced later by an autograft, the patient’s own skin taken from areas that have healed.' },
+    { term: 'Botox', def: 'the toxin from Clostridium botulinum — the bacterium behind a form of food poisoning — used to smooth facial wrinkles' },
   ],
   questions: [
     { q: 'Which layer of the epidermis is the only one whose cells divide?',
       choices: ['Stratum basale', 'Stratum corneum', 'Stratum granulosum', 'Stratum lucidum'], answer: 0,
-      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
+      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
 
     { q: 'Which stratum is found ONLY in thick skin?',
       choices: ['Stratum lucidum', 'Stratum spinosum', 'Stratum granulosum', 'Stratum basale'], answer: 0,
