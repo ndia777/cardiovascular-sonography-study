@@ -3643,6 +3643,15 @@ window.DECKS = [
     { term: 'Facilitated diffusion', def: 'PASSIVE — "helped" movement high to low, but through channels or carrier proteins because the particle cannot cross the bilayer alone. Example: glucose entering a cell' },
     { term: 'Filtration', def: 'PASSIVE — smaller molecules forced through a porous membrane by PRESSURE, from the high side to the low' },
     { term: 'Physiological steady state', def: 'concentrations of diffusing substances are unequal but STABLE — what living organisms reach instead of true equilibrium' },
+
+    /* What changes the RATE. The notes define diffusion as movement driven by
+       kinetic energy but never say what follows from that, which is where the
+       heat question on the test came from. */
+    { term: 'Temperature, heat', def: 'raise this and diffusion and osmosis both run faster, because the particles carry more energy and collide more often',
+      note: 'Warmth speeding osmosis up does NOT make it active transport. The energy comes from the particles themselves, not from the cell spending ATP.' },
+    { term: 'Concentration gradient', def: 'the difference between the two sides of a membrane — the steeper it is, the faster particles cross' },
+    { term: 'Molecular size', def: 'why a small particle crosses a membrane faster than a bulky one, all else being equal' },
+    { term: 'Surface area', def: 'the more membrane there is to cross, the more can move at once — the reason alveoli and intestinal villi are so folded' },
   ],
 
   questions: [
@@ -3690,6 +3699,33 @@ window.DECKS = [
         'Only across the membranes of red blood cells',
       ], answer: 0,
       why: 'Osmosis is a passive mechanism. ATP is what separates active transport, endocytosis and exocytosis from the passive group of diffusion, facilitated diffusion, osmosis and filtration.' },
+
+    { q: 'A cell is warmed. What happens to the rate of osmosis?',
+      choices: [
+        'It speeds up — the molecules carry more kinetic energy',
+        'It slows down — heat drives water out of the cell',
+        'It stops — the aquaporins close above body temperature',
+        'Nothing — osmosis is passive, so temperature cannot affect it',
+      ], answer: 0,
+      why: 'Diffusion and osmosis are driven by molecular motion, and heat IS molecular motion, so warming speeds them up and cooling slows them down. Watch the last option: passive means the cell spends no ATP, not that nothing can change the rate. The energy comes from the particles, not from the cell.' },
+
+    { q: 'Water crosses into a cell fastest when…',
+      choices: [
+        'the difference in solute concentration across the membrane is greatest',
+        'the concentrations either side are nearly equal',
+        'the solute outside can cross the membrane freely',
+        'the cell has the most ATP available to spend',
+      ], answer: 0,
+      why: 'The steeper the gradient, the faster the movement. If the solute can cross freely it evens out by diffusion instead, and there is nothing left to pull water.' },
+
+    { q: 'Why are the alveoli of the lungs and the villi of the small intestine so folded?',
+      choices: [
+        'Folding multiplies the surface area available for diffusion',
+        'Folding shortens the distance blood has to travel',
+        'Folding makes the membrane thicker and stronger',
+        'Folding lets the tissues use active transport instead',
+      ], answer: 0,
+      why: 'More membrane means more diffusion happening at once. Surface area, the steepness of the gradient, temperature, and the size of the particle are the four things that set how fast diffusion runs.' },
 
     { q: 'Why does diffusional equilibrium NOT normally occur in a living organism?',
       choices: [
