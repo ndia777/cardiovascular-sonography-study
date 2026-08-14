@@ -957,6 +957,25 @@ function suite(s, label, srcCss) {
     }
   }
 
+  /* A comma in a term means "either of these names counts" — which is how
+     "Cell body, soma" accepts each half. That convention breaks on a name that
+     simply contains a comma: "Hand, foot and mouth disease" splits into "Hand"
+     and "foot and mouth disease", and typing Hand is then marked correct.
+
+     Both cards shaped like this are `fact: true` today, so Recall never asks
+     them and nothing is wrong on screen. This is the guard for the day one of
+     them stops being a fact card. The tell is a comma sitting in a phrase that
+     also contains "and" or "&" — a list of alternative NAMES does not read that
+     way. Fix such a card by rewording it so the comma goes, not by leaving it. */
+  {
+    const suspicious = DECKS.flatMap(d => (d.cards || [])
+      .filter(c => !c.fact && /,/.test(c.term) && /\sand\s|\s&\s/.test(c.term))
+      .map(c => `${d.id}: "${c.term}"`));
+    check(`[${label}] no typed term splits a single name on its comma`,
+          !suspicious.length,
+          suspicious.join('; ') + ' — a fragment of this would be marked correct');
+  }
+
   /* Aliases. A card whose note says "Also called X" while Recall marks X wrong
      is the app teaching a name and then refusing it — which is exactly what it
      did for a term the course notes write as "free (apical) surface". Drive the
