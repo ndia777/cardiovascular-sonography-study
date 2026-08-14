@@ -120,8 +120,15 @@ function suite(s, label, srcCss) {
      out of the markup the app actually produced — comparing a sorted list to
      itself would pass no matter what the app did. */
   go('home');
-  const renderedCourses = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
+  const renderedCourses = [...s.__app.innerHTML.matchAll(/class="cname">([^<]+)</g)]
     .map(m => m[1].trim().replace(/&amp;/g, '&'));
+  /* Everything rendered under one course heading, up to where the next begins.
+     The chip bar lives on the heading line itself, so slicing from the course
+     NAME rather than from the heading element keeps the chips inside the slice
+     where the checks below expect to find them. */
+  const sectionOf = (html, c) =>
+    (html.split(`class="cname">${c.replace(/&/g, '&amp;')}<`)[1] || '')
+      .split('class="coursehead"')[0];
   /* `exam` says a deck IS a study guide and never stops being true; `retired`
      says its chapter is behind us. Only an unretired guide leads its course, so
      everything about placement keys off this rather than off `exam`. */
@@ -156,7 +163,7 @@ function suite(s, label, srcCss) {
     const was = stripped.map(d => [d.exam, d.current]);
     stripped.forEach(d => { d.exam = false; d.current = false; });
     go('home');
-    const after = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
+    const after = [...s.__app.innerHTML.matchAll(/class="cname">([^<]+)</g)]
       .map(m => m[1].trim().replace(/&amp;/g, '&'));
     stripped.forEach((d, i) => { d.exam = was[i][0]; d.current = was[i][1]; });  // restore first
     go('home');
@@ -210,25 +217,30 @@ function suite(s, label, srcCss) {
     check(`[${label}] decks render oldest-added first within a grid`, !broke, broke);
     check(`[${label}] study-guide decks are not mixed in with the rest`, !mixed, mixed);
 
-    /* Study-guide decks are never collapsible. They are the tested material and
-       must be on screen the moment the page opens, not one click behind a
-       disclosure. Read the inside of every <details> and assert none of them is
-       in there — an index comparison would pass if the fold markup moved. */
-    const insideFolds = html.split('<details class="more"').slice(1)
-      .map(f => f.split('</details>')[0]).join('\n');
+    /* Study-guide decks are never hidden. They are the tested material and must
+       be on screen the moment the page opens, not one click behind a chip. Read
+       the inside of every collapsed panel and assert none of them is in there —
+       an index comparison would pass if the panel markup moved.
+
+       A panel runs to the next panel or the next course, so splitting on the
+       opener and cutting at the course heading is enough; counting </div> would
+       have to track the nested grid and card divs. */
+    const panelsOf = h => h.split('<div class="pastwrap"').slice(1)
+      .map(p => p.split('class="coursehead"')[0]);
+    const insidePanels = panelsOf(html).join('\n');
     const buried = DECKS.filter(pin)
-      .filter(d => insideFolds.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
+      .filter(d => insidePanels.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
       .map(d => d.title);
-    check(`[${label}] no pinned study guide sits inside a collapsible fold`, !buried.length,
+    check(`[${label}] no pinned study guide sits inside a collapsed panel`, !buried.length,
           buried.join(', '));
-    /* The converse: a retired guide belongs inside the fold with its chapter.
+    /* The converse: a retired guide belongs inside the panel with its chapter.
        Without this, dropping `retired` from the engine would sail through — the
        check above only ever gets stricter when guides stop being retired. */
-    const loose = DECKS.filter(d => d.exam && d.retired)
-      .filter(d => !insideFolds.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
+    const stowed = DECKS.filter(d => d.exam && d.retired)
+      .filter(d => !insidePanels.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
       .map(d => d.title);
-    check(`[${label}] a retired study guide is folded away with its chapter`, !loose.length,
-          loose.join(', '));
+    check(`[${label}] a retired study guide is put away with its chapter`, !stowed.length,
+          stowed.join(', '));
 
     /* Every deck must still be reachable from the home screen — folded is fine,
        dropped is not. This is the check that catches a filtering slip turning
@@ -244,65 +256,67 @@ function suite(s, label, srcCss) {
     go('home');
     vm.runInContext('session = { q: "purkinje" }; screenHome();', s);
     const searched = s.__app.innerHTML;
-    const folds = [...searched.matchAll(/<details class="more"([^>]*)>/g)].map(m => m[1]);
-    check(`[${label}] searching opens every fold`,
-          folds.length > 0 && folds.every(f => / open/.test(f)),
-          `${folds.filter(f => !/ open/.test(f)).length} of ${folds.length} stayed shut`);
+    const openChips = [...searched.matchAll(/class="chip"([^>]*)>/g)].map(m => m[1]);
+    check(`[${label}] searching opens every chapter`,
+          openChips.length > 0 && openChips.every(a => /aria-expanded="true"/.test(a)),
+          `${openChips.filter(a => !/aria-expanded="true"/.test(a)).length} of ${
+            openChips.length} stayed shut`);
+    /* aria-expanded and the panel's own hidden attribute have to agree, or the
+       chip claims open while the decks stay invisible. */
+    const sealed = (searched.match(/<div class="pastwrap"[^>]*\shidden>/g) || []).length;
+    check(`[${label}] searching un-hides every panel`, !sealed,
+          `${sealed} panel(s) stayed hidden while searching`);
     go('home');
 
     const openHtml = s.__app.innerHTML;
-    /* Reads every fold rendered under one course heading, as [openFlag, title]. */
-    const foldsIn = (html, c) => {
-      const sec = (html.split(`class="coursehead">${c.replace(/&/g, '&amp;')}<`)[1] || '')
-        .split('class="coursehead"')[0];
-      return [...sec.matchAll(/<details class="more"([^>]*)>[\s\S]*?<summary>.*?<\/span>([^<]*)</g)]
-        .map(m => [/ open/.test(m[1]), m[2]]);
-    };
+    /* Reads every chip rendered under one course heading, as [isOpen, label]. */
+    const chipsIn = (h, c) => [...sectionOf(h, c)
+      .matchAll(/class="chip"[^>]*aria-expanded="(true|false)"[^>]*>([^<]*)</g)]
+      .map(m => [m[1] === 'true', m[2].trim()]);
 
     /* A course with nothing spotlighted — no guide, no current chapter — has
-       nothing to defer to, so its sections are open on arrival; the decks are
-       simply visible rather than buried behind a click.
+       nothing to defer to, so its chapters arrive open; the decks are simply
+       visible rather than sitting behind a row of chips and nothing else.
 
        Every course is spotlighted today, so scanning for a dormant one would
-       pass by finding nothing. Make one dormant instead and watch what happens.
-       This is the check that catches the fallback being keyed to guides alone,
-       which threw a spotlighted course's finished chapters open. */
+       pass by finding nothing. Make one dormant instead and watch what happens. */
     {
       const c = renderedCourses.find(x => DECKS.some(d => d.course === x && !pin(d) && d.group));
       const flagged = DECKS.filter(d => d.course === c && (d.exam || d.current));
       const was = flagged.map(d => [d.exam, d.current]);
       flagged.forEach(d => { d.exam = false; d.current = false; });
       go('home');
-      const dormant = foldsIn(s.__app.innerHTML, c);
+      const dormant = chipsIn(s.__app.innerHTML, c);
       flagged.forEach((d, i) => { d.exam = was[i][0]; d.current = was[i][1]; });
       go('home');
 
       const closed = dormant.filter(([open]) => !open).map(([, t]) => t);
-      check(`[${label}] a course with nothing spotlighted opens its sections`,
+      check(`[${label}] a course with nothing spotlighted opens its chapters`,
             dormant.length > 0 && !closed.length,
             dormant.length ? `${closed.join(', ')} stayed shut in ${subj(c)}` :
-                             `${subj(c)} rendered no folds to check`);
+                             `${subj(c)} rendered no chips to check`);
     }
 
     /* The converse, and the reason the spotlight exists: once a chapter is
-       marked current, the finished chapters go away. The current one opens,
-       every other fold in that course starts closed. */
+       marked current it stays on screen and is never reduced to a chip, while
+       every finished chapter becomes a chip that starts closed. */
     {
       let wrong = '';
       for (const c of renderedCourses.filter(hasCurrent)) {
         const groupsNow = new Set(DECKS.filter(d => d.course === c && !pin(d) && d.current)
-          .map(d => d.group));
-        for (const [open, title] of foldsIn(openHtml, c)) {
-          /* longest-prefix match: "Chapter 1" is a prefix of "Chapter 12" */
-          const g = [...new Set(DECKS.filter(d => d.course === c && !pin(d) && d.group)
-            .map(d => d.group))].filter(x => title.startsWith(x))
-            .sort((a, b) => b.length - a.length)[0];
-          if (!g) continue;
-          if (groupsNow.has(g) && !open && !wrong) wrong = `current "${g}" starts closed in ${subj(c)}`;
-          if (!groupsNow.has(g) && open && !wrong) wrong = `finished "${g}" starts open in ${subj(c)}`;
+          .map(d => d.group).filter(Boolean));
+        for (const [open, title] of chipsIn(openHtml, c)) {
+          if (groupsNow.has(title) && !wrong)
+            wrong = `current "${title}" was reduced to a chip in ${subj(c)}`;
+          if (open && !wrong) wrong = `finished "${title}" starts open in ${subj(c)}`;
         }
+        /* Look for the DECKS, not the chapter name: a current chapter holding
+           one deck renders bare, so its name never appears anywhere. */
+        for (const d of DECKS.filter(x => x.course === c && x.current && !pin(x)))
+          if (!sectionOf(openHtml, c).includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`) && !wrong)
+            wrong = `current "${d.title}" is missing from ${subj(c)}`;
       }
-      check(`[${label}] a spotlighted course opens the current chapter and folds the rest`,
+      check(`[${label}] a spotlighted course keeps the current chapter on screen and chips the rest`,
             !wrong, wrong);
     }
 
@@ -313,67 +327,70 @@ function suite(s, label, srcCss) {
          single-deck chapter is rendered bare, because a heading would repeat
          what the deck title already says and a stacked section of one wastes
          the width. */
-      const multi = [...new Set(grouped.map(d => d.group))]
-        .filter(g => grouped.filter(d => d.group === g).length > 1);
-      const summaries = [...openHtml.matchAll(/<summary>([\s\S]*?)<\/summary>/g)]
-        .map(m => m[1].replace(/<[^>]*>/g, '').trim());
-      const missingHead = multi.filter(g => !summaries.some(t => t.startsWith(g)));
-      check(`[${label}] multi-deck chapters render a heading`, !missingHead.length,
-            `missing: ${missingHead.join(', ')} — saw: ${summaries.join(' | ')}`);
+      const sectsIn = (h, c) => [...sectionOf(h, c).matchAll(/<div class="sect">([^<]*)/g)]
+        .map(m => m[1].trim());
+      const groupsOf = c => [...new Set(DECKS.filter(d => d.course === c && !pin(d) && d.group)
+        .map(d => d.group))];
+      const nowIn = (c, g) => DECKS.some(d => d.course === c && d.group === g && !pin(d) && d.current);
+      const sizeOf = (c, g) => DECKS.filter(d => d.course === c && d.group === g && !pin(d)).length;
 
-      /* The chapter being worked on now leads its course; the ones already
-         covered sink below it. Read the order out of the rendered summaries
-         rather than re-deriving it, so a change to the sort actually fails
-         here. Longest-prefix match on the heading matters: "Chapter 1" is a
-         prefix of "Chapter 12", and matching loosely would credit the wrong
-         section and let a real misordering through. */
+      /* A chapter is titled unless it is a current one holding a single deck,
+         where the heading would only repeat what the card already says. An
+         opened chip renders exactly the same heading as a current chapter, so
+         what you get back after clicking is indistinguishable from what would
+         have been there all along. */
+      const missingHead = [], spurious = [];
+      for (const c of renderedCourses) {
+        const sects = sectsIn(openHtml, c);
+        for (const g of groupsOf(c)) {
+          const titled = !(nowIn(c, g) && sizeOf(c, g) === 1);
+          if (titled && !sects.includes(g)) missingHead.push(`${g} (${subj(c)})`);
+          if (!titled && sects.includes(g)) spurious.push(`${g} (${subj(c)})`);
+        }
+      }
+      check(`[${label}] every chapter is titled except a current single-deck one`,
+            !missingHead.length, `missing: ${missingHead.join(', ')}`);
+      check(`[${label}] a current single-deck chapter gets no heading of its own`,
+            !spurious.length, `${spurious.join(', ')} rendered a heading for one deck`);
+
+      /* Current material comes first, always — every finished chapter's panel
+         sits below everything being studied now. Measured by position in the
+         rendered markup rather than re-derived from the deck list, so a change
+         to the order actually fails here. */
       const misordered = [];
       for (const c of renderedCourses) {
-        const sec = (openHtml.split(`class="coursehead">${c.replace(/&/g, '&amp;')}<`)[1] || '')
-          .split('class="coursehead"')[0];
-        const inCourse = [...new Set(DECKS.filter(d => d.course === c && !pin(d) && d.group)
-          .map(d => d.group))];
-        const groupOf = t => inCourse.filter(g => t.startsWith(g))
-          .sort((a, b) => b.length - a.length)[0];
-        const isNow = g => DECKS.some(d => d.course === c && d.group === g && !pin(d) && d.current);
-
-        const order = [...sec.matchAll(/<summary>([\s\S]*?)<\/summary>/g)]
-          .map(m => groupOf(m[1].replace(/<[^>]*>/g, '').trim()))
-          .filter(Boolean);
-        const lastNow = order.reduce((acc, g, i) => (isNow(g) ? i : acc), -1);
-        const firstStale = order.findIndex(g => !isNow(g));
-        if (lastNow >= 0 && firstStale >= 0 && firstStale < lastNow)
-          misordered.push(`${subj(c)}: ${order.join(' | ')}`);
+        const sec = sectionOf(openHtml, c);
+        const firstPast = sec.indexOf('<div class="pastwrap"');
+        if (firstPast < 0) continue;
+        for (const d of DECKS.filter(x => x.course === c && x.current && !pin(x))) {
+          const at = sec.indexOf(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`);
+          if (at >= 0 && at > firstPast) misordered.push(`${d.title} (${subj(c)})`);
+        }
       }
-      check(`[${label}] the current chapter's section leads its course`,
-            !misordered.length, misordered.join('\n      '));
+      check(`[${label}] current chapters render above the finished ones`,
+            !misordered.length, `${misordered.join(', ')} rendered below a past panel`);
 
-      /* A one-deck chapter normally renders bare — a heading would repeat what
-         the deck title already says. But that only holds until its course
-         spotlights a chapter: after that a finished one-deck chapter sitting
-         bare beside the current one is louder than the chapter being studied,
-         so it folds like any other finished chapter. Being short is not a
-         reason to stay in the front row. */
-      const soloOf = d => grouped.filter(x => x.group === d.group && x.course === d.course).length === 1;
-      const bare = grouped.filter(d => soloOf(d) && (!hasCurrent(d.course) || d.current));
-      const sunk = grouped.filter(d => soloOf(d) && hasCurrent(d.course) && !d.current);
+      /* Every finished chapter is reachable from a chip — that is the only way
+         to it now, so a chapter without one is unreachable, not merely tidy. */
+      const chipless = [];
+      for (const c of renderedCourses) {
+        const labels = chipsIn(openHtml, c).map(([, t]) => t);
+        for (const g of groupsOf(c)) if (!nowIn(c, g) && !labels.includes(g))
+          chipless.push(`${g} (${subj(c)})`);
+      }
+      check(`[${label}] every finished chapter has a chip`, !chipless.length, chipless.join(', '));
 
-      const headed = bare.filter(d => summaries.some(t => t.startsWith(d.group)));
-      check(`[${label}] a bare single-deck chapter gets no section of its own`, !headed.length,
-            `${headed.map(d => d.group).join(', ')} rendered a heading for one deck`);
-      const unsunk = sunk.filter(d => !summaries.some(t => t.startsWith(d.group)));
-      check(`[${label}] a finished single-deck chapter folds once something is current`,
-            !unsunk.length,
-            `${unsunk.map(d => `${d.group} (${subj(d.course)})`).join(', ')} still renders bare`);
-      /* And they share a grid, so they sit beside each other rather than stacked.
-         Test it by looking for a container boundary BETWEEN the two — a deck card
-         has its own </div> from the badges row, so splitting on that would cut
-         the grid short and report a false failure. */
+      /* Current single-deck chapters share one grid, so they sit beside each
+         other rather than stacked. Test it by looking for a container boundary
+         BETWEEN the two — a deck card has its own </div> from the badges row,
+         so splitting on that would cut the grid short and report a false
+         failure. */
+      const bare = grouped.filter(d => d.current && sizeOf(d.course, d.group) === 1);
       if (bare.length > 1) {
         const solo = bare.map(d => d.title);
         const at = solo.map(t => openHtml.indexOf(`<h3>${t.replace(/&/g, '&amp;')}</h3>`)).sort((a, b) => a - b);
         const between = openHtml.slice(at[0], at[at.length - 1]);
-        const split = /<div class="decks">|<details class="more"|class="coursehead"/.exec(between);
+        const split = /<div class="decks">|<div class="pastwrap"|class="coursehead"/.exec(between);
         check(`[${label}] single-deck chapters share one grid`, at[0] >= 0 && !split,
               split ? `${solo.join(' / ')} are separated by ${split[0]}` : 'a title was not rendered');
       }
@@ -385,47 +402,55 @@ function suite(s, label, srcCss) {
             !ungrouped.length, ungrouped.map(d => d.id).join(', '));
     }
 
-    /* The chapter being worked on now must be open on arrival, even though it
-       sits behind study guides that would otherwise fold it away. Read the
-       rendered fold, since a `current` flag that never reaches the markup would
-       look right in the deck file and change nothing on screen. */
+    /* The chapter being worked on now is simply on screen. Read it out of the
+       rendered markup, since a `current` flag that never reaches the page would
+       look right in the deck file and change nothing for the reader. */
     const currentDecks = DECKS.filter(d => d.current);
     if (currentDecks.length) {
       const groupsWithCurrent = [...new Set(currentDecks.map(d => d.group))];
-      check(`[${label}] every current deck declares a group to open`,
+      check(`[${label}] every current deck declares a group`,
             groupsWithCurrent.every(Boolean),
             currentDecks.filter(d => !d.group).map(d => d.id).join(', '));
-      let closed = '';
-      for (const m of openHtml.matchAll(/<details class="more"([^>]*)>\s*<summary>([\s\S]*?)<\/summary>/g)) {
-        const name = m[2].replace(/<[^>]*>/g, '').trim();
-        if (groupsWithCurrent.some(g => name.startsWith(g)) && !/ open/.test(m[1]) && !closed)
-          closed = `"${name}" holds the current chapter but renders closed`;
-      }
-      check(`[${label}] the current chapter's section is open on arrival`, !closed, closed);
+      /* Not merely "its panel happens to be open" — a current deck must not be
+         inside a panel at all, or one stray click would put away the chapter
+         being studied. */
+      const stowedNow = currentDecks.filter(d =>
+        insidePanels.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`)).map(d => d.title);
+      check(`[${label}] no current deck is filed under a chip`, !stowedNow.length,
+            stowedNow.join(', '));
 
-      /* Every current deck must be visible without a click — either its section
-         is open, or it sits outside any section at all. And it must be labelled
-         either way, or an open section reads as one somebody forgot to close. */
-      const folds = openHtml.split('<details class="more"').slice(1).map(f => f.split('</details>')[0]);
+      /* Every current deck must be visible without a click, and must be labelled
+         as current — either on the card or by the heading above it. */
+      const panes = panelsOf(openHtml);
       let hidden = '', unlabelled = '';
       for (const d of currentDecks) {
         const tag = `<h3>${d.title.replace(/&/g, '&amp;')}</h3>`;
-        const inFold = folds.find(f => f.includes(tag));
-        if (inFold && !/^[^>]* open/.test(inFold) && !hidden) hidden = `${d.title} sits in a closed section`;
-        if (!inFold) {
-          /* rendered bare, so the deck card itself has to carry the marker */
-          const card = openHtml.split(tag)[1] || '';
-          if (!/class="badge now"/.test(card.split('</button>')[0]) && !unlabelled)
-            unlabelled = `${d.title} renders bare with no current badge`;
-        }
+        const inPane = panes.find(p => p.includes(tag));
+        if (inPane && /^[^>]*\shidden>/.test(inPane) && !hidden)
+          hidden = `${d.title} sits in a hidden panel`;
+        /* Labelled one way or the other: either the card carries the marker, or
+           the nearest heading above it does. Take the nearest <div class="sect">
+           within the same course — anything earlier belongs to another chapter
+           and would credit this deck with a label it does not have. */
+        const card = (openHtml.split(tag)[1] || '').split('</button>')[0];
+        const before = openHtml.slice(0, openHtml.indexOf(tag));
+        const secAt = before.lastIndexOf('<div class="sect">');
+        const underNow = secAt > before.lastIndexOf('class="coursehead"') &&
+          /^<div class="sect">[^<]*<span class="now">/.test(before.slice(secAt));
+        if (!/class="badge now"/.test(card) && !underNow && !unlabelled)
+          unlabelled = `${d.title} renders with no current marker on it or above it`;
       }
       check(`[${label}] every current deck is visible without a click`, !hidden, hidden);
-      check(`[${label}] a bare current deck carries its own label`, !unlabelled, unlabelled);
-      /* and inside a section it does NOT — the heading already says it, and a
-         badge on every card of a six-deck chapter is just noise */
-      check(`[${label}] cards inside a labelled section do not repeat the label`,
-            !folds.some(f => /class="badge now"/.test(f)),
-            'a section heading and its cards both claim to be current');
+      check(`[${label}] every current deck is marked, on the card or above it`,
+            !unlabelled, unlabelled);
+      /* and under a heading it does NOT repeat — the heading already says it, and
+         a badge on every card of a six-deck chapter is just noise. A region runs
+         from one heading to the next, or to the next course. */
+      const titled = openHtml.split('<div class="sect">').slice(1)
+        .map(r => r.split('class="coursehead"')[0]);
+      check(`[${label}] cards under a labelled heading do not repeat the label`,
+            !titled.some(r => /class="badge now"/.test(r)),
+            'a chapter heading and its cards both claim to be current');
 
       /* Two deck grids can now render back to back, with no heading or fold
          between them to space them apart. Where that happens the stylesheet has

@@ -39,35 +39,43 @@
   .search{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--line);
     background:var(--card);color:var(--text);font-size:15px;margin-bottom:24px}
   .search:focus{outline:none;border-color:var(--accent)}
+  /* The course line carries its own name on the left and its finished chapters
+     on the right. Wraps to a second line on a narrow screen rather than
+     squeezing either half. */
   .coursehead{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
-    margin:26px 0 10px;font-weight:600}
+    margin:26px 0 10px;font-weight:600;
+    display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}
+  .pastbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-left:auto}
+  .pastlabel{font-size:10.5px;letter-spacing:.08em;color:var(--dim);opacity:.75}
+  /* Chips are deliberately quiet — sentence case, no weight, no fill. They are
+     signposts to material already covered, and must never pull the eye away
+     from the decks below them. */
+  .chip{font-family:inherit;font-size:11.5px;letter-spacing:0;text-transform:none;
+    font-weight:500;color:var(--dim);background:transparent;
+    border:1px solid var(--line);border-radius:20px;padding:3px 11px;cursor:pointer;
+    transition:color .15s ease,border-color .15s ease}
+  .chip:hover{color:var(--text);border-color:color-mix(in srgb,var(--text) 30%,var(--line))}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  /* An open chip has to look pressed, or the panel that appeared below has no
+     visible cause. */
+  .chip[aria-expanded="true"]{color:var(--accent);
+    border-color:color-mix(in srgb,var(--accent) 55%,var(--line));
+    background:color-mix(in srgb,var(--accent) 12%,transparent)}
+  @media (prefers-reduced-motion: reduce){ .chip{transition:none} }
+  /* Heading above a chapter's grid — used by the current chapter and by an
+     opened chip alike, so an opened chapter looks exactly like a present one. */
+  .sect{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;
+    color:var(--text);margin:22px 0 10px}
+  .sect .now{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+    padding:2px 7px;border-radius:20px;color:var(--accent);
+    border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line))}
+  .pastwrap[hidden]{display:none}
   .decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
   /* Two grids can now sit directly on top of each other — the study guides and
      then the single-deck chapters — with no heading or fold between them to
      provide spacing. Slightly more than the 12px inside a grid, so the break
      reads as a break rather than as one continuous run of cards. */
   .decks + .decks{margin-top:20px}
-  /* The fold holding everything that is not a study guide. Styled as a quiet
-     line of text rather than a control, so it recedes behind the decks above it
-     and never competes with them for attention. */
-  .more{margin-top:12px}
-  .more summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
-    font-size:12.5px;color:var(--dim);padding:6px 2px;border-radius:6px;user-select:none}
-  .more summary::-webkit-details-marker{display:none}
-  .more summary:hover{color:var(--text)}
-  .more summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-  /* a chevron drawn from a rotated border, so there is no icon font or asset */
-  .more .chev{width:6px;height:6px;border-right:1.5px solid currentColor;
-    border-bottom:1.5px solid currentColor;transform:rotate(-45deg);
-    transition:transform .18s ease;margin-left:2px}
-  .more[open] .chev{transform:rotate(45deg)}
-  .more[open] summary{color:var(--text);margin-bottom:10px}
-  /* marks the chapter being worked on now, so an open section reads as
-     deliberate rather than as one somebody forgot to close */
-  .more .now{margin-left:8px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-    padding:2px 7px;border-radius:20px;color:var(--accent);
-    border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line))}
-  @media (prefers-reduced-motion: reduce){ .more .chev{transition:none} }
   .deck{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:15px 16px;text-align:left;transition:.13s;display:block;width:100%}
   .deck:hover{border-color:var(--accent);transform:translateY(-2px)}
@@ -497,6 +505,27 @@ function go(screen, deck, mode){
   render();
 }
 
+/* Shows or hides one finished chapter. The chip and the panel are wired
+   together by aria-controls/aria-expanded, so a screen reader announces the
+   chip as the expandable thing it is; this is what <details> used to give for
+   free, and it is the one thing worth keeping from it.
+
+   The choice is remembered, so a chapter you keep going back to is not a click
+   away every session. The boolean is stored rather than the key being deleted
+   on close, so "I shut this deliberately" stays distinguishable from "never
+   touched it" — otherwise a section that defaults open would spring back the
+   moment the page reloaded. */
+function togglePast(btn){
+  const panel = document.getElementById(btn.getAttribute('aria-controls'));
+  if (!panel) return;
+  const open = btn.getAttribute('aria-expanded') !== 'true';
+  btn.setAttribute('aria-expanded', String(open));
+  panel.hidden = !open;
+  const s = load(), o = Object.assign({}, s.__open);
+  o[btn.dataset.key] = open;
+  s.__open = o; save(s);
+}
+
 /* `exam` marks a deck as an official study guide — the instructor's, not notes
    worked up into one. `retired` says the chapter it belongs to is behind us.
 
@@ -565,6 +594,7 @@ function screenHome(){
      While a search is running every fold is forced open, so a match can never
      hide inside a collapsed section. */
   const openState = load().__open || {};
+  let panelSeq = 0;
   courses.forEach(c => {
     const inCourse = list.filter(d => d.course === c).sort(byAdded);
     const lead = inCourse.filter(pinned);
@@ -598,97 +628,78 @@ function screenHome(){
         </div></button>`;
     };
 
-    html += `<div class="coursehead">${esc(c)}</div>`;
+    /* Chapters split in two: the ones being studied now, which are simply on
+       screen, and the ones already covered, which become chips on the course
+       heading line.
+
+       They used to be a stack of collapsed <details>, one row each. That row is
+       charged whether or not you ever open it, so every finished chapter pushed
+       the next course further down the page and the gap between subjects grew
+       all term. Chips cost no rows at all — they ride on a line that is being
+       drawn anyway — so a course takes the same vertical space with eight
+       finished chapters as with none, and the page reads as what is current.
+       Opening one drops its decks in below, laid out exactly as any other. */
+    const inG = g => rest.filter(d => d.group === g);
+    const isNow = g => inG(g).some(d => d.current);
+    const byFirstAdded = (a, b) => (inG(a)[0].added || '').localeCompare(inG(b)[0].added || '');
+
+    const groups = [...new Set(rest.map(d => d.group).filter(Boolean))].sort(byFirstAdded);
+    const nowGroups = groups.filter(isNow);
+    const pastGroups = groups.filter(g => !isNow(g));
+
+    /* Ungrouped decks are nobody's chapter, so they get one chip of their own
+       rather than being lost — unless one is current, in which case it belongs
+       on screen with the rest of the current material. */
+    const loose = rest.filter(d => !d.group);
+    const looseNow = loose.filter(d => d.current);
+    const loosePast = loose.filter(d => !d.current);
+
+    /* With nothing pinned and nothing current there is nothing to defer to, so
+       a course opens its chapters rather than presenting a row of chips and no
+       decks at all. The moment anything is spotlighted, the rest gives way. */
+    const openByDefault = !lead.length && !spotlit && !looseNow.length;
+
+    const panels = [
+      ...pastGroups.map(g => ({ key: `${c}/${g}`, label: g, decks: inG(g) })),
+      ...(loosePast.length ? [{ key: `${c}/other`, label: `${loosePast.length} more deck${
+        loosePast.length > 1 ? 's' : ''}`, decks: loosePast }] : []),
+    ].map(p => Object.assign(p, {
+      id: `past${panelSeq++}`,
+      open: !!(q || (openState[p.key] === undefined ? openByDefault : openState[p.key])),
+    }));
+
+    const chips = panels.map(p =>
+      `<button type="button" class="chip" data-key="${esc(p.key)}" aria-controls="${p.id}"
+        aria-expanded="${p.open}" onclick="togglePast(this)">${esc(p.label)}</button>`).join('');
+
+    html += `<div class="coursehead"><span class="cname">${esc(c)}</span>${
+      chips ? `<span class="pastbar"><span class="pastlabel">Earlier</span>${chips}</span>` : ''}</div>`;
+
     if (lead.length) html += `<div class="decks">${lead.map(d => deckCard(d, true)).join('')}</div>`;
 
-    /* <details> rather than a hand-rolled toggle: it opens on click or Enter,
-       is announced correctly by screen readers, and survives with no JS. */
-    const fold = (key, title, decks, openByDefault) => {
-      const saved = openState[key];
-      const isOpen = q || (saved === undefined ? openByDefault : saved);
-      return `<details class="more"${isOpen ? ' open' : ''} data-key="${esc(key)}">
-        <summary><span class="chev" aria-hidden="true"></span>${esc(title)}${
-          decks.some(d => d.current) ? '<span class="now">current</span>' : ''}</summary>
-        <div class="decks">${decks.map(d => deckCard(d, false)).join('')}</div>
-      </details>`;
-    };
+    /* A chapter holding a single deck gets no heading — it would only repeat
+       what the deck title already says, and a stacked section of one wastes the
+       width. They share a grid instead, so they sit side by side, and the
+       "current" marker moves onto the card itself. */
+    const bare = nowGroups.filter(g => inG(g).length === 1).map(g => inG(g)[0]).concat(looseNow);
+    if (bare.length)
+      html += `<div class="decks">${bare.map(d => deckCard(d, true)).join('')}</div>`;
 
-    if (!rest.length) return;
+    const sect = (title, now) => `<div class="sect">${esc(title)}${
+      now ? '<span class="now">current</span>' : ''}</div>`;
 
-    /* Where decks declare a group, break them into named sections — a flat run
-       of a dozen is harder to scan than three labelled chapters.
-
-       The chapter being worked on now comes first; everything else follows in
-       the order it was covered. Chronological alone was right while the course
-       ran forwards, but it buries the current chapter deeper every time one is
-       added, which is exactly backwards — the finished chapters are the ones
-       that should sink. Sections already open themselves when they hold the
-       current chapter, so this puts the open one where it is first seen. */
-    const groups = [...new Set(rest.map(d => d.group).filter(Boolean))]
-      .sort((a, b) => {
-        const current = g => rest.some(d => d.group === g && d.current) ? 0 : 1;
-        const first = g => rest.find(d => d.group === g).added || '';
-        return (current(a) - current(b)) || first(a).localeCompare(first(b));
-      });
-
-    if (!groups.length){
-      html += fold(c, `${rest.length} more deck${rest.length > 1 ? 's' : ''}`, rest,
-        spotlit || !lead.length);
-      return;
-    }
-
-    /* A chapter holding a single deck normally gets no disclosure of its own.
-       There is nothing to reveal, the heading would only repeat what the deck
-       title already says, and one card per stacked section wastes the width.
-       They go into one shared grid instead, so single-deck chapters sit side by
-       side. The "current" marker moves onto the deck card itself, so nothing is
-       lost by dropping the section heading.
-
-       That holds right up until a chapter is spotlighted. From then on, a
-       finished one-deck chapter sitting bare beside the current one is louder
-       than the chapter actually being studied — being short is no reason to
-       stay in the front row. So once anything is current, only the current
-       chapters keep a bare card and every finished chapter folds, whether it
-       holds one deck or six. With nothing current the old rule stands. */
-    const alone = g => rest.filter(d => d.group === g).length === 1;
-    const live  = g => rest.some(d => d.group === g && d.current);
-    const bareGroups = groups.filter(g => alone(g) && (!spotlit || live(g)));
-
-    const singles = bareGroups.map(g => rest.find(d => d.group === g));
-    if (singles.length)
-      html += `<div class="decks">${singles.map(d => deckCard(d, true)).join('')}</div>`;
-
-    /* A section opens on arrival when it is the chapter being worked on now, or
-       when nothing at all sits above it to defer to. That fallback used to test
-       the pinned guides alone, so a course whose spotlight came from a current
-       chapter instead threw every finished chapter open — the exact opposite of
-       putting them away. Everything else starts folded, which is the whole
-       point of having the fold. */
-    groups.filter(g => !bareGroups.includes(g)).forEach(g => {
-      const inGroup = rest.filter(d => d.group === g);
-      html += fold(`${c}/${g}`, g, inGroup, live(g) || (!lead.length && !spotlit));
+    nowGroups.filter(g => inG(g).length > 1).forEach(g => {
+      html += sect(g, true) + `<div class="decks">${inG(g).map(d => deckCard(d, false)).join('')}</div>`;
     });
-    /* anything left ungrouped still needs a home */
-    const loose = rest.filter(d => !d.group);
-    if (loose.length)
-      html += fold(`${c}/other`, `${loose.length} more deck${loose.length > 1 ? 's' : ''}`, loose,
-        loose.some(d => d.current) || (!lead.length && !spotlit));
+
+    panels.forEach(p => {
+      html += `<div class="pastwrap" id="${p.id}"${p.open ? '' : ' hidden'}>${
+        sect(p.label, false)}<div class="decks">${
+        p.decks.map(d => deckCard(d, false)).join('')}</div></div>`;
+    });
   });
 
   app.innerHTML = html;
-  /* Remember which sections were left open, so a deck you use daily is not
-     three clicks away every session. Stored under one key beside the progress
-     data rather than in its own, since it is the same kind of local state. */
-  app.querySelectorAll('details.more').forEach(el => {
-    el.addEventListener('toggle', () => {
-      const s = load(), o = Object.assign({}, s.__open);
-      /* store the boolean rather than deleting on close, so "I shut this on
-         purpose" is distinguishable from "never touched it" and a default-open
-         section stays shut once it has been shut */
-      o[el.dataset.key] = el.open;
-      s.__open = o; save(s);
-    });
-  });
   const box = document.getElementById('search');
   box.oninput = e => { session = { q: e.target.value }; const pos = e.target.selectionStart; screenHome();
     const b = document.getElementById('search'); b.focus(); b.setSelectionRange(pos, pos); };
