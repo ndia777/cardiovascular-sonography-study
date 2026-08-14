@@ -2032,16 +2032,17 @@ window.DECKS = [
 /* Chapter 5 from the course notes. The notes stop partway through 5.3, so the
    connective-tissue half is only sketched here — this deck grows as they do. */
 {
-  id: 'bio-ch5',
+  /* Section 5.1. The four tissue types and the three junctions that hold cells together. Small on purpose — it is the frame the rest of the chapter hangs on. */
+  id: 'bio-ch5-1',
   group: 'Chapter 5',
   current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 5 — Tissues',
-  source: 'Chapter 5 — course notes',
+  title: 'Ch. 5.1 — Tissue Types & Junctions',
+  source: 'Chapter 5.1 — course notes',
   cards: [
-    /* ---- the four tissue types ---- */
     { term: 'Tissue', def: 'a group of similar cells working together on the same job' },
+    { term: 'Histology', def: 'the study of tissues' },
     { term: 'Epithelial tissue', def: 'the type that protects, secretes, absorbs and excretes — covering body surfaces, lining organs and composing glands',
       note: 'Has no blood vessels of its own, divides readily, and its cells sit tightly packed.' },
     { term: 'Connective tissue', def: 'the type that binds, supports, fills spaces, stores fat and produces blood cells',
@@ -2049,12 +2050,36 @@ window.DECKS = [
     { term: 'Muscle tissue', def: 'the type that generates the forces for movement, able to contract in response to a stimulus' },
     { term: 'Nervous tissue', def: 'the type that carries signals — sensing the world, then coordinating, integrating and regulating what the body does about it' },
     { fact: true, term: 'Where nervous tissue is found', def: 'the brain, the spinal cord and the nerves' },
-
-    /* ---- junctions ---- */
     { term: 'Intercellular junctions', def: 'the structures forming the site of union between neighbouring cells' },
+    { term: 'Tight junctions', def: 'joins where the membranes of neighbouring cells fuse outright, sealing the gap — as in the lining of the small intestine and the blood-brain barrier' },
     { term: 'Desmosome', def: 'a junction that rivets cells together like a spot weld, letting them act as one reinforced unit' },
+    { term: 'Gap junctions', def: 'tubular channels letting molecules pass directly between neighbouring cells, as in cardiac muscle' }
+  ],
+  questions: [
+    { q: 'Which tissue type has no blood vessels of its own?',
+      choices: ['Epithelial', 'Connective', 'Muscle', 'Nervous'], answer: 0,
+      why: 'It is fed by diffusion from the connective tissue beneath it, which is well supplied.' },
+    { q: 'Carcinogens act mainly on cells that are dividing. Which tissue is therefore most vulnerable?',
+      choices: [
+        'Epithelium, which replaces itself continuously',
+        'Nervous tissue',
+        'Cartilage',
+        'Dense regular connective tissue',
+      ], answer: 0,
+      why: 'Epithelium regenerates constantly, which is why most cancers are carcinomas. Nervous tissue is the least vulnerable, because neurons barely divide — and that is also why brain tumours usually arise from neuroglia, which do divide.' }
+  ],
+},
 
-    /* ---- epithelial general ---- */
+{
+  /* Section 5.2, first half: what makes an epithelium, the two axes it is classified on, and the eight types. */
+  id: 'bio-ch5-2',
+  group: 'Chapter 5',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 5.2 — Epithelial Tissues',
+  source: 'Chapter 5.2 — course notes',
+  cards: [
     { term: 'Free surface', def: 'the exposed side of an epithelium, facing either the outside or an open internal space',
       note: 'Also called the apical surface.' },
     { term: 'Basement membrane', def: 'the thin extracellular layer anchoring an epithelium to the connective tissue beneath it' },
@@ -2064,15 +2089,11 @@ window.DECKS = [
     { term: 'Microvilli', def: 'tiny cylindrical projections that multiply the surface area available for absorption' },
     { term: 'Goblet cells', def: 'scattered secretory cells that produce mucus, which the cilia then sweep along' },
     { term: 'Keratinization', def: 'the process where cells pushed toward the surface fill with protein, harden and die, forming a dry, tough, waterproof covering' },
-
-    /* ---- shapes and layers ---- */
     { term: 'Squamous', def: 'a cell shape: flattened and scale-like, the thinnest of the three' },
     { term: 'Cuboidal', def: 'a cell shape: cube-like, about as tall as it is wide' },
     { term: 'Columnar', def: 'a cell shape: elongated, taller than it is wide' },
     { term: 'Simple', def: 'a layering pattern: one layer only, every cell touching the basement membrane and reaching the free surface' },
     { term: 'Stratified', def: 'a layering pattern: two or more layers, where only the deepest cells touch the basement membrane and only the topmost reach the free surface' },
-
-    /* ---- the eight epithelia ---- */
     { term: 'Simple squamous epithelium', def: 'a single layer of thin flat cells, built for diffusion and filtration — the alveoli, capillary walls and the linings of blood and lymph vessels' },
     { term: 'Simple cuboidal epithelium', def: 'a single layer of cube-shaped cells with round central nuclei, lining kidney tubules, thyroid follicles, the ducts of certain glands and the surface of the ovaries' },
     { term: 'Simple columnar epithelium', def: 'a single layer of tall cells lining the uterus, stomach and intestines, secreting digestive fluids and absorbing nutrients' },
@@ -2081,8 +2102,66 @@ window.DECKS = [
     { term: 'Stratified cuboidal epithelium', def: 'two or three layers of cube-shaped cells lining the ducts of the mammary, sweat and salivary glands and the pancreas' },
     { term: 'Stratified columnar epithelium', def: 'several layers, tall cells on top and cube-shaped ones beneath, found in part of the male urethra and the larger ducts of excretory glands' },
     { term: 'Transitional epithelium', def: 'the stretchable lining of the bladder and ureters, bunched into several layers when relaxed and thinned out when the organ fills' },
+    { term: 'Metaplasia', def: 'the replacement of one mature tissue by another — as in the airways of smokers, where the ciliated lining gives way to layers of flat cells',
+      note: 'Protective but costly: the replacement has neither cilia nor mucus, so the airway loses the mechanism that sweeps debris out.' }
+  ],
+  questions: [
+    { q: 'Simple versus stratified describes what about an epithelium?',
+      choices: [
+        'The number of cell layers',
+        'The shape of the cells',
+        'Whether it has cilia',
+        'Whether it lines a duct'
+      ], answer: 0,
+      why: 'Shape is the other axis — squamous, cuboidal or columnar. The two combine to name each tissue.' },
+    { q: 'Gas exchange in the alveoli happens across which epithelium?',
+      choices: [
+        'Simple squamous',
+        'Simple cuboidal',
+        'Stratified squamous',
+        'Transitional'
+      ], answer: 0,
+      why: 'One layer of the flattest cells is the shortest path a gas can cross. Thin means fragile, which is why it damages easily.' },
+    { q: 'Pseudostratified columnar epithelium is called "pseudo" because:',
+      choices: [
+        'It looks layered, but every cell actually reaches the basement membrane',
+        'It has layers that come and go with stretching',
+        'Its cells change shape depending on the organ',
+        'It is a mix of cuboidal and columnar cells'
+      ], answer: 0,
+      why: 'The nuclei sit at different heights, which reads as layering. Some cells do not reach the free surface, but all of them touch the base.' },
+    { q: 'Which epithelium lines the urinary bladder?',
+      choices: ['Transitional', 'Simple columnar', 'Stratified squamous', 'Pseudostratified columnar'], answer: 0,
+      why: 'It has to change shape as the bladder fills, and it also stops urine diffusing back into the body.' },
+    { q: 'Keratinization produces what, and where does it NOT occur?',
+      choices: [
+        'A dry, tough waterproof covering — absent from the lining of the mouth, esophagus and vagina',
+        'A layer of mucus — absent from the skin',
+        'A stretchable lining — absent from the bladder',
+        'A layer of cilia — absent from the respiratory tract'
+      ], answer: 0,
+      why: 'Those linings are stratified squamous too, but stay soft, moist and alive at the surface.' },
+    { q: 'In the airways of smokers, the ciliated lining is replaced by layers of flat cells. Why does that matter?',
+      choices: [
+        'The replacement has neither cilia nor mucus, so debris is no longer swept out',
+        'The replacement is thinner and tears more easily',
+        'The replacement cannot absorb oxygen',
+        'The replacement blocks the airway mechanically',
+      ], answer: 0,
+      why: 'Pseudostratified ciliated columnar epithelium traps particles in mucus and sweeps them up and out. Stratified squamous is tougher, but it has no cilia and no goblet cells, so the airway loses its cleaning mechanism. A protective change that costs a function.' }
+  ],
+},
 
-    /* ---- glands ---- */
+{
+  /* Section 5.2, second half. Split from the epithelia because the gland classifications are their own vocabulary — structure, then mode of secretion — and 43 cards in one deck was the complaint that prompted all this. */
+  id: 'bio-ch5-3',
+  group: 'Chapter 5',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 5.2 — Glandular Epithelium',
+  source: 'Chapter 5.2 — course notes',
+  cards: [
     { term: 'Glandular epithelium', def: 'cells specialized to produce and secrete substances, sitting within columnar or cuboidal tissue' },
     { term: 'Gland', def: 'one or more secretory cells acting together to produce a substance' },
     { term: 'Exocrine gland', def: 'one that releases its product into a duct opening onto a surface, such as the skin or the digestive lining' },
@@ -2094,138 +2173,21 @@ window.DECKS = [
     { term: 'Tubular gland', def: 'one whose secretory portion is an epithelium-lined tube' },
     { term: 'Alveolar gland', def: 'one whose secretory portion swells into saclike dilations',
       note: 'Also called an acinar gland.' },
-
-    /* ---- modes of secretion ---- */
-    { term: 'Merocrine glands', def: 'those releasing a fluid product through the cell membrane by exocytosis, the cell itself staying intact',
-      note: 'Also called eccrine glands. Salivary, pancreatic and sweat glands. Most secretory cells work this way.' },
-    { term: 'Apocrine glands', def: 'those that pinch off part of the cell body along with the product — the mammary glands and the wax glands of the ear canal' },
-    { term: 'Holocrine glands', def: 'those releasing whole cells, which then burst to liberate what they held — the sebaceous glands of the skin' },
-    { term: 'Serous fluid', def: 'a watery, slippery secretion, associated with the membranes lining the thoracic and abdominopelvic cavities' },
-    { term: 'Mucus', def: 'the thick protective secretion rich in the glycoprotein mucin, produced by the linings of the digestive, respiratory and reproductive systems' },
-    { term: 'Mucin', def: 'the glycoprotein that makes mucus what it is' },
-
-    /* ---- connective tissue (5.3, still being written) ---- */
-    { fact: true, term: 'The two categories of connective tissue',
-      def: 'connective tissue proper, and the specialized connective tissues' },
-
-    /* --- the rest of the chapter, from the lecture slides. The notes stopped
-           partway through 5.3, so everything below was missing. --- */
-    { term: 'Histology', def: 'the study of tissues' },
-    { term: 'Tight junctions', def: 'joins where the membranes of neighbouring cells fuse outright, sealing the gap — as in the lining of the small intestine and the blood-brain barrier' },
-    { term: 'Gap junctions', def: 'tubular channels letting molecules pass directly between neighbouring cells, as in cardiac muscle' },
-
-    { term: 'Extracellular matrix', def: 'the non-cellular material filling the space between cells, made of protein fibres and ground substance, ranging from fluid to semisolid to solid' },
-    { term: 'Ground substance', def: 'the non-fibrous portion of the matrix — protein, other molecules and a varying amount of fluid — filling the space around cells and fibres' },
-    { term: 'Fibroblasts', def: 'the large star-shaped cells, commonest of the fixed cells, that secrete the fibres of the matrix',
-      note: 'They multiply and step up fibre production after an injury, and they build the scar tissue that replaces damaged muscle after a heart attack.' },
-    { term: 'Macrophages', def: 'the wandering scavengers that clear foreign particles by engulfing them and defend against infection',
-      note: 'Also called histiocytes. Usually attached to fibres, but able to detach and move.' },
-    { term: 'Collagen fibres', def: 'thick threads of the protein that gives the body most of its structure — enormously strong under a pull, only slightly stretchy, and the bulk of ligaments and tendons',
-      note: 'Also called white fibres.' },
-    { term: 'Elastic fibres', def: 'branching threads of elastin that stretch and spring back, weaker than collagen, found in the vocal cords and airways',
-      note: 'Also called yellow fibres.' },
-    { term: 'Reticular fibres', def: 'thin branching threads of collagen forming delicate supporting networks in the spleen and liver' },
-
-    { term: 'Areolar connective tissue', def: 'thin delicate membrane of mostly fibroblasts in a gel-like ground substance, sitting in the subcutaneous layer and beneath most epithelia, which it nourishes' },
-    { term: 'Adipose tissue', def: 'fat-storing cells whose contents push the nucleus to one side, cushioning and insulating beneath the skin, behind the eyeballs and around the kidneys and heart' },
-    { term: 'Reticular connective tissue', def: 'a supporting web of thin fibres holding up the walls of internal organs such as the liver and spleen' },
-    { term: 'Dense regular connective tissue', def: 'closely packed parallel collagen, very strong against pulling, forming tendons and ligaments — poorly supplied with blood, so slow to heal' },
-    { term: 'Dense irregular connective tissue', def: 'thick collagen interwoven at random so it withstands tension from any direction, forming the deep layer of skin and the wrapping around skeletal muscles' },
-    { term: 'Elastic connective tissue', def: 'abundant yellow fibres giving stretch, found between the bones of the spinal column and in the walls of large arteries and airways' },
-
-    { term: 'Cartilage', def: 'a rigid specialized tissue with collagen in a gel-like matrix, giving support and framework, and serving as the model on which bone develops',
-      note: 'Has no blood supply of its own and heals slowly. The perichondrium covering it supplies some nutrients.' },
-    { term: 'Chondrocytes', def: 'cartilage cells, each sitting in a small chamber surrounded by matrix' },
-    { term: 'Lacunae', def: 'the small chambers that house cartilage or bone cells within the matrix' },
-    { term: 'Hyaline cartilage', def: 'the commonest kind, with fine collagen fibres — the ends of bones at joints, the nose, the respiratory passages and the embryonic skeleton' },
-    { term: 'Elastic cartilage', def: 'the flexible kind, carrying elastic fibres in its matrix — the external ear and part of the larynx' },
-    { term: 'Fibrocartilage', def: 'the toughest kind, packed with collagen and acting as a shock absorber — the intervertebral discs and the pads of the knee and pelvis' },
-
-    { term: 'Bone', def: 'the most rigid connective tissue, its solid matrix of mineral salts and collagen supporting and protecting, producing blood cells, storing calcium and anchoring muscles',
-      note: 'Also called osseous tissue. Comes in compact and spongy forms.' },
-    { term: 'Osteocytes', def: 'bone cells, each occupying a lacuna within the solid matrix' },
-    { term: 'Osteon', def: 'the cylindrical unit of compact bone — rings of matrix around a central canal, with the cells between them' },
-    { fact: true, term: 'Why bone heals faster than cartilage',
-      def: 'the central canals of compact bone carry blood vessels, so it is well nourished; cartilage has no blood supply at all' },
-    { term: 'Blood', def: 'the connective tissue whose cells are suspended in a fluid matrix, carrying gases, defending against infection and clotting' },
-    { term: 'Plasma', def: 'the fluid matrix that the cells of blood are suspended in' },
-
-    { term: 'Serous membranes', def: 'the linings of cavities that do not open to the outside, secreting a watery fluid that reduces friction on the organs they cover' },
-    { term: 'Mucous membranes', def: 'the linings of the passages that do open to the outside — digestive, respiratory, urinary and reproductive — where goblet cells produce a protective coating' },
-    { term: 'Cutaneous membrane', def: 'the covering over the whole body surface, better known as the skin' },
-    { term: 'Synovial membranes', def: 'the linings of joint cavities, made entirely of connective tissue rather than including an epithelium' },
-
-    { term: 'Skeletal muscle tissue', def: 'long cylindrical cells with many nuclei, striated and under voluntary control, attached to bone' },
-    { term: 'Smooth muscle tissue', def: 'spindle-shaped cells without striations, working involuntarily in the walls of hollow organs and blood vessels' },
-    { term: 'Cardiac muscle tissue', def: 'branching striated cells joined by intercalated discs, working involuntarily and found only in the wall of the heart' },
-    { term: 'Intercalated discs', def: 'the junctions joining the branching cells of heart muscle end to end' },
-    { term: 'Neurons', def: 'the cells specialized for communication, conducting impulses to coordinate, integrate and regulate the body' },
-    { term: 'Neuroglia', def: 'the supporting cells that nourish and hold up the impulse-conducting ones, carry on phagocytosis, and link them to blood vessels',
-      note: 'Unlike neurons they divide by mitosis — which is why most brain tumours arise from these rather than from nerve cells.' },
-    /* ---- connective tissue cells the deck was missing ---- */
-    { term: 'Mast cells', def: 'the large fixed cells scattered through connective tissue, usually close to blood vessels, that release heparin and histamine' },
-    { term: 'Heparin', def: 'the compound released by mast cells that stops blood from clotting' },
-    { term: 'Histamine', def: 'the compound released by mast cells that drives the inflammatory response' },
-    { term: 'Adipocytes', def: 'the cells that store fat in droplets until their nuclei are pushed to one side' },
-
-    /* ---- the parts of a neuron ---- */
-    { term: 'Cell body, soma', def: 'the part of a nerve cell holding the nucleus and most of the organelles' },
-    { term: 'Dendrites', def: 'the short, numerous, branching processes that RECEIVE stimuli',
-      note: 'From dendro, “tree”. The branching is the giveaway.' },
-    { term: 'Axon', def: 'the single long process that carries the signal AWAY toward other cells' },
-
-    { term: 'Metaplasia', def: 'the replacement of one mature tissue by another — as in the airways of smokers, where the ciliated lining gives way to layers of flat cells',
-      note: 'Protective but costly: the replacement has neither cilia nor mucus, so the airway loses the mechanism that sweeps debris out.' },
-    /* ---- the six gland types, from the table in the course notes ---- */
     { term: 'Simple tubular gland', def: 'a straight tube opening directly onto the surface — the intestinal glands of the small intestine' },
     { term: 'Simple branched tubular gland', def: 'a branched tube whose duct is short or absent altogether — the gastric glands' },
     { term: 'Simple coiled tubular gland', def: 'a long coiled tube with a long duct — the sweat glands of the skin' },
     { term: 'Simple branched alveolar gland', def: 'one whose secretory portions swell into saclike compartments along the duct — the sebaceous glands of the skin' },
     { term: 'Compound tubular gland', def: 'one whose secretory tubules extend from branches that combine into a single duct — the bulbourethral glands' },
     { term: 'Compound alveolar gland', def: 'one built of irregularly branched tubules carrying many saclike outgrowths — the mammary glands' },
-    /* ---- the framing the course notes use for connective and muscle tissue ---- */
-    { term: 'Fixed cells', def: 'the connective tissue cells that reside in the tissue for a long period — fibroblasts and mast cells' },
-    { term: 'Wandering cells', def: 'the connective tissue cells that appear only temporarily, in response to injury or infection — chiefly macrophages' },
-    { term: 'Muscle fibres', def: 'the elongated cells of muscle tissue, which shorten and thicken to pull on their attached ends' },
-    { term: 'Excitable', def: 'responding to stimulation — the property shared by muscle tissue and nervous tissue' },
-    { fact: true, term: 'How much of body weight is skeletal muscle', def: 'about 40 percent, with smooth and cardiac muscle together adding roughly another 10' },
+    { term: 'Merocrine glands', def: 'those releasing a fluid product through the cell membrane by exocytosis, the cell itself staying intact',
+      note: 'Also called eccrine glands. Salivary, pancreatic and sweat glands. Most secretory cells work this way.' },
+    { term: 'Apocrine glands', def: 'those that pinch off part of the cell body along with the product — the mammary glands and the wax glands of the ear canal' },
+    { term: 'Holocrine glands', def: 'those releasing whole cells, which then burst to liberate what they held — the sebaceous glands of the skin' },
+    { term: 'Serous fluid', def: 'a watery, slippery secretion, associated with the membranes lining the thoracic and abdominopelvic cavities' },
+    { term: 'Mucus', def: 'the thick protective secretion rich in the glycoprotein mucin, produced by the linings of the digestive, respiratory and reproductive systems' },
+    { term: 'Mucin', def: 'the glycoprotein that makes mucus what it is' }
   ],
   questions: [
-    { q: 'Which tissue type has no blood vessels of its own?',
-      choices: ['Epithelial', 'Connective', 'Muscle', 'Nervous'], answer: 0,
-      why: 'It is fed by diffusion from the connective tissue beneath it, which is well supplied.' },
-
-    { q: 'Simple versus stratified describes what about an epithelium?',
-      choices: [
-        'The number of cell layers',
-        'The shape of the cells',
-        'Whether it has cilia',
-        'Whether it lines a duct'
-      ], answer: 0,
-      why: 'Shape is the other axis — squamous, cuboidal or columnar. The two combine to name each tissue.' },
-
-    { q: 'Gas exchange in the alveoli happens across which epithelium?',
-      choices: [
-        'Simple squamous',
-        'Simple cuboidal',
-        'Stratified squamous',
-        'Transitional'
-      ], answer: 0,
-      why: 'One layer of the flattest cells is the shortest path a gas can cross. Thin means fragile, which is why it damages easily.' },
-
-    { q: 'Pseudostratified columnar epithelium is called "pseudo" because:',
-      choices: [
-        'It looks layered, but every cell actually reaches the basement membrane',
-        'It has layers that come and go with stretching',
-        'Its cells change shape depending on the organ',
-        'It is a mix of cuboidal and columnar cells'
-      ], answer: 0,
-      why: 'The nuclei sit at different heights, which reads as layering. Some cells do not reach the free surface, but all of them touch the base.' },
-
-    { q: 'Which epithelium lines the urinary bladder?',
-      choices: ['Transitional', 'Simple columnar', 'Stratified squamous', 'Pseudostratified columnar'], answer: 0,
-      why: 'It has to change shape as the bladder fills, and it also stops urine diffusing back into the body.' },
-
     { q: 'An exocrine gland differs from an endocrine gland how?',
       choices: [
         'Exocrine secretes into a duct; endocrine secretes into tissue fluid or blood',
@@ -2234,7 +2196,6 @@ window.DECKS = [
         'Exocrine glands produce mucus; endocrine glands produce serous fluid'
       ], answer: 0,
       why: 'Exo- is outward, through a duct to a surface. Endo- is within — straight into the internal environment.' },
-
     { q: 'Merocrine, apocrine and holocrine describe:',
       choices: [
         'How much of the cell is given up during secretion',
@@ -2242,25 +2203,75 @@ window.DECKS = [
         'Whether the duct branches',
         'Whether the product is watery or thick'
       ], answer: 0,
-      why: 'Merocrine gives up nothing, apocrine pinches off part of the cell, holocrine sacrifices the whole cell. Sebaceous glands are the holocrine example.' },
+      why: 'Merocrine gives up nothing, apocrine pinches off part of the cell, holocrine sacrifices the whole cell. Sebaceous glands are the holocrine example.' }
+  ],
+},
 
-    { q: 'Keratinization produces what, and where does it NOT occur?',
-      choices: [
-        'A dry, tough waterproof covering — absent from the lining of the mouth, esophagus and vagina',
-        'A layer of mucus — absent from the skin',
-        'A stretchable lining — absent from the bladder',
-        'A layer of cilia — absent from the respiratory tract'
-      ], answer: 0,
-      why: 'Those linings are stratified squamous too, but stay soft, moist and alive at the surface.' },
-    { q: 'Carcinogens act mainly on cells that are dividing. Which tissue is therefore most vulnerable?',
-      choices: [
-        'Epithelium, which replaces itself continuously',
-        'Nervous tissue',
-        'Cartilage',
-        'Dense regular connective tissue',
-      ], answer: 0,
-      why: 'Epithelium regenerates constantly, which is why most cancers are carcinomas. Nervous tissue is the least vulnerable, because neurons barely divide — and that is also why brain tumours usually arise from neuroglia, which do divide.' },
+{
+  /* Section 5.3, first half: the cells, the three fibres, and connective tissue proper. */
+  id: 'bio-ch5-4',
+  group: 'Chapter 5',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 5.3 — Connective Tissues',
+  source: 'Chapter 5.3 — course notes',
+  cards: [
+    { fact: true, term: 'The two categories of connective tissue',
+      def: 'connective tissue proper, and the specialized connective tissues' },
+    { term: 'Extracellular matrix', def: 'the non-cellular material filling the space between cells, made of protein fibres and ground substance, ranging from fluid to semisolid to solid' },
+    { term: 'Ground substance', def: 'the non-fibrous portion of the matrix — protein, other molecules and a varying amount of fluid — filling the space around cells and fibres' },
+    { term: 'Fixed cells', def: 'the connective tissue cells that reside in the tissue for a long period — fibroblasts and mast cells' },
+    { term: 'Wandering cells', def: 'the connective tissue cells that appear only temporarily, in response to injury or infection — chiefly macrophages' },
+    { term: 'Fibroblasts', def: 'the large star-shaped cells, commonest of the fixed cells, that secrete the fibres of the matrix',
+      note: 'They multiply and step up fibre production after an injury, and they build the scar tissue that replaces damaged muscle after a heart attack.' },
+    { term: 'Macrophages', def: 'the wandering scavengers that clear foreign particles by engulfing them and defend against infection',
+      note: 'Also called histiocytes. Usually attached to fibres, but able to detach and move.' },
+    { term: 'Mast cells', def: 'the large fixed cells scattered through connective tissue, usually close to blood vessels, that release heparin and histamine' },
+    { term: 'Heparin', def: 'the compound released by mast cells that stops blood from clotting' },
+    { term: 'Histamine', def: 'the compound released by mast cells that drives the inflammatory response' },
+    { term: 'Collagen fibres', def: 'thick threads of the protein that gives the body most of its structure — enormously strong under a pull, only slightly stretchy, and the bulk of ligaments and tendons',
+      note: 'Also called white fibres.' },
+    { term: 'Elastic fibres', def: 'branching threads of elastin that stretch and spring back, weaker than collagen, found in the vocal cords and airways',
+      note: 'Also called yellow fibres.' },
+    { term: 'Reticular fibres', def: 'thin branching threads of collagen forming delicate supporting networks in the spleen and liver' },
+    { term: 'Areolar connective tissue', def: 'thin delicate membrane of mostly fibroblasts in a gel-like ground substance, sitting in the subcutaneous layer and beneath most epithelia, which it nourishes' },
+    { term: 'Adipose tissue', def: 'fat-storing cells whose contents push the nucleus to one side, cushioning and insulating beneath the skin, behind the eyeballs and around the kidneys and heart' },
+    { term: 'Adipocytes', def: 'the cells that store fat in droplets until their nuclei are pushed to one side' },
+    { term: 'Reticular connective tissue', def: 'a supporting web of thin fibres holding up the walls of internal organs such as the liver and spleen' },
+    { term: 'Dense regular connective tissue', def: 'closely packed parallel collagen, very strong against pulling, forming tendons and ligaments — poorly supplied with blood, so slow to heal' },
+    { term: 'Dense irregular connective tissue', def: 'thick collagen interwoven at random so it withstands tension from any direction, forming the deep layer of skin and the wrapping around skeletal muscles' },
+    { term: 'Elastic connective tissue', def: 'abundant yellow fibres giving stretch, found between the bones of the spinal column and in the walls of large arteries and airways' }
+  ],
+},
 
+{
+  /* Section 5.3, second half: the specialised connective tissues. Kept apart from the rest of 5.3 because the vascular contrast running through them — cartilage has no blood supply, bone is rich in it, blood IS the matrix — is easiest to see when they sit together. */
+  id: 'bio-ch5-5',
+  group: 'Chapter 5',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 5.3 — Cartilage, Bone & Blood',
+  source: 'Chapter 5.3 — course notes',
+  cards: [
+    { term: 'Cartilage', def: 'a rigid specialized tissue with collagen in a gel-like matrix, giving support and framework, and serving as the model on which bone develops',
+      note: 'Has no blood supply of its own and heals slowly. The perichondrium covering it supplies some nutrients.' },
+    { term: 'Chondrocytes', def: 'cartilage cells, each sitting in a small chamber surrounded by matrix' },
+    { term: 'Lacunae', def: 'the small chambers that house cartilage or bone cells within the matrix' },
+    { term: 'Hyaline cartilage', def: 'the commonest kind, with fine collagen fibres — the ends of bones at joints, the nose, the respiratory passages and the embryonic skeleton' },
+    { term: 'Elastic cartilage', def: 'the flexible kind, carrying elastic fibres in its matrix — the external ear and part of the larynx' },
+    { term: 'Fibrocartilage', def: 'the toughest kind, packed with collagen and acting as a shock absorber — the intervertebral discs and the pads of the knee and pelvis' },
+    { term: 'Bone', def: 'the most rigid connective tissue, its solid matrix of mineral salts and collagen supporting and protecting, producing blood cells, storing calcium and anchoring muscles',
+      note: 'Also called osseous tissue. Comes in compact and spongy forms.' },
+    { term: 'Osteocytes', def: 'bone cells, each occupying a lacuna within the solid matrix' },
+    { term: 'Osteon', def: 'the cylindrical unit of compact bone — rings of matrix around a central canal, with the cells between them' },
+    { fact: true, term: 'Why bone heals faster than cartilage',
+      def: 'the central canals of compact bone carry blood vessels, so it is well nourished; cartilage has no blood supply at all' },
+    { term: 'Blood', def: 'the connective tissue whose cells are suspended in a fluid matrix, carrying gases, defending against infection and clotting' },
+    { term: 'Plasma', def: 'the fluid matrix that the cells of blood are suspended in' }
+  ],
+  questions: [
     { q: 'Why are shoulder, elbow and knee injuries so often slow to heal?',
       choices: [
         'Those joints are largely cartilage and dense regular connective tissue, both poorly supplied with blood',
@@ -2268,17 +2279,40 @@ window.DECKS = [
         'Synovial fluid keeps repair cells from reaching the injury',
         'Cartilage cells divide too quickly to organise properly',
       ], answer: 0,
-      why: 'Repair depends on blood delivering cells and nutrients. Cartilage has no blood supply of its own at all — it feeds by diffusion from the perichondrium around it — and dense regular connective tissue is poorly vascular. Little blood means slow healing.' },
+      why: 'Repair depends on blood delivering cells and nutrients. Cartilage has no blood supply of its own at all — it feeds by diffusion from the perichondrium around it — and dense regular connective tissue is poorly vascular. Little blood means slow healing.' }
+  ],
+},
 
-    { q: 'In the airways of smokers, the ciliated lining is replaced by layers of flat cells. Why does that matter?',
-      choices: [
-        'The replacement has neither cilia nor mucus, so debris is no longer swept out',
-        'The replacement is thinner and tears more easily',
-        'The replacement cannot absorb oxygen',
-        'The replacement blocks the airway mechanically',
-      ], answer: 0,
-      why: 'Pseudostratified ciliated columnar epithelium traps particles in mucus and sweeps them up and out. Stratified squamous is tougher, but it has no cilia and no goblet cells, so the airway loses its cleaning mechanism. A protective change that costs a function.' },
-
+{
+  /* The last three sections together. Alone they are 4, 7 and 5 cards, and a four-card deck cannot build a quiz — every card would appear as a choice on every question. */
+  id: 'bio-ch5-6',
+  group: 'Chapter 5',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 5.4–5.6 — Membranes, Muscle & Nervous Tissue',
+  source: 'Chapter 5.4-5.6 — course notes',
+  cards: [
+    { term: 'Serous membranes', def: 'the linings of cavities that do not open to the outside, secreting a watery fluid that reduces friction on the organs they cover' },
+    { term: 'Mucous membranes', def: 'the linings of the passages that do open to the outside — digestive, respiratory, urinary and reproductive — where goblet cells produce a protective coating' },
+    { term: 'Cutaneous membrane', def: 'the covering over the whole body surface, better known as the skin' },
+    { term: 'Synovial membranes', def: 'the linings of joint cavities, made entirely of connective tissue rather than including an epithelium' },
+    { term: 'Excitable', def: 'responding to stimulation — the property shared by muscle tissue and nervous tissue' },
+    { term: 'Muscle fibres', def: 'the elongated cells of muscle tissue, which shorten and thicken to pull on their attached ends' },
+    { fact: true, term: 'How much of body weight is skeletal muscle', def: 'about 40 percent, with smooth and cardiac muscle together adding roughly another 10' },
+    { term: 'Skeletal muscle tissue', def: 'long cylindrical cells with many nuclei, striated and under voluntary control, attached to bone' },
+    { term: 'Smooth muscle tissue', def: 'spindle-shaped cells without striations, working involuntarily in the walls of hollow organs and blood vessels' },
+    { term: 'Cardiac muscle tissue', def: 'branching striated cells joined by intercalated discs, working involuntarily and found only in the wall of the heart' },
+    { term: 'Intercalated discs', def: 'the junctions joining the branching cells of heart muscle end to end' },
+    { term: 'Neurons', def: 'the cells specialized for communication, conducting impulses to coordinate, integrate and regulate the body' },
+    { term: 'Neuroglia', def: 'the supporting cells that nourish and hold up the impulse-conducting ones, carry on phagocytosis, and link them to blood vessels',
+      note: 'Unlike neurons they divide by mitosis — which is why most brain tumours arise from these rather than from nerve cells.' },
+    { term: 'Cell body, soma', def: 'the part of a nerve cell holding the nucleus and most of the organelles' },
+    { term: 'Dendrites', def: 'the short, numerous, branching processes that RECEIVE stimuli',
+      note: 'From dendro, “tree”. The branching is the giveaway.' },
+    { term: 'Axon', def: 'the single long process that carries the signal AWAY toward other cells' }
+  ],
+  questions: [
     { q: 'Which description identifies cardiac muscle?',
       choices: [
         'Striated, branched, involuntary, with intercalated discs',
@@ -2287,7 +2321,6 @@ window.DECKS = [
         'Unstriated, branched, voluntary',
       ], answer: 0,
       why: 'Take them one distinguishing feature at a time: skeletal is the only voluntary type, smooth is the only one without striations, and cardiac is the only one with intercalated discs — and the only one confined to a single organ.' },
-
     { q: 'Which membrane is built entirely of connective tissue, with no epithelium at all?',
       choices: [
         'Synovial',
@@ -2295,8 +2328,8 @@ window.DECKS = [
         'Mucous',
         'Cutaneous',
       ], answer: 0,
-      why: 'Serous, mucous and cutaneous membranes are all epithelium sitting on connective tissue. The synovial membrane lining a joint is the exception — connective tissue only.' },
-  ]
+      why: 'Serous, mucous and cutaneous membranes are all epithelium sitting on connective tissue. The synovial membrane lining a joint is the exception — connective tissue only.' }
+  ],
 },
 
 /* Chapter 6 lecture slides. Same treatment as every other publisher deck: the
@@ -2308,16 +2341,14 @@ window.DECKS = [
    the anatomy and physiology, the other tests the vocabulary, and they are
    examined separately. */
 {
-  id: 'bio-ch6',
+  /* The structural half of 6.1: the three layers, the five strata, and the two dermal layers. Holds the skin diagram, which labels accessory structures filed under 6.2 as well — the figure is a map of the whole chapter and only needs one home. */
+  id: 'bio-ch6-1',
   group: 'Chapter 6',
   current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 6 — The Integumentary System',
-  source: 'Chapter 6 — lecture slides',
-    /* Percentages of the figure box. Every structure sits directly on itself —
-     nothing needed a leader, because the diagram is a cut-away block and the
-     parts are far enough apart to point at. */
+  title: 'Ch. 6.1 — Skin & Its Layers',
+  source: 'Chapter 6.1 — course notes',
   figure: {
     name: 'skin',
     parts: [
@@ -2338,15 +2369,12 @@ window.DECKS = [
     ],
   },
   cards: [
-    /* ---- layers ---- */
     { term: 'Integumentary system', def: 'the skin together with its accessory structures — hair, nails, glands and sensory receptors' },
     { fact: true, term: 'The two layers of the skin', def: 'the epidermis on the outside and the dermis beneath it' },
     { term: 'Epidermis', def: 'the outer layer, built of stratified squamous epithelium and carrying no blood vessels of its own' },
     { term: 'Dermis', def: 'the inner layer, thicker than the one above, holding connective tissue, muscle, blood and nervous tissue' },
     { term: 'Subcutaneous layer', def: 'the insulating layer of areolar and adipose tissue beneath the skin, carrying the vessels that supply it',
       note: 'Also called the hypodermis. Not counted as part of the skin itself.' },
-
-    /* ---- epidermal strata ---- */
     { term: 'Stratum basale', def: 'the deepest epidermal layer — a single row of dividing cuboidal or columnar cells, and where the pigment cells live' },
     { term: 'Stratum spinosum', def: 'the many-layered stratum above the deepest, its cells holding large oval nuclei and beginning to build keratin' },
     { term: 'Stratum granulosum', def: 'a band of three to five flattened layers, grainy with shrunken protein fibres, the nuclei already shrivelling' },
@@ -2354,8 +2382,45 @@ window.DECKS = [
     { term: 'Stratum corneum', def: 'the outermost stratum — many layers of dead, flattened, keratinized cells with no nuclei, continually shed' },
     { term: 'Keratinocytes', def: 'the epidermal cells that flatten and die as they are pushed away from their blood supply' },
     { term: 'Keratinization', def: 'the hardening and drying that fills a cell with tough protein as it migrates toward the surface' },
+    { term: 'Dermal papillae', def: 'the projections between the ridges above them, which form fingerprints' },
+    { term: 'Papillary layer', def: 'the thinner, superficial half of the dermis, made of areolar connective tissue' },
+    { term: 'Reticular layer', def: 'the thicker, deeper half of the dermis, made of dense irregular connective tissue' },
+    { term: 'Lamellated corpuscles', def: 'the dermal receptors that register pressure',
+      note: 'Also called Pacinian corpuscles.' },
+    { term: 'Tactile corpuscles', def: 'the dermal receptors that register light touch',
+      note: 'Also called Meissner’s corpuscles.' },
+    { term: 'Intradermal injection', def: 'an injection given into the skin itself' },
+    { term: 'Subcutaneous injection', def: 'an injection given through a hollow needle into the fatty layer beneath the skin',
+      note: 'Absorbed faster than an intradermal one, because that layer is richly supplied with blood vessels while the epidermis has none at all.' }
+  ],
+  questions: [
+    { q: 'Which layer of the epidermis is the only one whose cells divide?',
+      choices: ['Stratum basale', 'Stratum corneum', 'Stratum granulosum', 'Stratum lucidum'], answer: 0,
+      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
+    { q: 'Which stratum is found ONLY in thick skin?',
+      choices: ['Stratum lucidum', 'Stratum spinosum', 'Stratum granulosum', 'Stratum basale'], answer: 0,
+      why: 'Palms and soles only.' },
+    { q: 'The subcutaneous layer is:',
+      choices: [
+        'Beneath the dermis, and not counted as part of the skin',
+        'Between the epidermis and dermis',
+        'The deepest layer of the epidermis',
+        'The outermost layer of the dermis'
+      ], answer: 0,
+      why: 'Also called the hypodermis. It insulates and carries the vessels that supply the skin above it.' }
+  ],
+},
 
-    /* ---- special cells and colour ---- */
+{
+  /* The rest of 6.1: what lives in the epidermis besides keratinocytes, what decides skin colour, and the conditions that follow from those cells misbehaving. */
+  id: 'bio-ch6-2',
+  group: 'Chapter 6',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 6.1 — Pigment, Cells & Skin Conditions',
+  source: 'Chapter 6.1 — course notes',
+  cards: [
     { term: 'Melanocytes', def: 'the pigment-producing cells of the deepest epidermal layer, whose product is passed to neighbouring cells to shield their DNA' },
     { term: 'Eumelanin', def: 'the brownish-black pigment of the epidermis' },
     { term: 'Pheomelanin', def: 'the reddish-yellow pigment found in certain areas' },
@@ -2367,28 +2432,50 @@ window.DECKS = [
       def: 'not the NUMBER of pigment cells, which is the same in everyone, but how much pigment they make and how it is distributed — under genetic control' },
     { fact: true, term: 'Physiological factors that change skin colour',
       def: 'how oxygenated the dermal blood is, whether those vessels are dilated or constricted, dietary carotene, and jaundice' },
+    { term: 'Cyanosis', def: 'the bluish cast the skin takes on when its blood is poorly oxygenated' },
+    { term: 'ABCDE rule', def: 'the five warning signs of melanoma: asymmetry, an irregular border, more than one colour, a diameter over 6 mm, and evolution or change' },
+    { term: 'Calluses', def: 'the thickened areas raised on palms and soles where skin is rubbed or pressed regularly, from increased cell division' },
+    { term: 'Corns', def: 'the keratinized conical masses that form on the toes' },
+    { term: 'Psoriasis', def: 'the chronic disease in which epidermal cells divide about seven times faster than normal, leaving bright red patches under silvery scales',
+      note: 'The scales are the excess keratinized cells. Treated with drugs that block tumor necrosis factor, an inflammatory protein.' },
+    { term: 'Pressure ulcer', def: 'the breakdown that follows when body weight presses skin against a surface long enough to cut off its blood supply, killing the tissue',
+      note: 'Also called a decubitus ulcer or bedsore. Forms over bony points — hip, heel, elbow, shoulder. Prevented by shifting position often, massaging those areas, motorised beds, clean skin, good diet and not smoking.' }
+  ],
+  questions: [
+    { q: 'Two people differ in skin colour. What differs between them?',
+      choices: [
+        'How much pigment their melanocytes produce, not how many melanocytes they have',
+        'The number of melanocytes in the epidermis',
+        'The thickness of the stratum corneum',
+        'The number of layers in the dermis'
+      ], answer: 0,
+      why: 'Everyone has roughly the same number of pigment cells. Output and distribution are what vary, and both are under genetic control.' }
+  ],
+},
 
-    /* ---- dermis ---- */
-    { term: 'Dermal papillae', def: 'the projections between the ridges above them, which form fingerprints' },
-    { term: 'Papillary layer', def: 'the thinner, superficial half of the dermis, made of areolar connective tissue' },
-    { term: 'Reticular layer', def: 'the thicker, deeper half of the dermis, made of dense irregular connective tissue' },
-    { term: 'Lamellated corpuscles', def: 'the dermal receptors that register pressure',
-      note: 'Also called Pacinian corpuscles.' },
-    { term: 'Tactile corpuscles', def: 'the dermal receptors that register light touch',
-      note: 'Also called Meissner’s corpuscles.' },
-
-    /* ---- accessory structures ---- */
+{
+  /* Nails, hair and glands. Everything the skin grows rather than everything it is. */
+  id: 'bio-ch6-3',
+  group: 'Chapter 6',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 6.2 — Accessory Structures',
+  source: 'Chapter 6.2 — course notes',
+  cards: [
     { term: 'Nail plate', def: 'the visible keratinized portion lying over the bed beneath it' },
+    { term: 'Nail bed', def: 'the skin surface lying directly beneath the visible part of a nail' },
     { term: 'Nail matrix', def: 'the hidden growth region at the proximal end of the bed, where new cells are produced' },
+    { term: 'Free edge', def: 'the part of the nail plate that extends past the bed it grew over' },
     { term: 'Hair follicle', def: 'the tube-like depression of epidermal cells, reaching down into the dermis, from which a strand develops' },
     { term: 'Hair bulb', def: 'the deepest part of the root, holding the dividing cells that build the strand' },
     { term: 'Hair shaft', def: 'the portion extending beyond the surface, made of dead epidermal cells' },
     { term: 'Hair papilla', def: 'the projection carrying the blood vessels that nourish a growing strand' },
+    { term: 'Hair bulge', def: 'the region near the bottom of a follicle where its epidermal stem cells originate' },
+    { fact: true, term: 'What determines hair colour', def: 'the type and amount of melanin present' },
     { term: 'Arrector pili', def: 'the small muscle attached to a follicle that contracts in cold or fear, raising goosebumps' },
     { fact: true, term: 'Where hair does not grow',
       def: 'the palms, the soles, the lips, the nipples and parts of the external reproductive organs' },
-
-    /* ---- glands ---- */
     { term: 'Sebaceous glands', def: 'holocrine glands beside the hair follicles, producing an oily mix of fat and cell debris that keeps hair and skin soft and waterproof',
       note: 'Absent from the palms and soles. Excess output is what produces acne.' },
     { term: 'Eccrine glands', def: 'the most numerous sweat glands, opening onto the surface through pores and responding to a rise in body temperature',
@@ -2396,10 +2483,29 @@ window.DECKS = [
     { term: 'Apocrine sweat glands', def: 'the sweat glands of the armpit and groin, opening into hair follicles and responding to emotion and pain rather than heat',
       note: 'Their secretions are the ones that develop an odour. Despite the name they secrete by exocytosis.' },
     { term: 'Ceruminous glands', def: 'modified sweat glands of the ear canal that produce wax' },
+    { fact: true, term: 'How sweat helps protect the skin', def: 'it is slightly acidic, which inhibits the growth of certain microorganisms' }
+  ],
+  questions: [
+    { q: 'Which glands respond to emotion rather than to heat?',
+      choices: ['Apocrine sweat glands', 'Eccrine sweat glands', 'Sebaceous glands', 'Ceruminous glands'], answer: 0,
+      why: 'Eccrine glands answer to a rise in temperature. Apocrine glands sit in the armpit and groin, open into follicles, and their secretions are the ones that develop odour.' }
+  ],
+},
 
-    /* ---- functions and temperature ---- */
+{
+  /* What the skin does. The four routes of heat loss are the part worth drilling — they are easy to name and easy to mix up. */
+  id: 'bio-ch6-4',
+  group: 'Chapter 6',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 6.3 — Skin Functions & Temperature',
+  source: 'Chapter 6.3 — course notes',
+  cards: [
     { fact: true, term: 'The five functions of the skin',
       def: 'a protective barrier, sensation, excretion of some wastes, the start of vitamin D production, and regulation of body temperature' },
+    { term: 'Dehydrocholesterol', def: 'the precursor made by skin cells that sunlight converts into an inactive form of vitamin D' },
+    { fact: true, term: 'How vitamin D becomes active', def: 'sunlight converts the skin’s precursor into an inactive form, then the liver and kidneys modify that into the active vitamin' },
     { fact: true, term: 'Normal deep body temperature',
       def: 'about 37 degrees Celsius, or 98.6 Fahrenheit, held to a set point monitored by the hypothalamus' },
     { term: 'Radiation', def: 'the main route of heat loss — infrared rays travelling from warmer skin into cooler surroundings' },
@@ -2410,9 +2516,33 @@ window.DECKS = [
       def: 'thermoreceptors signal the hypothalamus, the dermal vessels dilate while the deep ones constrict, and the sweat glands switch on' },
     { term: 'Hyperthermia', def: 'body temperature ABOVE 101°F — the skin turns dry and the person becomes weak, dizzy and nauseous with a rapid pulse' },
     { term: 'Hypothermia', def: 'body temperature BELOW 95°F, progressing through shivering to confusion, lethargy and loss of consciousness' },
-    { term: 'Pyrogens', def: 'substances released by phagocytes that push the hypothalamic set point up, producing a fever that helps destroy pathogens' },
+    { term: 'Pyrogens', def: 'substances released by phagocytes that push the hypothalamic set point up, producing a fever that helps destroy pathogens' }
+  ],
+  questions: [
+    { q: 'What is the PRIMARY route by which the skin loses heat?',
+      choices: ['Radiation', 'Conduction', 'Convection', 'Evaporation'], answer: 0,
+      why: 'Infrared rays travelling from warm skin to cooler surroundings. The others contribute, and evaporation takes over when the air is as warm as you are.' },
+    { q: 'A fever differs from hyperthermia how?',
+      choices: [
+        'In fever the set point itself is raised deliberately; in hyperthermia the set point is normal and the body cannot keep up',
+        'Fever is always more dangerous than hyperthermia',
+        'Hyperthermia is caused by infection, fever by heat exposure',
+        'They are two names for the same thing'
+      ], answer: 0,
+      why: 'Phagocytes release pyrogens and the hypothalamus raises the target, which helps destroy pathogens. In hyperthermia the target never moved — heat simply built up faster than it could be shed.' }
+  ],
+},
 
-    /* ---- wounds and burns ---- */
+{
+  /* Healing, burns and life-span changes together: one deck about the skin being damaged and the skin wearing out. */
+  id: 'bio-ch6-5',
+  group: 'Chapter 6',
+  current: true,
+  added: '2026-08-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 6.4 — Wounds, Burns & Ageing',
+  source: 'Chapter 6.4 - Life-Span Changes — course notes',
+  cards: [
     { term: 'Inflammation', def: 'the normal response to injury — vessels widen and leak fluid into the damaged tissue, leaving it red, swollen, warm and painful' },
     { fact: true, term: 'How a deep cut heals',
       def: 'a clot of fibrin, blood cells and platelets forms and dries into a scab; epithelial cells multiply to fill the gap while fibroblasts lay down collagen, and phagocytes clear the debris before the scab falls away' },
@@ -2423,33 +2553,9 @@ window.DECKS = [
       note: 'Second degree.' },
     { term: 'Full-thickness burn', def: 'a burn destroying both layers and the accessory structures, healing only from the margins and usually needing a graft',
       note: 'Third degree.' },
-    { term: 'Calluses', def: 'the thickened areas raised on palms and soles where skin is rubbed or pressed regularly, from increased cell division' },
-    { term: 'Corns', def: 'the keratinized conical masses that form on the toes' },
-    { term: 'Psoriasis', def: 'the chronic disease in which epidermal cells divide about seven times faster than normal, leaving bright red patches under silvery scales',
-      note: 'The scales are the excess keratinized cells. Treated with drugs that block tumor necrosis factor, an inflammatory protein.' },
-    { term: 'Pressure ulcer', def: 'the breakdown that follows when body weight presses skin against a surface long enough to cut off its blood supply, killing the tissue',
-      note: 'Also called a decubitus ulcer or bedsore. Forms over bony points — hip, heel, elbow, shoulder. Prevented by shifting position often, massaging those areas, motorised beds, clean skin, good diet and not smoking.' },
-
-    { term: 'ABCDE rule', def: 'the five warning signs of melanoma: asymmetry, an irregular border, more than one colour, a diameter over 6 mm, and evolution or change' },
-    { term: 'Cyanosis', def: 'the bluish cast the skin takes on when its blood is poorly oxygenated' },
-
-    { term: 'Nail bed', def: 'the skin surface lying directly beneath the visible part of a nail' },
-    { term: 'Free edge', def: 'the part of the nail plate that extends past the bed it grew over' },
-    { term: 'Hair bulge', def: 'the region near the bottom of a follicle where its epidermal stem cells originate' },
-    { fact: true, term: 'What determines hair colour', def: 'the type and amount of melanin present' },
-
-    { fact: true, term: 'How sweat helps protect the skin', def: 'it is slightly acidic, which inhibits the growth of certain microorganisms' },
-    { term: 'Dehydrocholesterol', def: 'the precursor made by skin cells that sunlight converts into an inactive form of vitamin D' },
-    { fact: true, term: 'How vitamin D becomes active', def: 'sunlight converts the skin’s precursor into an inactive form, then the liver and kidneys modify that into the active vitamin' },
-
-    { term: 'Intradermal injection', def: 'an injection given into the skin itself' },
-    { term: 'Subcutaneous injection', def: 'an injection given through a hollow needle into the fatty layer beneath the skin',
-      note: 'Absorbed faster than an intradermal one, because that layer is richly supplied with blood vessels while the epidermis has none at all.' },
-
     { term: 'Autograft', def: 'skin moved from elsewhere on the patient’s own body — the permanent repair for a full-thickness burn' },
     { term: 'Allograft', def: 'skin from another person, used only as a TEMPORARY cover until an autograft can be done' },
     { term: 'Botox', def: 'the toxin from Clostridium botulinum — the bacterium behind a form of food poisoning — used to smooth facial wrinkles' },
-    /* ---- life-span changes: the "Aging Skin" heading in the course notes ---- */
     { term: 'Why skin wrinkles and sags with age', fact: true, def: 'the dermis loses collagen and elastic fibres, so the skin thins and no longer springs back',
       note: 'Sun exposure accelerates all of it — which is why the change shows first on the face, neck and hands.' },
     { term: 'Why hair turns grey', fact: true, def: 'melanocytes die off and the ones remaining produce less melanin, so less pigment reaches the hair' },
@@ -2459,43 +2565,9 @@ window.DECKS = [
     { term: 'Why the elderly overheat more easily', fact: true, def: 'sweat glands decline in number and activity, so evaporative cooling is less effective' },
     { term: 'Age spots', def: 'the flat pigmented patches that appear on sun-exposed skin with age, from melanocytes clustering unevenly',
       note: 'Also called liver spots, though they have nothing to do with the liver.' },
-    { term: 'Why wounds heal more slowly with age', fact: true, def: 'cell division slows, circulation to the skin decreases, and fewer immune cells are on hand' },
+    { term: 'Why wounds heal more slowly with age', fact: true, def: 'cell division slows, circulation to the skin decreases, and fewer immune cells are on hand' }
   ],
   questions: [
-    { q: 'Which layer of the epidermis is the only one whose cells divide?',
-      choices: ['Stratum basale', 'Stratum corneum', 'Stratum granulosum', 'Stratum lucidum'], answer: 0,
-      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
-
-    { q: 'Which stratum is found ONLY in thick skin?',
-      choices: ['Stratum lucidum', 'Stratum spinosum', 'Stratum granulosum', 'Stratum basale'], answer: 0,
-      why: 'Palms and soles only.' },
-
-    { q: 'Two people differ in skin colour. What differs between them?',
-      choices: [
-        'How much pigment their melanocytes produce, not how many melanocytes they have',
-        'The number of melanocytes in the epidermis',
-        'The thickness of the stratum corneum',
-        'The number of layers in the dermis'
-      ], answer: 0,
-      why: 'Everyone has roughly the same number of pigment cells. Output and distribution are what vary, and both are under genetic control.' },
-
-    { q: 'The subcutaneous layer is:',
-      choices: [
-        'Beneath the dermis, and not counted as part of the skin',
-        'Between the epidermis and dermis',
-        'The deepest layer of the epidermis',
-        'The outermost layer of the dermis'
-      ], answer: 0,
-      why: 'Also called the hypodermis. It insulates and carries the vessels that supply the skin above it.' },
-
-    { q: 'Which glands respond to emotion rather than to heat?',
-      choices: ['Apocrine sweat glands', 'Eccrine sweat glands', 'Sebaceous glands', 'Ceruminous glands'], answer: 0,
-      why: 'Eccrine glands answer to a rise in temperature. Apocrine glands sit in the armpit and groin, open into follicles, and their secretions are the ones that develop odour.' },
-
-    { q: 'What is the PRIMARY route by which the skin loses heat?',
-      choices: ['Radiation', 'Conduction', 'Convection', 'Evaporation'], answer: 0,
-      why: 'Infrared rays travelling from warm skin to cooler surroundings. The others contribute, and evaporation takes over when the air is as warm as you are.' },
-
     { q: 'A second-degree burn is best described as:',
       choices: [
         'Destroying the epidermis and part of the dermis, often blistering',
@@ -2504,7 +2576,6 @@ window.DECKS = [
         'Affecting only the subcutaneous layer'
       ], answer: 0,
       why: 'It usually recovers without scarring, because stem cells surviving in the follicles and glands regenerate the surface.' },
-
     { q: 'Why does a full-thickness burn usually need a graft?',
       choices: [
         'The accessory structures are destroyed, so there are no stem cells left to regenerate skin',
@@ -2512,17 +2583,8 @@ window.DECKS = [
         'The subcutaneous layer cannot produce collagen',
         'Inflammation is absent in third-degree burns'
       ], answer: 0,
-      why: 'Follicles and glands are the reservoir a partial-thickness burn heals from. Lose them and healing can only creep in from the margins.' },
-
-    { q: 'A fever differs from hyperthermia how?',
-      choices: [
-        'In fever the set point itself is raised deliberately; in hyperthermia the set point is normal and the body cannot keep up',
-        'Fever is always more dangerous than hyperthermia',
-        'Hyperthermia is caused by infection, fever by heat exposure',
-        'They are two names for the same thing'
-      ], answer: 0,
-      why: 'Phagocytes release pyrogens and the hypothalamus raises the target, which helps destroy pathogens. In hyperthermia the target never moved — heat simply built up faster than it could be shed.' }
-  ]
+      why: 'Follicles and glands are the reservoir a partial-thickness burn heals from. Lose them and healing can only creep in from the margins.' }
+  ],
 },
 
 /* ─────────────────────────  M103 · MEDICAL PROCEDURES  ──────────────────── */
