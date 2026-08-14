@@ -786,6 +786,61 @@ function suite(s, label, srcCss) {
     check(`[${label}] no distractor is close enough to be arguable`, !tooClose, tooClose);
   }
 
+  /* Aliases. A card whose note says "Also called X" while Recall marks X wrong
+     is the app teaching a name and then refusing it — which is exactly what it
+     did for a term the course notes write as "free (apical) surface". Drive the
+     real judge, so this tests what a typed answer actually gets, not what the
+     alias list looks like. */
+  {
+    const judge = vm.runInContext('typeof judge === "function" ? judge : null', s);
+    check(`[${label}] the answer matcher is reachable`, !!judge);
+    if (judge) {
+      let rejected = '', clash = '', n = 0;
+      for (const d of DECKS) {
+        for (const c of d.cards || []) {
+          for (const a of c.also || []) {
+            n++;
+            if (judge(a, c, d) !== 'exact' && !rejected)
+              rejected = `${d.id}: "${a}" is listed on ${c.term} but marked wrong`;
+            /* two cards in one deck must never answer to the same typed word,
+               or whichever is asked first silently accepts the other's answer */
+            const other = (d.cards || []).find(o => o !== c &&
+              [o.term, ...(o.also || [])].some(t => t.toLowerCase() === a.toLowerCase()));
+            if (other && !clash)
+              clash = `${d.id}: "${a}" answers both ${c.term} and ${other.term}`;
+          }
+        }
+      }
+      check(`[${label}] some cards declare aliases`, n > 0, `${n} found`);
+      check(`[${label}] every declared alias is accepted as an answer`, !rejected, rejected);
+      check(`[${label}] no alias answers to two cards in one deck`, !clash, clash);
+
+      /* And the aliases actually cover what the cards claim: a note saying
+         "Also called X" has to be backed by an alias, or the card goes on
+         teaching a name Recall rejects. Current chapters only — finished ones
+         are frozen, and this reports rather than fails for those. */
+      const stated = /\b(?:also called|also known as|older name:)\s+([^.—;]+)/i;
+      const behind = [];
+      for (const d of DECKS.filter(x => x.current)) {
+        for (const c of d.cards || []) {
+          const m = stated.exec((c.note || '') + ' ' + (c.def || ''));
+          if (!m) continue;
+          /* "Also called a decubitus ulcer or bedsore" names TWO aliases, and
+             "Also called liver spots, though they have nothing to do with the
+             liver" names one and then keeps talking. Split on the separators and
+             keep the fragments short enough to be a name rather than prose. */
+          for (const raw of m[1].split(/\s+or\s+|,/)) {
+            const alias = raw.trim().replace(/^(a|an|the)\s+/i, '');
+            if (!alias || alias.split(/\s+/).length > 4) continue;
+            if (judge(alias, c, d) !== 'exact') behind.push(`${d.id} / ${c.term}: "${alias}"`);
+          }
+        }
+      }
+      check(`[${label}] a current card that names an alias accepts it`, !behind.length,
+            behind.join('; '));
+    }
+  }
+
   /* True/False. Two things can quietly ruin this mode. A "false" statement whose
      definition would honestly describe the term is not false at all, so the
      answer key is wrong. And a run that comes out all-true or all-false is

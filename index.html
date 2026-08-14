@@ -816,8 +816,17 @@ const normalize = s => String(s)
    counts — and so does the whole string. Without the whole string, a term like
    "Pores, channels & carriers" is a single name that happens to contain a
    comma, and typing it exactly as displayed would be marked wrong. */
+/* Every spelling that counts as this card's answer: the term itself, the parts
+   of a term that lists two names ("Cell body, soma"), and any `also` aliases.
+
+   `also` exists because a card's note would often say "Also called X" while
+   Recall went on marking X wrong — the app itself teaching a name it refused to
+   accept. Keeping aliases out of `term` matters: the term is what gets DISPLAYED
+   in flashcards, matching and the review sheet, and "Free surface, apical
+   surface, the exposed side..." reads as a card that cannot make up its mind. */
 const alternatives = card =>
-  [card.term, ...card.term.split(/,| or /i)].map(s => s.trim()).filter(Boolean);
+  [card.term, ...card.term.split(/,| or /i), ...(card.also || [])]
+    .map(s => s.trim()).filter(Boolean);
 
 /* A term ending in a category word that its own definition ALREADY supplies is
    redundant — "Hypogastric region" defined as "the region below the stomach".

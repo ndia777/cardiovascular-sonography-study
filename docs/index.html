@@ -1605,7 +1605,8 @@ window.DECKS = [
     /* ---- structure ---- */
     { term: 'Integumentary system', def: 'the organ system made up of the skin together with the hair, nails and glands attached to it' },
     { term: 'Epidermis', def: 'the outermost layer of skin, the one you can see and touch' },
-    { term: 'Dermis', def: 'the layer beneath the outer surface, carrying vessels, nerves and connective tissue',
+    { term: 'Dermis',
+      also: ['corium'], def: 'the layer beneath the outer surface, carrying vessels, nerves and connective tissue',
       note: 'Also called the corium.' },
     { term: 'Subcutaneous layer', def: 'the fatty layer lying under the dermis' },
     { term: 'Basal layer', def: 'the deepest stratum of the epidermis, where new cells are generated' },
@@ -1719,7 +1720,8 @@ window.DECKS = [
 
     /* ---- nail pathology ---- */
     { term: 'Clubbing', def: 'abnormal curving of the nails, often a sign of chronic low oxygen' },
-    { term: 'Koilonychia', def: 'a nail whose outer surface is concave, sometimes called spoon nail' },
+    { term: 'Koilonychia',
+      also: ['spoon nail'], def: 'a nail whose outer surface is concave, sometimes called spoon nail' },
     { term: 'Onychia', def: 'inflammation of the bed beneath the nail' },
     { term: 'Onychocryptosis', def: 'an ingrown toenail' },
     { term: 'Onychomycosis', def: 'a fungal infection of the nail' },
@@ -1779,7 +1781,8 @@ window.DECKS = [
     { term: 'Vitiligo', def: 'patchy loss of colour caused by destruction of the pigment-producing cells' },
     /* one condition, two names — an accepted alternative rather than a second
        card that would sit beside its own synonym in a quiz */
-    { term: 'Chloasma, melasma', def: 'patchy darkening of the face during pregnancy, also called the mask of pregnancy' },
+    { term: 'Chloasma, melasma',
+      also: ['mask of pregnancy'], def: 'patchy darkening of the face during pregnancy, also called the mask of pregnancy' },
     { term: 'Lentigo', def: 'a flat brown spot on sun-exposed skin, commonly called an age spot or liver spot' },
     { term: 'Acanthosis nigricans', def: 'dark, velvety thickening in body folds, often linked to insulin resistance' },
 
@@ -1817,14 +1820,16 @@ window.DECKS = [
     { term: 'Abrasion', def: 'a scrape that removes the superficial layers' },
     { term: 'Fissure', def: 'a groove or crack-like break' },
     { term: 'Laceration', def: 'a wound with torn, ragged edges, or an accidental cut' },
-    { term: 'Pressure ulcer', def: 'an open wound caused by prolonged pressure, also called a bedsore or decubitus ulcer' },
+    { term: 'Pressure ulcer',
+      also: ['bedsore', 'decubitus ulcer'], def: 'an open wound caused by prolonged pressure, also called a bedsore or decubitus ulcer' },
     { term: 'Needlestick injury', def: 'an accidental puncture from a used hypodermic needle' },
     { term: 'Ulcer', def: 'an open lesion with tissue loss around its edges' },
 
     /* ---- birthmarks ---- */
     { term: 'Nevus', def: 'a small dark growth developing from pigment cells — a mole' },
     { term: 'Slate grey nevus', def: 'a benign blue-grey birthmark' },
-    { term: 'Macular stains', def: 'flat, red, irregularly shaped birthmarks, also called salmon patches or angel kisses' },
+    { term: 'Macular stains',
+      also: ['salmon patches', 'angel kisses'], def: 'flat, red, irregularly shaped birthmarks, also called salmon patches or angel kisses' },
     { term: 'Capillary hemangioma', def: 'a raised, spongy red birthmark of clustered vessels, commonly called a strawberry mark' },
     { term: 'Port-wine stain', def: 'a flat vascular birthmark made of dilated capillaries' },
 
@@ -1879,12 +1884,15 @@ window.DECKS = [
     /* ---- dermatitis and erythema ---- */
     { term: 'Contact dermatitis', def: 'a localized rash from repeated exposure to an irritant' },
     { term: 'Intertrigo', def: 'inflammation caused by two surfaces rubbing together' },
-    { term: 'Eczema', def: 'an itchy inflammatory condition arising from an immune malfunction, also called atopic dermatitis' },
+    { term: 'Eczema',
+      also: ['atopic dermatitis'], def: 'an itchy inflammatory condition arising from an immune malfunction, also called atopic dermatitis' },
     { term: 'Exfoliative dermatitis', def: 'widespread scaling and shedding over the body' },
     { term: 'Pruritus', def: 'itching' },
-    { term: 'Erythema infectiosum', def: 'a viral infection producing a red, lace-like rash, also called fifth disease' },
+    { term: 'Erythema infectiosum',
+      also: ['fifth disease'], def: 'a viral infection producing a red, lace-like rash, also called fifth disease' },
     { term: 'Erythema multiforme', def: 'a generalized allergic reaction producing target-shaped lesions' },
-    { term: 'Erythema pernio', def: 'purple-red inflammation caused by cold exposure, also called chilblains' },
+    { term: 'Erythema pernio',
+      also: ['chilblains'], def: 'purple-red inflammation caused by cold exposure, also called chilblains' },
     { term: 'Erythroderma', def: 'abnormal redness covering the entire body surface' },
     { term: 'Exanthem', def: 'a widespread rash, most often seen in children' },
     { term: 'Sunburn', def: 'damage to skin cells from ultraviolet exposure' },
@@ -1895,7 +1903,8 @@ window.DECKS = [
     { term: 'Lipedema', def: 'a painful build-up of fat and fluid in the tissues beneath the surface' },
     { term: 'Systemic lupus erythematosus', def: 'an autoimmune disease producing a red scaly rash across the face and upper trunk' },
     { term: 'Psoriasis', def: 'red papules covered with silvery scales' },
-    { term: 'Rosacea', def: 'tiny red pimples and enlarged vessels across the face, sometimes called adult acne' },
+    { term: 'Rosacea',
+      also: ['adult acne'], def: 'tiny red pimples and enlarged vessels across the face, sometimes called adult acne' },
     { term: 'Rhinophyma', def: 'overgrowth of the tissues of the nose, usually in older men with advanced rosacea' },
     { term: 'Scleroderma', def: 'an autoimmune disorder in which connective tissues thicken and harden' },
     { term: 'Xeroderma', def: 'excessively dry skin' },
@@ -1942,7 +1951,8 @@ window.DECKS = [
     { term: 'Skin tags', def: 'small flesh-coloured or light-brown polyps hanging by a fine stalk' },
 
     /* ---- cancer and burns ---- */
-    { term: 'Actinic keratosis', def: 'a precancerous growth arising on sun-damaged skin, also called solar keratosis' },
+    { term: 'Actinic keratosis',
+      also: ['solar keratosis'], def: 'a precancerous growth arising on sun-damaged skin, also called solar keratosis' },
     { term: 'Basal cell carcinoma', def: 'a malignant tumour of the deepest layer of the epidermis' },
     { term: 'Squamous cell carcinoma', def: 'a malignancy beginning as a lesion that looks like a sore refusing to heal, often crusted' },
     { term: 'Malignant melanoma', def: 'the most serious skin cancer, arising in the pigment-producing cells' },
@@ -2516,7 +2526,8 @@ window.DECKS = [
   title: 'Ch. 5.2 — Epithelial Tissues',
   source: 'Chapter 5.2 — course notes',
   cards: [
-    { term: 'Free surface', def: 'the exposed side of an epithelium, facing either the outside or an open internal space',
+    { term: 'Free surface',
+      also: ['apical surface'], def: 'the exposed side of an epithelium, facing either the outside or an open internal space',
       note: 'Also called the apical surface.' },
     { term: 'Basement membrane', def: 'the thin extracellular layer anchoring an epithelium to the connective tissue beneath it' },
     { fact: true, term: 'How epithelium is fed without blood vessels',
@@ -2607,7 +2618,8 @@ window.DECKS = [
     { term: 'Simple gland', def: 'one whose duct runs to the surface without branching on the way' },
     { term: 'Compound gland', def: 'one whose duct branches repeatedly before it reaches the secretory portion' },
     { term: 'Tubular gland', def: 'one whose secretory portion is an epithelium-lined tube' },
-    { term: 'Alveolar gland', def: 'one whose secretory portion swells into saclike dilations',
+    { term: 'Alveolar gland',
+      also: ['acinar gland'], def: 'one whose secretory portion swells into saclike dilations',
       note: 'Also called an acinar gland.' },
     { term: 'Simple tubular gland', def: 'a straight tube opening directly onto the surface — the intestinal glands of the small intestine' },
     { term: 'Simple branched tubular gland', def: 'a branched tube whose duct is short or absent altogether — the gastric glands' },
@@ -2615,7 +2627,8 @@ window.DECKS = [
     { term: 'Simple branched alveolar gland', def: 'one whose secretory portions swell into saclike compartments along the duct — the sebaceous glands of the skin' },
     { term: 'Compound tubular gland', def: 'one whose secretory tubules extend from branches that combine into a single duct — the bulbourethral glands' },
     { term: 'Compound alveolar gland', def: 'one built of irregularly branched tubules carrying many saclike outgrowths — the mammary glands' },
-    { term: 'Merocrine glands', def: 'those releasing a fluid product through the cell membrane by exocytosis, the cell itself staying intact',
+    { term: 'Merocrine glands',
+      also: ['eccrine glands'], def: 'those releasing a fluid product through the cell membrane by exocytosis, the cell itself staying intact',
       note: 'Also called eccrine glands. Salivary, pancreatic and sweat glands. Most secretory cells work this way.' },
     { term: 'Apocrine glands', def: 'those that pinch off part of the cell body along with the product — the mammary glands and the wax glands of the ear canal' },
     { term: 'Holocrine glands', def: 'those releasing whole cells, which then burst to liberate what they held — the sebaceous glands of the skin' },
@@ -2661,14 +2674,17 @@ window.DECKS = [
     { term: 'Wandering cells', def: 'the connective tissue cells that appear only temporarily, in response to injury or infection — chiefly macrophages' },
     { term: 'Fibroblasts', def: 'the large star-shaped cells, commonest of the fixed cells, that secrete the fibres of the matrix',
       note: 'They multiply and step up fibre production after an injury, and they build the scar tissue that replaces damaged muscle after a heart attack.' },
-    { term: 'Macrophages', def: 'the wandering scavengers that clear foreign particles by engulfing them and defend against infection',
+    { term: 'Macrophages',
+      also: ['histiocytes'], def: 'the wandering scavengers that clear foreign particles by engulfing them and defend against infection',
       note: 'Also called histiocytes. Usually attached to fibres, but able to detach and move.' },
     { term: 'Mast cells', def: 'the large fixed cells scattered through connective tissue, usually close to blood vessels, that release heparin and histamine' },
     { term: 'Heparin', def: 'the compound released by mast cells that stops blood from clotting' },
     { term: 'Histamine', def: 'the compound released by mast cells that drives the inflammatory response' },
-    { term: 'Collagen fibres', def: 'thick threads of the protein that gives the body most of its structure — enormously strong under a pull, only slightly stretchy, and the bulk of ligaments and tendons',
+    { term: 'Collagen fibres',
+      also: ['white fibres'], def: 'thick threads of the protein that gives the body most of its structure — enormously strong under a pull, only slightly stretchy, and the bulk of ligaments and tendons',
       note: 'Also called white fibres.' },
-    { term: 'Elastic fibres', def: 'branching threads of elastin that stretch and spring back, weaker than collagen, found in the vocal cords and airways',
+    { term: 'Elastic fibres',
+      also: ['yellow fibres'], def: 'branching threads of elastin that stretch and spring back, weaker than collagen, found in the vocal cords and airways',
       note: 'Also called yellow fibres.' },
     { term: 'Reticular fibres', def: 'thin branching threads of collagen forming delicate supporting networks in the spleen and liver' },
     { term: 'Areolar connective tissue', def: 'thin delicate membrane of mostly fibroblasts in a gel-like ground substance, sitting in the subcutaneous layer and beneath most epithelia, which it nourishes' },
@@ -2698,7 +2714,8 @@ window.DECKS = [
     { term: 'Hyaline cartilage', def: 'the commonest kind, with fine collagen fibres — the ends of bones at joints, the nose, the respiratory passages and the embryonic skeleton' },
     { term: 'Elastic cartilage', def: 'the flexible kind, carrying elastic fibres in its matrix — the external ear and part of the larynx' },
     { term: 'Fibrocartilage', def: 'the toughest kind, packed with collagen and acting as a shock absorber — the intervertebral discs and the pads of the knee and pelvis' },
-    { term: 'Bone', def: 'the most rigid connective tissue, its solid matrix of mineral salts and collagen supporting and protecting, producing blood cells, storing calcium and anchoring muscles',
+    { term: 'Bone',
+      also: ['osseous tissue'], def: 'the most rigid connective tissue, its solid matrix of mineral salts and collagen supporting and protecting, producing blood cells, storing calcium and anchoring muscles',
       note: 'Also called osseous tissue. Comes in compact and spongy forms.' },
     { term: 'Osteocytes', def: 'bone cells, each occupying a lacuna within the solid matrix' },
     { term: 'Osteon', def: 'the cylindrical unit of compact bone — rings of matrix around a central canal, with the cells between them' },
@@ -2809,7 +2826,8 @@ window.DECKS = [
     { fact: true, term: 'The two layers of the skin', def: 'the epidermis on the outside and the dermis beneath it' },
     { term: 'Epidermis', def: 'the outer layer, built of stratified squamous epithelium and carrying no blood vessels of its own' },
     { term: 'Dermis', def: 'the inner layer, thicker than the one above, holding connective tissue, muscle, blood and nervous tissue' },
-    { term: 'Subcutaneous layer', def: 'the insulating layer of areolar and adipose tissue beneath the skin, carrying the vessels that supply it',
+    { term: 'Subcutaneous layer',
+      also: ['hypodermis'], def: 'the insulating layer of areolar and adipose tissue beneath the skin, carrying the vessels that supply it',
       note: 'Also called the hypodermis. Not counted as part of the skin itself.' },
     { term: 'Stratum basale', def: 'the deepest epidermal layer — a single row of dividing cuboidal or columnar cells, and where the pigment cells live' },
     { term: 'Stratum spinosum', def: 'the many-layered stratum above the deepest, its cells holding large oval nuclei and beginning to build keratin' },
@@ -2821,9 +2839,11 @@ window.DECKS = [
     { term: 'Dermal papillae', def: 'the projections between the ridges above them, which form fingerprints' },
     { term: 'Papillary layer', def: 'the thinner, superficial half of the dermis, made of areolar connective tissue' },
     { term: 'Reticular layer', def: 'the thicker, deeper half of the dermis, made of dense irregular connective tissue' },
-    { term: 'Lamellated corpuscles', def: 'the dermal receptors that register pressure',
+    { term: 'Lamellated corpuscles',
+      also: ['Pacinian corpuscles'], def: 'the dermal receptors that register pressure',
       note: 'Also called Pacinian corpuscles.' },
-    { term: 'Tactile corpuscles', def: 'the dermal receptors that register light touch',
+    { term: 'Tactile corpuscles',
+      also: ['Meissner’s corpuscles', 'Meissner\'s corpuscles'], def: 'the dermal receptors that register light touch',
       note: 'Also called Meissner’s corpuscles.' },
     { term: 'Intradermal injection', def: 'an injection given into the skin itself' },
     { term: 'Subcutaneous injection', def: 'an injection given through a hollow needle into the fatty layer beneath the skin',
@@ -2860,9 +2880,11 @@ window.DECKS = [
     { term: 'Melanocytes', def: 'the pigment-producing cells of the deepest epidermal layer, whose product is passed to neighbouring cells to shield their DNA' },
     { term: 'Eumelanin', def: 'the brownish-black pigment of the epidermis' },
     { term: 'Pheomelanin', def: 'the reddish-yellow pigment found in certain areas' },
-    { term: 'Dendritic cells', def: 'phagocytes sitting in the spiny stratum, defending the skin and the tissue beneath it from infection',
+    { term: 'Dendritic cells',
+      also: ['Langerhans cells'], def: 'phagocytes sitting in the spiny stratum, defending the skin and the tissue beneath it from infection',
       note: 'Also called Langerhans cells.' },
-    { term: 'Tactile cells', def: 'sensory receptors in the deepest stratum that register light touch, working with nerve endings in the layer below',
+    { term: 'Tactile cells',
+      also: ['Merkel cells'], def: 'sensory receptors in the deepest stratum that register light touch, working with nerve endings in the layer below',
       note: 'Also called Merkel cells.' },
     { fact: true, term: 'Why people differ in skin colour',
       def: 'not the NUMBER of pigment cells, which is the same in everyone, but how much pigment they make and how it is distributed — under genetic control' },
@@ -2874,7 +2896,8 @@ window.DECKS = [
     { term: 'Corns', def: 'the keratinized conical masses that form on the toes' },
     { term: 'Psoriasis', def: 'the chronic disease in which epidermal cells divide about seven times faster than normal, leaving bright red patches under silvery scales',
       note: 'The scales are the excess keratinized cells. Treated with drugs that block tumor necrosis factor, an inflammatory protein.' },
-    { term: 'Pressure ulcer', def: 'the breakdown that follows when body weight presses skin against a surface long enough to cut off its blood supply, killing the tissue',
+    { term: 'Pressure ulcer',
+      also: ['decubitus ulcer', 'bedsore'], def: 'the breakdown that follows when body weight presses skin against a surface long enough to cut off its blood supply, killing the tissue',
       note: 'Also called a decubitus ulcer or bedsore. Forms over bony points — hip, heel, elbow, shoulder. Prevented by shifting position often, massaging those areas, motorised beds, clean skin, good diet and not smoking.' }
   ],
   questions: [
@@ -2914,7 +2937,8 @@ window.DECKS = [
       def: 'the palms, the soles, the lips, the nipples and parts of the external reproductive organs' },
     { term: 'Sebaceous glands', def: 'holocrine glands beside the hair follicles, producing an oily mix of fat and cell debris that keeps hair and skin soft and waterproof',
       note: 'Absent from the palms and soles. Excess output is what produces acne.' },
-    { term: 'Eccrine glands', def: 'the most numerous sweat glands, opening onto the surface through pores and responding to a rise in body temperature',
+    { term: 'Eccrine glands',
+      also: ['merocrine glands'], def: 'the most numerous sweat glands, opening onto the surface through pores and responding to a rise in body temperature',
       note: 'Also called merocrine glands. Their secretion is mostly water with some salts and waste, and it is odourless.' },
     { term: 'Apocrine sweat glands', def: 'the sweat glands of the armpit and groin, opening into hair follicles and responding to emotion and pain rather than heat',
       note: 'Their secretions are the ones that develop an odour. Despite the name they secrete by exocytosis.' },
@@ -2999,7 +3023,8 @@ window.DECKS = [
     { term: 'Why the elderly tolerate cold poorly', fact: true, def: 'the subcutaneous fat layer thins, and that layer is the body’s insulation',
       note: 'The same loss makes bony points more prone to pressure ulcers.' },
     { term: 'Why the elderly overheat more easily', fact: true, def: 'sweat glands decline in number and activity, so evaporative cooling is less effective' },
-    { term: 'Age spots', def: 'the flat pigmented patches that appear on sun-exposed skin with age, from melanocytes clustering unevenly',
+    { term: 'Age spots',
+      also: ['liver spots'], def: 'the flat pigmented patches that appear on sun-exposed skin with age, from melanocytes clustering unevenly',
       note: 'Also called liver spots, though they have nothing to do with the liver.' },
     { term: 'Why wounds heal more slowly with age', fact: true, def: 'cell division slows, circulation to the skin decreases, and fewer immune cells are on hand' }
   ],
@@ -4153,7 +4178,8 @@ window.DECKS = [
   cards: [
     { term: 'Cicatrix', def: 'a normal scar resulting from the healing of a wound' },
     { term: 'Keloid', def: 'an abnormally raised or thickened scar that expands beyond the boundaries of the original incision' },
-    { term: 'Hemangioma', def: 'also called a strawberry birthmark — a soft, raised, pink or red vascular birthmark' },
+    { term: 'Hemangioma',
+      also: ['strawberry birthmark'], def: 'also called a strawberry birthmark — a soft, raised, pink or red vascular birthmark' },
     { term: 'Macule', def: 'a discolored flat spot less than 1 cm in diameter' },
     { term: 'Papule', def: 'a small, raised red lesion less than 0.5 cm in diameter that does not contain pus' },
     { term: 'Pustule, pimple', def: 'a small, circumscribed lesion containing pus' },
@@ -4193,7 +4219,8 @@ window.DECKS = [
     { term: 'Vitiligo', def: 'loss of colour in patches, caused by destruction of the melanocytes for unknown reasons' },
     { term: 'Albinism', def: 'a genetic condition characterized by a deficiency or absence of pigment' },
     { term: 'Chloasma, melasma', def: 'a pigmentation disorder characterized by brownish spots on the face' },
-    { term: 'Lipedema', def: 'also called painful fat syndrome — a chronic accumulation of fat and fluid in the tissues under the skin' },
+    { term: 'Lipedema',
+      also: ['painful fat syndrome'], def: 'also called painful fat syndrome — a chronic accumulation of fat and fluid in the tissues under the skin' },
 
     { term: 'Cellulitis', def: 'an acute, rapidly spreading bacterial infection within the connective tissues' },
     { term: 'Impetigo', def: 'a highly contagious bacterial skin infection characterized by pustules that crust and rupture' },
@@ -4216,10 +4243,12 @@ window.DECKS = [
     { term: 'Onychia, onychitis', def: 'inflammation of the bed of the nail that often results in loss of the nail' },
     { term: 'Paronychia', def: 'an acute or chronic infection of the skin fold around a nail' },
     { term: 'Onychocryptosis', def: 'the medical term for an ingrown toenail' },
-    { term: 'Koilonychia', def: 'also called spoon nail — a malformation in which the nail is concave' },
+    { term: 'Koilonychia',
+      also: ['spoon nail'], def: 'also called spoon nail — a malformation in which the nail is concave' },
 
     { term: 'Debridement', def: 'the removal of dirt, foreign objects, damaged tissue and cellular debris from a wound' },
-    { term: 'Rhytidectomy', def: 'also called a facelift — the surgical removal of excess skin and fat to eliminate wrinkles' },
+    { term: 'Rhytidectomy',
+      also: ['facelift'], def: 'also called a facelift — the surgical removal of excess skin and fat to eliminate wrinkles' },
     { term: 'Blepharoplasty', def: 'the surgical reduction of the upper and lower eyelids by removing sagging skin' },
     { term: 'Purulent', def: 'producing or containing pus' },
   ],
@@ -4743,8 +4772,17 @@ const normalize = s => String(s)
    counts — and so does the whole string. Without the whole string, a term like
    "Pores, channels & carriers" is a single name that happens to contain a
    comma, and typing it exactly as displayed would be marked wrong. */
+/* Every spelling that counts as this card's answer: the term itself, the parts
+   of a term that lists two names ("Cell body, soma"), and any `also` aliases.
+
+   `also` exists because a card's note would often say "Also called X" while
+   Recall went on marking X wrong — the app itself teaching a name it refused to
+   accept. Keeping aliases out of `term` matters: the term is what gets DISPLAYED
+   in flashcards, matching and the review sheet, and "Free surface, apical
+   surface, the exposed side..." reads as a card that cannot make up its mind. */
 const alternatives = card =>
-  [card.term, ...card.term.split(/,| or /i)].map(s => s.trim()).filter(Boolean);
+  [card.term, ...card.term.split(/,| or /i), ...(card.also || [])]
+    .map(s => s.trim()).filter(Boolean);
 
 /* A term ending in a category word that its own definition ALREADY supplies is
    redundant — "Hypogastric region" defined as "the region below the stomach".
