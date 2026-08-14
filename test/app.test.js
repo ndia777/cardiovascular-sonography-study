@@ -530,6 +530,32 @@ function suite(s, label, srcCss) {
       check(`[${label}] the current chapter is labelled as such`,
             /<span class="now">current<\/span>/.test(openHtml) || /class="badge now"/.test(openHtml),
             'nothing on screen says which chapter is current');
+
+      /* The marker breathes. Both placements have to carry it — the chip on a
+         chapter heading and the badge on a bare deck card are the same signal,
+         and which one renders depends on how the chapter is laid out, so
+         animating only the one currently on screen would look like a bug the
+         first time a chapter changed shape. */
+      const frames = /@keyframes\s+nowbreathe\s*\{([\s\S]*?)\n\s*\}/.exec(srcCss);
+      check(`[${label}] the current marker declares a breathing animation`, !!frames,
+            'no @keyframes nowbreathe');
+      const applied = /([^{}]*)\{[^{}]*animation:\s*nowbreathe\s+([\d.]+)s/.exec(srcCss);
+      check(`[${label}] both current markers breathe`,
+            !!applied && /\.badge\.now/.test(applied[1]) && /\.sect\s+\.now/.test(applied[1]),
+            applied ? `applied to: ${applied[1].trim()}` : 'animation never applied');
+      check(`[${label}] one breath takes about four seconds`,
+            !!applied && Math.abs(parseFloat(applied[2]) - 4) < 0.01,
+            applied && `${applied[2]}s`);
+      /* A full cycle, not a half one: dim at both ends and bright in the middle,
+         so 4s is one in-and-out rather than a fade that snaps back. */
+      check(`[${label}] the breath returns to where it started`,
+            !!frames && /0%\s*,\s*100%/.test(frames[1]) && /\b50%/.test(frames[1]),
+            frames && frames[1].replace(/\s+/g, ' ').trim());
+      /* Anything that moves forever must be switchable off. */
+      const reduced = /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([^{}]*\{[^{}]*\}\s*)*/g;
+      check(`[${label}] reduced motion stops the breathing`,
+            [...srcCss.matchAll(reduced)].some(m => /\.badge\.now[^{]*\{[^}]*animation:\s*none/.test(m[0])),
+            'the animation keeps running when the user asks for less motion');
     }
   }
 

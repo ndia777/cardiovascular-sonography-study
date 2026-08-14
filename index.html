@@ -108,6 +108,22 @@
   /* marks the chapter being worked on now, where the deck sits outside a
      section and so has no heading to carry the label */
   .badge.now{border-color:color-mix(in srgb,var(--accent) 50%,var(--line));color:var(--accent)}
+  /* The current-chapter marker breathes: one full cycle every four seconds,
+     border only. The text and background hold still, so the page has a slow
+     pulse at the one place worth looking first rather than something blinking
+     for attention.
+
+     Both markers animate — the chip on a chapter heading and the badge on a
+     bare deck card are the same signal in two placements, and only one of them
+     is on screen at a time depending on how the chapter renders. */
+  @keyframes nowbreathe{
+    0%,100%{border-color:color-mix(in srgb,var(--accent) 20%,var(--line))}
+    50%    {border-color:color-mix(in srgb,var(--accent) 90%,var(--line))}
+  }
+  .badge.now,.sect .now{animation:nowbreathe 4s ease-in-out infinite}
+  /* Anything that moves forever has to be switchable off — a slow pulse in the
+     corner of the eye is exactly what this setting exists for. */
+  @media (prefers-reduced-motion: reduce){ .badge.now,.sect .now{animation:none} }
   .deck h3{margin:0 0 6px;font-size:15.5px;font-weight:600;line-height:1.35}
   .deck .meta{font-size:12.5px;color:var(--dim)}
   .badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
