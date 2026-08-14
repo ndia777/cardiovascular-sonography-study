@@ -902,6 +902,8 @@ window.DECKS = [
    chapter, because being asked the way the exam will ask is the point. */
 {
   id: 'mt1-guide',
+  exam: true,
+  retired: true,
   group: 'Chapter 1',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
@@ -975,6 +977,8 @@ window.DECKS = [
 
 {
   id: 'mt2-guide',
+  exam: true,
+  retired: true,
   group: 'Chapter 2',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
@@ -1701,6 +1705,8 @@ window.DECKS = [
     ],
   },
   exam: true,
+  retired: true,
+  group: 'Chapter 3',
 
   added: "2026-07-30",
   course: "BIO101 · Anatomy & Physiology 1 Lecture",
@@ -1821,6 +1827,8 @@ window.DECKS = [
 {
   id: 'bio-ch4',
   exam: true,
+  retired: true,
+  group: 'Chapter 4',
 
   added: '2026-07-30',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
@@ -2435,7 +2443,7 @@ window.DECKS = [
   questions: [
     { q: 'Which layer of the epidermis is the only one whose cells divide?',
       choices: ['Stratum basale', 'Stratum corneum', 'Stratum granulosum', 'Stratum lucidum'], answer: 0,
-      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
+      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
 
     { q: 'Which stratum is found ONLY in thick skin?',
       choices: ['Stratum lucidum', 'Stratum spinosum', 'Stratum granulosum', 'Stratum basale'], answer: 0,
@@ -3701,6 +3709,11 @@ window.DECKS = [
 {
   id: 'bio-osmosis',
   exam: true,
+  retired: true,
+  /* Filed under Chapter 3 rather than standing alone: it is section 3.3 pulled
+     out for one test, and once that test is behind us it belongs with the
+     chapter it came from rather than holding a shelf of its own. */
+  group: 'Chapter 3',
   added: '2026-08-12',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Osmosis — Focused Review',

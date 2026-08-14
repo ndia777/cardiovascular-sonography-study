@@ -79,6 +79,11 @@
   .deck.exam{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
   .deck.exam:hover{border-color:var(--warn)}
   .badge.exam{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));color:var(--warn)}
+  /* A retired guide keeps the tag — it is still the instructor's study guide and
+     not a deck of notes — but at half strength, so the guide for the chapter
+     being studied now is the one that catches the eye. */
+  .badge.exam.past{border-color:color-mix(in srgb,var(--warn) 26%,var(--line));
+    color:color-mix(in srgb,var(--warn) 62%,var(--dim))}
   /* marks the chapter being worked on now, where the deck sits outside a
      section and so has no heading to carry the label */
   .badge.now{border-color:color-mix(in srgb,var(--accent) 50%,var(--line));color:var(--accent)}
@@ -1325,6 +1330,8 @@ window.DECKS = [
    chapter, because being asked the way the exam will ask is the point. */
 {
   id: 'mt1-guide',
+  exam: true,
+  retired: true,
   group: 'Chapter 1',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
@@ -1398,6 +1405,8 @@ window.DECKS = [
 
 {
   id: 'mt2-guide',
+  exam: true,
+  retired: true,
   group: 'Chapter 2',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
@@ -2124,6 +2133,8 @@ window.DECKS = [
     ],
   },
   exam: true,
+  retired: true,
+  group: 'Chapter 3',
 
   added: "2026-07-30",
   course: "BIO101 · Anatomy & Physiology 1 Lecture",
@@ -2244,6 +2255,8 @@ window.DECKS = [
 {
   id: 'bio-ch4',
   exam: true,
+  retired: true,
+  group: 'Chapter 4',
 
   added: '2026-07-30',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
@@ -2858,7 +2871,7 @@ window.DECKS = [
   questions: [
     { q: 'Which layer of the epidermis is the only one whose cells divide?',
       choices: ['Stratum basale', 'Stratum corneum', 'Stratum granulosum', 'Stratum lucidum'], answer: 0,
-      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
+      why: 'It is the deepest, closest to the dermal blood supply. Everything above it is on a one-way trip outward, flattening and dying as it goes.' },
 
     { q: 'Which stratum is found ONLY in thick skin?',
       choices: ['Stratum lucidum', 'Stratum spinosum', 'Stratum granulosum', 'Stratum basale'], answer: 0,
@@ -4124,6 +4137,11 @@ window.DECKS = [
 {
   id: 'bio-osmosis',
   exam: true,
+  retired: true,
+  /* Filed under Chapter 3 rather than standing alone: it is section 3.3 pulled
+     out for one test, and once that test is behind us it belongs with the
+     chapter it came from rather than holding a shelf of its own. */
+  group: 'Chapter 3',
   added: '2026-08-12',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Osmosis — Focused Review',
@@ -4323,6 +4341,22 @@ function go(screen, deck, mode){
   render();
 }
 
+/* `exam` marks a deck as an official study guide — the instructor's, not notes
+   worked up into one. `retired` says the chapter it belongs to is behind us.
+
+   The two were one flag until the flag had to mean opposite things at once.
+   `exam` was doing double duty: naming what a deck IS, and deciding that it
+   gets pinned to the top in a yellow border. Putting a chapter away meant
+   dropping the flag, which stripped the pinning as intended but also erased any
+   trace that the deck had ever been a study guide — leaving a finished guide
+   indistinguishable from a deck of notes.
+
+   So `exam` now answers only "is this a study guide", which never stops being
+   true, and `pinned` answers "does it lead its course", which stops the moment
+   the chapter is retired. A retired guide keeps its badge, loses the border,
+   and folds away with the chapter it came from. */
+const pinned = d => !!d.exam && !d.retired;
+
 /* ═══════════════ HOME ═══════════════ */
 function screenHome(){
   const q = (session && session.q || '').toLowerCase();
@@ -4334,18 +4368,25 @@ function screenHome(){
     d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
 
   /* Sections run alphabetically by SUBJECT, not by course code — "BIO101 ·
-     Anatomy & Physiology" files under A — but courses that HAVE a study guide
-     come first as a tier.
+     Anatomy & Physiology" files under A — but a course being actively studied
+     comes first as a tier.
 
-     That rule, not a hardcoded exception, is what puts Medical Procedures last
-     today: it is the only course with no study guide. Pinning it there by name
-     would go stale the moment it gets one, and would quietly stop making sense
-     to anyone reading this later. Alphabetical still decides everything within
-     a tier. */
+     "Actively studied" means it holds a study guide OR a chapter marked
+     current. Either alone is enough. Guides used to be the whole test, which
+     broke the moment a chapter was retired: retiring a finished guide is how a
+     chapter gets put away, so a course mid-chapter with its old guides retired
+     scored zero and sank below courses nobody is taking this week. The chapter
+     you are sitting in is the strongest signal there is that a course is live,
+     and it now counts for at least as much as a guide.
+
+     That rule, not a hardcoded exception, is what decides the order today.
+     Pinning a course by name would go stale the moment its status changed, and
+     would quietly stop making sense to anyone reading this later. Alphabetical
+     still decides everything within a tier. */
   const subject = c => (c.split('·')[1] || c).trim();
-  const hasGuide = c => list.some(d => d.course === c && d.exam);
+  const isLive = c => list.some(d => d.course === c && (pinned(d) || d.current));
   const courses = [...new Set(list.map(d => d.course))]
-    .sort((a, b) => (hasGuide(b) - hasGuide(a)) || subject(a).localeCompare(subject(b)));
+    .sort((a, b) => (isLive(b) - isLive(a)) || subject(a).localeCompare(subject(b)));
   let html = `
     <header class="top">
       <div>
@@ -4370,8 +4411,12 @@ function screenHome(){
   const openState = load().__open || {};
   courses.forEach(c => {
     const inCourse = list.filter(d => d.course === c).sort(byAdded);
-    const lead = inCourse.filter(d => d.exam);
-    const rest = inCourse.filter(d => !d.exam);
+    const lead = inCourse.filter(pinned);
+    const rest = inCourse.filter(d => !pinned(d));
+    /* Whether anything in this course is spotlighted. A pinned guide and a
+       current chapter both count as "something is already showing", which is
+       what the folds below defer to when deciding whether to open. */
+    const spotlit = rest.some(d => d.current);
     /* `bare` means the deck is rendered outside any section, so there is no
        heading above it to carry the "current" marker and the card must carry it
        itself. Inside a section the heading already says it, and repeating it on
@@ -4379,11 +4424,11 @@ function screenHome(){
     const deckCard = (d, bare) => {
       const p = progress[d.id] || {};
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
-      return `<button class="deck ${d.exam ? 'exam' : ''}" onclick="go('deck','${d.id}')">
+      return `<button class="deck ${pinned(d) ? 'exam' : ''}" onclick="go('deck','${d.id}')">
         <h3>${esc(d.title)}</h3>
         <div class="meta">${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         <div class="badges">
-          ${d.exam ? `<span class="badge exam">Study guide</span>` : ''}
+          ${d.exam ? `<span class="badge exam${d.retired ? ' past' : ''}">Study guide</span>` : ''}
           ${d.current && bare ? `<span class="badge now">Current</span>` : ''}
           ${p.recallBest != null ? `<span class="badge ${p.recallBest>=80?'on':''}">Recall ${p.recallBest}%</span>` : ''}
           ${p.quizBest != null ? `<span class="badge ${p.quizBest>=80?'on':''}">Quiz best ${p.quizBest}%</span>` : ''}
@@ -4431,32 +4476,47 @@ function screenHome(){
       });
 
     if (!groups.length){
-      html += fold(c, `${rest.length} more deck${rest.length > 1 ? 's' : ''}`, rest, !lead.length);
+      html += fold(c, `${rest.length} more deck${rest.length > 1 ? 's' : ''}`, rest,
+        spotlit || !lead.length);
       return;
     }
 
-    /* A chapter holding a single deck gets no disclosure of its own. There is
-       nothing to reveal, the heading would only repeat what the deck title
-       already says, and one card per stacked section wastes the width. They go
-       into one shared grid instead, so single-deck chapters sit side by side.
-       The "current" marker moves onto the deck card itself, so nothing is lost
-       by dropping the section heading. */
-    const singles = groups.filter(g => rest.filter(d => d.group === g).length === 1)
-      .map(g => rest.find(d => d.group === g));
+    /* A chapter holding a single deck normally gets no disclosure of its own.
+       There is nothing to reveal, the heading would only repeat what the deck
+       title already says, and one card per stacked section wastes the width.
+       They go into one shared grid instead, so single-deck chapters sit side by
+       side. The "current" marker moves onto the deck card itself, so nothing is
+       lost by dropping the section heading.
+
+       That holds right up until a chapter is spotlighted. From then on, a
+       finished one-deck chapter sitting bare beside the current one is louder
+       than the chapter actually being studied — being short is no reason to
+       stay in the front row. So once anything is current, only the current
+       chapters keep a bare card and every finished chapter folds, whether it
+       holds one deck or six. With nothing current the old rule stands. */
+    const alone = g => rest.filter(d => d.group === g).length === 1;
+    const live  = g => rest.some(d => d.group === g && d.current);
+    const bareGroups = groups.filter(g => alone(g) && (!spotlit || live(g)));
+
+    const singles = bareGroups.map(g => rest.find(d => d.group === g));
     if (singles.length)
       html += `<div class="decks">${singles.map(d => deckCard(d, true)).join('')}</div>`;
 
     /* A section opens on arrival when it is the chapter being worked on now, or
-       when nothing more important sits above it to defer to. Everything else
-       starts folded, which is the whole point of having the fold. */
-    groups.filter(g => rest.filter(d => d.group === g).length > 1).forEach(g => {
+       when nothing at all sits above it to defer to. That fallback used to test
+       the pinned guides alone, so a course whose spotlight came from a current
+       chapter instead threw every finished chapter open — the exact opposite of
+       putting them away. Everything else starts folded, which is the whole
+       point of having the fold. */
+    groups.filter(g => !bareGroups.includes(g)).forEach(g => {
       const inGroup = rest.filter(d => d.group === g);
-      html += fold(`${c}/${g}`, g, inGroup, inGroup.some(d => d.current) || !lead.length);
+      html += fold(`${c}/${g}`, g, inGroup, live(g) || (!lead.length && !spotlit));
     });
     /* anything left ungrouped still needs a home */
     const loose = rest.filter(d => !d.group);
     if (loose.length)
-      html += fold(`${c}/other`, `${loose.length} more deck${loose.length > 1 ? 's' : ''}`, loose, !lead.length);
+      html += fold(`${c}/other`, `${loose.length} more deck${loose.length > 1 ? 's' : ''}`, loose,
+        loose.some(d => d.current) || (!lead.length && !spotlit));
   });
 
   app.innerHTML = html;

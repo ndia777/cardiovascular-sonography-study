@@ -122,40 +122,52 @@ function suite(s, label, srcCss) {
   go('home');
   const renderedCourses = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
     .map(m => m[1].trim().replace(/&amp;/g, '&'));
-  const guided = c => DECKS.some(d => d.course === c && d.exam);
+  /* `exam` says a deck IS a study guide and never stops being true; `retired`
+     says its chapter is behind us. Only an unretired guide leads its course, so
+     everything about placement keys off this rather than off `exam`. */
+  const pin = d => !!d.exam && !d.retired;
+  const guided = c => DECKS.some(d => d.course === c && pin(d));
+  const hasCurrent = c => DECKS.some(d => d.course === c && !pin(d) && d.current);
+  /* A course is "live" if it holds a study guide OR a chapter marked current.
+     Either alone lifts it into the first tier. Guides used to be the whole test,
+     which broke when a course put its finished guides away while still being
+     mid-chapter — it scored zero and sank below courses nobody is taking. */
+  const live = c => guided(c) || hasCurrent(c);
   const subj = c => (c.split('·')[1] || c).trim();
-  /* Courses with a study guide form the first tier; alphabetical by subject
-     decides the rest and the order inside each tier. Derived from the deck data
-     rather than a fixed list, so it keeps holding when a course gains a guide. */
+  /* Live courses form the first tier; alphabetical by subject decides the rest
+     and the order inside each tier. Derived from the deck data rather than a
+     fixed list, so it keeps holding as courses change status. */
   const expected = [...renderedCourses]
-    .sort((a, b) => (guided(b) - guided(a)) || subj(a).localeCompare(subj(b)));
-  check(`[${label}] study-guide courses lead, then alphabetical by subject`,
+    .sort((a, b) => (live(b) - live(a)) || subj(a).localeCompare(subj(b)));
+  check(`[${label}] live courses lead, then alphabetical by subject`,
         renderedCourses.length > 1 && JSON.stringify(renderedCourses) === JSON.stringify(expected),
         `rendered: ${renderedCourses.map(subj).join(' | ')}`);
-  /* The assertion above only proves the tier rule while some course lacks a
-     guide; once they all have one it silently degrades to "alphabetical". It
-     used to fail in that situation, which is a check that breaks when the
-     material improves. So prove the tiering directly instead: take the guide
-     away from one course, re-render, and confirm it drops below the courses
-     that still have one. That holds however the decks are flagged. */
-  const demoted = renderedCourses.find(guided);
-  const stillGuided = renderedCourses.filter(c => c !== demoted && guided(c));
-  if (demoted && stillGuided.length) {
-    const stripped = DECKS.filter(d => d.course === demoted && d.exam);
-    stripped.forEach(d => { d.exam = false; });
+  /* The assertion above only proves the tier rule while some course is dormant;
+     once they are all live it silently degrades to "alphabetical". It used to
+     fail in that situation, which is a check that breaks when the material
+     improves. So prove the tiering directly instead: take BOTH signals away
+     from one course, re-render, and confirm it drops below the ones that keep
+     them. Stripping only the guide would no longer demote anything, because a
+     current chapter holds the course up on its own — which is the point. */
+  const demoted = renderedCourses.find(live);
+  const stillLive = renderedCourses.filter(c => c !== demoted && live(c));
+  if (demoted && stillLive.length) {
+    const stripped = DECKS.filter(d => d.course === demoted && (d.exam || d.current));
+    const was = stripped.map(d => [d.exam, d.current]);
+    stripped.forEach(d => { d.exam = false; d.current = false; });
     go('home');
     const after = [...s.__app.innerHTML.matchAll(/class="coursehead">([^<]+)</g)]
       .map(m => m[1].trim().replace(/&amp;/g, '&'));
-    stripped.forEach(d => { d.exam = true; });   // restore before asserting
+    stripped.forEach((d, i) => { d.exam = was[i][0]; d.current = was[i][1]; });  // restore first
     go('home');
 
-    const lastGuided = Math.max(...stillGuided.map(c => after.indexOf(c)));
-    check(`[${label}] a course that loses its guide falls below those that keep one`,
-          after.indexOf(demoted) > lastGuided && lastGuided >= 0,
-          `with ${subj(demoted)} unguided the order was: ${after.map(subj).join(' | ')}`);
+    const lastLive = Math.max(...stillLive.map(c => after.indexOf(c)));
+    check(`[${label}] a course that goes dormant falls below those still live`,
+          after.indexOf(demoted) > lastLive && lastLive >= 0,
+          `with ${subj(demoted)} dormant the order was: ${after.map(subj).join(' | ')}`);
   } else {
     check(`[${label}] the tier rule can be exercised`, false,
-          'need at least two courses with a study guide to demote one and observe it');
+          'need at least two live courses to demote one and observe it');
   }
 
   /* Inside a section, decks run oldest-added first, so the list follows the
@@ -174,8 +186,13 @@ function suite(s, label, srcCss) {
        rest inside the fold. Chronological order holds WITHIN a grid — across
        the two it does not, because the study guides are deliberately promoted
        past older decks. So check each grid separately. */
+    /* Splitting each chunk at its first "</div>" used to cut the grid off after
+       ONE card — a deck card closes its own meta div before the grid ends — so
+       every grid came back holding a single deck and the two checks below never
+       compared anything. Splitting on the grid opener alone is enough: <h3>
+       appears only inside deck cards, and the next grid starts a new chunk. */
     const grids = html.split(/<div class="decks">/).slice(1)
-      .map(g => [...g.split('</div>')[0].matchAll(/<h3>([^<]+)<\/h3>/g)]
+      .map(g => [...g.matchAll(/<h3>([^<]+)<\/h3>/g)]
         .map(m => byTitle.get(m[1].replace(/&amp;/g, '&'))).filter(Boolean));
     check(`[${label}] the home screen renders deck grids`, grids.length > 1, `${grids.length} grids`);
     let broke = '', mixed = '';
@@ -183,9 +200,12 @@ function suite(s, label, srcCss) {
       for (let i = 1; i < g.length; i++)
         if (g[i].added < g[i - 1].added && !broke)
           broke = `a ${g[i].added} deck renders after a ${g[i - 1].added} one`;
-      /* a grid is either all study guides or none of them — never a mix */
-      if (g.length && g.some(d => d.exam) && g.some(d => !d.exam) && !mixed)
-        mixed = `grid mixes "${g.find(d => d.exam).title}" with "${g.find(d => !d.exam).title}"`;
+      /* A PINNED guide never shares a grid with anything else — it leads its
+         course on its own. A retired guide is different: it has gone back to
+         sitting with the chapter it belongs to, so finding it beside that
+         chapter's notes is correct, not a leak. */
+      if (g.length && g.some(pin) && g.some(d => !pin(d)) && !mixed)
+        mixed = `grid mixes pinned "${g.find(pin).title}" with "${g.find(d => !pin(d)).title}"`;
     }
     check(`[${label}] decks render oldest-added first within a grid`, !broke, broke);
     check(`[${label}] study-guide decks are not mixed in with the rest`, !mixed, mixed);
@@ -196,11 +216,19 @@ function suite(s, label, srcCss) {
        in there — an index comparison would pass if the fold markup moved. */
     const insideFolds = html.split('<details class="more"').slice(1)
       .map(f => f.split('</details>')[0]).join('\n');
-    const buried = DECKS.filter(d => d.exam)
+    const buried = DECKS.filter(pin)
       .filter(d => insideFolds.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
       .map(d => d.title);
-    check(`[${label}] no study-guide deck sits inside a collapsible fold`, !buried.length,
+    check(`[${label}] no pinned study guide sits inside a collapsible fold`, !buried.length,
           buried.join(', '));
+    /* The converse: a retired guide belongs inside the fold with its chapter.
+       Without this, dropping `retired` from the engine would sail through — the
+       check above only ever gets stricter when guides stop being retired. */
+    const loose = DECKS.filter(d => d.exam && d.retired)
+      .filter(d => !insideFolds.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
+      .map(d => d.title);
+    check(`[${label}] a retired study guide is folded away with its chapter`, !loose.length,
+          loose.join(', '));
 
     /* Every deck must still be reachable from the home screen — folded is fine,
        dropped is not. This is the check that catches a filtering slip turning
@@ -222,21 +250,64 @@ function suite(s, label, srcCss) {
           `${folds.filter(f => !/ open/.test(f)).length} of ${folds.length} stayed shut`);
     go('home');
 
-    /* A course with no study guide has nothing to defer to, so its sections are
-       open on arrival — the decks are simply visible, which is the whole point
-       of not burying the main class of the term. */
     const openHtml = s.__app.innerHTML;
-    let shut = '';
-    for (const c of renderedCourses.filter(x => !guided(x))) {
-      const sec = openHtml.split(`class="coursehead">${c.replace(/&/g, '&amp;')}<`)[1] || '';
-      const upto = sec.split('class="coursehead"')[0];
-      for (const f of upto.matchAll(/<details class="more"([^>]*)>[\s\S]*?<summary>.*?<\/span>([^<]*)</g))
-        if (!/ open/.test(f[1]) && !shut) shut = `"${f[2]}" in ${subj(c)} starts closed`;
+    /* Reads every fold rendered under one course heading, as [openFlag, title]. */
+    const foldsIn = (html, c) => {
+      const sec = (html.split(`class="coursehead">${c.replace(/&/g, '&amp;')}<`)[1] || '')
+        .split('class="coursehead"')[0];
+      return [...sec.matchAll(/<details class="more"([^>]*)>[\s\S]*?<summary>.*?<\/span>([^<]*)</g)]
+        .map(m => [/ open/.test(m[1]), m[2]]);
+    };
+
+    /* A course with nothing spotlighted — no guide, no current chapter — has
+       nothing to defer to, so its sections are open on arrival; the decks are
+       simply visible rather than buried behind a click.
+
+       Every course is spotlighted today, so scanning for a dormant one would
+       pass by finding nothing. Make one dormant instead and watch what happens.
+       This is the check that catches the fallback being keyed to guides alone,
+       which threw a spotlighted course's finished chapters open. */
+    {
+      const c = renderedCourses.find(x => DECKS.some(d => d.course === x && !pin(d) && d.group));
+      const flagged = DECKS.filter(d => d.course === c && (d.exam || d.current));
+      const was = flagged.map(d => [d.exam, d.current]);
+      flagged.forEach(d => { d.exam = false; d.current = false; });
+      go('home');
+      const dormant = foldsIn(s.__app.innerHTML, c);
+      flagged.forEach((d, i) => { d.exam = was[i][0]; d.current = was[i][1]; });
+      go('home');
+
+      const closed = dormant.filter(([open]) => !open).map(([, t]) => t);
+      check(`[${label}] a course with nothing spotlighted opens its sections`,
+            dormant.length > 0 && !closed.length,
+            dormant.length ? `${closed.join(', ')} stayed shut in ${subj(c)}` :
+                             `${subj(c)} rendered no folds to check`);
     }
-    check(`[${label}] a course without study guides opens its sections by default`, !shut, shut);
+
+    /* The converse, and the reason the spotlight exists: once a chapter is
+       marked current, the finished chapters go away. The current one opens,
+       every other fold in that course starts closed. */
+    {
+      let wrong = '';
+      for (const c of renderedCourses.filter(hasCurrent)) {
+        const groupsNow = new Set(DECKS.filter(d => d.course === c && !pin(d) && d.current)
+          .map(d => d.group));
+        for (const [open, title] of foldsIn(openHtml, c)) {
+          /* longest-prefix match: "Chapter 1" is a prefix of "Chapter 12" */
+          const g = [...new Set(DECKS.filter(d => d.course === c && !pin(d) && d.group)
+            .map(d => d.group))].filter(x => title.startsWith(x))
+            .sort((a, b) => b.length - a.length)[0];
+          if (!g) continue;
+          if (groupsNow.has(g) && !open && !wrong) wrong = `current "${g}" starts closed in ${subj(c)}`;
+          if (!groupsNow.has(g) && open && !wrong) wrong = `finished "${g}" starts open in ${subj(c)}`;
+        }
+      }
+      check(`[${label}] a spotlighted course opens the current chapter and folds the rest`,
+            !wrong, wrong);
+    }
 
     /* and those sections are named by subject rather than being one long run */
-    const grouped = DECKS.filter(d => !d.exam && d.group);
+    const grouped = DECKS.filter(d => !pin(d) && d.group);
     if (grouped.length) {
       /* Only chapters holding more than one deck get a section of their own. A
          single-deck chapter is rendered bare, because a heading would repeat
@@ -260,11 +331,11 @@ function suite(s, label, srcCss) {
       for (const c of renderedCourses) {
         const sec = (openHtml.split(`class="coursehead">${c.replace(/&/g, '&amp;')}<`)[1] || '')
           .split('class="coursehead"')[0];
-        const inCourse = [...new Set(DECKS.filter(d => d.course === c && !d.exam && d.group)
+        const inCourse = [...new Set(DECKS.filter(d => d.course === c && !pin(d) && d.group)
           .map(d => d.group))];
         const groupOf = t => inCourse.filter(g => t.startsWith(g))
           .sort((a, b) => b.length - a.length)[0];
-        const isNow = g => DECKS.some(d => d.course === c && d.group === g && !d.exam && d.current);
+        const isNow = g => DECKS.some(d => d.course === c && d.group === g && !pin(d) && d.current);
 
         const order = [...sec.matchAll(/<summary>([\s\S]*?)<\/summary>/g)]
           .map(m => groupOf(m[1].replace(/<[^>]*>/g, '').trim()))
@@ -277,17 +348,29 @@ function suite(s, label, srcCss) {
       check(`[${label}] the current chapter's section leads its course`,
             !misordered.length, misordered.join('\n      '));
 
-      const singles = [...new Set(grouped.map(d => d.group))]
-        .filter(g => grouped.filter(d => d.group === g).length === 1);
-      const headed = singles.filter(g => summaries.some(t => t.startsWith(g)));
-      check(`[${label}] single-deck chapters get no section of their own`, !headed.length,
-            `${headed.join(', ')} rendered a heading for one deck`);
+      /* A one-deck chapter normally renders bare — a heading would repeat what
+         the deck title already says. But that only holds until its course
+         spotlights a chapter: after that a finished one-deck chapter sitting
+         bare beside the current one is louder than the chapter being studied,
+         so it folds like any other finished chapter. Being short is not a
+         reason to stay in the front row. */
+      const soloOf = d => grouped.filter(x => x.group === d.group && x.course === d.course).length === 1;
+      const bare = grouped.filter(d => soloOf(d) && (!hasCurrent(d.course) || d.current));
+      const sunk = grouped.filter(d => soloOf(d) && hasCurrent(d.course) && !d.current);
+
+      const headed = bare.filter(d => summaries.some(t => t.startsWith(d.group)));
+      check(`[${label}] a bare single-deck chapter gets no section of its own`, !headed.length,
+            `${headed.map(d => d.group).join(', ')} rendered a heading for one deck`);
+      const unsunk = sunk.filter(d => !summaries.some(t => t.startsWith(d.group)));
+      check(`[${label}] a finished single-deck chapter folds once something is current`,
+            !unsunk.length,
+            `${unsunk.map(d => `${d.group} (${subj(d.course)})`).join(', ')} still renders bare`);
       /* And they share a grid, so they sit beside each other rather than stacked.
          Test it by looking for a container boundary BETWEEN the two — a deck card
          has its own </div> from the badges row, so splitting on that would cut
          the grid short and report a false failure. */
-      if (singles.length > 1) {
-        const solo = singles.map(g => grouped.find(d => d.group === g).title);
+      if (bare.length > 1) {
+        const solo = bare.map(d => d.title);
         const at = solo.map(t => openHtml.indexOf(`<h3>${t.replace(/&/g, '&amp;')}</h3>`)).sort((a, b) => a - b);
         const between = openHtml.slice(at[0], at[at.length - 1]);
         const split = /<div class="decks">|<details class="more"|class="coursehead"/.exec(between);
@@ -297,7 +380,7 @@ function suite(s, label, srcCss) {
       /* every deck in a grouped course must carry a group, or it silently
          lands in a catch-all section nobody intended */
       const courses = [...new Set(grouped.map(d => d.course))];
-      const ungrouped = DECKS.filter(d => courses.includes(d.course) && !d.exam && !d.group);
+      const ungrouped = DECKS.filter(d => courses.includes(d.course) && !pin(d) && !d.group);
       check(`[${label}] no deck is left out of its course's grouping`,
             !ungrouped.length, ungrouped.map(d => d.id).join(', '));
     }
@@ -376,13 +459,25 @@ function suite(s, label, srcCss) {
       const deck = DECKS.find(d => d.title === c.title);
       if (!deck) continue;
       const styled = /\bexam\b/.test(c.cls);
-      if (!!deck.exam !== styled && !wrong)
-        wrong = `"${c.title}" ${deck.exam ? 'is flagged but renders unstyled' : 'renders styled but is not flagged'}`;
+      if (pin(deck) !== styled && !wrong)
+        wrong = `"${c.title}" ${pin(deck) ? 'should carry the exam border but renders unstyled'
+                                          : 'renders with the exam border but should not'}`;
     }
-    check(`[${label}] study-guide decks render with the exam border`, !wrong, wrong);
-    check(`[${label}] the border is paired with a readable label`,
-          (html.match(/class="badge exam">Study guide</g) || []).length === marked.length,
+    check(`[${label}] only a live study guide renders with the exam border`, !wrong, wrong);
+
+    /* The tag, unlike the border, never goes away. A retired guide is still the
+       instructor's study guide rather than a deck of notes worked up into one,
+       and that distinction is the reason to keep the label after the chapter is
+       behind us — the border is about what to study now, the tag about what a
+       deck IS. Matching "badge exam" loosely covers the muted variant too. */
+    check(`[${label}] every study guide keeps a readable label`,
+          (html.match(/class="badge exam[^"]*">Study guide</g) || []).length === marked.length,
           'colour alone would not reach a colour-blind reader');
+    /* and the retired ones are visibly the quieter of the two */
+    const past = DECKS.filter(d => d.exam && d.retired);
+    check(`[${label}] a retired guide's label is muted`,
+          (html.match(/class="badge exam past">Study guide</g) || []).length === past.length,
+          `${past.length} retired guide(s) should render the muted tag`);
   }
 
   /* The review sheet lists terms alphabetically, ignoring leading punctuation.
