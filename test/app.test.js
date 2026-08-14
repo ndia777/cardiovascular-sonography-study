@@ -852,6 +852,85 @@ function suite(s, label, srcCss) {
     check(`[${label}] no distractor is close enough to be arguable`, !tooClose, tooClose);
   }
 
+  /* Score colour. The design promise is that a badge never looks worse for a
+     higher score — the failure mode of per-band gradients, where 79 is the
+     brightest amber and 80 the darkest green. Check the ramp itself rather than
+     a handful of samples. */
+  {
+    const scoreHue = s.$('typeof scoreHue === "function" ? scoreHue : null');
+    const scoreBadge = s.$('typeof scoreBadge === "function" ? scoreBadge : null');
+    check(`[${label}] the score colour ramp is reachable`, !!scoreHue && !!scoreBadge);
+    if (scoreHue && scoreBadge) {
+      let backwards = '';
+      for (let i = 0; i < 1000; i++) {
+        const a = scoreHue(i / 10), b = scoreHue((i + 1) / 10);
+        if (b < a - 1e-9 && !backwards)
+          backwards = `${(i / 10).toFixed(1)}% is hue ${a.toFixed(1)} but ${
+            ((i + 1) / 10).toFixed(1)}% is ${b.toFixed(1)}`;
+      }
+      check(`[${label}] a higher score never gets a worse colour`, !backwards, backwards);
+
+      /* The letter-grade thresholds have to land in the right family, or the
+         scale is smooth but says the wrong thing. Hue rises red -> green. */
+      const band = (lo, hi, want, name) => {
+        const h = scoreHue(lo);
+        check(`[${label}] ${name} sits in the right colour range`,
+              h >= want[0] && h <= want[1], `${lo}% is hue ${h.toFixed(1)}, wanted ${want.join('-')}`);
+        return hi;
+      };
+      band(50, 60, [20, 48], 'a failing score');      /* red */
+      band(65, 70, [48, 80], 'a D');                  /* orange */
+      band(75, 80, [78, 112], 'a C');                 /* amber */
+      band(85, 90, [112, 150], 'a B');                /* yellow-green */
+      band(95, 100, [148, 160], 'an A');              /* green */
+      check(`[${label}] the ramp is clamped at both ends`,
+            scoreHue(-40) === scoreHue(0) && scoreHue(140) === scoreHue(100));
+
+      /* A badge modifier must not collide with a class that already means
+         something else. "badge score" picked up `.score`, the results screen's
+         big centred number — 34px of padding and a 54px font — and every check
+         here still passed, because none of them can see layout. Compare the
+         names instead: a modifier used on a badge must have no bare rule of its
+         own, only rules qualified by .badge. */
+      /* Seed a score and a match time first. Without them neither badge
+         renders, and this check quietly inspected a page that contained none of
+         the classes it exists to police — it passed with the collision put back
+         deliberately. Restore the store afterwards. */
+      const snap = s.$('load')();
+      const probe = DECKS.find(d => d.cards.length);
+      s.$('record')(probe.id, { recallBest: 72, quizBest: 91, matchBest: 40 });
+      go('home');
+      const mods = new Set();
+      for (const m of s.__app.innerHTML.matchAll(/class="badge ([^"]+)"/g))
+        for (const t of m[1].trim().split(/\s+/)) if (t) mods.add(t);
+      check(`[${label}] the seeded score badge is on the page to be checked`,
+            mods.has('scored'), `saw modifiers: ${[...mods].join(', ')}`);
+      /* Only an UNQUALIFIED rule is dangerous: `.score{...}` matches any badge
+         carrying that modifier, while `.sect .now{...}` cannot reach one unless
+         the badge sits inside a .sect. So require the class to start a selector
+         rather than merely appear in one. */
+      const collide = [...mods].filter(t =>
+        new RegExp(`(^|[}\\n])\\s*\\.${t}\\s*[{,]`).test(srcCss));
+      check(`[${label}] badge modifiers do not collide with other classes`,
+            !collide.length,
+            collide.map(t => `.${t} is styled outside .badge`).join('; '));
+
+      /* Every percentage badge carries a hue; the match TIME must not, since
+         lower is better there and the same ramp would read backwards. */
+      const markup = scoreBadge('Recall', 72);
+      check(`[${label}] a score badge carries its hue and its number`,
+            /class="badge scored"/.test(markup) && /--sh:/.test(markup) && /72%/.test(markup),
+            markup);
+      const home = s.__app.innerHTML;
+      const timed = /<span class="badge[^"]*"[^>]*>Match \d+s<\/span>/.exec(home);
+      check(`[${label}] a match time renders to be checked`, !!timed, 'no match badge found');
+      check(`[${label}] the match time is not on the score scale`,
+            !timed || !/--sh:/.test(timed[0]), timed && timed[0]);
+      s.$('save')(snap);
+      go('home');
+    }
+  }
+
   /* Aliases. A card whose note says "Also called X" while Recall marks X wrong
      is the app teaching a name and then refusing it — which is exactly what it
      did for a term the course notes write as "free (apical) surface". Drive the

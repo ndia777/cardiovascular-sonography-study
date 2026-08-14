@@ -114,6 +114,20 @@
   .badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--card2);
     color:var(--dim);border:1px solid var(--line)}
   .badge.on{color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent)}
+  /* A score badge takes its hue from --sh, set per badge; everything else is
+     fixed here so the whole scale shares one weight and one saturation and
+     reads as a family. Chroma is kept low deliberately — this has to sit beside
+     the amber "Study guide" badge without either shouting.
+
+     If a browser has no oklch these three declarations are simply dropped and
+     the badge falls back to the plain one above, which is legible and correct,
+     only uncoloured. */
+  :root{ --s-l:.76; --s-c:.115; --s-border-l:.52; --s-bg-l:.26 }
+  html[data-theme="light"]{ --s-l:.46; --s-c:.115; --s-border-l:.70; --s-bg-l:.955 }
+  .badge.scored{
+    color:oklch(var(--s-l) var(--s-c) var(--sh));
+    border-color:oklch(var(--s-border-l) calc(var(--s-c) * .8) var(--sh));
+    background:oklch(var(--s-bg-l) calc(var(--s-c) * .45) var(--sh))}
 
   /* ---- deck menu ---- */
   .back{color:var(--dim);font-size:14px;margin-bottom:14px;display:inline-block}
@@ -518,6 +532,41 @@ function go(screen, deck, mode){
   render();
 }
 
+/* ---------- score colour ----------
+
+   A score badge is coloured by hue on the ordinary letter-grade scale: below 60
+   red, then 60 / 70 / 80 / 90 as the D, C, B and A thresholds.
+
+   The hue ramps CONTINUOUSLY between those anchors rather than each band having
+   its own gradient. Per-band gradients look right until you reach an edge: if 79
+   is the brightest amber and 80 the darkest green, then gaining a point makes
+   the badge look worse. Here the colour only ever improves as the score rises,
+   and the bands still read as distinct because the hue moves fastest as it
+   crosses each threshold.
+
+   Hue is the only thing that varies. Lightness and chroma are fixed per theme,
+   in oklch, where equal lightness actually looks equal — in hsl the same
+   lightness makes yellow glare and blue vanish, which is exactly the trap when
+   a scale runs red to green through amber. The endpoints are tuned to the
+   --bad and --good already in the palette, so these read as part of the theme
+   rather than a second set of colours competing with it.
+
+   Only percentages get this. The match time is in seconds and lower is better,
+   so the same ramp would run backwards. */
+const GRADE_ANCHORS = [[0, 25], [60, 48], [70, 78], [80, 112], [90, 150], [100, 156]];
+function scoreHue(pct){
+  const s = Math.max(0, Math.min(100, Number(pct) || 0));
+  for (let i = 1; i < GRADE_ANCHORS.length; i++){
+    const [s0, h0] = GRADE_ANCHORS[i - 1], [s1, h1] = GRADE_ANCHORS[i];
+    if (s <= s1) return h0 + (h1 - h0) * ((s - s0) / (s1 - s0));
+  }
+  return GRADE_ANCHORS[GRADE_ANCHORS.length - 1][1];
+}
+/* The number stays on the badge, so the colour is a second reading of the same
+   fact and never the only one — which is what makes a red/green scale safe. */
+const scoreBadge = (label, pct) =>
+  `<span class="badge scored" style="--sh:${scoreHue(pct).toFixed(1)}">${label} ${pct}%</span>`;
+
 /* Clears every score in one chapter, in two clicks.
 
    Two clicks rather than a confirm dialog: a dialog is a heavier interruption
@@ -665,12 +714,12 @@ function screenHome(){
         <div class="badges">
           ${d.exam ? `<span class="badge exam${d.retired ? ' past' : ''}">Study guide</span>` : ''}
           ${d.current && bare ? `<span class="badge now">Current</span>` : ''}
-          ${p.recallBest != null ? `<span class="badge ${p.recallBest>=80?'on':''}">Recall ${p.recallBest}%</span>` : ''}
-          ${p.quizBest != null ? `<span class="badge ${p.quizBest>=80?'on':''}">Quiz best ${p.quizBest}%</span>` : ''}
-          ${p.tfBest != null ? `<span class="badge ${p.tfBest>=80?'on':''}">T/F ${p.tfBest}%</span>` : ''}
-          ${p.traceBest != null ? `<span class="badge ${p.traceBest>=80?'on':''}">Rhythms ${p.traceBest}%</span>` : ''}
-          ${p.partsBest != null ? `<span class="badge ${p.partsBest>=80?'on':''}">Segments ${p.partsBest}%</span>` : ''}
-          ${p.figureBest != null ? `<span class="badge ${p.figureBest>=80?'on':''}">Diagram ${p.figureBest}%</span>` : ''}
+          ${p.recallBest != null ? scoreBadge('Recall', p.recallBest) : ''}
+          ${p.quizBest != null ? scoreBadge('Quiz best', p.quizBest) : ''}
+          ${p.tfBest != null ? scoreBadge('T/F', p.tfBest) : ''}
+          ${p.traceBest != null ? scoreBadge('Rhythms', p.traceBest) : ''}
+          ${p.partsBest != null ? scoreBadge('Segments', p.partsBest) : ''}
+          ${p.figureBest != null ? scoreBadge('Diagram', p.figureBest) : ''}
           ${p.matchBest != null ? `<span class="badge on">Match ${p.matchBest}s</span>` : ''}
           ${p.learned ? `<span class="badge on">${p.learned} learned</span>` : ''}
           ${!p.last ? `<span class="badge">Not started</span>` : ''}
