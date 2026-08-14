@@ -2452,6 +2452,17 @@ window.DECKS = [
     { term: 'Allograft', def: 'skin taken from another person as a TEMPORARY covering for a deep burn — it shrinks the wound, holds off infection and protects the tissue beneath while healing starts',
       note: 'Replaced later by an autograft, the patient’s own skin taken from areas that have healed.' },
     { term: 'Botox', def: 'the toxin from Clostridium botulinum — the bacterium behind a form of food poisoning — used to smooth facial wrinkles' },
+    /* ---- life-span changes: the "Aging Skin" heading in the course notes ---- */
+    { term: 'Why skin wrinkles and sags with age', fact: true, def: 'the dermis loses collagen and elastic fibres, so the skin thins and no longer springs back',
+      note: 'Sun exposure accelerates all of it — which is why the change shows first on the face, neck and hands.' },
+    { term: 'Why hair turns grey', fact: true, def: 'melanocytes die off and the ones remaining produce less melanin, so less pigment reaches the hair' },
+    { term: 'Why older skin is drier', fact: true, def: 'the sebaceous glands become less active, so less sebum reaches the surface' },
+    { term: 'Why the elderly tolerate cold poorly', fact: true, def: 'the subcutaneous fat layer thins, and that layer is the body’s insulation',
+      note: 'The same loss makes bony points more prone to pressure ulcers.' },
+    { term: 'Why the elderly overheat more easily', fact: true, def: 'sweat glands decline in number and activity, so evaporative cooling is less effective' },
+    { term: 'Age spots', def: 'the flat pigmented patches that appear on sun-exposed skin with age, from melanocytes clustering unevenly',
+      note: 'Also called liver spots, though they have nothing to do with the liver.' },
+    { term: 'Why wounds heal more slowly with age', fact: true, def: 'cell division slows, circulation to the skin decreases, and fewer immune cells are on hand' },
   ],
   questions: [
     { q: 'Which layer of the epidermis is the only one whose cells divide?',
