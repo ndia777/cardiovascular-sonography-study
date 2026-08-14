@@ -2074,12 +2074,12 @@ window.DECKS = [
 
     /* ---- the eight epithelia ---- */
     { term: 'Simple squamous epithelium', def: 'a single layer of thin flat cells, built for diffusion and filtration — the alveoli, capillary walls and the linings of blood and lymph vessels' },
-    { term: 'Simple cuboidal epithelium', def: 'a single layer of cube-shaped cells with round central nuclei, lining kidney tubules, thyroid follicles and the surface of the ovaries' },
+    { term: 'Simple cuboidal epithelium', def: 'a single layer of cube-shaped cells with round central nuclei, lining kidney tubules, thyroid follicles, the ducts of certain glands and the surface of the ovaries' },
     { term: 'Simple columnar epithelium', def: 'a single layer of tall cells lining the uterus, stomach and intestines, secreting digestive fluids and absorbing nutrients' },
     { term: 'Pseudostratified columnar epithelium', def: 'looks layered but is not — every cell reaches the basement membrane while the nuclei sit at different heights; lines the respiratory passages' },
     { term: 'Stratified squamous epithelium', def: 'many layers with the outermost flattened, forming the epidermis and lining the mouth, esophagus, vagina and anal canal' },
     { term: 'Stratified cuboidal epithelium', def: 'two or three layers of cube-shaped cells lining the ducts of the mammary, sweat and salivary glands and the pancreas' },
-    { term: 'Stratified columnar epithelium', def: 'several layers, tall cells on top and cube-shaped ones beneath, found in part of the male urethra' },
+    { term: 'Stratified columnar epithelium', def: 'several layers, tall cells on top and cube-shaped ones beneath, found in part of the male urethra and the larger ducts of excretory glands' },
     { term: 'Transitional epithelium', def: 'the stretchable lining of the bladder and ureters, bunched into several layers when relaxed and thinned out when the organ fills' },
 
     /* ---- glands ---- */
@@ -2176,6 +2176,13 @@ window.DECKS = [
 
     { term: 'Metaplasia', def: 'the replacement of one mature tissue by another — as in the airways of smokers, where the ciliated lining gives way to layers of flat cells',
       note: 'Protective but costly: the replacement has neither cilia nor mucus, so the airway loses the mechanism that sweeps debris out.' },
+    /* ---- the six gland types, from the table in the course notes ---- */
+    { term: 'Simple tubular gland', def: 'a straight tube opening directly onto the surface — the intestinal glands of the small intestine' },
+    { term: 'Simple branched tubular gland', def: 'a branched tube whose duct is short or absent altogether — the gastric glands' },
+    { term: 'Simple coiled tubular gland', def: 'a long coiled tube with a long duct — the sweat glands of the skin' },
+    { term: 'Simple branched alveolar gland', def: 'one whose secretory portions swell into saclike compartments along the duct — the sebaceous glands of the skin' },
+    { term: 'Compound tubular gland', def: 'one whose secretory tubules extend from branches that combine into a single duct — the bulbourethral glands' },
+    { term: 'Compound alveolar gland', def: 'one built of irregularly branched tubules carrying many saclike outgrowths — the mammary glands' },
   ],
   questions: [
     { q: 'Which tissue type has no blood vessels of its own?',
