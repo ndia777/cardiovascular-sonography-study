@@ -394,6 +394,72 @@ function suite(s, label, srcCss) {
         check(`[${label}] single-deck chapters share one grid`, at[0] >= 0 && !split,
               split ? `${solo.join(' / ')} are separated by ${split[0]}` : 'a title was not rendered');
       }
+      /* The per-chapter reset. Three things have to hold: it is absent when
+         there is nothing to clear, it names exactly the decks that DO have a
+         score, and it actually clears them without touching anything else.
+         Driven through the real handler and the real store, so this tests the
+         button rather than the markup that draws it. */
+      {
+        const record = s.$('record'), loadP = s.$('load'), saveP = s.$('save');
+        const resetScores = s.$('resetScores');
+        /* Run against an empty store and put the real one back afterwards —
+           other checks in this suite record progress of their own, and reading
+           their leftovers would make this pass or fail for the wrong reason. */
+        const snapshot = loadP();
+        saveP({});
+
+        /* a CURRENT multi-deck chapter, so its heading renders on arrival */
+        const target = DECKS.find(d => d.current && d.group &&
+          DECKS.filter(o => o.group === d.group && o.course === d.course && !pin(o)).length > 1);
+        const chapter = target
+          ? DECKS.filter(o => o.group === target.group && o.course === target.course && !pin(o))
+          : [];
+        const outside = DECKS.find(o => !chapter.includes(o) && o.cards.length);
+        check(`[${label}] a multi-deck current chapter exists to test the reset on`,
+              chapter.length > 1, `found ${chapter.length}`);
+
+        if (chapter.length > 1) {
+          go('home');
+          check(`[${label}] no reset is offered where there is nothing to clear`,
+                !/class="reset"/.test(s.__app.innerHTML),
+                'a reset control rendered against an empty store');
+
+          record(chapter[0].id, { recallBest: 70 });
+          record(chapter[1].id, { quizBest: 90 });
+          if (outside) record(outside.id, { recallBest: 55 });
+          go('home');
+
+          const sec = (s.__app.innerHTML
+            .split(`<div class="sect">${target.group.replace(/&/g, '&amp;')}`)[1] || '')
+            .split('</div>')[0];
+          const btn = /data-ids="([^"]*)"/.exec(sec);
+          const listed = btn ? btn[1].split(' ').filter(Boolean).sort() : [];
+          const expected = [chapter[0].id, chapter[1].id].sort();
+          check(`[${label}] a chapter with scores offers a reset`, !!btn,
+                'no reset control rendered after recording a score');
+          check(`[${label}] the reset names exactly the scored decks`,
+                JSON.stringify(listed) === JSON.stringify(expected),
+                `listed ${listed.join(', ')} — expected ${expected.join(', ')}`);
+
+          /* two clicks: the first arms, only the second clears */
+          const fake = { dataset: { ids: listed.join(' ') }, textContent: '',
+                         removeAttribute(){ delete this.dataset.armed; } };
+          resetScores(fake);
+          check(`[${label}] one click only arms the reset`,
+                !!loadP()[expected[0]], 'a single click already erased the score');
+          resetScores(fake);
+          const after = loadP();
+          check(`[${label}] the second click clears the chapter`,
+                expected.every(id => !after[id]),
+                expected.filter(id => after[id]).join(', ') + ' survived');
+          check(`[${label}] a reset leaves other decks alone`,
+                !outside || !!after[outside.id], `${outside && outside.id} was cleared too`);
+        }
+
+        saveP(snapshot);
+        go('home');
+      }
+
       /* every deck in a grouped course must carry a group, or it silently
          lands in a catch-all section nobody intended */
       const courses = [...new Set(grouped.map(d => d.course))];

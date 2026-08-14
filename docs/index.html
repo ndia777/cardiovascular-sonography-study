@@ -69,6 +69,19 @@
   .sect .now{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
     padding:2px 7px;border-radius:20px;color:var(--accent);
     border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line))}
+  /* Sits beside the chapter it clears, so what it applies to is never in doubt,
+     and stays borderless until hovered so it recedes next to the decks. */
+  .sect .reset{font-family:inherit;font-size:11px;font-weight:500;color:var(--dim);
+    background:transparent;border:1px solid transparent;border-radius:20px;
+    padding:2px 9px;cursor:pointer;
+    transition:color .15s ease,border-color .15s ease,background .15s ease}
+  .sect .reset:hover{color:var(--text);border-color:var(--line)}
+  .sect .reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  /* Armed. Red only at this point — the resting control is not a warning. */
+  .sect .reset[data-armed="1"]{color:var(--bad);
+    border-color:color-mix(in srgb,var(--bad) 55%,var(--line));
+    background:color-mix(in srgb,var(--bad) 12%,transparent)}
+  @media (prefers-reduced-motion: reduce){ .sect .reset{transition:none} }
   .pastwrap[hidden]{display:none}
   .decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
   /* Two grids can now sit directly on top of each other — the study guides and
@@ -4461,6 +4474,42 @@ function go(screen, deck, mode){
   render();
 }
 
+/* Clears every score in one chapter, in two clicks.
+
+   Two clicks rather than a confirm dialog: a dialog is a heavier interruption
+   than the action deserves, and it puts the destructive answer behind a button
+   that says "OK", which is the least descriptive word available. Arming the
+   control instead makes the second click say exactly what it does — and the
+   armed state disarms itself after a few seconds, so a control left armed and
+   forgotten cannot be triggered by a later, unrelated click.
+
+   Only the decks that HAVE a score are listed in data-ids, so this never
+   invents an entry for a deck that was never opened. */
+let armedReset = null;
+function disarmReset(){
+  if (!armedReset) return;
+  clearTimeout(armedReset.timer);
+  if (armedReset.btn.isConnected){
+    armedReset.btn.removeAttribute('data-armed');
+    armedReset.btn.textContent = 'Reset scores';
+  }
+  armedReset = null;
+}
+function resetScores(btn){
+  if (btn.dataset.armed !== '1'){
+    disarmReset();
+    btn.dataset.armed = '1';
+    btn.textContent = 'Erase scores?';
+    armedReset = { btn, timer: setTimeout(disarmReset, 5000) };
+    return;
+  }
+  disarmReset();
+  const s = load();
+  (btn.dataset.ids || '').split(' ').filter(Boolean).forEach(id => { delete s[id]; });
+  save(s);
+  render();
+}
+
 /* Shows or hides one finished chapter. The chip and the panel are wired
    together by aria-controls/aria-expanded, so a screen reader announces the
    chip as the expandable thing it is; this is what <details> used to give for
@@ -4641,16 +4690,28 @@ function screenHome(){
     if (bare.length)
       html += `<div class="decks">${bare.map(d => deckCard(d, true)).join('')}</div>`;
 
-    const sect = (title, now) => `<div class="sect">${esc(title)}${
-      now ? '<span class="now">current</span>' : ''}</div>`;
+    /* A chapter heading carries its own reset, because progress is per deck and
+       a chapter is now six of them — clearing a chapter one deck at a time is
+       the kind of chore that stops you doing it at all.
+
+       It only appears once there is something to clear, so an untouched chapter
+       shows no control and the row stays quiet. Nothing is offered that would
+       do nothing. */
+    const sect = (title, now, decks) => {
+      const ids = decks.filter(d => (progress[d.id] || {}).last).map(d => d.id);
+      return `<div class="sect">${esc(title)}${now ? '<span class="now">current</span>' : ''}${
+        ids.length ? `<button type="button" class="reset" data-ids="${ids.join(' ')}"
+          onclick="resetScores(this)">Reset scores</button>` : ''}</div>`;
+    };
 
     nowGroups.filter(g => inG(g).length > 1).forEach(g => {
-      html += sect(g, true) + `<div class="decks">${inG(g).map(d => deckCard(d, false)).join('')}</div>`;
+      html += sect(g, true, inG(g)) +
+        `<div class="decks">${inG(g).map(d => deckCard(d, false)).join('')}</div>`;
     });
 
     panels.forEach(p => {
       html += `<div class="pastwrap" id="${p.id}"${p.open ? '' : ' hidden'}>${
-        sect(p.label, false)}<div class="decks">${
+        sect(p.label, false, p.decks)}<div class="decks">${
         p.decks.map(d => deckCard(d, false)).join('')}</div></div>`;
     });
   });
