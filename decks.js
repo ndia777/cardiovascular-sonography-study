@@ -2066,11 +2066,11 @@ window.DECKS = [
     { term: 'Keratinization', def: 'the process where cells pushed toward the surface fill with protein, harden and die, forming a dry, tough, waterproof covering' },
 
     /* ---- shapes and layers ---- */
-    { term: 'Squamous', def: 'flattened and scale-like — the thinnest of the three cell shapes' },
-    { term: 'Cuboidal', def: 'cube-shaped, roughly as tall as it is wide' },
-    { term: 'Columnar', def: 'elongated, taller than it is wide' },
-    { term: 'Simple', def: 'one layer only, with every cell touching the basement membrane and reaching the free surface' },
-    { term: 'Stratified', def: 'two or more layers, where only the deepest touches the basement membrane and only the top reaches the free surface' },
+    { term: 'Squamous', def: 'a cell shape: flattened and scale-like, the thinnest of the three' },
+    { term: 'Cuboidal', def: 'a cell shape: cube-like, about as tall as it is wide' },
+    { term: 'Columnar', def: 'a cell shape: elongated, taller than it is wide' },
+    { term: 'Simple', def: 'a layering pattern: one layer only, every cell touching the basement membrane and reaching the free surface' },
+    { term: 'Stratified', def: 'a layering pattern: two or more layers, where only the deepest cells touch the basement membrane and only the topmost reach the free surface' },
 
     /* ---- the eight epithelia ---- */
     { term: 'Simple squamous epithelium', def: 'a single layer of thin flat cells, built for diffusion and filtration — the alveoli, capillary walls and the linings of blood and lymph vessels' },
