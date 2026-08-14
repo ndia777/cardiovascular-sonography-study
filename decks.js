@@ -2183,6 +2183,12 @@ window.DECKS = [
     { term: 'Simple branched alveolar gland', def: 'one whose secretory portions swell into saclike compartments along the duct — the sebaceous glands of the skin' },
     { term: 'Compound tubular gland', def: 'one whose secretory tubules extend from branches that combine into a single duct — the bulbourethral glands' },
     { term: 'Compound alveolar gland', def: 'one built of irregularly branched tubules carrying many saclike outgrowths — the mammary glands' },
+    /* ---- the framing the course notes use for connective and muscle tissue ---- */
+    { term: 'Fixed cells', def: 'the connective tissue cells that reside in the tissue for a long period — fibroblasts and mast cells' },
+    { term: 'Wandering cells', def: 'the connective tissue cells that appear only temporarily, in response to injury or infection — chiefly macrophages' },
+    { term: 'Muscle fibres', def: 'the elongated cells of muscle tissue, which shorten and thicken to pull on their attached ends' },
+    { term: 'Excitable', def: 'responding to stimulation — the property shared by muscle tissue and nervous tissue' },
+    { fact: true, term: 'How much of body weight is skeletal muscle', def: 'about 40 percent, with smooth and cardiac muscle together adding roughly another 10' },
   ],
   questions: [
     { q: 'Which tissue type has no blood vessels of its own?',
