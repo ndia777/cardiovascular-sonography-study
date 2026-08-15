@@ -3578,16 +3578,20 @@ window.DECKS = [
      which is exactly how "6 to 7 electrodes" ended up wrong in ekg-basics.
      Ordering and reasoning live in `questions` too: no term/definition shape. */
   cards: [
-    { term: 'Electrocardiograph',  def: 'a graphic representation of the heart’s electrical activity' },
+    { term: 'Electrocardiograph',
+      also: ['electrocardiogram', 'EKG', 'ECG'],
+      note: 'Strictly the -graph is the machine and the -gram is the tracing it produces. This definition describes the tracing.',  def: 'a graphic representation of the heart’s electrical activity' },
     { term: 'Right atrium',        def: 'the chamber deoxygenated blood enters first when it returns to the heart' },
     { term: 'P wave',              def: 'atrial depolarization' },
     { term: 'QRS complex',         def: 'ventricular depolarization' },
     { term: 'T wave',              def: 'ventricular repolarization' },
     { term: 'Electrical discharge', def: 'another term for depolarization' },
-    { term: 'SA node',             def: 'the body’s natural pacemaker' },
+    { term: 'SA node',
+      also: ['sinoatrial node', 'sinus node'],             def: 'the body’s natural pacemaker' },
     { term: 'Cardiac cycle',       def: 'one heartbeat' },
     { term: 'Cardioversion',       def: 'the procedure that turns a cardiac arrhythmia back into a normal sinus rhythm' },
-    { term: 'Normal sinus rhythm', def: 'an ECG reading within normal limits' },
+    { term: 'Normal sinus rhythm',
+      also: ['NSR'], def: 'an ECG reading within normal limits' },
 
     { term: 'Standard limb leads',           def: 'Lead I, Lead II and Lead III — bipolar, and recorded before the augmented ones' },
     { term: 'Unipolar leads',                def: 'what aVR, aVL and aVF are — each reads one electrode against a central reference point',
@@ -3608,18 +3612,23 @@ window.DECKS = [
       note: 'The review words this as skin being a “core conductor”. Poor is the fact — gel exists precisely because skin conducts badly — but expect the review’s wording on the paper.' },
     { term: 'Single-channel EKG',            def: 'the machine that records one lead at a time rather than several at once' },
 
-    { term: 'AC interference',     def: 'the artifact produced by electrical current in nearby equipment or wiring' },
+    { term: 'AC interference',
+      also: ['alternating current interference'],     def: 'the artifact produced by electrical current in nearby equipment or wiring' },
     { term: 'Wandering baseline',  def: 'the artifact that poor-quality electrolyte gel produces' },
     { term: 'Interrupted baseline',def: 'what appears on the tracing when the metal tip of a lead wire comes away from its electrode' },
 
     { term: 'Thallium stress test', def: 'the test requiring an injection of a radioactive substance' },
     { term: 'Femoral artery',       def: 'the vessel a catheter with a deflated balloon is threaded into for a coronary balloon angioplasty' },
-    { term: 'Coronary artery bypass', def: 'the surgery that takes a length of vein and grafts it onto the heart’s own vessels to carry blood past a blockage' },
-    { term: 'ICD', def: 'the implanted device that senses a dangerous rhythm and sends a small dose of electricity to restore a normal one',
+    { term: 'Coronary artery bypass',
+      also: ['CABG', 'coronary artery bypass graft'], def: 'the surgery that takes a length of vein and grafts it onto the heart’s own vessels to carry blood past a blockage' },
+    { term: 'ICD',
+      also: ['implantable cardioverter defibrillator'], def: 'the implanted device that senses a dangerous rhythm and sends a small dose of electricity to restore a normal one',
       note: 'Implantable cardioverter-defibrillator — cardioverter, not “cardioversion”.' },
 
-    { term: 'Atrial fibrillation', def: 'the arrhythmia in which the upper chambers contract extremely rapidly and incompletely' },
-    { term: 'Ventricular fibrillation', def: 'the immediately life-threatening arrhythmia — the lower chambers only quiver, so there is no cardiac output' },
+    { term: 'Atrial fibrillation',
+      also: ['A-fib'], def: 'the arrhythmia in which the upper chambers contract extremely rapidly and incompletely' },
+    { term: 'Ventricular fibrillation',
+      also: ['V-fib'], def: 'the immediately life-threatening arrhythmia — the lower chambers only quiver, so there is no cardiac output' },
     { term: 'PVC, premature ventricular contraction', def: 'the commonest disturbance of rhythm arising from the lower chambers — an early beat, ahead of the one due next' },
   ],
 
