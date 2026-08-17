@@ -297,6 +297,25 @@ function suite(s, label, srcCss) {
                              `${subj(c)} rendered no chips to check`);
     }
 
+    /* A course whose guides have all been RETIRED is finished, not untouched, so
+       its chips stay shut. This is the case the fallback above used to get
+       backwards: it tested for a currently-pinned guide, so retiring the last
+       guide in a course sprang every chip in it open — exactly undoing the
+       retiring that had just been asked for. */
+    {
+      let wrong = '';
+      for (const c of renderedCourses) {
+        const inC = DECKS.filter(d => d.course === c);
+        const finished = inC.some(d => d.exam && d.retired) &&
+                         !inC.some(d => pin(d) || d.current);
+        if (!finished) continue;
+        const open = chipsIn(openHtml, c).filter(([o]) => o).map(([, t]) => t);
+        if (open.length && !wrong)
+          wrong = `${subj(c)} is finished but ${open.join(', ')} starts open`;
+      }
+      check(`[${label}] a course whose guides are all retired stays shut`, !wrong, wrong);
+    }
+
     /* The converse, and the reason the spotlight exists: once a chapter is
        marked current it stays on screen and is never reduced to a chip, while
        every finished chapter becomes a chip that starts closed. */

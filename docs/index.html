@@ -4041,6 +4041,7 @@ window.DECKS = [
   id: 'ekg-test-review',
   group: 'EKG',
   exam: true,
+  retired: true,
 
   added: '2026-08-11',
   course: 'M103 · Medical Procedures',
@@ -4733,10 +4734,17 @@ function screenHome(){
     const looseNow = loose.filter(d => d.current);
     const loosePast = loose.filter(d => !d.current);
 
-    /* With nothing pinned and nothing current there is nothing to defer to, so
-       a course opens its chapters rather than presenting a row of chips and no
-       decks at all. The moment anything is spotlighted, the rest gives way. */
-    const openByDefault = !lead.length && !spotlit && !looseNow.length;
+    /* A course that has never been organised opens its chapters, rather than
+       presenting a row of chips and no decks at all — there is nothing for them
+       to defer to yet.
+
+       "Never organised" means no study guide has ever been pinned here and no
+       chapter has ever been marked current. A RETIRED guide still counts: a
+       course whose material has all been retired is finished, not untouched, and
+       throwing it open again would undo the retiring. Testing only for a
+       currently-pinned guide got this backwards — the moment the last guide in a
+       course was retired, every chip in it sprang open. */
+    const openByDefault = !inCourse.some(d => d.exam || d.current);
 
     const panels = [
       ...pastGroups.map(g => ({ key: `${c}/${g}`, label: g, decks: inG(g) })),

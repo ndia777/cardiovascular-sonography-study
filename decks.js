@@ -3562,6 +3562,7 @@ window.DECKS = [
   id: 'ekg-test-review',
   group: 'EKG',
   exam: true,
+  retired: true,
 
   added: '2026-08-11',
   course: 'M103 · Medical Procedures',
