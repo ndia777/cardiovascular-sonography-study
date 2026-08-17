@@ -2904,7 +2904,7 @@ window.DECKS = [
     { term: 'TP segment', def: 'the flat segment running from the end of one T wave to the start of the next P wave' },
     { term: 'Cardiac cycle', def: 'one complete heartbeat, start of one beat to the start of the next — about 0.8 seconds' },
     { term: 'Calibration', def: '1 millivolt of input should produce exactly 10 mm of height on the paper',
-      note: 'Standard gain is 10 mm per millivolt, which is what this card says. Flagged because the lecture notes record it as 1 mV = 1 mm, and that cannot be right — the same page gives the standardization mark as 10 mm high, and that mark IS the 1 mV signal.' },
+      note: 'The standardization mark IS this signal — 10 mm tall means 1 mV, which is how you confirm the machine is calibrated. The rest follows: 1 small square (1 mm) is 0.1 mV, one large square (5 mm) is 0.5 mV.' },
     { fact: true, term: 'What an ECG can show you',
       def: 'the orientation of the heart in the chest, conduction disturbances, the electrical effects of medications and electrolytes, the mass of cardiac muscle, and any ischemic damage' },
     { fact: true, term: 'Normal T wave height',
