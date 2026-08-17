@@ -2904,7 +2904,7 @@ window.DECKS = [
     { term: 'TP segment', def: 'the flat segment running from the end of one T wave to the start of the next P wave' },
     { term: 'Cardiac cycle', def: 'one complete heartbeat, start of one beat to the start of the next — about 0.8 seconds' },
     { term: 'Calibration', def: '1 millivolt of input should produce exactly 10 mm of height on the paper',
-      note: 'The lecture notes write this as 1 mV = 1 mm, which cannot be right — the same page says the standardization mark is 10 mm high, and that mark IS the 1 mV signal. Standard gain is 10 mm per millivolt.' },
+      note: 'Standard gain is 10 mm per millivolt, which is what this card says. Flagged because the lecture notes record it as 1 mV = 1 mm, and that cannot be right — the same page gives the standardization mark as 10 mm high, and that mark IS the 1 mV signal.' },
     { fact: true, term: 'What an ECG can show you',
       def: 'the orientation of the heart in the chest, conduction disturbances, the electrical effects of medications and electrolytes, the mass of cardiac muscle, and any ischemic damage' },
     { fact: true, term: 'Normal T wave height',
@@ -2932,7 +2932,7 @@ window.DECKS = [
       def: 'fewer than a 12-lead ECG uses, and placed on the chest and torso rather than the limbs, so ordinary walking does not corrupt a 24-hour recording',
       note: 'The test review counts “6 to 7 electrodes” as the statement that is NOT true. How many are used depends on how many channels the recorder runs, so a fixed number is not a safe answer.' },
     { term: 'Coronary balloon angioplasty', def: 'threading a catheter with a balloon at its tip, usually in through the femoral artery, and inflating it to press plaque aside and reopen the vessel',
-      note: 'The lecture notes call this "balloon angiography", which conflates two procedures. Angiography is the diagnostic picture — catheter, contrast dye and x-ray. Angioplasty is the balloon that treats what the picture found. Both go in through the femoral artery, which is probably where the wires crossed.' },
+      note: 'Angioplasty is the balloon that treats a narrowing; angiography is the diagnostic picture that finds it — catheter, contrast dye and x-ray. Flagged because the lecture notes call this "balloon angiography", merging the two. Both go in through the femoral artery, which is probably where the wires crossed.' },
     { term: 'Coronary artery bypass', def: 'grafting a length of vein into the heart’s own circulation to carry blood around a blocked stretch' },
     { term: 'Implantable cardioverter defibrillator', def: 'a small implanted device that watches the rhythm and shocks the heart back into line when it turns dangerous',
       note: 'Abbreviated ICD. Worth keeping apart from a pacemaker: a pacemaker sends small, regular impulses to set the rate, while an ICD sits quiet and delivers a real shock only when a life-threatening rhythm appears.' }
@@ -3095,7 +3095,7 @@ window.DECKS = [
     { fact: true, term: 'Where sensors must never be placed',
       def: 'on wounds, open areas, sutures or staples' },
     { term: 'Electrolyte gel', def: 'the conductive medium between electrode and patient, needed because dry skin resists electricity badly enough to swamp the signal',
-      note: 'The lecture notes read "the skin is a core conductor of electricity" — almost certainly POOR, mistyped. Skin is a poor conductor; that is the entire reason the gel exists. Applying it drops skin impedance from roughly 8,600 ohms to about 2,000.' },
+      note: 'Skin is a POOR conductor, which is the entire reason the gel exists — applying it drops skin impedance from roughly 8,600 ohms to about 2,000. Flagged because the lecture notes read "the skin is a core conductor of electricity", almost certainly "poor" mistyped.' },
     { fact: true, term: 'Patients needing modified placement',
       def: 'those who are obese, have a limb amputation, or are in a cast' }
   ],

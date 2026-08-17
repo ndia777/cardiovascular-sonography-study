@@ -957,6 +957,26 @@ function suite(s, label, srcCss) {
     }
   }
 
+  /* A note that flags a discrepancy must open with the CORRECT fact, not with
+     the mistake it is flagging. All three of these used to open by quoting the
+     error and only corrected it a clause later; read at speed, straight after
+     answering, that lands as "this card is wrong" — which is how a correct
+     calibration card came within an inch of being deleted.
+
+     Notes that merely cite the course notes approvingly are not affected; the
+     trigger is a note that says something is mistaken. */
+  {
+    const flags = /flagged because|cannot be right|mistyped|conflat|merging the two/i;
+    const opensOnError = /^\s*(the (lecture |course )?notes|your notes)\b/i;
+    const bad = [];
+    for (const d of DECKS)
+      for (const c of d.cards || [])
+        if (flags.test(c.note || '') && opensOnError.test(c.note))
+          bad.push(`${d.id} / ${c.term}`);
+    check(`[${label}] a note flagging a mistake leads with the correct fact`,
+          !bad.length, bad.join('; ') + ' — opens by quoting the error');
+  }
+
   /* A comma in a term means "either of these names counts" — which is how
      "Cell body, soma" accepts each half. That convention breaks on a name that
      simply contains a comma: "Hand, foot and mouth disease" splits into "Hand"
