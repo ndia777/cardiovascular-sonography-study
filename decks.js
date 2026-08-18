@@ -2063,7 +2063,8 @@ window.DECKS = [
     { term: 'Intercellular junctions', def: 'the structures forming the site of union between neighbouring cells' },
     { term: 'Tight junctions', def: 'joins where the membranes of neighbouring cells fuse outright, sealing the gap — as in the lining of the small intestine and the blood-brain barrier' },
     { term: 'Desmosome', def: 'a junction that rivets cells together like a spot weld, letting them act as one reinforced unit' },
-    { term: 'Gap junctions', def: 'tubular channels letting molecules pass directly between neighbouring cells, as in cardiac muscle' }
+    { term: 'Gap junctions', def: 'tubular channels letting molecules pass directly between neighbouring cells, as in cardiac muscle' },
+    { fact: true, term: 'The four major tissue types', def: 'epithelial, connective, muscle and nervous' }
   ],
   questions: [
     { q: 'Which tissue type has no blood vessels of its own?',
@@ -2076,7 +2077,20 @@ window.DECKS = [
         'Cartilage',
         'Dense regular connective tissue',
       ], answer: 0,
-      why: 'Epithelium regenerates constantly, which is why most cancers are carcinomas. Nervous tissue is the least vulnerable, because neurons barely divide — and that is also why brain tumours usually arise from neuroglia, which do divide.' }
+      why: 'Epithelium regenerates constantly, which is why most cancers are carcinomas. Nervous tissue is the least vulnerable, because neurons barely divide — and that is also why brain tumours usually arise from neuroglia, which do divide.' },
+    { q: 'Which type of tissue covers the body surface and lines organs and cavities?',
+      choices: ['Epithelial tissue', 'Connective tissue', 'Muscle tissue', 'Nervous tissue'], answer: 0,
+      why: 'Covering, lining and forming glands is epithelium’s whole job. Note the four types are being tested AS A SET — the wrong answers are always the other three.' },
+    { q: 'What is the definition of a tissue?',
+      choices: ['A group of similar cells with a common function',
+        'A single cell with many functions',
+        'A layer of cells with different functions',
+        'A group of cells with no function'], answer: 0,
+      why: 'Every wrong option breaks one attribute — the number of cells, their similarity, or the shared function. Both "similar" and "common function" are load-bearing.' },
+    { q: 'Goblet cells, mast cells and neurons each belong to which tissue, in that order?',
+      choices: ['Epithelial, connective, nervous', 'Connective, epithelial, nervous',
+        'Epithelial, nervous, connective', 'Connective, nervous, epithelial'], answer: 0,
+      why: 'The professor draws distractors from ACROSS the chapter, not just from the same family — so knowing which cell lives in which tissue is its own skill.' }
   ],
 },
 
@@ -2108,7 +2122,7 @@ window.DECKS = [
     { term: 'Simple squamous epithelium', def: 'a single layer of thin flat cells, built for diffusion and filtration — the alveoli, capillary walls and the linings of blood and lymph vessels' },
     { term: 'Simple cuboidal epithelium', def: 'a single layer of cube-shaped cells with round central nuclei, lining kidney tubules, thyroid follicles, the ducts of certain glands and the surface of the ovaries' },
     { term: 'Simple columnar epithelium', def: 'a single layer of tall cells lining the uterus, stomach and intestines, secreting digestive fluids and absorbing nutrients' },
-    { term: 'Pseudostratified columnar epithelium', def: 'looks layered but is not — every cell reaches the basement membrane while the nuclei sit at different heights; lines the respiratory passages' },
+    { term: 'Pseudostratified columnar epithelium', def: 'looks layered but is not — every cell reaches the basement membrane while the nuclei sit at different heights; lines the respiratory passages, where its cilia sweep mucus up and out' },
     { term: 'Stratified squamous epithelium', def: 'many layers with the outermost flattened, forming the epidermis and lining the mouth, esophagus, vagina and anal canal' },
     { term: 'Stratified cuboidal epithelium', def: 'two or three layers of cube-shaped cells lining the ducts of the mammary, sweat and salivary glands and the pancreas' },
     { term: 'Stratified columnar epithelium', def: 'several layers, tall cells on top and cube-shaped ones beneath, found in part of the male urethra and the larger ducts of excretory glands' },
@@ -2159,7 +2173,19 @@ window.DECKS = [
         'The replacement cannot absorb oxygen',
         'The replacement blocks the airway mechanically',
       ], answer: 0,
-      why: 'Pseudostratified ciliated columnar epithelium traps particles in mucus and sweeps them up and out. Stratified squamous is tougher, but it has no cilia and no goblet cells, so the airway loses its cleaning mechanism. A protective change that costs a function.' }
+      why: 'Pseudostratified ciliated columnar epithelium traps particles in mucus and sweeps them up and out. Stratified squamous is tougher, but it has no cilia and no goblet cells, so the airway loses its cleaning mechanism. A protective change that costs a function.' },
+    { q: 'What type of epithelial tissue is found lining the upper respiratory passageway and is able to move mucus?',
+      choices: ['Pseudostratified columnar epithelium', 'Transitional epithelium',
+        'Simple cuboidal epithelium', 'Stratified squamous epithelium'], answer: 0,
+      why: 'Goblet cells make the mucus and the cilia sweep it out. Asked by FUNCTION rather than by structure — which is how these questions tend to come.' },
+    { q: 'Skin is exposed to friction and has a protective function. What type of epithelial tissue is best suited to form the outer layer of the skin?',
+      choices: ['Stratified squamous epithelium', 'Transitional epithelium',
+        'Pseudostratified columnar epithelium', 'Simple cuboidal epithelium'], answer: 0,
+      why: 'Many layers, with the outermost flattened and keratinised, is what survives abrasion. Given a job, pick the tissue.' },
+    { q: 'Which tissue type is the most thin and delicate epithelial tissue?',
+      choices: ['Simple squamous epithelium', 'Simple columnar epithelium',
+        'Stratified cuboidal epithelium', 'Transitional epithelium'], answer: 0,
+      why: 'One layer of flat cells — thin enough for diffusion and filtration, and easily damaged. Thinness is the point of it.' }
   ],
 },
 
@@ -2198,7 +2224,10 @@ window.DECKS = [
     { term: 'Holocrine glands', def: 'those releasing whole cells, which then burst to liberate what they held — the sebaceous glands of the skin' },
     { term: 'Serous fluid', def: 'a watery, slippery secretion, associated with the membranes lining the thoracic and abdominopelvic cavities' },
     { term: 'Mucus', def: 'the thick protective secretion rich in the glycoprotein mucin, produced by the linings of the digestive, respiratory and reproductive systems' },
-    { term: 'Mucin', def: 'the glycoprotein that makes mucus what it is' }
+    { term: 'Mucin', def: 'the glycoprotein that makes mucus what it is' },
+    { fact: true, term: 'The three modes of exocrine secretion', def: 'merocrine, apocrine and holocrine' },
+    { fact: true, term: 'Why holocrine cells divide at the base', def: 'the whole cell is destroyed in releasing its product, so new ones must be produced underneath to replace what is lost',
+      note: 'This is what a mitotic figure at the base of that gland is showing, and it appears in no other secretion mode.' }
   ],
   questions: [
     { q: 'An exocrine gland differs from an endocrine gland how?',
@@ -2216,7 +2245,10 @@ window.DECKS = [
         'Whether the duct branches',
         'Whether the product is watery or thick'
       ], answer: 0,
-      why: 'Merocrine gives up nothing, apocrine pinches off part of the cell, holocrine sacrifices the whole cell. Sebaceous glands are the holocrine example.' }
+      why: 'Merocrine gives up nothing, apocrine pinches off part of the cell, holocrine sacrifices the whole cell. Sebaceous glands are the holocrine example.' },
+    { q: 'On a diagram of exocrine secretion, an intact cell releasing granules identifies which gland?',
+      choices: ['Merocrine', 'Apocrine', 'Holocrine', 'Endocrine'], answer: 0,
+      why: 'The three modes are told apart by what happens to the CELL: merocrine stays intact, apocrine loses a pinched-off portion, holocrine disintegrates entirely.' }
   ],
 },
 
@@ -2257,7 +2289,8 @@ window.DECKS = [
     { term: 'Reticular connective tissue', def: 'a supporting web of thin fibres holding up the walls of internal organs such as the liver and spleen' },
     { term: 'Dense regular connective tissue', def: 'closely packed parallel collagen, very strong against pulling, forming tendons and ligaments — poorly supplied with blood, so slow to heal' },
     { term: 'Dense irregular connective tissue', def: 'thick collagen interwoven at random so it withstands tension from any direction, forming the deep layer of skin and the wrapping around skeletal muscles' },
-    { term: 'Elastic connective tissue', def: 'abundant yellow fibres giving stretch, found between the bones of the spinal column and in the walls of large arteries and airways' }
+    { term: 'Elastic connective tissue', def: 'abundant yellow fibres giving stretch, found between the bones of the spinal column and in the walls of large arteries and airways' },
+    { fact: true, term: 'The three connective tissue fibres', def: 'collagen, elastic and reticular' }
   ],
 },
 
@@ -2327,7 +2360,10 @@ window.DECKS = [
     { term: 'Cell body, soma', def: 'the part of a nerve cell holding the nucleus and most of the organelles' },
     { term: 'Dendrites', def: 'the short, numerous, branching processes that RECEIVE stimuli',
       note: 'From dendro, “tree”. The branching is the giveaway.' },
-    { term: 'Axon', def: 'the single long process that carries the signal AWAY toward other cells' }
+    { term: 'Axon', def: 'the single long process that carries the signal AWAY toward other cells' },
+    { fact: true, term: 'The three types of muscle', def: 'skeletal, smooth and cardiac' },
+    { fact: true, term: 'The four membranes', def: 'serous, mucous, cutaneous and synovial' },
+    { fact: true, term: 'The traits unique to skeletal muscle', def: 'voluntary control and many nuclei per cell — striation is shared with cardiac, so it does not identify it on its own' }
   ],
   questions: [
     { q: 'Which description identifies cardiac muscle?',
@@ -2345,7 +2381,24 @@ window.DECKS = [
         'Mucous',
         'Cutaneous',
       ], answer: 0,
-      why: 'Serous, mucous and cutaneous membranes are all epithelium sitting on connective tissue. The synovial membrane lining a joint is the exception — connective tissue only.' }
+      why: 'Serous, mucous and cutaneous membranes are all epithelium sitting on connective tissue. The synovial membrane lining a joint is the exception — connective tissue only.' },
+    { q: 'What type of membrane lines body cavities that do not open to the external environment, such as the thoracic cavity and abdominal cavity?',
+      choices: ['Serous membrane', 'Synovial membrane', 'Cutaneous membrane', 'Mucous membrane'], answer: 0,
+      why: 'Serous lines the CLOSED cavities; mucous lines the ones open to the outside. That open/closed split is the whole distinction.' },
+    { q: 'What type of muscle tissue is found in the wall of blood vessels?',
+      choices: ['Smooth muscle', 'Skeletal muscle', 'Cardiac muscle', 'Striated muscle'], answer: 0,
+      why: 'Smooth muscle lines the hollow organs and vessels — and a vessel wall is NOT striated. On the assignment this had only three options, because the muscle set has only three members; the fourth is here because the quiz format needs four.' },
+    { q: 'In nervous tissue, the cell type that carries out the main function of the tissue is the _____',
+      choices: ['neuron', 'neuroglia', 'goblet cells', 'mast cell'], answer: 0,
+      why: 'Neurons signal; neuroglia support them. Note two distractors come from other tissues entirely — epithelial and connective.' },
+    { q: 'Which of the following is a characteristic of skeletal muscle tissue?',
+      choices: ['Cells are striated', 'Cells are under involuntary control',
+        'Cells are uninucleated', 'Cells are spindle-shaped'], answer: 0,
+      why: 'All three wrong options describe SMOOTH muscle exactly. Careful: striation is true of cardiac too — the uniquely skeletal traits are voluntary control and many nuclei per cell.' },
+    { q: 'What are the three types of muscle tissues?',
+      choices: ['Smooth, skeletal, cardiac', 'Collagen, elastic, reticular',
+        'Tendon, ligament, reticular', 'Visceral, heart, skeleton'], answer: 0,
+      why: '"Visceral, heart, skeleton" names the right three things in the wrong words, and "collagen, elastic, reticular" is the connective tissue FIBRE set. Naming a set is its own kind of question.' }
   ],
 },
 
