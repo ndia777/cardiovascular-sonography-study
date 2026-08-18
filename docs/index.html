@@ -2943,7 +2943,9 @@ window.DECKS = [
       note: 'Also called Meissner’s corpuscles.' },
     { term: 'Intradermal injection', def: 'an injection given into the skin itself' },
     { term: 'Subcutaneous injection', def: 'an injection given through a hollow needle into the fatty layer beneath the skin',
-      note: 'Absorbed faster than an intradermal one, because that layer is richly supplied with blood vessels while the epidermis has none at all.' }
+      note: 'Absorbed faster than an intradermal one, because that layer is richly supplied with blood vessels while the epidermis has none at all.' },
+    { fact: true, term: 'The five strata of the epidermis', def: 'basale, spinosum, granulosum, lucidum, corneum — deepest first' },
+    { fact: true, term: 'The two layers of the dermis', def: 'papillary above, reticular below' },
   ],
   questions: [
     { q: 'Which layer of the epidermis is the only one whose cells divide?',
@@ -2959,7 +2961,16 @@ window.DECKS = [
         'The deepest layer of the epidermis',
         'The outermost layer of the dermis'
       ], answer: 0,
-      why: 'Also called the hypodermis. It insulates and carries the vessels that supply the skin above it.' }
+      why: 'Also called the hypodermis. It insulates and carries the vessels that supply the skin above it.' },
+    { q: 'Which layer of the skin has no blood supply of its own?',
+      choices: ['Epidermis', 'Dermis', 'Subcutaneous layer', 'Papillary layer'], answer: 0,
+      why: 'It is fed by diffusion from the layers beneath, which is also why its outermost cells die and flake away.' },
+    { q: 'From deepest to most superficial, the strata of the epidermis run:',
+      choices: ['Basale, spinosum, granulosum, lucidum, corneum',
+        'Corneum, lucidum, granulosum, spinosum, basale',
+        'Basale, granulosum, spinosum, lucidum, corneum',
+        'Spinosum, basale, granulosum, corneum, lucidum'], answer: 0,
+      why: 'Only three were required for the test, but naming a set in order is a shape he uses. Lucidum appears only in thick skin — palms and soles.' },
   ],
 },
 
@@ -2994,7 +3005,9 @@ window.DECKS = [
       note: 'The scales are the excess keratinized cells. Treated with drugs that block tumor necrosis factor, an inflammatory protein.' },
     { term: 'Pressure ulcer',
       also: ['decubitus ulcer', 'bedsore'], def: 'the breakdown that follows when body weight presses skin against a surface long enough to cut off its blood supply, killing the tissue',
-      note: 'Also called a decubitus ulcer or bedsore. Forms over bony points — hip, heel, elbow, shoulder. Prevented by shifting position often, massaging those areas, motorised beds, clean skin, good diet and not smoking.' }
+      note: 'Also called a decubitus ulcer or bedsore. Forms over bony points — hip, heel, elbow, shoulder. Prevented by shifting position often, massaging those areas, motorised beds, clean skin, good diet and not smoking.' },
+    { fact: true, term: 'The two pigments of skin and hair', def: 'eumelanin, brownish-black, and pheomelanin, reddish-yellow' },
+    { fact: true, term: 'The three skin cancers', def: 'basal cell carcinoma, squamous cell carcinoma and malignant melanoma' },
   ],
   questions: [
     { q: 'Two people differ in skin colour. What differs between them?',
@@ -3004,7 +3017,13 @@ window.DECKS = [
         'The thickness of the stratum corneum',
         'The number of layers in the dermis'
       ], answer: 0,
-      why: 'Everyone has roughly the same number of pigment cells. Output and distribution are what vary, and both are under genetic control.' }
+      why: 'Everyone has roughly the same number of pigment cells. Output and distribution are what vary, and both are under genetic control.' },
+    { q: 'Which pigment gives skin and hair their brownish-black colour?',
+      choices: ['Eumelanin', 'Pheomelanin', 'Carotene', 'Keratin'], answer: 0,
+      why: 'Pheomelanin is the reddish-yellow one. Keratin is a protein, not a pigment at all — the sort of near-miss that belongs in the same options list.' },
+    { q: 'A patient’s skin takes on a bluish cast. This is:',
+      choices: ['Cyanosis', 'Erythema', 'Jaundice', 'Albinism'], answer: 0,
+      why: 'Bluish means poorly oxygenated blood showing through. The others are the same kind of colour-change term, which is exactly how he builds a distractor list.' },
   ],
 },
 
@@ -3039,12 +3058,20 @@ window.DECKS = [
     { term: 'Apocrine sweat glands', def: 'the sweat glands of the armpit and groin, opening into hair follicles and responding to emotion and pain rather than heat',
       note: 'Their secretions are the ones that develop an odour. Despite the name they secrete by exocytosis.' },
     { term: 'Ceruminous glands', def: 'modified sweat glands of the ear canal that produce wax' },
-    { fact: true, term: 'How sweat helps protect the skin', def: 'it is slightly acidic, which inhibits the growth of certain microorganisms' }
+    { fact: true, term: 'How sweat helps protect the skin', def: 'it is slightly acidic, which inhibits the growth of certain microorganisms' },
+    { fact: true, term: 'The four glands of the skin', def: 'sebaceous, eccrine, apocrine and ceruminous' },
+    { fact: true, term: 'The two sweat glands', def: 'eccrine, which answer to heat, and apocrine, which answer to emotion' },
   ],
   questions: [
     { q: 'Which glands respond to emotion rather than to heat?',
       choices: ['Apocrine sweat glands', 'Eccrine sweat glands', 'Sebaceous glands', 'Ceruminous glands'], answer: 0,
-      why: 'Eccrine glands answer to a rise in temperature. Apocrine glands sit in the armpit and groin, open into follicles, and their secretions are the ones that develop odour.' }
+      why: 'Eccrine glands answer to a rise in temperature. Apocrine glands sit in the armpit and groin, open into follicles, and their secretions are the ones that develop odour.' },
+    { q: 'Which gland releases an oily secretion onto the hair follicle?',
+      choices: ['Sebaceous', 'Eccrine', 'Apocrine', 'Ceruminous'], answer: 0,
+      why: 'Sebum lubricates hair and skin, and being slightly acidic it discourages bacteria. The other three are the rest of the set.' },
+    { q: 'Which structure contracts to raise a goosebump?',
+      choices: ['Arrector pili', 'Hair bulb', 'Hair papilla', 'Sebaceous gland'], answer: 0,
+      why: 'A small muscle on the follicle. It pulls the hair upright in cold or fright, which reduces heat loss.' },
   ],
 },
 
@@ -3072,7 +3099,8 @@ window.DECKS = [
       def: 'thermoreceptors signal the hypothalamus, the dermal vessels dilate while the deep ones constrict, and the sweat glands switch on' },
     { term: 'Hyperthermia', def: 'body temperature ABOVE 101°F — the skin turns dry and the person becomes weak, dizzy and nauseous with a rapid pulse' },
     { term: 'Hypothermia', def: 'body temperature BELOW 95°F, progressing through shivering to confusion, lethargy and loss of consciousness' },
-    { term: 'Pyrogens', def: 'substances released by phagocytes that push the hypothalamic set point up, producing a fever that helps destroy pathogens' }
+    { term: 'Pyrogens', def: 'substances released by phagocytes that push the hypothalamic set point up, producing a fever that helps destroy pathogens' },
+    { fact: true, term: 'The four routes of heat loss', def: 'radiation, conduction, convection and evaporation' },
   ],
   questions: [
     { q: 'What is the PRIMARY route by which the skin loses heat?',
@@ -3085,7 +3113,10 @@ window.DECKS = [
         'Hyperthermia is caused by infection, fever by heat exposure',
         'They are two names for the same thing'
       ], answer: 0,
-      why: 'Phagocytes release pyrogens and the hypothalamus raises the target, which helps destroy pathogens. In hyperthermia the target never moved — heat simply built up faster than it could be shed.' }
+      why: 'Phagocytes release pyrogens and the hypothalamus raises the target, which helps destroy pathogens. In hyperthermia the target never moved — heat simply built up faster than it could be shed.' },
+    { q: 'Heat carried away as air warms, moves off, and is replaced by cooler air is:',
+      choices: ['Convection', 'Conduction', 'Radiation', 'Evaporation'], answer: 0,
+      why: 'Conduction is direct contact; radiation needs no contact at all; evaporation is sweat turning to vapour. All four are one set, so learn them against each other.' },
   ],
 },
 
@@ -3122,7 +3153,9 @@ window.DECKS = [
     { term: 'Age spots',
       also: ['liver spots'], def: 'the flat pigmented patches that appear on sun-exposed skin with age, from melanocytes clustering unevenly',
       note: 'Also called liver spots, though they have nothing to do with the liver.' },
-    { term: 'Why wounds heal more slowly with age', fact: true, def: 'cell division slows, circulation to the skin decreases, and fewer immune cells are on hand' }
+    { term: 'Why wounds heal more slowly with age', fact: true, def: 'cell division slows, circulation to the skin decreases, and fewer immune cells are on hand' },
+    { fact: true, term: 'The three depths of burn', def: 'superficial partial-thickness, deep partial-thickness and full-thickness' },
+    { fact: true, term: 'The two skin grafts', def: 'an autograft, taken from the patient, and an allograft, taken from another person' },
   ],
   questions: [
     { q: 'A second-degree burn is best described as:',
@@ -3140,7 +3173,13 @@ window.DECKS = [
         'The subcutaneous layer cannot produce collagen',
         'Inflammation is absent in third-degree burns'
       ], answer: 0,
-      why: 'Follicles and glands are the reservoir a partial-thickness burn heals from. Lose them and healing can only creep in from the margins.' }
+      why: 'Follicles and glands are the reservoir a partial-thickness burn heals from. Lose them and healing can only creep in from the margins.' },
+    { q: 'A burn destroying the whole outer layer and part of the layer beneath, often blistering, is:',
+      choices: ['Deep partial-thickness', 'Superficial partial-thickness', 'Full-thickness', 'Superficial full-thickness'], answer: 0,
+      why: 'It can still regenerate, because stem cells survive in the follicles and glands. A full-thickness burn destroys those too and heals only from the margins.' },
+    { q: 'Which of these sits in the dermis rather than the epidermis?',
+      choices: ['Lamellated corpuscle', 'Melanocyte', 'Keratinocyte', 'Tactile cell'], answer: 0,
+      why: 'The other three all live in the epidermis. He draws distractors from elsewhere in the chapter, so knowing which structure sits in which layer is its own skill.' },
   ],
 },
 
