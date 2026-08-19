@@ -1096,7 +1096,6 @@ window.DECKS = [
 {
   id: 'mt12-parts',
   group: 'Chapter 12',
-  current: true,
   added: '2026-08-10',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Word Parts',
@@ -1160,7 +1159,6 @@ window.DECKS = [
 {
   id: 'mt12-structure',
   group: 'Chapter 12',
-  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Structure & Function',
@@ -1253,7 +1251,6 @@ window.DECKS = [
 {
   id: 'mt12-glands-hair-nails',
   group: 'Chapter 12',
-  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Disorders of the Glands, Hair & Nails',
@@ -1334,7 +1331,6 @@ window.DECKS = [
 {
   id: 'mt12-lesions',
   group: 'Chapter 12',
-  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Lesions, Wounds & Skin Marks',
@@ -1439,7 +1435,6 @@ window.DECKS = [
 {
   id: 'mt12-conditions',
   group: 'Chapter 12',
-  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Conditions, Infections & Cancer',
@@ -1581,7 +1576,6 @@ window.DECKS = [
 {
   id: 'mt12-procedures',
   group: 'Chapter 12',
-  current: true,
   added: '2026-08-06',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Procedures & Abbreviations',
@@ -3831,7 +3825,7 @@ window.DECKS = [
   id: 'mt12-guide',
   group: 'Chapter 12',
   exam: true,
-  current: true,
+  retired: true,
   added: '2026-08-12',
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Study Guide',
