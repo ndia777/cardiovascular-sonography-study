@@ -115,6 +115,8 @@
   .deck.exam{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
   .deck.exam:hover{border-color:var(--warn)}
   .badge.exam{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));color:var(--warn)}
+  .badge.ref{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent)}
+  .deck.ref{border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
   /* A retired guide keeps the tag — it is still the instructor's study guide and
      not a deck of notes — but at half strength, so the guide for the chapter
      being studied now is the one that catches the eye. */
@@ -737,7 +739,10 @@ function togglePast(btn){
    true, and `pinned` answers "does it lead its course", which stops the moment
    the chapter is retired. A retired guide keeps its badge, loses the border,
    and folds away with the chapter it came from. */
-const pinned = d => !!d.exam && !d.retired;
+/* Two kinds of deck lead a course section: the study guides the professor
+   hands out, and standing references that never belong to one chapter.
+   Both are pinned; only the first is a study guide, and the badges differ. */
+const pinned = d => (!!d.exam || !!d.reference) && !d.retired;
 
 /* ═══════════════ HOME ═══════════════ */
 function screenHome(){
@@ -808,11 +813,12 @@ function screenHome(){
     const deckCard = (d, bare) => {
       const p = progress[d.id] || {};
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
-      return `<button class="deck ${pinned(d) ? 'exam' : ''}" onclick="go('deck','${d.id}')">
+      return `<button class="deck ${d.exam && !d.retired ? 'exam' : ''}${d.reference ? ' ref' : ''}" onclick="go('deck','${d.id}')">
         <h3>${esc(d.title)}</h3>
         <div class="meta">${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         <div class="badges">
           ${d.exam ? `<span class="badge exam${d.retired ? ' past' : ''}">Study guide</span>` : ''}
+          ${d.reference ? `<span class="badge ref">Reference</span>` : ''}
           ${d.current && bare ? `<span class="badge now">Current</span>` : ''}
           ${p.recallBest != null ? scoreBadge('Recall', p.recallBest) : ''}
           ${p.quizBest != null ? scoreBadge('Quiz best', p.quizBest) : ''}
@@ -862,7 +868,7 @@ function screenHome(){
        throwing it open again would undo the retiring. Testing only for a
        currently-pinned guide got this backwards — the moment the last guide in a
        course was retired, every chip in it sprang open. */
-    const openByDefault = !inCourse.some(d => d.exam || d.current);
+    const openByDefault = !inCourse.some(d => d.exam || d.current || d.reference);
 
     const panels = [
       ...pastGroups.map(g => ({ key: `${c}/${g}`, label: g, decks: inG(g) })),

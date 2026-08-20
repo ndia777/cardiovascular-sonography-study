@@ -130,9 +130,15 @@ function suite(s, label, srcCss) {
     (html.split(`class="cname">${c.replace(/&/g, '&amp;')}<`)[1] || '')
       .split('class="coursehead"')[0];
   /* `exam` says a deck IS a study guide and never stops being true; `retired`
-     says its chapter is behind us. Only an unretired guide leads its course, so
-     everything about placement keys off this rather than off `exam`. */
-  const pin = d => !!d.exam && !d.retired;
+     says its chapter is behind us; `reference` marks a standing deck that
+     belongs to no chapter. Any of those can lead a course, so placement keys
+     off the engine's own `pinned` rather than off `exam`.
+
+     Borrowed from the page rather than restated here. This used to be a second
+     copy of the rule, which quietly went stale the moment the engine learned
+     about reference decks — the tests kept passing against a rule the app had
+     stopped using. One definition, imported, cannot drift. */
+  const pin = vm.runInContext('pinned', s);
   const guided = c => DECKS.some(d => d.course === c && pin(d));
   const hasCurrent = c => DECKS.some(d => d.course === c && !pin(d) && d.current);
   /* A course is "live" if it holds a study guide OR a chapter marked current.
@@ -590,16 +596,82 @@ function suite(s, label, srcCss) {
     check(`[${label}] some decks are flagged as study-guide material`, marked.length > 0);
     const cards = [...html.matchAll(/<button class="deck ([^"]*)"[\s\S]*?<h3>([^<]+)<\/h3>/g)]
       .map(m => ({ cls: m[1], title: m[2].replace(/&amp;/g, '&') }));
-    let wrong = '';
+    /* The amber border means "the professor handed this out", so it tracks
+       `exam`, not pinning. A reference deck leads its course the same way but
+       must never claim that provenance. */
+    let wrong = '', mislabelled = '';
     for (const c of cards) {
       const deck = DECKS.find(d => d.title === c.title);
       if (!deck) continue;
       const styled = /\bexam\b/.test(c.cls);
-      if (pin(deck) !== styled && !wrong)
-        wrong = `"${c.title}" ${pin(deck) ? 'should carry the exam border but renders unstyled'
-                                          : 'renders with the exam border but should not'}`;
+      const wants = !!deck.exam && !deck.retired;
+      if (wants !== styled && !wrong)
+        wrong = `"${c.title}" ${wants ? 'should carry the exam border but renders unstyled'
+                                      : 'renders with the exam border but should not'}`;
+      if (deck.reference && styled && !mislabelled)
+        mislabelled = `"${c.title}" is a reference deck wearing the study-guide border`;
     }
     check(`[${label}] only a live study guide renders with the exam border`, !wrong, wrong);
+    check(`[${label}] a reference deck never wears the study-guide border`, !mislabelled, mislabelled);
+
+    /* And it has to actually say so, for the same reason the study-guide badge
+       exists: a border colour alone is invisible to a colour-blind reader. */
+    {
+      const refs = DECKS.filter(d => d.reference);
+      check(`[${label}] the course carries a standing reference`, refs.length > 0);
+      const badged = [...html.matchAll(/<h3>([^<]+)<\/h3>([\s\S]*?)<\/button>/g)]
+        .filter(m => /badge ref">Reference/.test(m[2]))
+        .map(m => m[1].replace(/&amp;/g, '&'));
+      const missing = refs.filter(d => !badged.includes(d.title)).map(d => d.title);
+      check(`[${label}] every reference deck renders its Reference badge`,
+            !missing.length, missing.join(', '));
+      const pinnedRefs = refs.every(d => pin(d));
+      check(`[${label}] reference decks are pinned to the top of the course`, pinnedRefs);
+    }
+
+    /* The reference is generated from the chapter decks. Re-derive which parts
+       those chapters teach and make sure the reference holds exactly them —
+       no more, no fewer, each in the right deck. A part added to Chapter 5 and
+       not regenerated into the reference is the silent failure this catches. */
+    {
+      const isPart = t => /^-|-$|\//.test(t);
+      const kindOf = p => p.startsWith('-') ? 'suffix' : p.endsWith('-') ? 'prefix' : 'root';
+      const refDecks = DECKS.filter(d => d.reference);
+      const course = refDecks.length ? refDecks[0].course : null;
+      if (course) {
+        const taught = new Map();
+        for (const d of DECKS) {
+          if (d.course !== course || d.reference) continue;
+          for (const card of d.cards) {
+            if (card.fact || !isPart(card.term)) continue;
+            for (const p of card.term.split(',').map(x => x.trim()).filter(Boolean))
+              taught.set(p, kindOf(p));
+          }
+        }
+        const held = new Map();
+        let dupe = '';
+        for (const d of refDecks) {
+          const kind = /prefix/.test(d.id) ? 'prefix' : /suffix/.test(d.id) ? 'suffix' : 'root';
+          for (const card of d.cards) {
+            if (held.has(card.term) && !dupe) dupe = card.term;
+            held.set(card.term, kind);
+          }
+        }
+        const missing = [...taught.keys()].filter(p => !held.has(p));
+        const extra   = [...held.keys()].filter(p => !taught.has(p));
+        const misfiled = [...taught].filter(([p, k]) => held.has(p) && held.get(p) !== k)
+                                    .map(([p, k]) => `${p} should be a ${k}`);
+        check(`[${label}] every word part taught reaches the reference`,
+              !missing.length, missing.join(', '));
+        check(`[${label}] the reference invents no parts of its own`,
+              !extra.length, extra.join(', '));
+        check(`[${label}] each part sits in the right reference deck`,
+              !misfiled.length, misfiled.join(', '));
+        check(`[${label}] no part is listed twice across the reference`, !dupe, dupe);
+        check(`[${label}] the reference is not trivially empty`, taught.size > 50,
+              `only ${taught.size} parts found`);
+      }
+    }
 
     /* The tag, unlike the border, never goes away. A retired guide is still the
        instructor's study guide rather than a deck of notes worked up into one,
