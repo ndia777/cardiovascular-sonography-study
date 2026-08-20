@@ -5162,6 +5162,22 @@ window.DECKS = [
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.5–7.6 — Skeletal Organization & the Skull',
   source: 'Chapter 7 — course notes',
+  region: {
+    name: 'skullLateral',
+    items: [
+      { id: 'path1319', name: 'Frontal bone', about: 'forms the forehead and the roof of each orbit, and holds the frontal sinuses' },
+      { id: 'path1317', name: 'Parietal bone', about: 'the paired bone forming most of the roof and upper side wall of the cranium' },
+      { id: 'path1093', name: 'Temporal bone', about: 'the lower side wall of the cranium; it houses the middle and inner ear and carries the mastoid and styloid processes' },
+      { id: 'path1143', name: 'Occipital bone', about: 'forms the back and much of the base of the cranium, and surrounds the foramen magnum' },
+      { id: 'path1106', name: 'Sphenoid bone', about: 'spans the floor of the cranium like a bat with outstretched wings; the greater wing is the part that reaches the side of the skull at the temple' },
+      { id: 'path1151', name: 'Zygomatic bone', about: 'the cheekbone; it forms the lateral wall of the orbit and joins the temporal bone to complete the zygomatic arch' },
+      { id: 'path1082', name: 'Maxilla', about: 'the paired upper jaw, carrying the upper teeth and forming most of the hard palate; it holds the largest of the paranasal sinuses' },
+      { id: 'path1098', name: 'Mandible', about: 'the lower jaw, the only freely movable bone of the skull, carrying the lower teeth' },
+      { id: 'path1084', name: 'Nasal bone', about: 'the small paired bones that form the bridge of the nose' },
+      { id: 'path1141', name: 'Lacrimal bone', about: 'the smallest facial bone, in the medial wall of the orbit; its lacrimal fossa holds the tear sac' },
+      { id: 'path1117', name: 'Mastoid process', about: 'the blunt downward projection of the temporal bone behind the ear, an attachment point for neck muscles' },
+    ],
+  },
   cards: [
     { term: 'Axial skeleton', def: 'the 80 bones supporting and protecting the organs of the head, neck and trunk' },
     { term: 'Appendicular skeleton', def: 'the 126 bones of the limbs plus the girdles anchoring them' },
