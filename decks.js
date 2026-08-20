@@ -5373,6 +5373,19 @@ window.DECKS = [
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.9–7.10 — Pectoral Girdle & Upper Limb',
   source: 'Chapter 7 — course notes',
+  region: {
+    name: 'skeletonAnterior',
+    items: [
+      { id: 'clavicle', name: 'Clavicle', about: 'the collarbone, bracing the shoulder away from the chest; the most commonly broken bone in the body' },
+      { id: 'scapula', name: 'Scapula', about: 'the shoulder blade, held against the back by muscle alone, with its glenoid cavity receiving the head of the humerus' },
+      { id: 'humerus', name: 'Humerus', about: 'the single bone of the upper arm, running from the shoulder to the elbow' },
+      { id: 'radius', name: 'Radius', about: 'the forearm bone on the thumb side; it has a small head at the elbow and a broad end at the wrist, and it is the one that rotates' },
+      { id: 'ulna', name: 'Ulna', about: 'the forearm bone on the little-finger side; its olecranon forms the point of the elbow, and it narrows towards the wrist' },
+      { id: 'carpals', name: 'Carpals', about: 'the eight small wrist bones, arranged in two rows of four' },
+      { id: 'metacarpals', name: 'Metacarpals', about: 'the five bones of the palm, numbered one to five starting from the thumb' },
+      { id: 'fingerbones', name: 'Phalanges of the hand', about: 'the finger bones — three in each finger, two in the thumb, fourteen per hand' },
+    ],
+  },
   cards: [
     { term: 'Pectoral girdle', def: 'the incomplete ring of a clavicle and scapula on each side, supporting the upper limbs' },
     { fact: true, term: 'Why the pectoral girdle is called incomplete', def: 'it is open at the back between the shoulder blades, and the breastbone separates its bones in front' },
@@ -5447,6 +5460,19 @@ window.DECKS = [
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.11–7.13 — Pelvic Girdle, Lower Limb & Aging',
   source: 'Chapter 7 — course notes',
+  region: {
+    name: 'skeletonAnterior',
+    items: [
+      { id: 'pelvis', name: 'Pelvic girdle', about: 'the two hip bones joined to the sacrum, forming the basin that carries the weight of the trunk to the legs' },
+      { id: 'femur', name: 'Femur', about: 'the thigh bone, the longest and strongest bone in the body' },
+      { id: 'patella', name: 'Patella', about: 'the kneecap, a sesamoid bone formed within the quadriceps tendon' },
+      { id: 'tibia', name: 'Tibia', about: 'the shin bone, the thicker and weight-bearing bone of the lower leg, on the great-toe side' },
+      { id: 'fibula', name: 'Fibula', about: 'the slender bone alongside the tibia; it carries little weight and forms the outer ankle' },
+      { id: 'tarsals', name: 'Tarsals', about: 'the seven ankle bones, including the talus and the calcaneus' },
+      { id: 'metatarsals', name: 'Metatarsals', about: 'the five long bones of the foot between the ankle and the toes' },
+      { id: 'toebones', name: 'Phalanges of the foot', about: 'the toe bones — three in each lesser toe, two in the great toe, fourteen per foot' },
+    ],
+  },
   cards: [
     { term: 'Pelvic girdle', def: 'the two hip bones, articulating with each other in front and with the sacrum behind' },
     { term: 'Pelvis', def: 'the bowl formed by the two hip bones together with the sacrum and coccyx' },
