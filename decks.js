@@ -5023,17 +5023,6 @@ window.DECKS = [
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.1–7.3 — Bone Structure & Function',
   source: 'Chapter 7 — course notes',
-  region: {
-    name: 'longBone',
-    items: [
-      { id: 'articular', name: 'Articular cartilage', about: 'the hyaline cartilage capping the end where the bone meets another bone; the one place the periosteum does not cover' },
-      { id: 'periosteum', name: 'Periosteum', about: 'the tough, vascular covering over the outside of the bone, everywhere except the articular cartilage; it helps form and repair bone' },
-      { id: 'compact', name: 'Compact bone', about: 'the dense tissue forming the wall of the shaft and a thin shell over the ends; its matrix is continuous, with no gaps' },
-      { id: 'spongy', name: 'Spongy bone', about: 'the porous tissue of branching plates filling the expanded ends, lighter and weaker than compact bone' },
-      { id: 'medullary', name: 'Medullary cavity', about: 'the hollow chamber inside the shaft that holds marrow, continuous with the spaces of the spongy bone' },
-      { id: 'endosteum', name: 'Endosteum', about: 'the thin membrane of bone-forming cells lining the medullary cavity and the spaces within spongy bone' },
-    ],
-  },
   cards: [
     { term: 'Skeletal system', def: 'the bones together with the tendons, ligaments and cartilage associated with joints' },
     { term: 'Long bone', def: 'one with a long longitudinal axis and expanded ends, such as the femur or humerus' },

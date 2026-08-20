@@ -1603,30 +1603,14 @@ function suite(s, label, srcCss) {
     check(`[${label}] ${d.id} every choice is a region of this diagram`,
           JSON.parse(choices).every(c => names.has(c)), choices);
 
-    /* Attribution is a licence obligation for borrowed artwork, and the suite
-       enforces it. One figure here is drawn for this app rather than sourced,
-       and demanding a Wikimedia link from it would be enforcing a falsehood —
-       so the rule branches on provenance. The branch is only safe because the
-       escape hatch is itself checked: artwork marked as ours must say plainly
-       that it is not a reproduction, and must not also cite someone else.
-       Otherwise `own: true` would just be a way to switch attribution off. */
-    const own = vm.runInContext(`!!REGIONS[${JSON.stringify(d.region.name)}].own`, s);
+    /* Attribution is a licence obligation, not a courtesy. */
     const credit = (/<p class="figcredit">([\s\S]*?)<\/p>/.exec(html) || [])[1] || '';
-    if (own) {
-      check(`[${label}] ${d.id} the drawn diagram states it is original`,
-            /drawn for this study guide/i.test(credit) && /not reproduced/i.test(credit),
-            'own artwork must say plainly that it is not a reproduction');
-      check(`[${label}] ${d.id} the drawn diagram claims no outside source`,
-            !/commons\.wikimedia\.org|creativecommons\.org/.test(credit),
-            'artwork marked as ours must not also cite someone else');
-    } else {
-      check(`[${label}] ${d.id} the diagram names its source`,
-            /commons\.wikimedia\.org|href=/.test(credit) && credit.replace(/<[^>]*>/g, '').trim().length > 20,
-            'no attribution rendered beneath the figure');
-      if (!/public domain|CC0/i.test(credit))
-        check(`[${label}] ${d.id} a licensed diagram links its licence`,
-              /creativecommons\.org/.test(credit), 'licence link missing');
-    }
+    check(`[${label}] ${d.id} the diagram names its source`,
+          /commons\.wikimedia\.org|href=/.test(credit) && credit.replace(/<[^>]*>/g, '').trim().length > 20,
+          'no attribution rendered beneath the figure');
+    if (!/public domain|CC0/i.test(credit))
+      check(`[${label}] ${d.id} a licensed diagram links its licence`,
+            /creativecommons\.org/.test(credit), 'licence link missing');
 
     /* The professor's emphasis is carried by position: this mode goes first,
        ahead of Recall, and wears the accent border. */
