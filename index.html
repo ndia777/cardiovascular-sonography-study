@@ -65,9 +65,13 @@
   /* The course line carries its own name on the left and its finished chapters
      on the right. Wraps to a second line on a narrow screen rather than
      squeezing either half. */
-  .coursehead{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);
-    margin:26px 0 10px;font-weight:600;
-    display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}
+  .coursehead{margin:30px 0 12px;padding-top:18px;
+    border-top:1px solid var(--line);
+    display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 14px}
+  /* The class name is the section header — it has to outrank the chapter
+     heading beneath it, which is full-contrast. Larger, brighter, heavier. */
+  .cname{font-size:15.5px;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--text);font-weight:700}
   .pastbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-left:auto}
   .pastlabel{font-size:10.5px;letter-spacing:.08em;color:var(--dim);opacity:.75}
   /* Chips are deliberately quiet — sentence case, no weight, no fill. They are
@@ -88,7 +92,7 @@
   /* Heading above a chapter's grid — used by the current chapter and by an
      opened chip alike, so an opened chapter looks exactly like a present one. */
   .sect{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;
-    color:var(--text);margin:16px 0 7px}
+    color:color-mix(in srgb,var(--text) 78%,var(--dim));margin:14px 0 7px}
   .sect .now{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
     padding:2px 7px;border-radius:20px;color:var(--accent);
     border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line))}
