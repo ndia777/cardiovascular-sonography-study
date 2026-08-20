@@ -50,6 +50,12 @@
   .qrpop.open{animation:qrin .13s ease-out}
   @media (prefers-reduced-motion: reduce){ .qrpop.open{animation:none} }
 
+  /* A deck-level caveat, for when the deck itself needs qualifying —
+     e.g. material that is pinned as the tested set but is not the whole of it. */
+  .decknote{margin:10px 0 0;padding:9px 12px;border-radius:8px;font-size:13px;
+    line-height:1.45;color:var(--text);background:var(--card2);
+    border:1px solid color-mix(in srgb,var(--warn) 40%,var(--line))}
+
   /* ---- home ---- */
   .search{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--line);
     background:var(--card);color:var(--text);font-size:15px;margin-bottom:24px}
@@ -981,6 +987,7 @@ function screenDeck(){
     <button class="back" onclick="go('home')">← All decks</button>
     <h2 class="title">${esc(d.title)}</h2>
     <div class="srcline">${esc(d.course)} · ${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}<br>from ${esc(d.source)}</div>
+    ${d.note ? `<div class="decknote">${esc(d.note)}</div>` : ''}
     <div class="modes">
       ${modes.map(([m,t,s]) => `<button class="mode" onclick="go('run','${d.id}','${m}')">
         <strong>${t}</strong><span>${s}</span></button>`).join('')}

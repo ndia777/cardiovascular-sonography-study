@@ -715,6 +715,27 @@ function suite(s, label, srcCss) {
       }
     }
 
+    /* A deck-level note exists so a deck can qualify itself — the anatomy study
+       guide is pinned as the tested set but is explicitly not the whole of it.
+       A note that never reaches the markup would look right in the deck file and
+       show nothing, so read the rendered deck screen. */
+    {
+      const noted = DECKS.filter(d => d.note);
+      check(`[${label}] some deck carries a deck-level note`, noted.length > 0);
+      let missing = '', addressed = '';
+      for (const d of noted) {
+        go('deck', d.id);
+        const html = s.__app.innerHTML;
+        if (!html.includes('decknote') && !missing) missing = d.title;
+        const frag = d.note.slice(0, 40).replace(/&/g, '&amp;');
+        if (!html.includes(frag) && !missing) missing = d.title + ' (text absent)';
+        if (/your/i.test(d.note) && !addressed) addressed = d.title;
+      }
+      go('home');
+      check(`[${label}] a deck note reaches the rendered deck screen`, !missing, missing);
+      check(`[${label}] a deck note does not address one reader`, !addressed, addressed);
+    }
+
     /* The tag, unlike the border, never goes away. A retired guide is still the
        instructor's study guide rather than a deck of notes worked up into one,
        and that distinction is the reason to keep the label after the chapter is
