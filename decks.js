@@ -5218,7 +5218,12 @@ window.DECKS = [
     { fact: true, term: 'The four fontanels', def: 'posterior, sphenoidal, mastoid and anterior' },
     { fact: true, term: 'The order in which the fontanels close', def: 'posterior at about two months, sphenoidal at about three, mastoid near the end of the first year, anterior in the second year' },
     { fact: true, term: 'The one skull bone that is not immovably fixed', def: 'the mandible, which is held by ligaments rather than sutures' },
-    { fact: true, term: 'Which bones hold paranasal sinuses', def: 'the frontal, sphenoid, ethmoid and maxillae' }
+    { fact: true, term: 'Which bones hold paranasal sinuses', def: 'the frontal, sphenoid, ethmoid and maxillae' },
+    { fact: true, term: 'The four paranasal sinuses', def: 'frontal, sphenoidal, ethmoidal and maxillary' },
+    { term: 'Frontal sinuses', def: 'the pair above each eye, near the midline' },
+    { term: 'Sphenoidal sinuses', def: 'the pair lying side by side, separated by a bony septum projecting down into the nasal cavity' },
+    { term: 'Ethmoidal sinuses', def: 'the many small air cells within the lateral masses of that bone' },
+    { term: 'Maxillary sinuses', def: 'the largest pair, running from the floor of the orbits to the roots of the upper teeth' }
   ],
   questions: [
     { q: 'Which cranial bone contains the sella turcica?',
