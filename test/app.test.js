@@ -1533,6 +1533,94 @@ function suite(s, label, srcCss) {
      that collide, a leader pointing nowhere, a missing explanation, a round
      that cannot be played — and the attribution, which is a licence
      obligation and the one thing here with consequences outside the app. */
+  /* ---- Name the Highlighted Part ----
+     The professor tests this chapter by showing a coloured-in region and asking
+     for its name, which runs opposite to the figure mode above. Each region
+     names an id or a class in the artwork; the whole question rests on that
+     target existing and on the highlight rule reaching it. A region that lights
+     nothing still renders a plausible-looking question, so it has to be caught
+     here rather than noticed. */
+  for (const d of DECKS.filter(x => x.region)) {
+    const art = vm.runInContext(`REGIONS[${JSON.stringify(d.region.name)}].art`, s);
+    check(`[${label}] ${d.id} the region artwork exists`, !!art, d.region.name);
+    if (!art) continue;
+    const items = d.region.items;
+
+    /* A labelled diagram answers its own question. */
+    check(`[${label}] ${d.id} the region artwork carries no baked-in labels`,
+          !/<text[\s>]/.test(art), 'the artwork already names the structures');
+
+    /* Four choices are offered, so there must be four things to choose from. */
+    check(`[${label}] ${d.id} has enough regions for a four-way question`,
+          items.length >= 4, `only ${items.length}`);
+
+    /* The target must exist in the artwork, as an id or as a class — those are
+       exactly what the highlight rule selects. */
+    const missing = items.filter(p =>
+      !art.includes(`id="${p.id}"`) && !art.includes(`class="${p.id}"`));
+    check(`[${label}] ${d.id} every region names something in the artwork`,
+          !missing.length, missing.map(p => p.id).join(', '));
+
+    /* Two regions sharing a target would light together; two sharing a name
+       would put the same answer in the list twice. */
+    check(`[${label}] ${d.id} no two regions share a target`,
+          new Set(items.map(p => p.id)).size === items.length, 'duplicate id');
+    check(`[${label}] ${d.id} no two regions share a name`,
+          new Set(items.map(p => p.name)).size === items.length, 'duplicate name');
+
+    check(`[${label}] ${d.id} every region carries an explanation`,
+          items.every(p => p.about && p.about.length > 15), 'a region has no explanation');
+
+    go('run', d.id, 'region');
+    const html = s.__app.innerHTML;
+
+    check(`[${label}] ${d.id} the region figure renders`, /<svg/.test(html), 'no artwork drawn');
+
+    /* The rule must select the element AND its descendants: some targets are a
+       group whose child paths each carry their own fill, and a fill on the
+       parent does not override that. Dropping the descendant halves of this
+       selector would light nothing for the skeleton. */
+    const rule = (/<style>([^<]*)<\/style>/.exec(html) || [])[1] || '';
+    check(`[${label}] ${d.id} the highlight rule reaches descendants`,
+          / \*\{|\ \*,/.test(rule) || /#[^,]+ \*/.test(rule),
+          `rule was: ${rule.slice(0, 90)}`);
+    check(`[${label}] ${d.id} the highlight rule beats the artwork's own fill`,
+          /fill:[^;]*!important/.test(rule), 'without !important an inline fill wins');
+
+    /* Four buttons, one right answer, and the right answer among them. */
+    const btns = (html.match(/<button class="choice /g) || []).length;
+    check(`[${label}] ${d.id} the question offers four choices`, btns === 4, `got ${btns}`);
+    const answer = vm.runInContext('session.choices[session.answer]', s);
+    const target = vm.runInContext('session.order[session.i]', s);
+    check(`[${label}] ${d.id} the marked answer is the highlighted region`,
+          answer === (items.find(p => p.id === target) || {}).name,
+          `marked ${answer} for ${target}`);
+
+    /* Distractors must come from this diagram, so a wrong answer is always a
+       structure that really does sit near the right one. */
+    const names = new Set(items.map(p => p.name));
+    const choices = vm.runInContext('JSON.stringify(session.choices)', s);
+    check(`[${label}] ${d.id} every choice is a region of this diagram`,
+          JSON.parse(choices).every(c => names.has(c)), choices);
+
+    /* Attribution is a licence obligation, not a courtesy. */
+    const credit = (/<p class="figcredit">([\s\S]*?)<\/p>/.exec(html) || [])[1] || '';
+    check(`[${label}] ${d.id} the diagram names its source`,
+          /commons\.wikimedia\.org|href=/.test(credit) && credit.replace(/<[^>]*>/g, '').trim().length > 20,
+          'no attribution rendered beneath the figure');
+    if (!/public domain|CC0/i.test(credit))
+      check(`[${label}] ${d.id} a licensed diagram links its licence`,
+            /creativecommons\.org/.test(credit), 'licence link missing');
+
+    /* The professor's emphasis is carried by position: this mode goes first,
+       ahead of Recall, and wears the accent border. */
+    go('deck', d.id);
+    const modes = s.__app.innerHTML;
+    const first = (/<button class="mode([^"]*)" onclick="go\('run','[^']*','([^']*)'\)/.exec(modes) || []);
+    check(`[${label}] ${d.id} the diagram mode comes first`, first[2] === 'region', `first was ${first[2]}`);
+    check(`[${label}] ${d.id} the diagram mode is marked out`, /hot/.test(first[1] || ''), 'no accent border');
+  }
+
   for (const d of DECKS.filter(x => x.figure)) {
     /* a figure entry carries its artwork, caption and credit — the drawing is
        the `art` field, not the entry itself */
