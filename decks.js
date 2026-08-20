@@ -2039,7 +2039,6 @@ window.DECKS = [
   /* Section 5.1. The four tissue types and the three junctions that hold cells together. Small on purpose — it is the frame the rest of the chapter hangs on. */
   id: 'bio-ch5-1',
   group: 'Chapter 5',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 5.1 — Tissue Types & Junctions',
@@ -2092,7 +2091,6 @@ window.DECKS = [
   /* Section 5.2, first half: what makes an epithelium, the two axes it is classified on, and the eight types. */
   id: 'bio-ch5-2',
   group: 'Chapter 5',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 5.2 — Epithelial Tissues',
@@ -2187,7 +2185,6 @@ window.DECKS = [
   /* Section 5.2, second half. Split from the epithelia because the gland classifications are their own vocabulary — structure, then mode of secretion — and 43 cards in one deck was the complaint that prompted all this. */
   id: 'bio-ch5-3',
   group: 'Chapter 5',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 5.2 — Glandular Epithelium',
@@ -2250,7 +2247,6 @@ window.DECKS = [
   /* Section 5.3, first half: the cells, the three fibres, and connective tissue proper. */
   id: 'bio-ch5-4',
   group: 'Chapter 5',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 5.3 — Connective Tissues',
@@ -2295,7 +2291,6 @@ window.DECKS = [
   /* Section 5.3, second half: the specialised connective tissues. Kept apart from the rest of 5.3 because the vascular contrast running through them — cartilage has no blood supply, bone is rich in it, blood IS the matrix — is easiest to see when they sit together. */
   id: 'bio-ch5-5',
   group: 'Chapter 5',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 5.3 — Cartilage, Bone & Blood',
@@ -2338,7 +2333,6 @@ window.DECKS = [
   /* The last three sections together. Alone they are 4, 7 and 5 cards, and a four-card deck cannot build a quiz — every card would appear as a choice on every question. */
   id: 'bio-ch5-6',
   group: 'Chapter 5',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 5.4–5.6 — Membranes, Muscle & Nervous Tissue',
@@ -2415,7 +2409,6 @@ window.DECKS = [
   /* The structural half of 6.1: the three layers, the five strata, and the two dermal layers. Holds the skin diagram, which labels accessory structures filed under 6.2 as well — the figure is a map of the whole chapter and only needs one home. */
   id: 'bio-ch6-1',
   group: 'Chapter 6',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 6.1 — Skin & Its Layers',
@@ -2500,7 +2493,6 @@ window.DECKS = [
   /* The rest of 6.1: what lives in the epidermis besides keratinocytes, what decides skin colour, and the conditions that follow from those cells misbehaving. */
   id: 'bio-ch6-2',
   group: 'Chapter 6',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 6.1 — Pigment, Cells & Skin Conditions',
@@ -2553,7 +2545,6 @@ window.DECKS = [
   /* Nails, hair and glands. Everything the skin grows rather than everything it is. */
   id: 'bio-ch6-3',
   group: 'Chapter 6',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 6.2 — Accessory Structures',
@@ -2601,7 +2592,6 @@ window.DECKS = [
   /* What the skin does. The four routes of heat loss are the part worth drilling — they are easy to name and easy to mix up. */
   id: 'bio-ch6-4',
   group: 'Chapter 6',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 6.3 — Skin Functions & Temperature',
@@ -2646,7 +2636,6 @@ window.DECKS = [
   /* Healing, burns and life-span changes together: one deck about the skin being damaged and the skin wearing out. */
   id: 'bio-ch6-5',
   group: 'Chapter 6',
-  current: true,
   added: '2026-08-10',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 6.4 — Wounds, Burns & Ageing',
