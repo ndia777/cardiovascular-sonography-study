@@ -5274,6 +5274,16 @@ window.DECKS = [
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.7–7.8 — Vertebral Column & Thoracic Cage',
   source: 'Chapter 7 — course notes',
+  region: {
+    name: 'spineLateral',
+    items: [
+      { id: 'cervical', name: 'Cervical vertebrae', about: 'the seven neck vertebrae, C1 to C7; the smallest and most mobile, and the only ones with a transverse foramen' },
+      { id: 'thoracic', name: 'Thoracic vertebrae', about: 'the twelve chest vertebrae, T1 to T12; each articulates with a pair of ribs' },
+      { id: 'lumbar', name: 'Lumbar vertebrae', about: 'the five vertebrae of the lower back, L1 to L5; the largest and heaviest, since they carry the most weight' },
+      { id: 'sacrococ', name: 'Sacrum and coccyx', about: 'the fused base of the column — five sacral vertebrae forming the sacrum, ending in the four fused vertebrae of the coccyx' },
+      { id: 'discs', name: 'Intervertebral discs', about: 'the fibrocartilage pads between adjacent vertebral bodies, which absorb shock and allow the column to bend' },
+    ],
+  },
   cards: [
     { term: 'Vertebral column', def: 'the flexible vertical axis of the skeleton, supporting the head and trunk and protecting the spinal cord' },
     { term: 'Intervertebral discs', def: 'the fibrocartilage masses separating the bones of the spine and cushioning shock' },
