@@ -5729,20 +5729,25 @@ function resetScores(btn){
    chip as the expandable thing it is; this is what <details> used to give for
    free, and it is the one thing worth keeping from it.
 
-   The choice is remembered, so a chapter you keep going back to is not a click
-   away every session. The boolean is stored rather than the key being deleted
-   on close, so "I shut this deliberately" stays distinguishable from "never
-   touched it" — otherwise a section that defaults open would spring back the
-   moment the page reloaded. */
+   The choice lasts for the session but is deliberately NOT persisted. A chip
+   left open used to be written to storage and sprang back open on every later
+   load, refilling the page with finished chapters — the clutter the chip bar
+   exists to prevent. A fresh load now shows only what is current.
+
+   In-memory rather than absent: opening a chip, entering a deck and coming
+   back is one page session with no reload, so the chip stays where it was put.
+   The boolean is still stored rather than the key deleted on close, because
+   within a session "I shut this deliberately" must stay distinguishable from
+   "never touched it" — otherwise a section that defaults open springs back on
+   the next re-render. */
+let chipOpen = {};   /* chip key -> bool. Session-only, never saved. */
 function togglePast(btn){
   const panel = document.getElementById(btn.getAttribute('aria-controls'));
   if (!panel) return;
   const open = btn.getAttribute('aria-expanded') !== 'true';
   btn.setAttribute('aria-expanded', String(open));
   panel.hidden = !open;
-  const s = load(), o = Object.assign({}, s.__open);
-  o[btn.dataset.key] = open;
-  s.__open = o; save(s);
+  chipOpen[btn.dataset.key] = open;
 }
 
 /* `exam` marks a deck as an official study guide — the instructor's, not notes
@@ -5816,7 +5821,10 @@ function screenHome(){
 
      While a search is running every fold is forced open, so a match can never
      hide inside a collapsed section. */
-  const openState = load().__open || {};
+  /* Earlier builds persisted this. Drop it once so the saved blob does not
+     carry dead keys around forever. */
+  { const st = load(); if (st.__open){ delete st.__open; save(st); } }
+  const openState = chipOpen;
   let panelSeq = 0;
   courses.forEach(c => {
     const inCourse = list.filter(d => d.course === c).sort(byAdded);

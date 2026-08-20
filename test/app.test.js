@@ -303,6 +303,48 @@ function suite(s, label, srcCss) {
                              `${subj(c)} rendered no chips to check`);
     }
 
+    /* Chips remember their state for the session but must never persist it.
+       Persisting meant a chapter opened once sprang back open on every later
+       load and the page refilled with finished chapters. A fresh load should
+       show only what is current; digging for old material is a click. */
+    {
+      go('home');
+      const readSaved = () => vm.runInContext('JSON.stringify(load())', s);
+      const before = readSaved();
+      const html0 = s.__app.innerHTML;
+      const kAt = html0.indexOf('data-key="');
+      check(`[${label}] a chip is rendered to exercise`, kAt >= 0);
+      if (kAt >= 0) {
+        const key = html0.slice(kAt + 10, html0.indexOf('"', kAt + 10));
+        const attrs = { 'aria-controls': 'past0', 'aria-expanded': 'false' };
+        const btn = {
+          dataset: { key: key.replace(/&amp;/g, '&') },
+          getAttribute: k => attrs[k],
+          setAttribute: (k, v) => { attrs[k] = v; }
+        };
+        vm.runInContext('togglePast', s)(btn);
+        check(`[${label}] a chip click opens it`, attrs['aria-expanded'] === 'true');
+
+        check(`[${label}] chip state is never written to storage`,
+              readSaved().indexOf('__open') < 0,
+              '__open was persisted, so a refresh would reopen finished chapters');
+        check(`[${label}] toggling a chip leaves saved progress alone`,
+              readSaved() === before,
+              'the progress blob changed when a chip was toggled');
+
+        /* A re-render is not a reload, so the chip must still be open. */
+        go('home');
+        const at = s.__app.innerHTML.indexOf('data-key="' + key + '"');
+        const near = at < 0 ? '' : s.__app.innerHTML.slice(at, at + 160);
+        check(`[${label}] the chip stays open across a re-render`,
+              at >= 0 && near.indexOf('aria-expanded="true"') >= 0,
+              'entering a deck and coming back would shut it');
+
+        vm.runInContext('chipOpen = {}', s);   /* leave the page as we found it */
+        go('home');
+      }
+    }
+
     /* A course whose guides have all been RETIRED is finished, not untouched, so
        its chips stay shut. This is the case the fallback above used to get
        backwards: it tested for a currently-pinned guide, so retiring the last
