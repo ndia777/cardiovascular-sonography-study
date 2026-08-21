@@ -5164,6 +5164,7 @@ window.DECKS = [
   source: 'Chapter 7 — course notes',
   label: {
     name: 'skullLateral',
+    title: 'Right lateral view',
     items: [
       { id: 'Frontal bone', name: 'Frontal bone', x: 63.6, y: 25.3, group: 'Bones of the skull', about: 'forms the forehead and the roof of each orbit' },
       { id: 'Parietal bone', name: 'Parietal bone', x: 35.7, y: 29.8, group: 'Bones of the skull', about: 'the paired bone forming most of the roof and upper side wall of the cranium' },
@@ -5191,7 +5192,7 @@ window.DECKS = [
   },
   labels: [{
     name: 'skullSagittal',
-    title: 'Label the Diagram — Sagittal Section',
+    title: 'Sagittal section',
     items: [
       { id: 'Frontal bone', name: 'Frontal bone', x: 25, y: 20, group: 'Bones of the skull', about: 'forms the forehead and the roof of each orbit' },
       { id: 'Parietal bone', name: 'Parietal bone', x: 76.9, y: 23.2, group: 'Bones of the skull', about: 'the paired bone forming most of the roof and upper side of the cranium' },

@@ -35,6 +35,12 @@ function boot(decksSrc, engineSrc, label) {
     classList: { add() {}, remove() {}, contains: () => false },
     focus() {}, blur() {}, setSelectionRange() {}, addEventListener() {},
     querySelector: () => el(), querySelectorAll: () => [],
+    /* Label mode measures the rendered artwork rather than trusting any
+       assumed margin, so the stub has to answer with a box. Zero size is
+       honest here - nothing is really laid out - and the code already has
+       to cope with it, because a raster figure genuinely measures zero
+       until it decodes. */
+    getBoundingClientRect: () => ({ x:0, y:0, left:0, top:0, right:0, bottom:0, width:0, height:0 }),
   });
   const store = new Map();
   /* one stable #app element, so assertions can read back what was rendered */
@@ -43,6 +49,9 @@ function boot(decksSrc, engineSrc, label) {
     console, Math, Date, JSON, Set, Map, Array, Object, String, Number, RegExp,
     parseInt, parseFloat, setTimeout: () => {}, clearTimeout: () => {},
     scrollTo() {}, requestAnimationFrame() {}, getComputedStyle: () => ({}),
+    /* Label mode re-lays-out on resize and when a raster decodes, so the
+       sandbox needs a listener that simply never fires. */
+    addEventListener() {}, removeEventListener() {},
     matchMedia: () => ({ matches: false }),
     localStorage: {
       getItem: k => (store.has(k) ? store.get(k) : null),
@@ -1664,13 +1673,32 @@ function suite(s, label, srcCss) {
             new Set(ids).size === ids.length, 'a duplicate id would make two slots one');
     }
 
-    /* Every figure needs its own way in, or one of them is unreachable. */
+    /* One mode, however many figures. A dozen near-identical rows in the deck
+       menu would bury every other mode, so the figures live behind a switcher
+       inside the mode instead. */
     go('deck', d.id);
     const menu = s.__app.innerHTML;
-    const missing = figs.map((_, i) => (i ? 'label:' + i : 'label'))
-                        .filter(k => !menu.includes("'" + k + "')"));
-    check(`[${label}] ${d.id} every labelled figure has its own mode`,
-          !missing.length, 'unreachable: ' + missing.join(', '));
+    check(`[${label}] ${d.id} the figures share a single mode`,
+          (menu.match(/'label(:[0-9]+)?'\)/g) || []).length === 1,
+          'expected exactly one label mode entry in the deck menu');
+
+    if (figs.length > 1) {
+      /* Each figure needs a tab, or it cannot be reached at all. */
+      go('run', d.id, 'label');
+      const run = s.__app.innerHTML;
+      const tabs = (run.match(/class="lfigtab/g) || []).length;
+      check(`[${label}] ${d.id} every figure has a switcher tab`,
+            tabs === figs.length, `${tabs} tabs for ${figs.length} figures`);
+      check(`[${label}] ${d.id} every figure is named for its tab`,
+            figs.every(f => f.title && f.title.length > 2),
+            'a figure with no title would show as "Figure n"');
+
+      /* Progress must count every figure, not just the one on screen. */
+      const total = figs.reduce((n, f) => n + f.items.length, 0);
+      check(`[${label}] ${d.id} progress spans all the figures`,
+            run.includes('/' + total) || run.includes('0/' + total),
+            `session bar should count to ${total}`);
+    }
   }
 
 
