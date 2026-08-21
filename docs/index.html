@@ -7323,7 +7323,11 @@ const LABEL_PAGE = 3;
 
 function runLabel(d){
   const items = d.label.items;
-  if (!session) session = { placed:{}, score:0, missed:[], picked:null, page:0 };
+  if (!session) session = { placed:{}, score:0, missed:[], picked:null, page:0,
+    /* A fresh order every round, so which structures share a section — and
+       which number each carries — is not something you can memorise. */
+    seed: String(Date.now()) + ':' + Math.random(), order: null };
+  if (!session.order) session.order = shuffleStable(items.map((_, i) => i), session.seed);
   const s = session;
   const placed = Object.keys(s.placed).length;
   const done = placed === items.length;
@@ -7342,7 +7346,7 @@ function runLabel(d){
   const bounds = narrow ? labelPageBounds(items.length, LABEL_PAGE) : [[0, items.length]];
   const pages = bounds.length;
   if (s.page >= pages) s.page = pages - 1;
-  const shown = items.slice(bounds[s.page][0], bounds[s.page][1]);
+  const shown = s.order.slice(bounds[s.page][0], bounds[s.page][1]).map(i => items[i]);
 
   const pageDone = shown.every(p => s.placed[p.id]);
   const lastPage = s.page >= pages - 1;
@@ -7350,7 +7354,7 @@ function runLabel(d){
   /* The bank offers this page's words only — with five slots on screen there is
      nowhere sensible to put a longer list on a phone. */
   const used = new Set(Object.values(s.placed));
-  const bank = shuffleStable(shown.map(p => p.name).filter(n => !used.has(n)), d.id + ':' + s.page);
+  const bank = shuffleStable(shown.map(p => p.name).filter(n => !used.has(n)), s.seed + ':' + s.page);
 
   const mark = p => {
     const got = s.placed[p.id];
