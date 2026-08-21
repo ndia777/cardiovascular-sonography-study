@@ -1718,10 +1718,14 @@ function runLabel(d){
   const narrow = labelNarrow();
 
   /* On a phone, work through the figure five points at a time. */
-  const bounds = narrow ? labelPageBounds(items.length, LABEL_PAGE) : [[0, items.length]];
-  const pages = bounds.length;
+  /* Screens follow the groups: cranial bones, facial bones, sutures, then the
+     processes and openings. A phone takes three at a time from within one
+     group, so both layouts teach the same organisation. */
+  const screens = labelScreens(items, s.order, narrow);
+  const pages = screens.length;
   if (s.page >= pages) s.page = pages - 1;
-  const shown = s.order.slice(bounds[s.page][0], bounds[s.page][1]).map(i => items[i]);
+  const shown = screens[s.page].items;
+  const screenName = screens[s.page].name;
 
   const pageDone = shown.every(p => s.placed[p.id]);   /* green, not merely attempted */
   const lastPage = s.page >= pages - 1;
@@ -1736,8 +1740,8 @@ function runLabel(d){
   app.innerHTML = `
     ${sessionBar(d, placed, items.length, `Label the Diagram · ${s.score} correct`)}
     <div class="q">${narrow
-      ? `Drag each word onto its number. <span class="lpage">Group ${s.page + 1} of ${pages}</span>`
-      : 'Drag each word onto its line.'}</div>
+      ? `Drag each word onto its number. <span class="lpage">${esc(screenName)} · ${s.page + 1}/${pages}</span>`
+      : `Drag each word onto its line. <span class="lpage">${esc(screenName)} · ${s.page + 1}/${pages}</span>`}</div>
     <div class="labelwrap${narrow ? ' narrow' : ''}">
       <div class="lfig" id="lfig" style="aspect-ratio:${narrow ? labelNarrowAspect(art.art) : labelFrameAspect(art.art)}">
         <div class="lart" id="lart">${art.art}</div>
@@ -1748,8 +1752,7 @@ function runLabel(d){
           /* only a correct answer counts as filled — a red slot stays droppable */
           const cls = got ? ' filled ok' : (bad ? ' no' : '');
           const text = esc(got || bad || '');
-          return `<div class="lslot ldrop${cls}" data-slot="${esc(p.id)}"
-            style="left:${p.to[0]}%;top:${p.to[1]}%">${text}</div>`;
+          return `<div class="lslot ldrop${cls}" data-slot="${esc(p.id)}">${text}</div>`;
         }).join('')}
       </div>
       ${narrow ? `<div class="lrows">${shown.map((p, i) => {
@@ -1763,7 +1766,7 @@ function runLabel(d){
         ${bank.map(n => `<button class="lchip" data-chip="${esc(n)}">${esc(n)}</button>`).join('')}
       </div>
       ${done ? `<button class="next" onclick="labelFinish()">See results →</button>`
-       : (narrow && pageDone) ? `<button class="next" onclick="labelNextPage()">Next group →</button>`
+       : pageDone ? `<button class="next" onclick="labelNextPage()">Next group →</button>`
        : `<p class="lhint">Tap a word, then tap its ${narrow ? 'number' : 'line'} — or drag it across.</p>`}
     </div>
     <p class="figcap">${art.caption}</p>
@@ -1777,6 +1780,30 @@ function labelNextPage(){ session.page++; session.picked = null; render(); }
 
 /* Split n items into sections of about `size`, evenly. A naive slice leaves a
    remainder section of one — a screen with a single word and a single blank. */
+/* Build the screens. Groups keep their order; within a group the round's
+   shuffle decides which structures share a screen, so it stays unmemorisable
+   without mixing categories together. */
+function labelScreens(items, order, narrow){
+  const seen = [], byGroup = new Map();
+  for (const idx of order){
+    const p = items[idx], g = p.group || '';
+    if (!byGroup.has(g)){ byGroup.set(g, []); seen.push(g); }
+    byGroup.get(g).push(p);
+  }
+  /* present groups in the order they are declared on the deck, not the order
+     the shuffle happened to reach them */
+  const declared = [];
+  for (const p of items) if (!declared.includes(p.group || '')) declared.push(p.group || '');
+  const out = [];
+  for (const g of declared){
+    const list = byGroup.get(g) || [];
+    if (!list.length) continue;
+    if (!narrow){ out.push({ name: g, items: list }); continue; }
+    for (const [a, b] of labelPageBounds(list.length, LABEL_PAGE))
+      out.push({ name: g, items: list.slice(a, b) });
+  }
+  return out;
+}
 function labelPageBounds(n, size){
   const count = Math.max(1, Math.ceil(n / size));
   const base = Math.floor(n / count), extra = n % count;
@@ -1895,10 +1922,60 @@ function layoutLabel(d, narrow, shown){
            + `<circle cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.6" class="lpt ${cls}"/>`;
     }).join('');
   } else {
+    /* Place this screen's slots, then draw to where they ended up. */
+    const slots = [...fig.querySelectorAll('.lslot')];
+    const place = labelSlotPositions(pt, f, slots);
+    slots.forEach((el, i) => {
+      el.style.left = place[i].x + 'px';
+      el.style.top  = place[i].y + 'px';
+    });
     svg.innerHTML = items.map((p, i) =>
-      `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${(p.to[0]/100*f.width).toFixed(1)}" y2="${(p.to[1]/100*f.height).toFixed(1)}" class="${mark(i)}"/>`
+      `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${place[i].x.toFixed(1)}" y2="${place[i].y.toFixed(1)}" class="${mark(i)}"/>`
     ).join('');
   }
+}
+
+/* Slots for one screen: a column each side, ordered by the height of the point
+   each serves, then untangled. Matching points to a vertical column in order
+   removes most crossings; swapping any pair that still crosses removes the rest,
+   and since each swap shortens the pair it cannot cycle. */
+function labelSlotPositions(pt, f, slots){
+  const mid = f.width / 2;
+  const marginL = f.width * 0.13, marginR = f.width * 0.87;
+  const side = pt.map(q => q.x < mid ? 'L' : 'R');
+  const place = pt.map(() => ({ x: 0, y: 0 }));
+
+  for (const which of ['L', 'R']){
+    const idx = pt.map((_, i) => i).filter(i => side[i] === which)
+                  .sort((a, b) => pt[a].y - pt[b].y);
+    if (!idx.length) continue;
+    /* spread down the frame, leaving room for the box itself */
+    const pad = 22;
+    const top = pad, bottom = f.height - pad;
+    const ys = idx.map((_, k) => idx.length === 1
+      ? f.height / 2
+      : top + k * (bottom - top) / (idx.length - 1));
+    const x = which === 'L' ? marginL : marginR;
+
+    let assign = idx.slice();
+    const ccw = (a, b, c) => (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+    const crosses = (i, ki, j, kj) => {
+      const a = pt[i], b = { x, y: ys[ki] }, c = pt[j], dd = { x, y: ys[kj] };
+      return ccw(a, c, dd) !== ccw(b, c, dd) && ccw(a, b, c) !== ccw(a, b, dd);
+    };
+    for (let guard = 0; guard < 500; guard++){
+      let swapped = false;
+      for (let k1 = 0; k1 < assign.length && !swapped; k1++)
+        for (let k2 = k1 + 1; k2 < assign.length && !swapped; k2++)
+          if (crosses(assign[k1], k1, assign[k2], k2)){
+            [assign[k1], assign[k2]] = [assign[k2], assign[k1]];
+            swapped = true;
+          }
+      if (!swapped) break;
+    }
+    assign.forEach((i, k) => { place[i] = { x, y: ys[k] }; });
+  }
+  return place;
 }
 
 function labelPlace(d, slotId, chipName){
