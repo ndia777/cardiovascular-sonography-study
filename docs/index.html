@@ -239,8 +239,8 @@
     background:var(--card2);border:1px solid var(--line);color:var(--dim);
     font-size:12px;font-weight:600;vertical-align:middle}
   /* Five badges have room, so they can be a comfortable tap target. */
-  .labelwrap.narrow .lpin{width:30px;height:30px;margin:-15px 0 0 -15px;
-    font-size:14px;line-height:30px}
+  .labelwrap.narrow .lpin{width:22px;height:22px;margin:-11px 0 0 -11px;
+    font-size:11.5px;line-height:22px}
   .lhint{text-align:center;color:var(--dim);font-size:12.5px;margin:12px 0 0}
 
   /* The diagram mode carries the accent border so it reads as the priority
@@ -7447,7 +7447,11 @@ function layoutLabel(d, narrow, shown){
      badges apart, never the points. Anchored by a weak pull back to the true
      point so a badge cannot wander far from what it labels. */
   if (narrow){
-    const size = 19, gap = size + 3, half = size / 2 + 1;
+    /* Measure the badge as rendered rather than restating its size here —
+       the two drifted apart last time the CSS changed. */
+    const r0 = pins[0] ? pins[0].getBoundingClientRect() : null;
+    const size = r0 && r0.width ? r0.width : 22;
+    const gap = size + 3, half = size / 2 + 1;
     for (let pass = 0; pass < 400; pass++){
       let moved = false;
       for (let i = 0; i < badge.length; i++){
