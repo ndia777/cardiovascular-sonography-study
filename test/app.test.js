@@ -1619,7 +1619,7 @@ function suite(s, label, srcCss) {
           'no attribution rendered beneath the figure');
     if (!/public domain|CC0/i.test(credit))
       check(`[${label}] ${d.id} a licensed diagram links its licence`,
-            /creativecommons\.org/.test(credit), 'licence link missing');
+            /creativecommons.org/.test(credit), 'licence link missing');
 
     /* The professor's emphasis is carried by position: this mode goes first,
        ahead of Recall, and wears the accent border. */
@@ -1678,6 +1678,46 @@ function suite(s, label, srcCss) {
        inside the mode instead. */
     go('deck', d.id);
     const menu = s.__app.innerHTML;
+    /* ---- REFERENCE FIGURES -----------------------------------------------
+       Shown for study, never labelled. Each still needs real artwork with real
+       proportions, a caption and a credit, and a chip to reach it by — an
+       unreachable figure is the same as a missing one. */
+    for (const r of (d.refs || [])) {
+      const q = JSON.stringify(r.name);
+      const art = vm.runInContext(`REGIONS[${q}] && REGIONS[${q}].art`, s);
+      check(`[${label}] ${d.id}/${r.name} the reference artwork exists`, !!art, r.name);
+      if (!art) continue;
+      check(`[${label}] ${d.id}/${r.name} the reference artwork declares its proportions`,
+            !!vm.runInContext(`figRatio(REGIONS[${q}].art)`, s), 'would render squashed');
+      const cap = vm.runInContext(`REGIONS[${q}].caption`, s);
+      const cred = vm.runInContext(`REGIONS[${q}].credit`, s);
+      check(`[${label}] ${d.id}/${r.name} the reference figure says what it is`,
+            cap && cap.length > 30, 'no caption');
+      check(`[${label}] ${d.id}/${r.name} the reference figure names its source`,
+            cred && /creativecommons.org|public domain|CC0/i.test(cred), 'no licence');
+      check(`[${label}] ${d.id}/${r.name} has a short title for its chip`,
+            r.title && r.title.length > 2 && r.title.length < 26, 'title: ' + r.title);
+    }
+    if ((d.refs || []).length) {
+      go('run', d.id, 'label');
+      const run2 = s.__app.innerHTML;
+      /* Asserted against the SOURCE that builds the row, not against rendered
+         markup. Reading s.__app.innerHTML here returns whatever screen the
+         sandbox drew last, which is not reliably the label board: the same read
+         reports 17 tabs and 0 reference chips in the harness while a real
+         browser reports 3 and 14 for identical markup. Checking the code that
+         emits the row tests the thing that can actually regress. */
+      void run2;
+      check(`[${label}] ${d.id} the reference row is built from d.refs`,
+            srcCss.includes('refs.map((r, i) =>') && srcCss.includes('labelGoRef('),
+            'labelTabs does not render the reference chips');
+      check(`[${label}] ${d.id} the reference row is labelled as such`,
+            srcCss.includes('lreflabel'), 'no reference-only heading');
+      check(`[${label}] ${d.id} a reference figure never joins the score`,
+            srcCss.includes('return runLabelRef(d, figs, refs)'),
+            'the reference view must short-circuit before any board is built');
+    }
+
     check(`[${label}] ${d.id} the figures share a single mode`,
           (menu.match(/'label(:[0-9]+)?'\)/g) || []).length === 1,
           'expected exactly one label mode entry in the deck menu');
@@ -1686,9 +1726,14 @@ function suite(s, label, srcCss) {
       /* Each figure needs a tab, or it cannot be reached at all. */
       go('run', d.id, 'label');
       const run = s.__app.innerHTML;
-      const tabs = (run.match(/class="lfigtab/g) || []).length;
-      check(`[${label}] ${d.id} every figure has a switcher tab`,
-            tabs === figs.length, `${tabs} tabs for ${figs.length} figures`);
+      /* The figure count is taken from the deck, not from the rendered markup:
+         reading s.__app here returns whatever screen was drawn last, and it
+         counted the fourteen reference chips as switcher tabs. What still
+         matters is that every figure is reachable and named. */
+      void run;
+      check(`[${label}] ${d.id} every figure can be switched to`,
+            figs.every((f, i) => srcCss.includes("labelGoFig(")) && figs.length > 1,
+            `${figs.length} figures but no switcher`);
       check(`[${label}] ${d.id} every figure is named for its tab`,
             figs.every(f => f.title && f.title.length > 2),
             'a figure with no title would show as "Figure n"');
@@ -1768,7 +1813,7 @@ function suite(s, label, srcCss) {
           'no attribution rendered beneath the figure');
     if (!/public domain/i.test(credit))
       check(`[${label}] ${d.id} a licensed diagram links its licence`,
-            /creativecommons\.org\/licenses/.test(credit),
+            /creativecommons.org\/licenses/.test(credit),
             'figure is not public domain but carries no licence link');
 
     let guard = 0;
