@@ -222,7 +222,12 @@
   .lrow .ln{flex:0 0 22px;height:22px;border-radius:6px;background:var(--card2);
     color:var(--accent);font-size:11.5px;font-weight:700;line-height:22px;text-align:center}
   .lrow .lv{flex:1;color:var(--text)}
-  .ldrop.armed{border-color:var(--accent);background:var(--card2);color:var(--text)}
+  .ldrop.armed{border-color:var(--accent);background:var(--card2);color:var(--text);
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}
+  /* the leader and point belonging to the slot under the cursor */
+  .lleaders line.aim{stroke:var(--accent);opacity:1;stroke-width:2}
+  .lleaders circle.lpt.aim{fill:var(--accent);r:4}
+  .lpin.aim{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
   .ldrop.filled{border-style:solid;color:var(--text)}
   .ldrop.ok{border-color:var(--good);color:var(--good)}
   .ldrop.no{border-color:var(--bad);color:var(--bad)}
@@ -1746,7 +1751,7 @@ function runLabel(d){
       <div class="lfig" id="lfig" style="aspect-ratio:${narrow ? labelNarrowAspect(art.art) : labelFrameAspect(art.art)}">
         <div class="lart" id="lart">${art.art}</div>
         <svg class="lleaders" id="lleaders" aria-hidden="true"></svg>
-        ${shown.map((p, i) => `<div class="lpin ${mark(p)}" data-pin="${i}">${narrow ? (i + 1) : ''}</div>`).join('')}
+        ${shown.map((p, i) => `<div class="lpin ${mark(p)}" data-pin="${i}" data-for="${esc(p.id)}">${narrow ? (i + 1) : ''}</div>`).join('')}
         ${narrow ? '' : shown.map(p => {
           const got = s.placed[p.id], bad = s.wrongAt[p.id];
           /* only a correct answer counts as filled — a red slot stays droppable */
@@ -1918,8 +1923,8 @@ function layoutLabel(d, narrow, shown){
     svg.innerHTML = items.map((p, i) => {
       if (!p.lead) return '';
       const cls = mark(i);
-      return `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${badge[i].x.toFixed(1)}" y2="${badge[i].y.toFixed(1)}" class="${cls}"/>`
-           + `<circle cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.6" class="lpt ${cls}"/>`;
+      return `<line data-for="${esc(p.id)}" x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${badge[i].x.toFixed(1)}" y2="${badge[i].y.toFixed(1)}" class="${cls}"/>`
+           + `<circle data-for="${esc(p.id)}" cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.6" class="lpt ${cls}"/>`;
     }).join('');
   } else {
     /* Place this screen's slots, then draw to where they ended up. */
@@ -1930,7 +1935,8 @@ function layoutLabel(d, narrow, shown){
       el.style.top  = place[i].y + 'px';
     });
     svg.innerHTML = items.map((p, i) =>
-      `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${place[i].x.toFixed(1)}" y2="${place[i].y.toFixed(1)}" class="${mark(i)}"/>`
+      `<line data-for="${esc(p.id)}" x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${place[i].x.toFixed(1)}" y2="${place[i].y.toFixed(1)}" class="${mark(i)}"/>`
+      + `<circle data-for="${esc(p.id)}" cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.6" class="lpt ${mark(i)}"/>`
     ).join('');
   }
 }
@@ -1976,6 +1982,15 @@ function labelSlotPositions(pt, f, slots){
     assign.forEach((i, k) => { place[i] = { x, y: ys[k] }; });
   }
   return place;
+}
+
+/* Light a slot together with its leader and its point, so it is clear which
+   structure the slot is asking about before a word is dropped on it. */
+function labelAim(slotId){
+  document.querySelectorAll('.aim').forEach(el => el.classList.remove('aim'));
+  if (!slotId) return;
+  document.querySelectorAll('[data-for="' + (window.CSS && CSS.escape ? CSS.escape(slotId) : slotId) + '"]')
+    .forEach(el => el.classList.add('aim'));
 }
 
 function labelPlace(d, slotId, chipName){
@@ -2032,7 +2047,10 @@ function wireLabel(d){
         ghost.style.top  = (ev.clientY - ghost.offsetHeight / 2) + 'px';
         drops.forEach(el => el.classList.remove('armed'));
         const over = hit(ev.clientX, ev.clientY);
-        if (over && !over.classList.contains('filled')) over.classList.add('armed');
+        if (over && !over.classList.contains('filled')){
+          over.classList.add('armed');
+          labelAim(over.dataset.slot);
+        } else labelAim(null);
       };
       const up = ev => {
         document.removeEventListener('pointermove', move);
@@ -2041,6 +2059,7 @@ function wireLabel(d){
         chip.style.opacity = '';
         if (moved){
           const over = hit(ev.clientX, ev.clientY);
+          labelAim(null);
           if (over && !over.classList.contains('filled')) labelPlace(d, over.dataset.slot, name);
           else drops.forEach(el => el.classList.remove('armed'));
         } else {
@@ -2055,6 +2074,10 @@ function wireLabel(d){
   });
 
   drops.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      if (!el.classList.contains('filled')) labelAim(el.dataset.slot);
+    });
+    el.addEventListener('mouseleave', () => labelAim(null));
     el.addEventListener('click', () => {
       if (session.picked && !el.classList.contains('filled'))
         labelPlace(d, el.dataset.slot, session.picked);
