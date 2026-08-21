@@ -189,7 +189,9 @@
   .labelwrap{position:relative;max-width:900px;margin:14px auto 0}
   .lfig{position:relative;width:100%}
   /* Wide: the artwork takes the middle band and the margins hold the words. */
-  .lart{position:absolute;left:27%;width:46%;top:22%}
+  .lart{position:absolute;left:27%;width:46%;top:9%}
+  /* Tall figures give their height to the drawing instead of to padding. */
+  .lart.tall{top:3%}
   .labelwrap.narrow .lart{position:absolute;left:11%;width:78%;top:0}
   .lart svg, .lart img{width:100%;height:auto;display:block}
   /* One row of figures across the top of the mode. A dozen entries in the
@@ -7230,19 +7232,57 @@ const CELL_FIG = `<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="htt
 /* The label frame is wider and taller than the artwork, to leave margins for
    the word slots. Keeping that ratio fixed is what lets pin coordinates convert
    with constants instead of measuring the DOM. */
-const LABEL_BAND_W = 0.46, LABEL_BAND_H = 0.56;
+/* How much of the frame the artwork occupies. The rest is margin, where the
+   words sit.
+
+   A TALL figure needs a different split. The spine is twice as high as it is
+   wide, and reserving 22% of the frame's height above and below it meant that
+   once the frame was capped so the word bank stayed on screen, the drawing
+   itself came out 121px across — too small to study. Tall figures do not need
+   that vertical padding: their slots stack down the SIDES, not above and below.
+   So they keep the same side margins and give nearly all the height to the
+   drawing. */
+/* The height band was 0.56 — 22% of the frame left empty above the drawing and
+   22% below — from when slots were spread evenly down the whole frame and
+   needed that room. They are now anchored at their own pin height, so the only
+   vertical space a slot needs is half its own box beyond the topmost and
+   bottommost pin. The old padding just pushed the word bank down the page. */
+const LABEL_BAND_W = 0.46, LABEL_BAND_H = 0.82;
+const LABEL_TALL_H = 0.94;
+const labelIsTall = art => {
+  const r = figRatio(art);
+  return !!r && r[0] / r[1] < 0.8;
+};
+const labelBandH = art => (labelIsTall(art) ? LABEL_TALL_H : LABEL_BAND_H);
 /* On a phone the artwork takes the middle 68% and the margins hold the
    numbered badges, so the frame is correspondingly wider than the drawing. */
 const LABEL_NARROW_BAND = 0.78;
 const labelNarrowAspect = art => {
-  const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(art);
+  const m = /viewBox="[-0-9.]+ +[-0-9.]+ +([0-9.]+) +([0-9.]+)"/.exec(art);
   if (!m) return '1/1';
   return (+m[1] / LABEL_NARROW_BAND).toFixed(3) + '/' + (+m[2]);
 };
+/* How wide may the frame be before it grows too tall to study?
+
+   The frame is sized by aspect-ratio from a width of 100%, so a TALL figure —
+   the spine is twice as high as it is wide — made a frame tall enough to push
+   the word bank below the fold. On a big monitor that is worse, not better:
+   more width means more height.
+
+   So budget the HEIGHT and derive the width from it. Everything else on the
+   screen — heading, notice, bank — needs room too, which is what the vh figure
+   leaves. Wide figures are unaffected because 100% binds first. */
+const labelFrameFit = art => {
+  const a = labelFrameAspect(art);
+  const [w, h] = a.split('/').map(Number);
+  if (!w || !h) return '100%';
+  return `min(100%, calc(58vh * ${(w / h).toFixed(3)}))`;
+};
+
 const labelFrameAspect = art => {
-  const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(art);
+  const m = /viewBox="[-0-9.]+ +[-0-9.]+ +([0-9.]+) +([0-9.]+)"/.exec(art);
   if (!m) return '1/1';
-  return (+m[1] / LABEL_BAND_W).toFixed(3) + '/' + (+m[2] / LABEL_BAND_H).toFixed(3);
+  return (+m[1] / LABEL_BAND_W).toFixed(3) + '/' + (+m[2] / labelBandH(art)).toFixed(3);
 };
 
 /* A figure's proportions come from the artwork itself: an SVG carries a
@@ -7521,8 +7561,8 @@ function runLabel(d){
       ? `Drag each word onto its number. <span class="lpage">${esc(screenName)} · ${s.page + 1}/${pages}</span>`
       : `Drag each word onto its line. <span class="lpage">${esc(screenName)} · ${s.page + 1}/${pages}</span>`}</div>
     <div class="labelwrap${narrow ? ' narrow' : ''}">
-      <div class="lfig" id="lfig" style="aspect-ratio:${narrow ? labelNarrowAspect(art.art) : labelFrameAspect(art.art)}">
-        <div class="lart" id="lart">${art.art}</div>
+      <div class="lfig" id="lfig" style="aspect-ratio:${narrow ? labelNarrowAspect(art.art) : labelFrameAspect(art.art)};max-width:${narrow ? '100%' : labelFrameFit(art.art)};margin:0 auto">
+        <div class="lart${narrow ? "" : (labelIsTall(art.art) ? " tall" : "")}" id="lart">${art.art}</div>
         <svg class="lleaders" id="lleaders" aria-hidden="true"></svg>
         ${shown.map((p, i) => `<div class="lpin ${mark(p)}" data-pin="${i}" data-for="${esc(p.id)}">${narrow ? (i + 1) : ''}</div>`).join('')}
         ${narrow ? '' : shown.map(p => {
