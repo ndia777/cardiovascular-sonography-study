@@ -1622,6 +1622,58 @@ function suite(s, label, srcCss) {
     check(`[${label}] ${d.id} the diagram mode is marked out`, /hot/.test(first[1] || ''), 'no accent border');
   }
 
+  /* ---- LABELLED FIGURES ---------------------------------------------------
+
+     A deck may carry several. `label` is the first, kept so decks written
+     before this still work, and `labels` holds the rest; each becomes its own
+     entry in the deck menu.
+
+     The checks that matter here are about PROPORTIONS and TIMING, because both
+     broke the moment figures stopped being inline SVG. An SVG carries a viewBox
+     and lays out instantly. A raster carries neither a viewBox nor any size
+     until the browser decodes it — so it needs data-w/data-h to avoid being
+     squashed to a square, and it needs a re-layout on load or the first,
+     uncached paint measures zero height and silently drops every pin. Cached,
+     it looks perfect, which is exactly how that would have shipped. */
+  for (const d of DECKS.filter(x => x.label || (x.labels || []).length)) {
+    const figs = [].concat(d.label || [], d.labels || []);
+    for (const f of figs) {
+      const q = JSON.stringify(f.name);
+      const art = vm.runInContext(`REGIONS[${q}] && REGIONS[${q}].art`, s);
+      check(`[${label}] ${d.id}/${f.name} the artwork exists`, !!art, f.name);
+      if (!art) continue;
+
+      const ratio = vm.runInContext(`figRatio(REGIONS[${q}].art)`, s);
+      check(`[${label}] ${d.id}/${f.name} the artwork declares its proportions`,
+            !!ratio, 'no viewBox and no data-w/data-h, so the figure renders squashed');
+
+      if (/^<img/.test(String(art).trim()))
+        check(`[${label}] ${d.id}/${f.name} a raster figure lays out again once it loads`,
+              /bitmap\.addEventListener\('load'/.test(srcCss),
+              'without this the first uncached paint drops every pin');
+
+      const off = f.items.filter(p => !(p.x >= 1 && p.x <= 99 && p.y >= 1 && p.y <= 99));
+      check(`[${label}] ${d.id}/${f.name} every pin sits on the figure`,
+            !off.length, off.map(p => p.id).join(', '));
+      check(`[${label}] ${d.id}/${f.name} every pin carries an explanation`,
+            f.items.every(p => p.about && p.about.length > 15), 'a pin has no explanation');
+      check(`[${label}] ${d.id}/${f.name} every pin is in a group`,
+            f.items.every(p => p.group), 'a pin with no group cannot be put on a screen');
+      const ids = f.items.map(p => p.id);
+      check(`[${label}] ${d.id}/${f.name} pin ids are unique`,
+            new Set(ids).size === ids.length, 'a duplicate id would make two slots one');
+    }
+
+    /* Every figure needs its own way in, or one of them is unreachable. */
+    go('deck', d.id);
+    const menu = s.__app.innerHTML;
+    const missing = figs.map((_, i) => (i ? 'label:' + i : 'label'))
+                        .filter(k => !menu.includes("'" + k + "')"));
+    check(`[${label}] ${d.id} every labelled figure has its own mode`,
+          !missing.length, 'unreachable: ' + missing.join(', '));
+  }
+
+
   for (const d of DECKS.filter(x => x.figure)) {
     /* a figure entry carries its artwork, caption and credit — the drawing is
        the `art` field, not the entry itself */
