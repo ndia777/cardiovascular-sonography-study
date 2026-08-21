@@ -1617,7 +1617,8 @@ function suite(s, label, srcCss) {
     go('deck', d.id);
     const modes = s.__app.innerHTML;
     const first = (/<button class="mode([^"]*)" onclick="go\('run','[^']*','([^']*)'\)/.exec(modes) || []);
-    check(`[${label}] ${d.id} the diagram mode comes first`, first[2] === 'region', `first was ${first[2]}`);
+    check(`[${label}] ${d.id} a diagram mode comes first`,
+          first[2] === 'label' || first[2] === 'region', `first was ${first[2]}`);
     check(`[${label}] ${d.id} the diagram mode is marked out`, /hot/.test(first[1] || ''), 'no accent border');
   }
 

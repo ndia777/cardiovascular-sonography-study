@@ -185,6 +185,97 @@
   .mode:hover{border-color:var(--accent);background:var(--card2)}
   /* The diagram mode carries the accent border so it reads as the priority
      one before anything is clicked. */
+  /* ---- label the diagram ---- */
+  .labelwrap{position:relative;max-width:900px;margin:14px auto 0}
+  .lfig{position:relative;width:100%}
+  /* Wide: the artwork takes the middle band and the margins hold the words. */
+  .lart{position:absolute;left:22%;width:56%;top:14%}
+  .labelwrap.narrow .lart{position:static;left:auto;width:100%;top:auto}
+  .lart svg, .lart img{width:100%;height:auto;display:block}
+  .lleaders{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .lleaders line{stroke:var(--dim);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.55}
+  .lleaders circle.lpt{fill:var(--accent)}
+  .lleaders circle.lpt.ok{fill:var(--good)}
+  .lleaders circle.lpt.no{fill:var(--bad)}
+  .lleaders line.ok{stroke:var(--good);opacity:1}
+  .lleaders line.no{stroke:var(--bad);opacity:1}
+  .lpin{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;
+    background:var(--dim);pointer-events:none}
+  .lpin.ok{background:var(--good)}
+  .lpin.no{background:var(--bad)}
+  /* On a phone the points are numbered, so they have to be readable. */
+  .labelwrap.narrow .lpin{width:19px;height:19px;margin:-9.5px 0 0 -9.5px;
+    font-size:11px;font-weight:700;line-height:19px;text-align:center;
+    color:#08131b;background:var(--accent);box-shadow:0 0 0 1.5px var(--card)}
+  .labelwrap.narrow .lpin.ok{background:var(--good)}
+  .labelwrap.narrow .lpin.no{background:var(--bad)}
+  .lslot{position:absolute;transform:translate(-50%,-50%);min-width:76px;max-width:150px;
+    min-height:26px;padding:5px 8px;border:1px dashed var(--line);border-radius:7px;
+    background:var(--card);font-size:11.5px;line-height:1.25;text-align:center;
+    color:var(--dim);touch-action:none;cursor:pointer;transition:border-color .12s,background .12s}
+  /* Phone: the slots become a numbered list under the figure. */
+  .lrows{display:grid;grid-template-columns:1fr;gap:6px;margin:14px 0 0}
+  .lrow{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;
+    border:1px dashed var(--line);border-radius:9px;background:var(--card);
+    font-size:13.5px;text-align:left;color:var(--dim);touch-action:none;cursor:pointer}
+  .lrow .ln{flex:0 0 22px;height:22px;border-radius:6px;background:var(--card2);
+    color:var(--accent);font-size:11.5px;font-weight:700;line-height:22px;text-align:center}
+  .lrow .lv{flex:1;color:var(--text)}
+  .ldrop.armed{border-color:var(--accent);background:var(--card2);color:var(--text)}
+  .ldrop.filled{border-style:solid;color:var(--text)}
+  .ldrop.ok{border-color:var(--good);color:var(--good)}
+  .ldrop.no{border-color:var(--bad);color:var(--bad)}
+  .ldrop.ok .lv{color:var(--good)}
+  .ldrop.no .lv{color:var(--bad)}
+  .lbank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 0}
+  .lchip{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);
+    font-size:13px;color:var(--text);touch-action:none;cursor:grab;user-select:none;
+    transition:border-color .12s,background .12s}
+  .lchip:hover{border-color:var(--accent)}
+  .lchip.picked{border-color:var(--accent);background:var(--card2)}
+  .lchip.ghost{position:fixed;z-index:60;pointer-events:none;opacity:.92;cursor:grabbing;
+    box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .lhint{text-align:center;color:var(--dim);font-size:12.5px;margin:12px 0 0}
+
+  /* The diagram mode carries the accent border so it reads as the priority
+     one before anything is clicked. */
+  /* ---- label the diagram ---- */
+  .labelwrap{position:relative;max-width:900px;margin:14px auto 0}
+  /* The artwork occupies the middle band; the margins hold the word slots, the
+     way the textbook sets its labels either side of the illustration. */
+  .lfig{position:relative;width:100%}
+  .lart{position:absolute;left:22%;width:56%;top:14%}
+  .lart svg, .lart img{width:100%;height:auto;display:block}
+  .lleaders{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .lleaders line{stroke:var(--dim);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.55}
+  .lleaders line.on{stroke:var(--accent);opacity:1}
+  .lleaders line.ok{stroke:var(--good);opacity:1}
+  .lleaders line.no{stroke:var(--bad);opacity:1}
+  /* the point on the artwork a leader starts from */
+  .lpin{position:absolute;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;
+    background:var(--dim);pointer-events:none}
+  .lpin.on{background:var(--accent)}
+  .lpin.ok{background:var(--good)}
+  .lpin.no{background:var(--bad)}
+  /* the drop target at the end of a leader */
+  .lslot{position:absolute;transform:translate(-50%,-50%);min-width:76px;max-width:150px;min-height:26px;
+    padding:5px 8px;border:1px dashed var(--line);border-radius:7px;background:var(--card);
+    font-size:11.5px;line-height:1.25;text-align:center;color:var(--dim);
+    touch-action:none;cursor:pointer;transition:border-color .12s,background .12s}
+  .lslot.armed{border-color:var(--accent);background:var(--card2);color:var(--text)}
+  .lslot.filled{border-style:solid;color:var(--text)}
+  .lslot.ok{border-color:var(--good);color:var(--good)}
+  .lslot.no{border-color:var(--bad);color:var(--bad)}
+  .lbank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 0}
+  .lchip{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);
+    font-size:13px;color:var(--text);touch-action:none;cursor:grab;user-select:none;
+    transition:border-color .12s,background .12s}
+  .lchip:hover{border-color:var(--accent)}
+  .lchip.picked{border-color:var(--accent);background:var(--card2)}
+  .lchip.ghost{position:fixed;z-index:60;pointer-events:none;opacity:.92;cursor:grabbing;
+    box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .lhint{text-align:center;color:var(--dim);font-size:12.5px;margin:12px 0 0}
+
   .mode.hot{border-color:var(--accent);background:var(--card2)}
   .mode.hot:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
   .mode strong{display:block;font-size:15px;margin-bottom:4px}
@@ -5677,6 +5768,33 @@ window.DECKS = [
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.5–7.6 — Skeletal Organization & the Skull',
   source: 'Chapter 7 — course notes',
+  label: {
+    name: 'skullLateral',
+    items: [
+      { id: 'Frontal bone', name: 'Frontal bone', x: 63.6, y: 25.3, to: [90, 4], about: 'forms the forehead and the roof of each orbit' },
+      { id: 'Parietal bone', name: 'Parietal bone', x: 35.7, y: 29.8, to: [10, 12.4], about: 'the paired bone forming most of the roof and upper side wall of the cranium' },
+      { id: 'Temporal bone', name: 'Temporal bone', x: 45.9, y: 53.9, to: [10, 29.1], about: 'the lower side wall of the cranium; it houses the middle and inner ear' },
+      { id: 'Occipital bone', name: 'Occipital bone', x: 26.1, y: 62.4, to: [10, 70.9], about: 'forms the back and much of the base of the cranium' },
+      { id: 'Sphenoid bone', name: 'Sphenoid bone', x: 61.8, y: 46, to: [90, 34.7], about: 'spans the floor of the cranium; its greater wing reaches the side of the skull' },
+      { id: 'Ethmoid bone', name: 'Ethmoid bone', x: 69.6, y: 45.8, to: [90, 14.2], about: 'a light bone in the medial wall of the orbit and the roof of the nasal cavity' },
+      { id: 'Lacrimal bone', name: 'Lacrimal bone', x: 71.4, y: 47.4, to: [90, 44.9], about: 'the smallest facial bone, in the medial wall of the orbit' },
+      { id: 'Nasal bone', name: 'Nasal bone', x: 77.3, y: 45.8, to: [90, 24.4], about: 'the small paired bones forming the bridge of the nose' },
+      { id: 'Zygomatic bone', name: 'Zygomatic bone', x: 68.5, y: 53.9, to: [90, 55.1], about: 'the cheekbone, forming the lateral wall and floor of the orbit' },
+      { id: 'Maxilla', name: 'Maxilla', x: 73.2, y: 62.7, to: [90, 75.6], about: 'the upper jaw, carrying the upper teeth and forming most of the hard palate' },
+      { id: 'Mandible', name: 'Mandible', x: 64.4, y: 79.8, to: [90, 85.8], about: 'the lower jaw, the only freely movable bone of the skull' },
+      { id: 'Coronal suture', name: 'Coronal suture', x: 54.1, y: 17.7, to: [10, 4], about: 'the immovable joint between the frontal bone and the two parietal bones' },
+      { id: 'Squamous suture', name: 'Squamous suture', x: 50, y: 37.3, to: [10, 20.7], about: 'the joint along the upper edge of the temporal bone, where it meets the parietal' },
+      { id: 'Lambdoid suture', name: 'Lambdoid suture', x: 20.2, y: 53.6, to: [10, 37.5], about: 'the joint between the occipital bone and the parietal bones' },
+      { id: 'External acoustic meatus', name: 'External acoustic meatus', x: 46.1, y: 61.9, to: [10, 62.5], about: 'the opening in the temporal bone that leads to the middle ear' },
+      { id: 'Mastoid process', name: 'Mastoid process', x: 47.8, y: 72.1, to: [10, 96], about: 'the blunt projection of the temporal bone behind the ear' },
+      { id: 'Styloid process', name: 'Styloid process', x: 50, y: 71.2, to: [10, 87.6], about: 'the slender spike below the ear, an attachment for tongue and pharynx muscles' },
+      { id: 'Zygomatic process of temporal bone', name: 'Zygomatic process of temporal bone', x: 53.3, y: 57.2, to: [10, 45.8], about: 'the rearward half of the zygomatic arch, projecting forward from the temporal bone' },
+      { id: 'Temporal process of zygomatic bone', name: 'Temporal process of zygomatic bone', x: 61.4, y: 56.5, to: [90, 65.3], about: 'the forward half of the zygomatic arch, projecting back from the cheekbone' },
+      { id: 'Mandibular condyle', name: 'Mandibular condyle', x: 49.7, y: 61.4, to: [10, 54.2], about: 'the rounded head of the mandible, which articulates with the temporal bone' },
+      { id: 'Coronoid process', name: 'Coronoid process', x: 60, y: 65.7, to: [10, 79.3], about: 'the pointed projection on the front of the mandible ramus, for the temporalis muscle' },
+      { id: 'Mental foramen', name: 'Mental foramen', x: 75.7, y: 87.8, to: [90, 96], about: 'the small opening on the front of the mandible for nerves and vessels to the chin' },
+    ],
+  },
   region: {
     name: 'skullLateral',
     items: [
@@ -6574,6 +6692,9 @@ function screenDeck(){
   const modes = [];
   /* First, and bordered, because this chapter is tested by diagram — the
      professor said so, and the mode order is how the page says which to do. */
+  if (d.label)
+    modes.push(['label','Label the Diagram',
+      `Drag each name onto its line, the way the textbook figure is labelled. ${d.label.items.length} to place.`, 'hot']);
   if (d.region)
     modes.push(['region','Name the Highlighted Part',
       `A region of the diagram is coloured in — name it from four choices. ${d.region.items.length} to work through.`, 'hot']);
@@ -7031,6 +7152,16 @@ const CELL_FIG = `<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="htt
 /* Portrait art has to be limited by height or it pushes the answers off the
    screen; landscape art is limited by width as before. Both come back as one
    max-width so the figure box stays a simple centred block. */
+/* The label frame is wider and taller than the artwork, to leave margins for
+   the word slots. Keeping that ratio fixed is what lets pin coordinates convert
+   with constants instead of measuring the DOM. */
+const LABEL_BAND_W = 0.56, LABEL_BAND_H = 0.72;
+const labelFrameAspect = art => {
+  const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(art);
+  if (!m) return '1/1';
+  return (+m[1] / LABEL_BAND_W).toFixed(3) + '/' + (+m[2] / LABEL_BAND_H).toFixed(3);
+};
+
 const figFit = art => {
   const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(art);
   if (!m) return '520px';
@@ -7165,6 +7296,247 @@ function pickPart(id){
   render();
 }
 function nextPart(){ session.i++; session.picked = null; render(); }
+
+/* ═══════════════ LABEL THE DIAGRAM ═══════════════ */
+/* The textbook figures label sutures, foramina, processes and curvatures — a
+   line, a hole, a bump and a span. None is an area you can colour in, which is
+   why the region mode cannot reach them and this mode exists.
+
+   One slot per structure, one word per slot, marked as it is placed. A wrong
+   word stays put and shows the right answer beside it, so the finished board
+   still reads as the completed figure.
+
+   Layout comes in two shapes. Wide enough, and the words sit in columns either
+   side with leader lines, the way the textbook sets them. On a phone there is
+   no room for that, so the artwork goes full width with numbered points and the
+   words drop into a numbered list below. Pin positions are MEASURED from the
+   rendered artwork in both, never computed from assumed margins. */
+const labelNarrow = () => (app.clientWidth || 900) < 700;
+
+function runLabel(d){
+  const items = d.label.items;
+  if (!session) session = { placed:{}, score:0, missed:[], picked:null };
+  const s = session;
+  const placed = Object.keys(s.placed).length;
+  const done = placed === items.length;
+
+  if (done && s.showResults){
+    const pct = Math.round(s.score / items.length * 100);
+    const prev = load()[d.id] || {};
+    record(d.id, { labelBest: Math.max(prev.labelBest || 0, pct) });
+    return results(d, `${s.score}/${items.length}`, `of ${items.length} labels placed correctly`, s.missed, 'label');
+  }
+
+  const art = REGIONS[d.label.name];
+  const narrow = labelNarrow();
+  const used = new Set(Object.values(s.placed));
+  const bank = items.map(p => p.name).filter(n => !used.has(n));
+
+  const mark = p => {
+    const got = s.placed[p.id];
+    return !got ? '' : (got === p.name ? 'ok' : 'no');
+  };
+
+  app.innerHTML = `
+    ${sessionBar(d, placed, items.length, `Label the Diagram · ${s.score} correct`)}
+    <div class="q">${narrow ? 'Drag each word onto its number.' : 'Drag each word onto its line.'}</div>
+    <div class="labelwrap${narrow ? ' narrow' : ''}">
+      <div class="lfig" id="lfig" style="aspect-ratio:${narrow ? figAspect(art.art) : labelFrameAspect(art.art)}">
+        <div class="lart" id="lart">${art.art}</div>
+        <svg class="lleaders" id="lleaders" aria-hidden="true"></svg>
+        ${items.map((p, i) => `<div class="lpin ${mark(p)}" data-pin="${i}">${narrow ? (i + 1) : ''}</div>`).join('')}
+        ${narrow ? '' : items.map(p => {
+          const got = s.placed[p.id];
+          const cls = got ? ' filled ' + mark(p) : '';
+          const text = got ? esc(got === p.name ? got : got + ' → ' + p.name) : '';
+          return `<div class="lslot ldrop${cls}" data-slot="${esc(p.id)}"
+            style="left:${p.to[0]}%;top:${p.to[1]}%">${text}</div>`;
+        }).join('')}
+      </div>
+      ${narrow ? `<div class="lrows">${items.map((p, i) => {
+        const got = s.placed[p.id];
+        const cls = got ? ' filled ' + mark(p) : '';
+        const text = got ? esc(got === p.name ? got : got + ' → ' + p.name) : '';
+        return `<button class="lrow ldrop${cls}" data-slot="${esc(p.id)}">
+          <span class="ln">${i + 1}</span><span class="lv">${text}</span></button>`;
+      }).join('')}</div>` : ''}
+      <div class="lbank" id="lbank">
+        ${bank.map(n => `<button class="lchip" data-chip="${esc(n)}">${esc(n)}</button>`).join('')}
+      </div>
+      ${done ? `<button class="next" onclick="labelFinish()">See results →</button>`
+             : `<p class="lhint">Tap a word, then tap its ${narrow ? 'number' : 'line'} — or drag it across.</p>`}
+    </div>
+    <p class="figcap">${art.caption}</p>
+    <p class="figcredit">${art.credit}</p>`;
+
+  layoutLabel(d, narrow);
+  wireLabel(d);
+  keyHandler = null;
+}
+
+/* Measure the artwork as rendered and place the pins inside it. Everything
+   positional flows from this one measurement, so no layout assumption is baked
+   into the coordinates. */
+function layoutLabel(d, narrow){
+  const fig = document.getElementById('lfig');
+  const artEl = document.getElementById('lart');
+  const svg = document.getElementById('lleaders');
+  if (!fig || !artEl) return;
+  const f = fig.getBoundingClientRect(), r = artEl.getBoundingClientRect();
+  if (!r.width || !r.height) return;
+  const ox = r.left - f.left, oy = r.top - f.top;
+  const items = d.label.items;
+  const pins = [...fig.querySelectorAll('.lpin')];
+
+  /* true anatomical points, in frame pixels */
+  const pt = items.map(p => ({ x: ox + p.x / 100 * r.width, y: oy + p.y / 100 * r.height }));
+  const badge = pt.map(q => ({ x: q.x, y: q.y }));
+
+  /* On a phone the badge is big enough to collide with its neighbours. Push the
+     badges apart, never the points. Anchored by a weak pull back to the true
+     point so a badge cannot wander far from what it labels. */
+  if (narrow){
+    const size = 19, gap = size + 3, half = size / 2 + 1;
+    for (let pass = 0; pass < 400; pass++){
+      let moved = false;
+      for (let i = 0; i < badge.length; i++){
+        for (let j = i + 1; j < badge.length; j++){
+          let dx = badge[j].x - badge[i].x, dy = badge[j].y - badge[i].y;
+          let dist = Math.hypot(dx, dy);
+          if (dist >= gap) continue;
+          if (dist < 0.01){ dx = (i % 2 ? 1 : -1); dy = 0.3; dist = 1; }
+          const push = (gap - dist) / 2;
+          const ux = dx / dist * push, uy = dy / dist * push;
+          badge[i].x -= ux; badge[i].y -= uy;
+          badge[j].x += ux; badge[j].y += uy;
+          moved = true;
+        }
+        /* keep it tethered to its own point */
+        badge[i].x += (pt[i].x - badge[i].x) * 0.015;
+        badge[i].y += (pt[i].y - badge[i].y) * 0.015;
+        /* clamp inside the loop, so a badge pushed against the edge still has
+           passes left to resolve rather than being stacked on a neighbour */
+        badge[i].x = Math.max(half, Math.min(f.width - half, badge[i].x));
+        badge[i].y = Math.max(half, Math.min(f.height - half, badge[i].y));
+      }
+      if (!moved) break;
+    }
+  }
+
+  pins.forEach((pin, i) => {
+    pin.style.left = badge[i].x + 'px';
+    pin.style.top  = badge[i].y + 'px';
+  });
+
+  if (!svg) return;
+  svg.setAttribute('viewBox', `0 0 ${f.width} ${f.height}`);
+  const mark = i => {
+    const p = items[i], got = session.placed[p.id];
+    return !got ? '' : (got === p.name ? 'ok' : 'no');
+  };
+  if (narrow){
+    /* a dot on the true point, and a connector only where the badge moved */
+    svg.innerHTML = items.map((p, i) => {
+      const moved = Math.hypot(badge[i].x - pt[i].x, badge[i].y - pt[i].y) > 2.5;
+      const cls = mark(i);
+      return (moved ? `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${badge[i].x.toFixed(1)}" y2="${badge[i].y.toFixed(1)}" class="${cls}"/>` : '')
+           + `<circle cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.4" class="lpt ${cls}"/>`;
+    }).join('');
+  } else {
+    svg.innerHTML = items.map((p, i) =>
+      `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${(p.to[0]/100*f.width).toFixed(1)}" y2="${(p.to[1]/100*f.height).toFixed(1)}" class="${mark(i)}"/>`
+    ).join('');
+  }
+}
+
+function labelPlace(d, slotId, chipName){
+  const s = session;
+  if (!slotId || !chipName || s.placed[slotId]) return;
+  const item = d.label.items.find(p => p.id === slotId);
+  s.placed[slotId] = chipName;
+  if (chipName === item.name) s.score++;
+  else s.missed.push({ q: `You put <b>${esc(chipName)}</b> here`, a: item.name });
+  s.picked = null;
+  render();
+}
+function labelFinish(){ session.showResults = true; render(); }
+
+/* Pointer events, so mouse and touch take one path. A press that never moves is
+   a tap, which is also the fallback for anyone who cannot drag. */
+function wireLabel(d){
+  const bank = document.getElementById('lbank');
+  if (!bank) return;
+  const drops = [...document.querySelectorAll('.ldrop')];
+  const hit = (x, y) => drops.find(el => {
+    const r = el.getBoundingClientRect();
+    return x >= r.left - 12 && x <= r.right + 12 && y >= r.top - 12 && y <= r.bottom + 12;
+  });
+
+  bank.querySelectorAll('.lchip').forEach(chip => {
+    chip.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      const name = chip.dataset.chip;
+      const sx = e.clientX, sy = e.clientY;
+      let ghost = null, moved = false;
+      const move = ev => {
+        if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
+        if (!moved){
+          moved = true;
+          ghost = chip.cloneNode(true);
+          ghost.classList.add('ghost');
+          document.body.appendChild(ghost);
+          chip.style.opacity = '.35';
+        }
+        ghost.style.left = (ev.clientX - ghost.offsetWidth / 2) + 'px';
+        ghost.style.top  = (ev.clientY - ghost.offsetHeight / 2) + 'px';
+        drops.forEach(el => el.classList.remove('armed'));
+        const over = hit(ev.clientX, ev.clientY);
+        if (over && !over.classList.contains('filled')) over.classList.add('armed');
+      };
+      const up = ev => {
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+        if (ghost) ghost.remove();
+        chip.style.opacity = '';
+        if (moved){
+          const over = hit(ev.clientX, ev.clientY);
+          if (over && !over.classList.contains('filled')) labelPlace(d, over.dataset.slot, name);
+          else drops.forEach(el => el.classList.remove('armed'));
+        } else {
+          session.picked = session.picked === name ? null : name;
+          render();
+        }
+      };
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+    });
+    if (session.picked === chip.dataset.chip) chip.classList.add('picked');
+  });
+
+  drops.forEach(el => {
+    el.addEventListener('click', () => {
+      if (session.picked && !el.classList.contains('filled'))
+        labelPlace(d, el.dataset.slot, session.picked);
+    });
+    if (session.picked && !el.classList.contains('filled')) el.classList.add('armed');
+  });
+
+  /* Turning a phone sideways crosses the layout threshold, and pin positions
+     come from a measurement taken at the old size. Re-render on resize. */
+  if (!window.__labelResize){
+    window.__labelResize = true;
+    let t = null, wasNarrow = labelNarrow();
+    window.addEventListener('resize', () => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        if (view.mode !== 'label') return;
+        const now = labelNarrow();
+        if (now !== wasNarrow){ wasNarrow = now; render(); }
+        else layoutLabel(deckById(view.deck), now);
+      }, 120);
+    });
+  }
+}
 
 /* ═══════════════ NAME THE HIGHLIGHTED PART ═══════════════ */
 /* The test shows a coloured-in region and asks for its name in multiple choice.
@@ -8348,7 +8720,7 @@ function render(){
   ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
      chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse,
      chapter: runChapter, trace: runTrace, parts: runParts,
-     figure: runFigure, region: runRegion }[view.mode] || screenDeck)(d);
+     figure: runFigure, region: runRegion, label: runLabel }[view.mode] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {
   /* Escape closes the share panel before it navigates — otherwise dismissing
