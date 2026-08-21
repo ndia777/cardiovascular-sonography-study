@@ -239,8 +239,8 @@
     background:var(--card2);border:1px solid var(--line);color:var(--dim);
     font-size:12px;font-weight:600;vertical-align:middle}
   /* Five badges have room, so they can be a comfortable tap target. */
-  .labelwrap.narrow .lpin{width:22px;height:22px;margin:-11px 0 0 -11px;
-    font-size:11.5px;line-height:22px}
+  .labelwrap.narrow .lpin{width:16px;height:16px;margin:-8px 0 0 -8px;
+    font-size:9.5px;line-height:16px}
   .lhint{text-align:center;color:var(--dim);font-size:12.5px;margin:12px 0 0}
 
   /* The diagram mode carries the accent border so it reads as the priority
@@ -1679,13 +1679,17 @@ function nextPart(){ session.i++; session.picked = null; render(); }
    no room for that, so the artwork goes full width with numbered points and the
    words drop into a numbered list below. Pin positions are MEASURED from the
    rendered artwork in both, never computed from assumed margins. */
+/* Green once a slot is settled with the right word, red while it holds a wrong
+   attempt. Shared, because the runner and the layout both need it and a second
+   copy would drift the moment one changed. */
+const labelState = p => session.placed[p.id] ? 'ok' : (session.wrongAt[p.id] ? 'no' : '');
 const labelNarrow = () => (app.clientWidth || 900) < 700;
 
 const LABEL_PAGE = 3;
 
 function runLabel(d){
   const items = d.label.items;
-  if (!session) session = { placed:{}, score:0, missed:[], picked:null, page:0,
+  if (!session) session = { placed:{}, wrongAt:{}, tried:{}, score:0, missed:[], picked:null, page:0,
     /* A fresh order every round, so which structures share a section — and
        which number each carries — is not something you can memorise. */
     seed: String(Date.now()) + ':' + Math.random(), order: null };
@@ -1710,7 +1714,7 @@ function runLabel(d){
   if (s.page >= pages) s.page = pages - 1;
   const shown = s.order.slice(bounds[s.page][0], bounds[s.page][1]).map(i => items[i]);
 
-  const pageDone = shown.every(p => s.placed[p.id]);
+  const pageDone = shown.every(p => s.placed[p.id]);   /* green, not merely attempted */
   const lastPage = s.page >= pages - 1;
 
   /* The bank offers this page's words only — with five slots on screen there is
@@ -1718,10 +1722,7 @@ function runLabel(d){
   const used = new Set(Object.values(s.placed));
   const bank = shuffleStable(shown.map(p => p.name).filter(n => !used.has(n)), s.seed + ':' + s.page);
 
-  const mark = p => {
-    const got = s.placed[p.id];
-    return !got ? '' : (got === p.name ? 'ok' : 'no');
-  };
+  const mark = labelState;
 
   app.innerHTML = `
     ${sessionBar(d, placed, items.length, `Label the Diagram · ${s.score} correct`)}
@@ -1734,17 +1735,18 @@ function runLabel(d){
         <svg class="lleaders" id="lleaders" aria-hidden="true"></svg>
         ${shown.map((p, i) => `<div class="lpin ${mark(p)}" data-pin="${i}">${narrow ? (i + 1) : ''}</div>`).join('')}
         ${narrow ? '' : shown.map(p => {
-          const got = s.placed[p.id];
-          const cls = got ? ' filled ' + mark(p) : '';
-          const text = got ? esc(got === p.name ? got : got + ' → ' + p.name) : '';
+          const got = s.placed[p.id], bad = s.wrongAt[p.id];
+          /* only a correct answer counts as filled — a red slot stays droppable */
+          const cls = got ? ' filled ok' : (bad ? ' no' : '');
+          const text = esc(got || bad || '');
           return `<div class="lslot ldrop${cls}" data-slot="${esc(p.id)}"
             style="left:${p.to[0]}%;top:${p.to[1]}%">${text}</div>`;
         }).join('')}
       </div>
       ${narrow ? `<div class="lrows">${shown.map((p, i) => {
-        const got = s.placed[p.id];
-        const cls = got ? ' filled ' + mark(p) : '';
-        const text = got ? esc(got === p.name ? got : got + ' → ' + p.name) : '';
+        const got = s.placed[p.id], bad = s.wrongAt[p.id];
+        const cls = got ? ' filled ok' : (bad ? ' no' : '');
+        const text = esc(got || bad || '');
         return `<button class="lrow ldrop${cls}" data-slot="${esc(p.id)}">
           <span class="ln">${i + 1}</span><span class="lv">${text}</span></button>`;
       }).join('')}</div>` : ''}
@@ -1753,7 +1755,7 @@ function runLabel(d){
       </div>
       ${done ? `<button class="next" onclick="labelFinish()">See results →</button>`
        : (narrow && pageDone) ? `<button class="next" onclick="labelNextPage()">Next group →</button>`
-       : `<p class="lhint">Tap a word, then tap its ${narrow ? 'number' : 'line'} — or drag it across.</p>`}
+       : `<p class="lhint">${Object.keys(s.wrongAt).length ? 'Red means that word belongs somewhere else — try it on another.' : `Tap a word, then tap its ${narrow ? 'number' : 'line'} — or drag it across.`}</p>`}
     </div>
     <p class="figcap">${art.caption}</p>
     <p class="figcredit">${art.credit}</p>`;
@@ -1851,10 +1853,7 @@ function layoutLabel(d, narrow, shown){
 
   if (!svg) return;
   svg.setAttribute('viewBox', `0 0 ${f.width} ${f.height}`);
-  const mark = i => {
-    const p = items[i], got = session.placed[p.id];
-    return !got ? '' : (got === p.name ? 'ok' : 'no');
-  };
+  const mark = i => labelState(items[i]);
   if (narrow){
     /* a dot on the true point, and a connector only where the badge moved */
     svg.innerHTML = items.map((p, i) => {
@@ -1872,11 +1871,23 @@ function layoutLabel(d, narrow, shown){
 
 function labelPlace(d, slotId, chipName){
   const s = session;
-  if (!slotId || !chipName || s.placed[slotId]) return;
+  if (!slotId || !chipName || s.placed[slotId]) return;   /* green slots are settled */
   const item = d.label.items.find(p => p.id === slotId);
-  s.placed[slotId] = chipName;
-  if (chipName === item.name) s.score++;
-  else s.missed.push({ q: `You put <b>${esc(chipName)}</b> here`, a: item.name });
+  if (chipName === item.name){
+    /* right: settle it, and clear any red left from an earlier try */
+    s.placed[slotId] = chipName;
+    delete s.wrongAt[slotId];
+    if (!s.tried[slotId]) s.score++;                       /* first attempt only */
+  } else {
+    /* wrong: mark the slot, keep the answer to yourself, hand the word back */
+    s.wrongAt[slotId] = chipName;
+    const key = slotId + '|' + chipName;
+    if (!s.tried[key]){
+      s.tried[key] = true;
+      s.missed.push({ q: `You put <b>${esc(chipName)}</b> on ${esc(item.name)}`, a: item.name });
+    }
+    s.tried[slotId] = true;
+  }
   s.picked = null;
   render();
 }
