@@ -5239,22 +5239,6 @@ window.DECKS = [
       { id: 'Infraorbital foramen', name: 'Infraorbital foramen', x: 43, y: 73.3, lead: true, group: 'Openings and fissures', about: 'the opening below the orbit carrying the nerve to the cheek and upper lip' },
     ],
   }],
-  refs: [
-    { name: 'refSkullAnterior', title: 'Anterior view' },
-    { name: 'refSkullPosterior', title: 'Posterior view' },
-    { name: 'refSkullParts', title: 'Parts of the skull' },
-    { name: 'refSkullBase', title: 'Skull base' },
-    { name: 'refCranialFossae', title: 'Cranial fossae' },
-    { name: 'refSphenoid', title: 'Sphenoid bone' },
-    { name: 'refEthmoid', title: 'Ethmoid bone' },
-    { name: 'refTemporal', title: 'Temporal bone' },
-    { name: 'refMaxilla', title: 'Maxilla' },
-    { name: 'refMandible', title: 'Mandible' },
-    { name: 'refHyoid', title: 'Hyoid bone' },
-    { name: 'refNasalCavity', title: 'Nasal cavity' },
-    { name: 'refNasalSeptum', title: 'Nasal septum' },
-    { name: 'refSinuses', title: 'Paranasal sinuses' },
-  ],
   region: {
     name: 'skullLateral',
     items: [
