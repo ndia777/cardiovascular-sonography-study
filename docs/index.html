@@ -190,7 +190,7 @@
   .lfig{position:relative;width:100%}
   /* Wide: the artwork takes the middle band and the margins hold the words. */
   .lart{position:absolute;left:22%;width:56%;top:14%}
-  .labelwrap.narrow .lart{position:static;left:auto;width:100%;top:auto}
+  .labelwrap.narrow .lart{position:absolute;left:11%;width:78%;top:0}
   .lart svg, .lart img{width:100%;height:auto;display:block}
   .lleaders{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
   .lleaders line{stroke:var(--dim);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.55}
@@ -7162,6 +7162,14 @@ const CELL_FIG = `<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="htt
    the word slots. Keeping that ratio fixed is what lets pin coordinates convert
    with constants instead of measuring the DOM. */
 const LABEL_BAND_W = 0.56, LABEL_BAND_H = 0.72;
+/* On a phone the artwork takes the middle 68% and the margins hold the
+   numbered badges, so the frame is correspondingly wider than the drawing. */
+const LABEL_NARROW_BAND = 0.78;
+const labelNarrowAspect = art => {
+  const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(art);
+  if (!m) return '1/1';
+  return (+m[1] / LABEL_NARROW_BAND).toFixed(3) + '/' + (+m[2]);
+};
 const labelFrameAspect = art => {
   const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(art);
   if (!m) return '1/1';
@@ -7368,7 +7376,7 @@ function runLabel(d){
       ? `Drag each word onto its number. <span class="lpage">Group ${s.page + 1} of ${pages}</span>`
       : 'Drag each word onto its line.'}</div>
     <div class="labelwrap${narrow ? ' narrow' : ''}">
-      <div class="lfig" id="lfig" style="aspect-ratio:${narrow ? figAspect(art.art) : labelFrameAspect(art.art)}">
+      <div class="lfig" id="lfig" style="aspect-ratio:${narrow ? labelNarrowAspect(art.art) : labelFrameAspect(art.art)}">
         <div class="lart" id="lart">${art.art}</div>
         <svg class="lleaders" id="lleaders" aria-hidden="true"></svg>
         ${shown.map((p, i) => `<div class="lpin ${mark(p)}" data-pin="${i}">${narrow ? (i + 1) : ''}</div>`).join('')}
@@ -7393,7 +7401,7 @@ function runLabel(d){
       </div>
       ${done ? `<button class="next" onclick="labelFinish()">See results →</button>`
        : (narrow && pageDone) ? `<button class="next" onclick="labelNextPage()">Next group →</button>`
-       : `<p class="lhint">${Object.keys(s.wrongAt).length ? 'Red means that word belongs somewhere else — try it on another.' : `Tap a word, then tap its ${narrow ? 'number' : 'line'} — or drag it across.`}</p>`}
+       : `<p class="lhint">Tap a word, then tap its ${narrow ? 'number' : 'line'} — or drag it across.</p>`}
     </div>
     <p class="figcap">${art.caption}</p>
     <p class="figcredit">${art.credit}</p>`;
@@ -7449,38 +7457,38 @@ function layoutLabel(d, narrow, shown){
   const pt = items.map(p => ({ x: ox + p.x / 100 * r.width, y: oy + p.y / 100 * r.height }));
   const badge = pt.map(q => ({ x: q.x, y: q.y }));
 
-  /* On a phone the badge is big enough to collide with its neighbours. Push the
-     badges apart, never the points. Anchored by a weak pull back to the true
-     point so a badge cannot wander far from what it labels. */
+  /* On a phone the badge goes OUT to the margin and a line points back at the
+     structure, rather than sitting on top of something 16px across. Side is
+     chosen by which half of the artwork the point falls in; the column is then
+     spread vertically so the lines stay readable. */
   if (narrow){
-    /* Measure the badge as rendered rather than restating its size here —
-       the two drifted apart last time the CSS changed. */
     const r0 = pins[0] ? pins[0].getBoundingClientRect() : null;
-    const size = r0 && r0.width ? r0.width : 22;
-    const gap = size + 3, half = size / 2 + 1;
-    for (let pass = 0; pass < 400; pass++){
-      let moved = false;
-      for (let i = 0; i < badge.length; i++){
-        for (let j = i + 1; j < badge.length; j++){
-          let dx = badge[j].x - badge[i].x, dy = badge[j].y - badge[i].y;
-          let dist = Math.hypot(dx, dy);
-          if (dist >= gap) continue;
-          if (dist < 0.01){ dx = (i % 2 ? 1 : -1); dy = 0.3; dist = 1; }
-          const push = (gap - dist) / 2;
-          const ux = dx / dist * push, uy = dy / dist * push;
-          badge[i].x -= ux; badge[i].y -= uy;
-          badge[j].x += ux; badge[j].y += uy;
-          moved = true;
+    const size = r0 && r0.width ? r0.width : 16;
+    const midX = ox + r.width / 2;
+    const leftX = Math.max(size / 2 + 2, ox / 2);
+    const rightX = Math.min(f.width - size / 2 - 2, ox + r.width + (f.width - ox - r.width) / 2);
+
+    const cols = { L: [], R: [] };
+    pt.forEach((q, i) => cols[q.x < midX ? 'L' : 'R'].push(i));
+
+    for (const side of ['L', 'R']){
+      const idx = cols[side].sort((a, b) => pt[a].y - pt[b].y);
+      const gap = size + 6;
+      idx.forEach((i, k) => {
+        badge[i].x = side === 'L' ? leftX : rightX;
+        badge[i].y = pt[i].y;
+        /* keep this column's badges apart, in order */
+        if (k > 0){
+          const prev = badge[idx[k - 1]].y;
+          if (badge[i].y < prev + gap) badge[i].y = prev + gap;
         }
-        /* keep it tethered to its own point */
-        badge[i].x += (pt[i].x - badge[i].x) * 0.015;
-        badge[i].y += (pt[i].y - badge[i].y) * 0.015;
-        /* clamp inside the loop, so a badge pushed against the edge still has
-           passes left to resolve rather than being stacked on a neighbour */
-        badge[i].x = Math.max(half, Math.min(f.width - half, badge[i].x));
-        badge[i].y = Math.max(half, Math.min(f.height - half, badge[i].y));
+      });
+      /* if the column ran past the bottom, push the whole run back up */
+      const last = idx[idx.length - 1];
+      if (last !== undefined && badge[last].y > f.height - size / 2 - 2){
+        const shift = badge[last].y - (f.height - size / 2 - 2);
+        idx.forEach(i => { badge[i].y = Math.max(size / 2 + 2, badge[i].y - shift); });
       }
-      if (!moved) break;
     }
   }
 
@@ -7493,12 +7501,11 @@ function layoutLabel(d, narrow, shown){
   svg.setAttribute('viewBox', `0 0 ${f.width} ${f.height}`);
   const mark = i => labelState(items[i]);
   if (narrow){
-    /* a dot on the true point, and a connector only where the badge moved */
+    /* a dot exactly on the structure, and a line out to its badge */
     svg.innerHTML = items.map((p, i) => {
-      const moved = Math.hypot(badge[i].x - pt[i].x, badge[i].y - pt[i].y) > 2.5;
       const cls = mark(i);
-      return (moved ? `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${badge[i].x.toFixed(1)}" y2="${badge[i].y.toFixed(1)}" class="${cls}"/>` : '')
-           + `<circle cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.4" class="lpt ${cls}"/>`;
+      return `<line x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${badge[i].x.toFixed(1)}" y2="${badge[i].y.toFixed(1)}" class="${cls}"/>`
+           + `<circle cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.6" class="lpt ${cls}"/>`;
     }).join('');
   } else {
     svg.innerHTML = items.map((p, i) =>
