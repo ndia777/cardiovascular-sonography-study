@@ -5352,6 +5352,23 @@ window.DECKS = [
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.7–7.8 — Vertebral Column & Thoracic Cage',
   source: 'Chapter 7 — course notes',
+  labels: [{
+    name: 'spineColumn',
+    title: 'Vertebral column',
+    items: [
+      { id: 'Cervical curvature', name: 'Cervical curvature', x: 35.5, y: 12, lead: true, group: 'The column from the side', about: 'the forward curve of the neck, which appears when a baby lifts its head' },
+      { id: 'Vertebra prominens', name: 'Vertebra prominens', x: 39.5, y: 19.5, lead: true, group: 'The column from the side', about: 'the long spine of the seventh cervical vertebra, easily felt at the base of the neck' },
+      { id: 'Thoracic curvature', name: 'Thoracic curvature', x: 32.5, y: 40, lead: true, group: 'The column from the side', about: 'the backward curve of the chest, present from birth' },
+      { id: 'Intervertebral discs', name: 'Intervertebral discs', x: 37.3, y: 44.8, lead: true, group: 'The column from the side', about: 'the pads of fibrocartilage that separate and cushion the vertebral bodies' },
+      { id: 'Lumbar curvature', name: 'Lumbar curvature', x: 41.5, y: 72, lead: true, group: 'The column from the side', about: 'the forward curve of the lower back, which appears when a child begins to walk' },
+      { id: 'Sacral curvature', name: 'Sacral curvature', x: 37, y: 87, lead: true, group: 'The column from the side', about: 'the backward curve of the sacrum, present from birth' },
+      { id: 'Cervical vertebrae', name: 'Cervical vertebrae', x: 63, y: 12, group: 'The column from behind', about: 'the seven vertebrae of the neck, the smallest and most mobile of the column' },
+      { id: 'Thoracic vertebrae', name: 'Thoracic vertebrae', x: 63.5, y: 40, group: 'The column from behind', about: 'the twelve vertebrae of the chest, each articulating with a pair of ribs' },
+      { id: 'Lumbar vertebrae', name: 'Lumbar vertebrae', x: 63.5, y: 70, group: 'The column from behind', about: 'the five vertebrae of the lower back, with the largest bodies of the column' },
+      { id: 'Sacrum', name: 'Sacrum', x: 67, y: 86, group: 'The column from behind', about: 'five vertebrae fused into one triangular bone wedged between the hip bones' },
+      { id: 'Coccyx', name: 'Coccyx', x: 64.2, y: 94.5, lead: true, group: 'The column from behind', about: 'the tailbone, three to five tiny fused vertebrae at the base of the column' },
+    ],
+  }],
   region: {
     name: 'spineLateral',
     items: [
