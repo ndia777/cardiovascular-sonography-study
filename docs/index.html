@@ -203,6 +203,12 @@
   .lfigtab.on{border-color:var(--accent);color:var(--text);background:var(--card2)}
   .lfigtab.done::after{content:' ✓';color:var(--good)}
   .lfigtab.part::after{content:" ·";color:var(--dim)}
+  /* A visible notice, not a muted aside. It sits above the diagram because a
+     reader needs to know the set is incomplete BEFORE they conclude a
+     structure is missing from the chapter rather than merely from here. */
+  .lnotice{margin:0 0 12px;padding:9px 13px;border:1px solid var(--line);
+    border-left:3px solid var(--accent);border-radius:8px;background:var(--card);
+    color:var(--text);font-size:12.5px;line-height:1.45}
   /* The white page is flood-filled away when the figure is prepared, so the
      artwork sits straight on the dark background with no panel around it. The
      outer black outline would vanish against the dark, but the light bone fill
@@ -7473,6 +7479,7 @@ function runLabel(d){
     ${figs.length > 1 ? `<div class="lfigs">${figs.map((f, i) => `
       <button class="lfigtab${i === session.fig ? " on" : ""} ${state(i)}"
         onclick="labelGoFig(${i})">${esc(f.title || ("Figure " + (i + 1)))}</button>`).join("")}</div>` : ""}
+    <p class="lnotice">Only some of the chapter&rsquo;s diagrams are here &mdash; refer to the textbook for the rest.</p>
     <div class="q">${narrow
       ? `Drag each word onto its number. <span class="lpage">${esc(screenName)} · ${s.page + 1}/${pages}</span>`
       : `Drag each word onto its line. <span class="lpage">${esc(screenName)} · ${s.page + 1}/${pages}</span>`}</div>
