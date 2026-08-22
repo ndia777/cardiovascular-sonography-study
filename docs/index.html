@@ -7812,8 +7812,17 @@ function layoutLabel(d, narrow, shown){
 
       /* A stretch, not a spot: draw the bracket the textbook draws. */
       if (p.span){
-        const y0 = oy + Math.min(p.span[0], p.span[1]) / 100 * r.height;
-        const y1 = oy + Math.max(p.span[0], p.span[1]) / 100 * r.height;
+        /* Regions of the spine BUTT UP against one another — the cervical ends
+           where the thoracic begins, and the measured extents even overlap by a
+           point or two. Drawn at their true length the four brackets touch and
+           read as one long rule down the whole column, which is the opposite of
+           what a bracket per region is for. Pull each end in so a gap shows.
+           The inset is presentation only; the data keeps the measured extent. */
+        const INSET = 2;
+        const lo = Math.min(p.span[0], p.span[1]) + INSET;
+        const hi = Math.max(p.span[0], p.span[1]) - INSET;
+        const y0 = oy + Math.min(lo, hi) / 100 * r.height;
+        const y1 = oy + Math.max(lo, hi) / 100 * r.height;
         const rightSide = place[i].x > pt[i].x;
         /* sit just outside the artwork, on the side the word is on */
         const bx = rightSide ? ox + r.width + 10 : ox - 10;
