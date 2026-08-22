@@ -5975,10 +5975,11 @@ window.DECKS = [
     title: 'Column from the side',
     items: [
       { id: 'Cervical curvature', name: 'Cervical curvature', x: 71, y: 12, span: [2.6, 20], hi: 'vcCervical', lead: true, group: 'Curves and landmarks', about: 'the forward curve of the neck, which appears when a baby lifts its head' },
-      { id: 'Vertebra prominens', name: 'Vertebra prominens', x: 66, y: 19.8, lead: true, group: 'Curves and landmarks', about: 'the long spinous process of the seventh cervical vertebra, easily felt at the base of the neck' },
+      { id: 'Vertebra prominens', name: 'Vertebra prominens', x: 66, y: 19.8, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the long spinous process of the seventh cervical vertebra, easily felt at the base of the neck' },
       { id: 'Thoracic curvature', name: 'Thoracic curvature', x: 65, y: 40, span: [18.9, 64], hi: 'vcThoracic', lead: true, group: 'Curves and landmarks', about: 'the backward curve of the chest, present from birth' },
       { id: 'Intervertebral discs', name: 'Intervertebral discs', x: 74.6, y: 44.8, lead: true, group: 'Curves and landmarks', about: 'the pads of fibrocartilage that separate and cushion the vertebral bodies' },
-      { id: 'Intervertebral foramina', name: 'Intervertebral foramina', x: 62.5, y: 38.5, lead: true, group: 'Curves and landmarks', about: 'the openings between adjacent vertebrae through which the spinal nerves leave' },
+      { id: 'Costal facet', name: 'Costal facet', x: 65, y: 41.5, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the small facet on a thoracic vertebra where the head of a rib articulates' },
+      { id: 'Intervertebral foramina', name: 'Intervertebral foramina', x: 62.5, y: 38.5, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the openings between adjacent vertebrae through which the spinal nerves leave' },
       { id: 'Lumbar curvature', name: 'Lumbar curvature', x: 83, y: 72, span: [61.2, 82.7], hi: 'vcLumbar', lead: true, group: 'Curves and landmarks', about: 'the forward curve of the lower back, which appears when a child begins to walk' },
       { id: 'Sacral curvature', name: 'Sacral curvature', x: 74, y: 87, span: [80, 97.3], hi: 'vcSacrum', lead: true, group: 'Curves and landmarks', about: 'the backward curve of the sacrum, present from birth' },
     ],
@@ -5986,11 +5987,11 @@ window.DECKS = [
     name: 'spineBack',
     title: 'Column from behind',
     items: [
-      { id: 'Cervical vertebrae', name: 'Cervical vertebrae', x: 26, y: 12, span: [2.7, 19.4], hi: 'vcCervical', group: 'Regions of the column', about: 'the seven vertebrae of the neck, the smallest and most mobile of the column' },
-      { id: 'Thoracic vertebrae', name: 'Thoracic vertebrae', x: 27, y: 40, span: [18.2, 60.1], hi: 'vcThoracic', group: 'Regions of the column', about: 'the twelve vertebrae of the chest, each articulating with a pair of ribs' },
-      { id: 'Lumbar vertebrae', name: 'Lumbar vertebrae', x: 27, y: 70, span: [60.7, 82.6], hi: 'vcLumbar', group: 'Regions of the column', about: 'the five vertebrae of the lower back, with the largest bodies of the column' },
-      { id: 'Sacrum', name: 'Sacrum', x: 34, y: 86, group: 'Regions of the column', about: 'five vertebrae fused into one triangular bone wedged between the hip bones' },
-      { id: 'Coccyx', name: 'Coccyx', x: 28.4, y: 94.5, lead: true, group: 'Regions of the column', about: 'the tailbone, three to five tiny fused vertebrae at the base of the column' },
+      { id: 'Cervical vertebrae', name: 'Cervical vertebrae', x: 26, y: 12, side: 'R', span: [2.7, 19.4], hi: 'vcCervical', group: 'Regions of the column', about: 'the seven vertebrae of the neck, the smallest and most mobile of the column' },
+      { id: 'Thoracic vertebrae', name: 'Thoracic vertebrae', x: 27, y: 40, side: 'R', span: [18.2, 60.1], hi: 'vcThoracic', group: 'Regions of the column', about: 'the twelve vertebrae of the chest, each articulating with a pair of ribs' },
+      { id: 'Lumbar vertebrae', name: 'Lumbar vertebrae', x: 27, y: 70, side: 'R', span: [60.7, 82.6], hi: 'vcLumbar', group: 'Regions of the column', about: 'the five vertebrae of the lower back, with the largest bodies of the column' },
+      { id: 'Sacrum', name: 'Sacrum', x: 34, y: 86, side: 'L', group: 'Regions of the column', about: 'five vertebrae fused into one triangular bone wedged between the hip bones' },
+      { id: 'Coccyx', name: 'Coccyx', x: 28.4, y: 94.5, side: 'L', lead: true, group: 'Regions of the column', about: 'the tailbone, three to five tiny fused vertebrae at the base of the column' },
     ],
   }],
   region: {
@@ -7851,7 +7852,13 @@ function labelSlotPositions(pt, f, slots, items, ox, oy, r){
      brings the box within a few pixels of the picture without overlapping it.
      Shorter leaders are easier to follow — the long ones read as ambiguous. */
   const marginL = f.width * 0.17, marginR = f.width * 0.83;
-  const side = pt.map(q => q.x < mid ? 'L' : 'R');
+  /* Which margin a word goes to. By default the pin decides, but a figure that
+     sits off-centre in its frame makes that rule useless — the spine occupies
+     the right two thirds of its own frame, so every pin read as "right" and
+     every lead crossed the column. An item may say where its word belongs. */
+  const side = pt.map((q, i) => (items && items[i] && items[i].side)
+    ? items[i].side
+    : (q.x < mid ? 'L' : 'R'));
   const place = pt.map(() => ({ x: 0, y: 0 }));
 
   for (const which of ['L', 'R']){

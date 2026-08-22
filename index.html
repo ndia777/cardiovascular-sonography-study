@@ -2139,7 +2139,13 @@ function labelSlotPositions(pt, f, slots, items, ox, oy, r){
      brings the box within a few pixels of the picture without overlapping it.
      Shorter leaders are easier to follow — the long ones read as ambiguous. */
   const marginL = f.width * 0.17, marginR = f.width * 0.83;
-  const side = pt.map(q => q.x < mid ? 'L' : 'R');
+  /* Which margin a word goes to. By default the pin decides, but a figure that
+     sits off-centre in its frame makes that rule useless — the spine occupies
+     the right two thirds of its own frame, so every pin read as "right" and
+     every lead crossed the column. An item may say where its word belongs. */
+  const side = pt.map((q, i) => (items && items[i] && items[i].side)
+    ? items[i].side
+    : (q.x < mid ? 'L' : 'R'));
   const place = pt.map(() => ({ x: 0, y: 0 }));
 
   for (const which of ['L', 'R']){
