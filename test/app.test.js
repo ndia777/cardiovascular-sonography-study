@@ -1565,8 +1565,15 @@ function suite(s, label, srcCss) {
 
     /* The target must exist in the artwork, as an id or as a class — those are
        exactly what the highlight rule selects. */
-    const missing = items.filter(p =>
-      !art.includes(`id="${p.id}"`) && !art.includes(`class="${p.id}"`));
+    const missing = items.filter(p => {
+      if (art.includes('id="' + p.id + '"')) return false;
+      /* A class attribute may hold several names — Illustrator leaves its own
+         .st0-style classes in place — and CSS matches a TOKEN, not the whole
+         attribute. Testing for class="X" exactly said the spine's regions were
+         missing when the highlight rule finds them perfectly well. */
+      const q = '"' + p.id + '"', mid = ' ' + p.id + '"', pre = '"' + p.id + ' ';
+      return !(art.includes(q) || art.includes(mid) || art.includes(pre));
+    });
     check(`[${label}] ${d.id} every region names something in the artwork`,
           !missing.length, missing.map(p => p.id).join(', '));
 
