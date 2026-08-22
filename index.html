@@ -1558,10 +1558,16 @@ const labelBandH = art => (labelIsTall(art) ? LABEL_TALL_H : LABEL_BAND_H);
 /* On a phone the artwork takes the middle 68% and the margins hold the
    numbered badges, so the frame is correspondingly wider than the drawing. */
 const LABEL_NARROW_BAND = 0.78;
+/* Both of these parsed the viewBox themselves, so a RASTER figure — which has
+   no viewBox and declares data-w/data-h instead — fell through to a square
+   frame. The artwork then filled less than half of it and left a band of empty
+   space between the drawing and the word bank: 194px under the sagittal skull,
+   168px under the orbit, against 30px under the lateral view, which is an inline
+   SVG and so was never affected. Ask figRatio, which already knows both forms. */
 const labelNarrowAspect = art => {
-  const m = /viewBox="[-0-9.]+ +[-0-9.]+ +([0-9.]+) +([0-9.]+)"/.exec(art);
-  if (!m) return '1/1';
-  return (+m[1] / LABEL_NARROW_BAND).toFixed(3) + '/' + (+m[2]);
+  const r = figRatio(art);
+  if (!r) return '1/1';
+  return (r[0] / LABEL_NARROW_BAND).toFixed(3) + '/' + r[1];
 };
 /* How wide may the frame be before it grows too tall to study?
 
@@ -1581,9 +1587,9 @@ const labelFrameFit = art => {
 };
 
 const labelFrameAspect = art => {
-  const m = /viewBox="[-0-9.]+ +[-0-9.]+ +([0-9.]+) +([0-9.]+)"/.exec(art);
-  if (!m) return '1/1';
-  return (+m[1] / LABEL_BAND_W).toFixed(3) + '/' + (+m[2] / labelBandH(art)).toFixed(3);
+  const r = figRatio(art);
+  if (!r) return '1/1';
+  return (r[0] / LABEL_BAND_W).toFixed(3) + '/' + (r[1] / labelBandH(art)).toFixed(3);
 };
 
 /* A figure's proportions come from the artwork itself: an SVG carries a
