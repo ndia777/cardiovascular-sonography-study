@@ -2073,6 +2073,18 @@ function layoutLabel(d, narrow, shown){
   }
 
   pins.forEach((pin, i) => {
+    /* A bracket has no single point to aim at, so its target belongs on the
+       bracket itself. Left at the item x,y it became a stray hotspot adrift in
+       the middle of the drawing, and three regions left three of them. */
+    const p = items[i];
+    if (!narrow && p && p.span){
+      const y0 = oy + Math.min(p.span[0], p.span[1]) / 100 * r.height;
+      const y1 = oy + Math.max(p.span[0], p.span[1]) / 100 * r.height;
+      const onRight = (p.side || 'R') === 'R';
+      pin.style.left = (onRight ? ox + r.width + 10 : ox - 10) + 'px';
+      pin.style.top  = ((y0 + y1) / 2) + 'px';
+      return;
+    }
     pin.style.left = badge[i].x + 'px';
     pin.style.top  = badge[i].y + 'px';
   });

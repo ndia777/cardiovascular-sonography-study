@@ -5978,8 +5978,8 @@ window.DECKS = [
       { id: 'Vertebra prominens', name: 'Vertebra prominens', x: 66, y: 19.8, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the long spinous process of the seventh cervical vertebra, easily felt at the base of the neck' },
       { id: 'Thoracic curvature', name: 'Thoracic curvature', x: 65, y: 40, span: [18.9, 64], hi: 'vcThoracic', lead: true, group: 'Curves and landmarks', about: 'the backward curve of the chest, present from birth' },
       { id: 'Intervertebral discs', name: 'Intervertebral discs', x: 74.6, y: 44.8, lead: true, group: 'Curves and landmarks', about: 'the pads of fibrocartilage that separate and cushion the vertebral bodies' },
-      { id: 'Costal facet', name: 'Costal facet', x: 65, y: 41.5, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the small facet on a thoracic vertebra where the head of a rib articulates' },
-      { id: 'Intervertebral foramina', name: 'Intervertebral foramina', x: 62.5, y: 38.5, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the openings between adjacent vertebrae through which the spinal nerves leave' },
+      { id: 'Costal facet', name: 'Costal facet', x: 60, y: 41, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the small facet on a thoracic vertebra where the head of a rib articulates' },
+      { id: 'Intervertebral foramina', name: 'Intervertebral foramina', x: 64.5, y: 45.5, side: 'L', lead: true, group: 'Curves and landmarks', about: 'the openings between adjacent vertebrae through which the spinal nerves leave' },
       { id: 'Lumbar curvature', name: 'Lumbar curvature', x: 83, y: 72, span: [61.2, 82.7], hi: 'vcLumbar', lead: true, group: 'Curves and landmarks', about: 'the forward curve of the lower back, which appears when a child begins to walk' },
       { id: 'Sacral curvature', name: 'Sacral curvature', x: 74, y: 87, span: [80, 97.3], hi: 'vcSacrum', lead: true, group: 'Curves and landmarks', about: 'the backward curve of the sacrum, present from birth' },
     ],
@@ -7786,6 +7786,18 @@ function layoutLabel(d, narrow, shown){
   }
 
   pins.forEach((pin, i) => {
+    /* A bracket has no single point to aim at, so its target belongs on the
+       bracket itself. Left at the item x,y it became a stray hotspot adrift in
+       the middle of the drawing, and three regions left three of them. */
+    const p = items[i];
+    if (!narrow && p && p.span){
+      const y0 = oy + Math.min(p.span[0], p.span[1]) / 100 * r.height;
+      const y1 = oy + Math.max(p.span[0], p.span[1]) / 100 * r.height;
+      const onRight = (p.side || 'R') === 'R';
+      pin.style.left = (onRight ? ox + r.width + 10 : ox - 10) + 'px';
+      pin.style.top  = ((y0 + y1) / 2) + 'px';
+      return;
+    }
     pin.style.left = badge[i].x + 'px';
     pin.style.top  = badge[i].y + 'px';
   });
