@@ -221,9 +221,14 @@
      outer black outline would vanish against the dark, but the light bone fill
      just inside it carries the silhouette. */
   .lleaders{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-  .lleaders line{stroke:color-mix(in srgb,var(--text) 62%,transparent);stroke-width:1.4;
+  .lleaders line, .lleaders path.lspan{stroke:color-mix(in srgb,var(--text) 62%,transparent);stroke-width:1.4;
     vector-effect:non-scaling-stroke;opacity:1}
   .lleaders circle.lpt{fill:color-mix(in srgb,var(--text) 70%,transparent)}
+  /* A bracket is a stroked outline. Without fill:none the browser closes the
+     path and floods the region it spans. */
+  /* A bracket is a stroked outline sharing the leaders’ stroke; without
+     fill:none the browser closes the path and floods the span. */
+  .lleaders path.lspan{fill:none;stroke-linejoin:miter}
   .lleaders circle.lpt.ok{fill:var(--good)}
   .lleaders circle.lpt.no{fill:var(--bad)}
   .lleaders line.ok{stroke:var(--good);opacity:1}
@@ -2085,15 +2090,30 @@ function layoutLabel(d, narrow, shown){
   } else {
     /* Place this screen's slots, then draw to where they ended up. */
     const slots = [...fig.querySelectorAll('.lslot')];
-    const place = labelSlotPositions(pt, f, slots);
+    const place = labelSlotPositions(pt, f, slots, items, ox, oy, r);
     slots.forEach((el, i) => {
       el.style.left = place[i].x + 'px';
       el.style.top  = place[i].y + 'px';
     });
-    svg.innerHTML = items.map((p, i) =>
-      `<line data-for="${esc(p.id)}" x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${place[i].x.toFixed(1)}" y2="${place[i].y.toFixed(1)}" class="${mark(i)}"/>`
-      + `<circle data-for="${esc(p.id)}" cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.6" class="lpt ${mark(i)}"/>`
-    ).join('');
+    svg.innerHTML = items.map((p, i) => {
+      const cls = mark(i), id = esc(p.id);
+      const toSlot = `<line data-for="${id}" x1="${pt[i].x.toFixed(1)}" y1="${pt[i].y.toFixed(1)}" x2="${place[i].x.toFixed(1)}" y2="${place[i].y.toFixed(1)}" class="${cls}"/>`;
+
+      /* A stretch, not a spot: draw the bracket the textbook draws. */
+      if (p.span){
+        const y0 = oy + Math.min(p.span[0], p.span[1]) / 100 * r.height;
+        const y1 = oy + Math.max(p.span[0], p.span[1]) / 100 * r.height;
+        const rightSide = place[i].x > pt[i].x;
+        /* sit just outside the artwork, on the side the word is on */
+        const bx = rightSide ? ox + r.width + 10 : ox - 10;
+        const tick = rightSide ? -7 : 7;          /* turned back toward the drawing */
+        const mid = (y0 + y1) / 2;
+        return `<path data-for="${id}" class="lspan ${cls}" d="M${(bx + tick).toFixed(1)},${y0.toFixed(1)} L${bx.toFixed(1)},${y0.toFixed(1)} L${bx.toFixed(1)},${y1.toFixed(1)} L${(bx + tick).toFixed(1)},${y1.toFixed(1)}"/>`
+             + `<line data-for="${id}" x1="${bx.toFixed(1)}" y1="${mid.toFixed(1)}" x2="${place[i].x.toFixed(1)}" y2="${place[i].y.toFixed(1)}" class="${cls}"/>`;
+      }
+      return toSlot
+        + `<circle data-for="${id}" cx="${pt[i].x.toFixed(1)}" cy="${pt[i].y.toFixed(1)}" r="2.6" class="lpt ${cls}"/>`;
+    }).join('');
   }
 }
 
@@ -2101,7 +2121,7 @@ function layoutLabel(d, narrow, shown){
    each serves, then untangled. Matching points to a vertical column in order
    removes most crossings; swapping any pair that still crosses removes the rest,
    and since each swap shortens the pair it cannot cycle. */
-function labelSlotPositions(pt, f, slots){
+function labelSlotPositions(pt, f, slots, items, ox, oy, r){
   const mid = f.width / 2;
   /* Close to the artwork, not out at the frame edge. The drawing occupies
      27%-73%, and a slot is at most 150px wide centred on this line, so 17%
@@ -2133,7 +2153,14 @@ function labelSlotPositions(pt, f, slots){
     const gapAt = k => (hs[k] + hs[k + 1]) / 2 + 8;      /* box halves, plus air */
     const pad = Math.max(...hs) / 2 + 6;
     const top = pad, bottom = Math.max(pad, f.height - pad);
-    const ys = idx.map((i) => Math.min(bottom, Math.max(top, pt[i].y)));
+    /* A span wants its word beside the MIDDLE of its bracket; a point wants it
+       level with the point. Both then relax the same way. */
+    const wanted = i => {
+      const p = items[i];
+      if (p && p.span) return oy + (p.span[0] + p.span[1]) / 2 / 100 * r.height;
+      return pt[i].y;
+    };
+    const ys = idx.map((i) => Math.min(bottom, Math.max(top, wanted(i))));
 
     for (let pass = 0; pass < 8; pass++){
       for (let k = 1; k < ys.length; k++)
