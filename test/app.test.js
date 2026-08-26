@@ -125,6 +125,13 @@ function suite(s, label, srcCss) {
   if (!DECKS || !DECKS.length) return;
   ALL_DECKS = DECKS;
 
+  /* A deck card carries its id in the onclick that opens it. That is the key
+     that cannot be confused with another deck, so every home-screen lookup uses
+     it rather than the title the reader sees — titles repeat across courses. */
+  const DECK_ID = /onclick="go\('deck','([^']+)'\)"/g;
+  const tagOf = d => `go('deck','${d.id}')`;
+  const byId = new Map(DECKS.map(d => [d.id, d]));
+
   /* Course sections must RENDER alphabetically by subject name. Read the order
      out of the markup the app actually produced — comparing a sorted list to
      itself would pass no matter what the app did. */
@@ -148,6 +155,7 @@ function suite(s, label, srcCss) {
      about reference decks — the tests kept passing against a rule the app had
      stopped using. One definition, imported, cannot drift. */
   const pin = vm.runInContext('pinned', s);
+  const std = vm.runInContext('standing', s);
   const guided = c => DECKS.some(d => d.course === c && pin(d));
   const hasCurrent = c => DECKS.some(d => d.course === c && !pin(d) && d.current);
   /* A course is "live" if it holds a study guide OR a chapter marked current.
@@ -214,12 +222,13 @@ function suite(s, label, srcCss) {
     {
       const seen = new Map(), clash = [];
       for (const d of DECKS) {
-        if (seen.has(d.title)) clash.push(`"${d.title}" is used by ${seen.get(d.title)} and ${d.id}`);
-        seen.set(d.title, d.id);
+        const k = d.course + ' / ' + d.title;
+        if (seen.has(k))
+          clash.push(`${d.course} has two decks titled "${d.title}": ${seen.get(k)} and ${d.id}`);
+        seen.set(k, d.id);
       }
-      check(`[${label}] no two decks share a title`, !clash.length, clash.join('\n      '));
+      check(`[${label}] no two decks in one course share a title`, !clash.length, clash.join('\n      '));
     }
-    const byTitle = new Map(DECKS.map(d => [d.title, d]));
     const html = s.__app.innerHTML;
     /* Each course renders up to two grids: study-guide decks first, then the
        rest inside the fold. Chronological order holds WITHIN a grid — across
@@ -231,8 +240,7 @@ function suite(s, label, srcCss) {
        compared anything. Splitting on the grid opener alone is enough: <h3>
        appears only inside deck cards, and the next grid starts a new chunk. */
     const grids = html.split(/<div class="decks">/).slice(1)
-      .map(g => [...g.matchAll(/<h3>([^<]+)<\/h3>/g)]
-        .map(m => byTitle.get(m[1].replace(/&amp;/g, '&'))).filter(Boolean));
+      .map(g => [...g.matchAll(DECK_ID)].map(m => byId.get(m[1])).filter(Boolean));
     check(`[${label}] the home screen renders deck grids`, grids.length > 1, `${grids.length} grids`);
     let broke = '', mixed = '';
     for (const g of grids) {
@@ -261,7 +269,7 @@ function suite(s, label, srcCss) {
       .map(p => p.split('class="coursehead"')[0]);
     const insidePanels = panelsOf(html).join('\n');
     const buried = DECKS.filter(pin)
-      .filter(d => insidePanels.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
+      .filter(d => insidePanels.includes(tagOf(d)))
       .map(d => d.title);
     check(`[${label}] no pinned study guide sits inside a collapsed panel`, !buried.length,
           buried.join(', '));
@@ -269,7 +277,7 @@ function suite(s, label, srcCss) {
        Without this, dropping `retired` from the engine would sail through — the
        check above only ever gets stricter when guides stop being retired. */
     const stowed = DECKS.filter(d => d.exam && d.retired)
-      .filter(d => !insidePanels.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`))
+      .filter(d => !insidePanels.includes(tagOf(d)))
       .map(d => d.title);
     check(`[${label}] a retired study guide is put away with its chapter`, !stowed.length,
           stowed.join(', '));
@@ -277,9 +285,8 @@ function suite(s, label, srcCss) {
     /* Every deck must still be reachable from the home screen — folded is fine,
        dropped is not. This is the check that catches a filtering slip turning
        "collapse" into "lose". */
-    const shown = new Set([...html.matchAll(/<h3>([^<]+)<\/h3>/g)]
-      .map(m => m[1].replace(/&amp;/g, '&')));
-    const lost = DECKS.filter(d => !shown.has(d.title)).map(d => d.id);
+    const shown = new Set([...html.matchAll(DECK_ID)].map(m => m[1]));
+    const lost = DECKS.filter(d => !shown.has(d.id)).map(d => d.id);
     check(`[${label}] every deck is still listed on the home screen`, !lost.length, lost.join(', '));
 
     /* A search must not leave a match sealed inside a collapsed fold. Set the
@@ -406,7 +413,7 @@ function suite(s, label, srcCss) {
         /* Look for the DECKS, not the chapter name: a current chapter holding
            one deck renders bare, so its name never appears anywhere. */
         for (const d of DECKS.filter(x => x.course === c && x.current && !pin(x)))
-          if (!sectionOf(openHtml, c).includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`) && !wrong)
+          if (!sectionOf(openHtml, c).includes(tagOf(d)) && !wrong)
             wrong = `current "${d.title}" is missing from ${subj(c)}`;
       }
       check(`[${label}] a spotlighted course keeps the current chapter on screen and chips the rest`,
@@ -456,7 +463,7 @@ function suite(s, label, srcCss) {
         const firstPast = sec.indexOf('<div class="pastwrap"');
         if (firstPast < 0) continue;
         for (const d of DECKS.filter(x => x.course === c && x.current && !pin(x))) {
-          const at = sec.indexOf(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`);
+          const at = sec.indexOf(tagOf(d));
           if (at >= 0 && at > firstPast) misordered.push(`${d.title} (${subj(c)})`);
         }
       }
@@ -481,7 +488,7 @@ function suite(s, label, srcCss) {
       const bare = grouped.filter(d => d.current && sizeOf(d.course, d.group) === 1);
       if (bare.length > 1) {
         const solo = bare.map(d => d.title);
-        const at = solo.map(t => openHtml.indexOf(`<h3>${t.replace(/&/g, '&amp;')}</h3>`)).sort((a, b) => a - b);
+        const at = bare.map(d => openHtml.indexOf(tagOf(d))).sort((a, b) => a - b);
         const between = openHtml.slice(at[0], at[at.length - 1]);
         const split = /<div class="decks">|<div class="pastwrap"|class="coursehead"/.exec(between);
         check(`[${label}] single-deck chapters share one grid`, at[0] >= 0 && !split,
@@ -553,10 +560,14 @@ function suite(s, label, srcCss) {
         go('home');
       }
 
-      /* every deck in a grouped course must carry a group, or it silently
-         lands in a catch-all section nobody intended */
+      /* Every deck in a grouped course must carry a group, or it silently lands
+         in the catch-all "N more decks" chip nobody intended. Pinned guides are
+         exempt because they sit above the chapters entirely, and standing
+         references because they now have a named chip of their own — neither can
+         fall into the catch-all this is watching for. */
       const courses = [...new Set(grouped.map(d => d.course))];
-      const ungrouped = DECKS.filter(d => courses.includes(d.course) && !pin(d) && !d.group);
+      const ungrouped = DECKS.filter(d =>
+        courses.includes(d.course) && !pin(d) && !std(d) && !d.group);
       check(`[${label}] no deck is left out of its course's grouping`,
             !ungrouped.length, ungrouped.map(d => d.id).join(', '));
     }
@@ -574,7 +585,7 @@ function suite(s, label, srcCss) {
          inside a panel at all, or one stray click would put away the chapter
          being studied. */
       const stowedNow = currentDecks.filter(d =>
-        insidePanels.includes(`<h3>${d.title.replace(/&/g, '&amp;')}</h3>`)).map(d => d.title);
+        insidePanels.includes(tagOf(d))).map(d => d.title);
       check(`[${label}] no current deck is filed under a chip`, !stowedNow.length,
             stowedNow.join(', '));
 
@@ -583,7 +594,7 @@ function suite(s, label, srcCss) {
       const panes = panelsOf(openHtml);
       let hidden = '', unlabelled = '';
       for (const d of currentDecks) {
-        const tag = `<h3>${d.title.replace(/&/g, '&amp;')}</h3>`;
+        const tag = tagOf(d);
         const inPane = panes.find(p => p.includes(tag));
         if (inPane && /^[^>]*\shidden>/.test(inPane) && !hidden)
           hidden = `${d.title} sits in a hidden panel`;
@@ -662,22 +673,22 @@ function suite(s, label, srcCss) {
     const html = s.__app.innerHTML;
     const marked = DECKS.filter(d => d.exam);
     check(`[${label}] some decks are flagged as study-guide material`, marked.length > 0);
-    const cards = [...html.matchAll(/<button class="deck ([^"]*)"[\s\S]*?<h3>([^<]+)<\/h3>/g)]
-      .map(m => ({ cls: m[1], title: m[2].replace(/&amp;/g, '&') }));
+    const cards = [...html.matchAll(/<button class="deck ([^"]*)" onclick="go\('deck','([^']+)'\)"/g)]
+      .map(m => ({ cls: m[1], id: m[2] }));
     /* The amber border means "the professor handed this out", so it tracks
        `exam`, not pinning. A reference deck leads its course the same way but
        must never claim that provenance. */
     let wrong = '', mislabelled = '';
     for (const c of cards) {
-      const deck = DECKS.find(d => d.title === c.title);
+      const deck = byId.get(c.id);
       if (!deck) continue;
       const styled = /\bexam\b/.test(c.cls);
       const wants = !!deck.exam && !deck.retired;
       if (wants !== styled && !wrong)
-        wrong = `"${c.title}" ${wants ? 'should carry the exam border but renders unstyled'
+        wrong = `"${deck.title}" ${wants ? 'should carry the exam border but renders unstyled'
                                       : 'renders with the exam border but should not'}`;
       if (deck.reference && styled && !mislabelled)
-        mislabelled = `"${c.title}" is a reference deck wearing the study-guide border`;
+        mislabelled = `"${deck.title}" is a reference deck wearing the study-guide border`;
     }
     check(`[${label}] only a live study guide renders with the exam border`, !wrong, wrong);
     check(`[${label}] a reference deck never wears the study-guide border`, !mislabelled, mislabelled);
@@ -687,14 +698,29 @@ function suite(s, label, srcCss) {
     {
       const refs = DECKS.filter(d => d.reference);
       check(`[${label}] the course carries a standing reference`, refs.length > 0);
-      const badged = [...html.matchAll(/<h3>([^<]+)<\/h3>([\s\S]*?)<\/button>/g)]
+      const badged = [...html.matchAll(/onclick="go\('deck','([^']+)'\)">([\s\S]*?)<\/button>/g)]
         .filter(m => /badge ref">Reference/.test(m[2]))
-        .map(m => m[1].replace(/&amp;/g, '&'));
-      const missing = refs.filter(d => !badged.includes(d.title)).map(d => d.title);
+        .map(m => m[1]);
+      const missing = refs.filter(d => !badged.includes(d.id)).map(d => d.title);
       check(`[${label}] every reference deck renders its Reference badge`,
             !missing.length, missing.join(', '));
-      const pinnedRefs = refs.every(d => pin(d));
-      check(`[${label}] reference decks are pinned to the top of the course`, pinnedRefs);
+      /* A reference no longer leads its course — it is looked up rather than
+         worked through, so it waits behind a chip. Two things have to hold, and
+         the second is the one that would rot quietly: it must be REACHABLE.
+         A deck that is neither pinned nor inside a panel has fallen off the
+         page altogether, which no other check here would notice. */
+      const stillPinned = refs.filter(d => pin(d)).map(d => d.title);
+      check(`[${label}] a reference deck does not lead its course`, !stillPinned.length,
+            stillPinned.join(', '));
+      const panes = html.split('<div class="pastwrap"').slice(1)
+        .map(p => p.split('class="coursehead"')[0]);
+      const unreachable = refs.filter(d => !panes.some(p => p.includes(tagOf(d)))).map(d => d.title);
+      check(`[${label}] every reference deck sits behind a chip`, !unreachable.length,
+            unreachable.join(', '));
+      /* And the chip says what it is, rather than "3 more decks" — which is what
+         they would fall into if the reference panel were ever dropped. */
+      const refChip = /data-key="[^"]*\/reference"[^>]*>Reference</.test(html);
+      check(`[${label}] the reference chip is labelled Reference`, refChip);
     }
 
     /* The reference is generated from the chapter decks. Re-derive which parts

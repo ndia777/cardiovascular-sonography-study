@@ -5159,7 +5159,8 @@ window.DECKS = [
     { term: 'Comminuted fracture', def: 'a break in which the bone is splintered or crushed' },
     { term: 'Laminectomy', def: 'the surgical removal of a lamina' },
     { term: 'Pathologic fracture', def: 'a break in which a weakened bone gives way under normal strain' },
-    { term: 'Compression fracture', def: 'a crush fracture of a vertebra, commonly caused by osteoporosis' },
+    { term: 'Compression fracture', def: 'a crush fracture of a vertebra, commonly caused by osteoporosis',
+      note: 'The study guide lists this one twice, once as "vertebral crush fracture" and once as "osteoporosis-related fracture". Both are the same break; this card carries both halves.' },
     { term: 'Allogenic (allogeneic) bone marrow transplant', def: 'a transplant that uses marrow taken from a donor' },
     { term: 'Osteochondroma', def: 'a benign bony projection covered with cartilage' },
     { term: 'Orthotic', def: 'an appliance that corrects or compensates for the function of a limb' },
@@ -5167,7 +5168,8 @@ window.DECKS = [
     { term: 'Synovectomy', def: 'the surgical removal of a synovial membrane' },
     { term: 'Orthopedic surgeon', def: 'a specialist in bones, joints and muscles' },
     { term: 'Open fracture', def: 'a compound fracture' },
-    { term: 'Paget\'s disease', def: 'a chronic bone disease of unknown cause, marked by abnormal breakdown and formation of bone' },
+    { term: 'Paget\'s disease', def: 'a chronic bone disease of unknown cause, marked by abnormal breakdown and formation of bone',
+      note: 'The study guide lists this one twice, once as "chronic bone disease with abnormal bone breakdown and formation" and once as "chronic bone disease of unknown cause". Both halves are on this card.' },
     { term: 'Metacarpals', def: 'the five bones that form the palm' },
     { term: 'Malleolus', def: 'the rounded bony projection at the ankle' },
     { term: 'Manubrium', def: 'the upper portion of the sternum' },
@@ -5545,7 +5547,7 @@ window.DECKS = [
   cards: [
     { term: 'Ganglion cyst', def: 'a harmless fluid-filled swelling, usually on the wrist' },
     { term: 'Heel spur, calcaneal spur', def: 'a calcium deposit in the plantar fascia' },
-    { term: 'Exercise physiologist', def: 'a specialist who develops therapeutic programs of activity under a physician\'s supervision' },
+    { term: 'Exercise physiologist', def: 'a specialist who develops exercise programs under a physician\'s supervision' },
     { term: 'Sprain', def: 'an injury to a joint caused by a stretched or torn ligament' },
     { term: 'Adhesion', def: 'an abnormal band of fibrous tissue' },
     { term: 'Muscle hernia', def: 'the protrusion of a muscle through torn fascia' },
@@ -5566,7 +5568,7 @@ window.DECKS = [
     { term: 'Dyskinesia', def: 'the impairment of voluntary movement, producing jerky motions' },
     { term: 'Dorsiflexion', def: 'bending the foot upward at the ankle' },
     { term: 'Tenodesis', def: 'the surgical suturing of a tendon to a bone' },
-    { term: 'Impingement syndrome', def: 'swollen tendons caught in the shoulder joint' },
+    { term: 'Impingement syndrome', def: 'swollen tendons trapped in the shoulder joint' },
     { term: 'Myoclonus', def: 'the quick involuntary jerking of a muscle' },
     { term: 'Torticollis', def: 'wryneck' },
     { term: 'Muscular dystrophy', def: 'a group of genetic diseases causing the degeneration of muscle' },
@@ -5576,7 +5578,7 @@ window.DECKS = [
     { term: 'Tenotomy', def: 'a surgical incision into a tendon' },
     { term: 'Bradykinesia', def: 'extreme slowness of movement' },
     { term: 'Muscular atrophy', def: 'the degeneration of muscle tissue' },
-    { term: 'Paralysis', def: 'the loss of sensation and of voluntary movement' },
+    { term: 'Paralysis', def: 'the loss of sensation and of voluntary muscle movement' },
     { term: 'Tenolysis', def: 'the release of a tendon from adhesions' },
     { term: 'Neuromuscular', def: 'pertaining to the relationship between a nerve and a muscle' },
     { term: 'Singultus', def: 'hiccups' },
@@ -6746,10 +6748,19 @@ function togglePast(btn){
    true, and `pinned` answers "does it lead its course", which stops the moment
    the chapter is retired. A retired guide keeps its badge, loses the border,
    and folds away with the chapter it came from. */
-/* Two kinds of deck lead a course section: the study guides the professor
-   hands out, and standing references that never belong to one chapter.
-   Both are pinned; only the first is a study guide, and the badges differ. */
-const pinned = d => (!!d.exam || !!d.reference) && !d.retired;
+/* Only a study guide leads a course section. It is the tested material, so it
+   is worth the space at the top on every load.
+
+   A standing reference used to be pinned here too, on the reasoning that it
+   also belongs to no single chapter. But "belongs to no chapter" is not the
+   same as "wanted right now": a reference is looked UP, not worked through,
+   and three word-part decks permanently occupying the top of Medical
+   Terminology spent the best space on the page on the decks least likely to
+   be needed. It gets a chip instead — one click away, nought rows tall. */
+const pinned = d => !!d.exam && !d.retired;
+/* Neither pinned nor part of a chapter: it stands on its own and never
+   retires the way a chapter does. */
+const standing = d => !!d.reference && !d.retired;
 
 /* ═══════════════ HOME ═══════════════ */
 function screenHome(){
@@ -6778,7 +6789,7 @@ function screenHome(){
      would quietly stop making sense to anyone reading this later. Alphabetical
      still decides everything within a tier. */
   const subject = c => (c.split('·')[1] || c).trim();
-  const isLive = c => list.some(d => d.course === c && (pinned(d) || d.current));
+  const isLive = c => list.some(d => d.course === c && (pinned(d) || standing(d) || d.current));
   const courses = [...new Set(list.map(d => d.course))]
     .sort((a, b) => (isLive(b) - isLive(a)) || subject(a).localeCompare(subject(b)));
   let html = `
@@ -6811,7 +6822,8 @@ function screenHome(){
   courses.forEach(c => {
     const inCourse = list.filter(d => d.course === c).sort(byAdded);
     const lead = inCourse.filter(pinned);
-    const rest = inCourse.filter(d => !pinned(d));
+    const refs = inCourse.filter(standing);
+    const rest = inCourse.filter(d => !pinned(d) && !standing(d));
     /* Whether anything in this course is spotlighted. A pinned guide and a
        current chapter both count as "something is already showing", which is
        what the folds below defer to when deciding whether to open. */
@@ -6880,21 +6892,32 @@ function screenHome(){
        course was retired, every chip in it sprang open. */
     const openByDefault = !inCourse.some(d => d.exam || d.current || d.reference);
 
+    const mkPanel = p => Object.assign(p, {
+      id: `past${panelSeq++}`,
+      open: !!(q || (openState[p.key] === undefined ? openByDefault : openState[p.key])),
+    });
+
     const panels = [
       ...pastGroups.map(g => ({ key: `${c}/${g}`, label: g, decks: inG(g) })),
       ...(loosePast.length ? [{ key: `${c}/other`, label: `${loosePast.length} more deck${
         loosePast.length > 1 ? 's' : ''}`, decks: loosePast }] : []),
-    ].map(p => Object.assign(p, {
-      id: `past${panelSeq++}`,
-      open: !!(q || (openState[p.key] === undefined ? openByDefault : openState[p.key])),
-    }));
+    ].map(mkPanel);
 
-    const chips = panels.map(p =>
+    /* The reference chip is built the same way but kept in its own list, so it
+       can sit OUTSIDE the "Earlier" label. Filing a standing reference under
+       "Earlier" would say it is finished with, which it never is. */
+    const refPanels = (refs.length
+      ? [{ key: `${c}/reference`, label: 'Reference', decks: refs }] : []).map(mkPanel);
+
+    const chipFor = p =>
       `<button type="button" class="chip" data-key="${esc(p.key)}" aria-controls="${p.id}"
-        aria-expanded="${p.open}" onclick="togglePast(this)">${esc(p.label)}</button>`).join('');
+        aria-expanded="${p.open}" onclick="togglePast(this)">${esc(p.label)}</button>`;
+    const chips = panels.map(chipFor).join('');
+    const refChips = refPanels.map(chipFor).join('');
 
     html += `<div class="coursehead"><span class="cname">${esc(c)}</span>${
-      chips ? `<span class="pastbar"><span class="pastlabel">Earlier</span>${chips}</span>` : ''}</div>`;
+      refChips || chips ? `<span class="pastbar">${refChips}${
+        chips ? `<span class="pastlabel">Earlier</span>${chips}` : ''}</span>` : ''}</div>`;
 
     if (lead.length) html += `<div class="decks">${lead.map(d => deckCard(d, true)).join('')}</div>`;
 
@@ -6925,7 +6948,7 @@ function screenHome(){
         `<div class="decks">${inG(g).map(d => deckCard(d, false)).join('')}</div>`;
     });
 
-    panels.forEach(p => {
+    panels.concat(refPanels).forEach(p => {
       html += `<div class="pastwrap" id="${p.id}"${p.open ? '' : ' hidden'}>${
         sect(p.label, false, p.decks)}<div class="decks">${
         p.decks.map(d => deckCard(d, false)).join('')}</div></div>`;
