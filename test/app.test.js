@@ -202,6 +202,23 @@ function suite(s, label, srcCss) {
         undated.map(d => d.id).join(', '));
   go('home');
   {
+    /* Every check on this screen finds a deck by its rendered TITLE, so two
+       decks sharing one title make all of them lie: the lookup returns
+       whichever was defined last, and a deck gets judged against a different
+       deck's flags. Adding an M159 "Ch. 3 — Study Guide" beside the retired
+       BIO101 one did exactly that — six failures naming the wrong grids and
+       the wrong panels, none of them the actual fault. Titles are unique in
+       the UI anyway, since a reader sees them without their course. Assert it
+       here, ahead of the checks that depend on it, so the next collision says
+       so plainly instead of scattering nonsense. */
+    {
+      const seen = new Map(), clash = [];
+      for (const d of DECKS) {
+        if (seen.has(d.title)) clash.push(`"${d.title}" is used by ${seen.get(d.title)} and ${d.id}`);
+        seen.set(d.title, d.id);
+      }
+      check(`[${label}] no two decks share a title`, !clash.length, clash.join('\n      '));
+    }
     const byTitle = new Map(DECKS.map(d => [d.title, d]));
     const html = s.__app.innerHTML;
     /* Each course renders up to two grids: study-guide decks first, then the

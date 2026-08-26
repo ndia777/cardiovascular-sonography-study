@@ -4511,6 +4511,92 @@ window.DECKS = [
   ]
 },
 {
+  id: 'mt3-guide',
+  group: 'Chapter 3',
+  current: true,
+  exam: true,
+  added: '2026-08-26',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 3 — Skeletal: Study Guide',
+  source: 'Chapter 3 — instructor study guide (skeletal system)',
+  /* The guide is a flat list of 60 "X – Y" lines, so these are near-verbatim,
+     only turned around into term/definition and given an article so the
+     definition reads as a phrase.
+
+     Two terms appear TWICE in the guide with different wording — compression
+     fracture ("vertebral crush fracture" / "osteoporosis-related fracture") and
+     Paget's disease ("abnormal bone breakdown and formation" / "of unknown
+     cause"). Each is merged into one card carrying both halves. Left as two
+     cards they would be unanswerable: Recall grades what you type against one
+     of them while the other still waits in the queue.
+
+     Where the guide gives an alias it is kept as a comma alternate so Recall
+     accepts either spelling — crepitation/crepitus, avascular
+     necrosis/osteonecrosis. Chapter 3 already has five decks built from the
+     course notes; this one deliberately repeats that ground, because it is the
+     instructor's own sheet and is worth drilling in its own words. */
+  cards: [
+    { term: 'Spiral fracture', def: 'a break in which the bone has been twisted apart' },
+    { term: 'Leukemia', def: 'cancer of the blood-forming cells in red bone marrow' },
+    { term: 'Comminuted fracture', def: 'a break in which the bone is splintered or crushed' },
+    { term: 'Laminectomy', def: 'the surgical removal of a lamina' },
+    { term: 'Pathologic fracture', def: 'a break in which a weakened bone gives way under normal strain' },
+    { term: 'Compression fracture', def: 'a crush fracture of a vertebra, commonly caused by osteoporosis' },
+    { term: 'Allogenic (allogeneic) bone marrow transplant', def: 'a transplant that uses marrow taken from a donor' },
+    { term: 'Osteochondroma', def: 'a benign bony projection covered with cartilage' },
+    { term: 'Orthotic', def: 'an appliance that corrects or compensates for the function of a limb' },
+    { term: 'Prosthesis', def: 'a substitute for a missing body part' },
+    { term: 'Synovectomy', def: 'the surgical removal of a synovial membrane' },
+    { term: 'Orthopedic surgeon', def: 'a specialist in bones, joints and muscles' },
+    { term: 'Open fracture', def: 'a compound fracture' },
+    { term: 'Paget\'s disease', def: 'a chronic bone disease of unknown cause, marked by abnormal breakdown and formation of bone' },
+    { term: 'Metacarpals', def: 'the five bones that form the palm' },
+    { term: 'Malleolus', def: 'the rounded bony projection at the ankle' },
+    { term: 'Manubrium', def: 'the upper portion of the sternum' },
+    { term: 'Acetabulum', def: 'the hip socket' },
+    { term: 'Metatarsals', def: 'the five bones to which the toes are attached' },
+    { term: 'Lamina', def: 'the posterior portion of a vertebra' },
+    { term: 'Arthrodesis', def: 'the surgical fusion of bones' },
+    { term: 'Arthritis', def: 'inflammation of the joints' },
+    { term: 'Arthrolysis', def: 'the surgical loosening of an ankylosed joint' },
+    { term: 'Arthroscopy', def: 'the visual examination of a joint' },
+    { term: 'Lumbago', def: 'low back pain' },
+    { term: 'Rheumatoid arthritis', def: 'a chronic autoimmune disorder of the joints' },
+    { term: 'Spina bifida', def: 'a condition in which the spinal canal fails to close completely' },
+    { term: 'Ankylosing spondylitis', def: 'an inflammatory arthritis affecting the vertebrae' },
+    { term: 'Bone densitometry', def: 'a low-exposure measurement of the density of bone' },
+    { term: 'Craniosynostosis', def: 'the premature closure of the cranial sutures' },
+    { term: 'Osteoporosis', def: 'a loss of bone density with increased porosity' },
+    { term: 'Gout', def: 'arthritis caused by deposits of uric acid crystals' },
+    { term: 'Osteomalacia', def: 'the softening of bones in adults' },
+    { term: 'Bunion', def: 'an enlargement at the base of the great toe' },
+    { term: 'Lordosis', def: 'an increased forward curvature of the lumbar spine' },
+    { term: 'Kyphosis', def: 'an increased outward curvature of the thoracic spine' },
+    { term: 'Scoliosis', def: 'a lateral curvature of the spine' },
+    { term: 'Juvenile rheumatoid arthritis (JRA)', def: 'an autoimmune disorder occurring in children' },
+    { term: 'Osteitis', def: 'inflammation of a bone' },
+    { term: 'Osteomyelitis', def: 'inflammation of the bone marrow and the adjacent bone' },
+    { term: 'Costochondritis', def: 'inflammation of the rib cartilage' },
+    { term: 'Periostitis', def: 'inflammation of the periosteum' },
+    { term: 'Polymyalgia rheumatica', def: 'an inflammatory disorder of the muscles and joints' },
+    { term: 'Hemarthrosis', def: 'blood within a joint' },
+    { term: 'Vertebroplasty', def: 'a treatment for compression fractures caused by osteoporosis' },
+    { term: 'Chondromalacia', def: 'the abnormal softening of cartilage' },
+    { term: 'Spondylolisthesis', def: 'the forward slipping of a vertebra' },
+    { term: 'Subluxation', def: 'the partial displacement of a bone from its joint' },
+    { term: 'Osteorrhaphy', def: 'the surgical suturing or wiring of bones' },
+    { term: 'Osteopenia', def: 'bone density that is thinner than average' },
+    { term: 'Hematopoietic', def: 'pertaining to the formation of blood cells' },
+    { term: 'Crepitation, crepitus', def: 'the grating sound made by the ends of a broken bone' },
+    { term: 'Avascular necrosis, osteonecrosis', def: 'the death of bone tissue caused by a poor blood supply' },
+    { term: 'Spondylosis', def: 'spinal osteoarthritis' },
+    { term: 'Osteoarthritis', def: 'wear-and-tear arthritis' },
+    { term: 'Rickets', def: 'a vitamin D deficiency disease occurring in children' },
+    { term: 'Osteoclasis', def: 'the surgical fracture of a bone to correct a deformity' },
+    { term: 'Open reduction and internal fixation (ORIF)', fact: true, def: 'a repair in which a plate or pins are placed directly into the bone to hold the fragments in place' }
+  ]
+},
+{
   id: 'mt4-parts',
   group: 'Chapter 4',
   current: true,
@@ -4815,6 +4901,87 @@ window.DECKS = [
       choices: ['Rest, ice, compression, elevation', 'Rest, immobilise, compress, elevate',
         'Reduce, ice, compress, extend', 'Rest, ice, cast, elevation'], answer: 0,
       why: 'Each wrong option changes one word, which is how acronym questions are usually built.' }
+  ]
+},
+{
+  id: 'mt4-guide',
+  group: 'Chapter 4',
+  current: true,
+  exam: true,
+  added: '2026-08-26',
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 4 — Muscular: Study Guide',
+  source: 'Chapter 4 — instructor study guide (muscular system)',
+  /* The guide is a flat list of 57 "X – Y" lines with no repeats, so these are
+     near-verbatim, only turned around into term/definition.
+
+     One definition had to be rewritten rather than copied: the guide defines
+     carpal tunnel syndrome as "symptoms from inflamed tendons in the carpal
+     tunnel", which prints the answer inside the prompt. Named the wrist instead.
+
+     Where the guide gives an alias it is kept as a comma alternate so Recall
+     accepts either — heel spur/calcaneal spur. Chapter 4 already has five decks
+     built from the course notes; this one repeats that ground on purpose,
+     because it is the instructor's own sheet and is worth drilling in his
+     words rather than ours. */
+  cards: [
+    { term: 'Ganglion cyst', def: 'a harmless fluid-filled swelling, usually on the wrist' },
+    { term: 'Heel spur, calcaneal spur', def: 'a calcium deposit in the plantar fascia' },
+    { term: 'Exercise physiologist', def: 'a specialist who develops therapeutic programs of activity under a physician\'s supervision' },
+    { term: 'Sprain', def: 'an injury to a joint caused by a stretched or torn ligament' },
+    { term: 'Adhesion', def: 'an abnormal band of fibrous tissue' },
+    { term: 'Muscle hernia', def: 'the protrusion of a muscle through torn fascia' },
+    { term: 'Contracture', def: 'the permanent tightening of connective tissues' },
+    { term: 'Hernia', def: 'the protrusion of a structure through the tissues surrounding it' },
+    { term: 'Origin', def: 'the place where a muscle begins' },
+    { term: 'Insertion', def: 'the place where a muscle ends, attaching to a bone or tendon' },
+    { term: 'Fasciitis', def: 'inflammation of a fascia' },
+    { term: 'Dystonia', def: 'abnormal muscle tone that impairs voluntary movement' },
+    { term: 'Hyperkinesia', def: 'abnormally increased muscle activity' },
+    { term: 'Ergonomics', def: 'the study of the human factors that affect tools and the work environment' },
+    { term: 'Myasthenia gravis', def: 'an autoimmune neuromuscular disease causing muscle weakness' },
+    { term: 'Hypotonia', def: 'diminished tone of the skeletal muscles' },
+    { term: 'Electromyography (EMG)', def: 'a test that measures the electrical activity of muscles' },
+    { term: 'Paresis', def: 'weakness or slight paralysis' },
+    { term: 'Hemiparesis', def: 'slight paralysis or weakness affecting one side of the body' },
+    { term: 'Circumduction', def: 'a circular movement at the far end of a limb' },
+    { term: 'Dyskinesia', def: 'the impairment of voluntary movement, producing jerky motions' },
+    { term: 'Dorsiflexion', def: 'bending the foot upward at the ankle' },
+    { term: 'Tenodesis', def: 'the surgical suturing of a tendon to a bone' },
+    { term: 'Impingement syndrome', def: 'swollen tendons caught in the shoulder joint' },
+    { term: 'Myoclonus', def: 'the quick involuntary jerking of a muscle' },
+    { term: 'Torticollis', def: 'wryneck' },
+    { term: 'Muscular dystrophy', def: 'a group of genetic diseases causing the degeneration of muscle' },
+    { term: 'Fibromyalgia', def: 'a chronic condition of fatigue and widespread pain' },
+    { term: 'Chronic fatigue syndrome (CFS)', def: 'a disorder of unknown cause affecting many body systems' },
+    { term: 'Polymyositis', def: 'inflammation and weakening of the voluntary muscles' },
+    { term: 'Tenotomy', def: 'a surgical incision into a tendon' },
+    { term: 'Bradykinesia', def: 'extreme slowness of movement' },
+    { term: 'Muscular atrophy', def: 'the degeneration of muscle tissue' },
+    { term: 'Paralysis', def: 'the loss of sensation and of voluntary movement' },
+    { term: 'Tenolysis', def: 'the release of a tendon from adhesions' },
+    { term: 'Neuromuscular', def: 'pertaining to the relationship between a nerve and a muscle' },
+    { term: 'Singultus', def: 'hiccups' },
+    { term: 'Myofascial release', def: 'a soft-tissue manipulation technique' },
+    { term: 'Plantar fasciitis', def: 'inflammation of the plantar fascia' },
+    { term: 'Claudication', def: 'pain in the leg muscles during exercise that is relieved by rest' },
+    { term: 'Quadriplegia', def: 'paralysis of all four extremities' },
+    { term: 'Supination', def: 'rotating so that the palm or sole faces forward or upward' },
+    { term: 'Ataxia', def: 'a lack of muscle coordination' },
+    { term: 'Sarcopenia', def: 'the age-related loss of muscle mass and strength' },
+    { term: 'Abduction', def: 'movement away from the midline of the body' },
+    { term: 'Adduction', def: 'movement toward the midline of the body' },
+    { term: 'Paraplegia', def: 'paralysis of both legs and the lower body' },
+    { term: 'Myorrhaphy', def: 'the surgical suturing of a muscle' },
+    { term: 'Tenorrhaphy', def: 'the surgical suturing together of the ends of a tendon' },
+    { term: 'Hemiplegia', def: 'total paralysis affecting one side of the body' },
+    { term: 'Asthenia', def: 'a lack of normal muscle tone or strength' },
+    { term: 'Oblique', def: 'slanted, or set at an angle' },
+    { term: 'Atrophy', def: 'the weakness or wasting away of tissue' },
+    { term: 'Carpal tunnel syndrome', def: 'the symptoms produced when inflamed tendons press on the nerve passing through the wrist' },
+    { term: 'Epicondylitis', def: 'inflammation of the tissues surrounding the elbow, such as tennis elbow' },
+    { term: 'Pronation', def: 'rotating so that the palm or sole faces downward or backward' },
+    { term: 'Tenosynovitis', def: 'inflammation of the sheath around a tendon' }
   ]
 },
 {
