@@ -4800,6 +4800,109 @@ window.DECKS = [
   ]
 },
 {
+  id: 'mp49-abbreviations',
+  group: 'Medications',
+  current: true,
+  exam: true,
+  added: '2026-08-31',
+  course: 'M103 · Medical Procedures',
+  title: 'Test Review — Abbreviations',
+  source: 'the shared class notes, ABBREVIATIONS section',
+  /* Question 4 on the instructor's list is just the word "Abbreviations", with
+     no answer written down. This is that list, taken from the collaborative
+     notes the class keeps.
+
+     The shared list holds Qid and QID, and Tid and TID, as separate entries.
+     They are the same abbreviation, so they are one card each here. Two cards
+     with one term are unanswerable in Recall: whatever you type is graded
+     against one of them while the other still waits in the queue.
+
+     THREE ENTRIES LOOK LIKE TRANSCRIPTION SLIPS, and none is silently
+     corrected. Each card carries the class wording as an accepted answer and a
+     note saying which form is standard, so nothing is lost if the instructor
+     asks for it the way the notes have it. See the notes on H2O2, SUPP and CAPS.
+
+     A handful of definitions describe rather than translate: "CAPS", "CONTRA"
+     and "SUPP" all appear inside their own expansions, and a prompt that prints
+     its own answer tests spelling rather than knowledge. The plain expansion is
+     kept in each card's note instead.
+
+     Nine of these also appear in the Chapter 51 deck. That is deliberate, the
+     same way the other test-review decks repeat their chapter material. */
+  cards: [
+    { term: 'AC', def: 'before meals' },
+    { term: 'PC', def: 'after meals' },
+    { term: 'AD', def: 'right ear' },
+    { term: 'AS', def: 'left ear' },
+    { term: 'AU', def: 'in each ear' },
+    { term: 'OD', def: 'right eye' },
+    { term: 'OS', def: 'left eye' },
+    { term: 'OU', def: 'both eyes' },
+    { term: 'AM', def: 'morning' },
+    { term: 'AQ', def: 'water' },
+    { term: 'BA', def: 'barium' },
+    { term: 'BID', def: 'twice a day' },
+    { term: 'TID', def: 'three times a day' },
+    { term: 'QID', def: 'four times a day' },
+    { term: 'Q', def: 'every' },
+    { term: 'QD', def: 'every day' },
+    { term: 'QOD', def: 'every other day' },
+    { term: 'QH', def: 'every hour' },
+    { term: 'Q8H', def: 'every 8 hours' },
+    { term: 'QM', def: 'every morning' },
+    { term: 'H', def: 'hour' },
+    { term: 'DAW', def: 'dispense as written' },
+    { term: 'CAPS', def: 'the gelatin-shelled dose form, as opposed to tablets',
+      note: 'The shared notes give this simply as "capsules".' },
+    { term: 'PT', def: 'patient' },
+    { term: 'K', def: 'potassium' },
+    { term: 'FE', def: 'iron' },
+    { term: 'L', def: 'liter' },
+    { term: 'G, GM', def: 'gram' },
+    { term: 'NPO', def: 'nothing by mouth' },
+    { term: 'PO', def: 'by mouth' },
+    { term: 'PRN', def: 'as needed, or as necessary' },
+    { term: 'CONTRA', def: 'against, as in a reason a drug should not be given',
+      note: 'The shared notes give this as "contra indication / against".' },
+    { term: 'DC', def: 'discontinue' },
+    { term: 'DIL', def: 'dilute' },
+    { term: 'GT', def: 'drop' },
+    { term: 'GTTS', def: 'drops' },
+    { term: 'GUTTAT', def: 'drop by drop' },
+    { term: 'H2O2', also: ['H202'], def: 'hydrogen peroxide',
+      note: 'Written "H202" in the shared notes, with a zero. The chemical formula is H2O2, two hydrogens and two oxygens. Both spellings are accepted here.' },
+    { term: 'SUB, SC', def: 'subcutaneous' },
+    { term: 'IM', def: 'intramuscular' },
+    { term: 'IV', def: 'intravenous' },
+    { term: 'INJ', def: 'injection' },
+    { term: 'SOL', def: 'solution' },
+    { term: 'STAT', def: 'immediately' },
+    { term: 'SUPP', also: ['SUPPOSE'], def: 'the dose form inserted into a body opening rather than swallowed',
+      note: 'The shared notes have "Suppose", which looks like a slip for the standard "Supp". It stands for suppository. Both are accepted here.' },
+    { term: 'UNG', def: 'ointment' },
+    { term: 'TBSP', also: ['T'], def: '15 mL, a tablespoon' },
+    { term: 'TSP', def: '5 mL, a teaspoon' }
+  ],
+  questions: [
+    { q: 'A medication ordered QID is given how often?',
+      choices: ['Four times a day', 'Twice a day', 'Three times a day', 'Every other day'], answer: 0,
+      why: 'The letter before the ID counts the doses: BID twice, TID three times, QID four times.' },
+    { q: 'Which abbreviation means the left eye?',
+      choices: ['OS', 'OD', 'AS', 'OU'], answer: 0,
+      why: 'The O group is eyes and the A group is ears, so OS is the left eye and AS is the left ear. OD is the right eye and OU is both.' },
+    { q: 'A patient who is NPO is:',
+      choices: ['Taking nothing by mouth', 'Taking medication by mouth',
+        'Taking medication as needed', 'Receiving nothing intravenously'], answer: 0,
+      why: 'PO is the one that means by mouth, so the two are easy to reverse under time pressure.' },
+    { q: 'An order marked STAT should be carried out:',
+      choices: ['Immediately', 'Every hour', 'Before meals', 'As needed'], answer: 0,
+      why: 'PRN is the as-needed one, which is the opposite kind of instruction.' },
+    { q: 'How much is a tablespoon in millilitres?',
+      choices: ['15 mL', '5 mL', '10 mL', '30 mL'], answer: 0,
+      why: 'A teaspoon is 5 mL, so a tablespoon is three teaspoons.' }
+  ]
+},
+{
   id: 'mp51-administration',
   group: 'Medications',
   current: true,
