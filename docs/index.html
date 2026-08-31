@@ -4734,6 +4734,72 @@ window.DECKS = [
 },
 
 {
+  id: 'mp49-test-review',
+  group: 'Medications',
+  current: true,
+  exam: true,
+  added: '2026-08-31',
+  course: 'M103 · Medical Procedures',
+  title: 'Test Review — Pharmacology',
+  source: 'Chapter 49 — the questions the instructor released for the test',
+  /* The instructor released thirteen questions. Ten had answers written down
+     and are built here; the other three are left out on purpose and are worth
+     chasing before the test:
+
+       - "Abbreviations" is a topic rather than a question. The lecture notes
+         do carry the list it points at (Rx, inscription, subscription,
+         signature, DAW box, DEA number, and the spoon conversions), so it can
+         become cards once it is clear what she will actually ask.
+       - "Which drug can you buy OTC?" has no answer recorded. Acetaminophen is
+         the obvious candidate, since Tylenol is the trade-name example in the
+         same notes, but guessing at her answer would teach a guess.
+       - "Drugs have to be separated, double locked and verified" is a statement,
+         not a question. It reads like the answer to something about storing
+         controlled substances, but that question was not written down.
+
+     Cards run term-first because that is the direction this app studies in: it
+     shows the description and asks for the name. The schedule classifications
+     are one question on her list but five separate cards here, since each level
+     is its own fact and they make each other's best distractors. */
+  cards: [
+    { term: 'Prescription', def: 'a legal document written by a physician' },
+    { term: 'Bronchodilator', def: 'a drug that opens the airways by widening the bronchi' },
+    { term: 'Schedule I', def: 'the class of controlled substances not accepted for medical use' },
+    { term: 'Schedule II', def: 'the class of controlled substances with a high potential for abuse' },
+    { term: 'Schedule III', def: 'the class of controlled substances carrying low to moderate dependence' },
+    { term: 'Schedule IV', def: 'the class of controlled substances whose abuse may lead to dependency' },
+    { term: 'Schedule V', def: 'the class of controlled substances carrying only rare dependency' },
+    { term: 'Over-the-counter drug', also: ['OTC'],
+      def: 'a medication bought without a prescription, so the patient does not have to seek medical attention first' },
+    { term: 'Dispensing', def: 'giving a medication to a patient to take at a later time' },
+    { term: 'Local', also: ['Local effect'], def: 'acting only on the area where it is administered' },
+    { term: 'Antibiotic', also: ['Antibacterial'], def: 'the example given of a drug that requires a prescription, used against bacteria' },
+    { term: 'Vasodilator', def: 'a drug that widens the vessels to decrease blood pressure' },
+    { term: 'Antihistamine', def: 'a drug used to treat allergic reactions' },
+    { fact: true, term: 'Where expired drugs are returned', def: 'to the pharmacy' }
+  ],
+  questions: [
+    { q: 'Which of the following drugs is used to decrease blood pressure?',
+      choices: ['Vasodilator', 'Bronchodilator', 'Antihistamine', 'Antibiotic'], answer: 0,
+      why: 'Widening the vessels lowers the pressure inside them. A bronchodilator widens airways instead, which is the near-miss worth keeping straight.' },
+    { q: 'A drug that acts only on the area where it is administered is described as:',
+      choices: ['Local', 'Systemic', 'Therapeutic', 'Prophylactic'], answer: 0,
+      why: 'Local is the opposite of systemic, which travels through the whole body. Therapeutic and prophylactic describe why a drug is given, not where it acts.' },
+    { q: 'Which schedule classification covers drugs that are not accepted for medical use?',
+      choices: ['Schedule I', 'Schedule II', 'Schedule III', 'Schedule V'], answer: 0,
+      why: 'Schedule I is the only one with no accepted medical use at all. Schedule II drugs do have medical uses but carry a high abuse potential.' },
+    { q: 'Which schedule classification is defined by a high potential for abuse?',
+      choices: ['Schedule II', 'Schedule I', 'Schedule IV', 'Schedule V'], answer: 0,
+      why: 'The abuse potential falls as the numbers rise, ending at Schedule V with only rare dependency.' },
+    { q: 'Where are expired drugs returned?',
+      choices: ['To the pharmacy', 'To the DEA', 'To the manufacturer', 'Into a sharps container'], answer: 0,
+      why: 'The pharmacy handles the disposal. The DEA registers the physician to prescribe controlled substances, which is a separate matter.' },
+    { q: 'Giving a patient a medication to take at a later time is called:',
+      choices: ['Dispensing', 'Administering', 'Prescribing', 'Compounding'], answer: 0,
+      why: 'Administering means the drug is given now, by whatever route the physician ordered. Prescribing is writing the order in the first place.' }
+  ]
+},
+{
   id: 'mp51-administration',
   group: 'Medications',
   current: true,
