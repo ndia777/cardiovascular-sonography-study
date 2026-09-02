@@ -6324,4 +6324,125 @@ window.DECKS = [
       why: 'The membrane also becomes infiltrated with fibrous material and cartilage, so the joint loses elasticity and stiffens.' }
   ]
 },
+{
+  id: 'bio-ch8-guide',
+  group: 'Chapter 8',
+  exam: true,
+  current: true,
+  added: '2026-09-02',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 8 — Study Guide Slides',
+  source: 'Chapter 8 — posted lecture outline slides',
+  note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material.",
+  /* Twenty-one slides, and the scope is narrower than the chapter in two ways
+     worth knowing rather than quietly filling in.
+
+     The slides say there are six types of synovial joint and then detail four:
+     ball-and-socket, condylar, hinge and pivot. Plane and saddle are named
+     nowhere. They are not added here, because this deck exists to say what the
+     slides say; both are covered in Ch. 8.1.
+
+     The same goes for the fibrous and cartilaginous joints. The slides show
+     only the suture and the symphysis, so syndesmosis, gomphosis and
+     synchondrosis are absent, and the movement slides are figures that name
+     the movements without defining any of them. One fact card lists the
+     movements the slides illustrate; the definitions live in Ch. 8.2.
+
+     ONE SLIDE CONTRADICTS THE TEXTBOOK, on which joint is replaced most often.
+     Neither is silently preferred; see the note on that card. */
+  cards: [
+    { term: 'Joint', also: ['Articulation'], def: 'a functional junction between bones' },
+    { fact: true, term: 'The four things joints do, as the slides list them',
+      def: 'bind parts of the skeletal system together, make bone growth possible, permit parts of the skeleton to change shape during childbirth, and enable the body to move in response to skeletal muscle contraction' },
+    { fact: true, term: 'The three structural classes of joint',
+      def: 'fibrous, cartilaginous and synovial' },
+    { term: 'Synarthrotic', def: 'immovable, the functional class a suture belongs to' },
+    { term: 'Amphiarthrotic', def: 'slightly movable' },
+    { term: 'Diarthrotic', def: 'freely movable' },
+    { term: 'Suture', def: 'the immovable fibrous joint found between the flat bones of the skull' },
+    { term: 'Sutural ligament', def: 'the thin layer of connective tissue that connects the bones at a suture' },
+    { term: 'Symphysis', def: 'the slightly movable joint in which a pad of fibrocartilage lies between bones whose surfaces are covered by hyaline cartilage' },
+    { fact: true, term: 'The two examples of a symphysis the slides give',
+      def: 'the pubic symphysis, and the joint between the bodies of adjacent vertebrae, where the intervertebral discs sit' },
+    { term: 'Synovial joint', def: 'the freely movable joint type that most joints of the body belong to' },
+    { term: 'Articular cartilage', def: 'the covering over the articular ends of the bones in a freely movable joint' },
+    { term: 'Joint capsule', def: 'the two-layered sleeve of a freely movable joint, an outer fibrous layer of ligaments and an inner membrane' },
+    { term: 'Synovial membrane', def: 'the inner layer of the joint capsule, the one that does the secreting' },
+    { term: 'Synovial fluid', def: 'what the inner layer of the joint capsule releases into the cavity' },
+    { fact: true, term: 'The parts of a synovial joint, as the slides list them',
+      def: 'articular cartilage, joint capsule, ligaments, synovial membrane, synovial cavity, synovial fluid, and in some joints menisci and bursae' },
+    { term: 'Ball-and-socket joint', also: ['Spheroidal joint'],
+      def: 'a round head sitting in a cup-shaped cavity, giving the widest range of motion of any joint, multiaxial plus rotation' },
+    { fact: true, term: 'The two ball-and-socket joints the slides name', def: 'the hip and the shoulder' },
+    { term: 'Condylar joint', also: ['Ellipsoidal joint'],
+      def: 'an oval condyle fitting into an elliptical cavity, allowing back-and-forth and side-to-side movement in two planes but no rotation' },
+    { term: 'Hinge joint', def: 'a convex surface fitting into the concave surface of another bone, moving in one plane only' },
+    { term: 'Pivot joint', also: ['Trochoid joint'],
+      def: 'a cylindrical surface rotating within a ring of another bone, uniaxial and permitting rotation only' },
+    { term: 'Multiaxial', def: 'moving in all planes, the range a ball-and-socket allows' },
+    { term: 'Biaxial', def: 'moving in two planes' },
+    { term: 'Uniaxial', def: 'moving in one plane only' },
+    { fact: true, term: 'The joint the slides give as the pivot example',
+      def: 'the atlas (C1) turning on the dens of the axis (C2)' },
+    { fact: true, term: 'The joint movements the slides illustrate',
+      def: 'abduction and adduction, flexion, extension and hyperextension, lateral flexion, dorsiflexion and plantar flexion, circumduction and rotation, medial and lateral rotation, and supination and pronation' },
+    { fact: true, term: 'The four large complex synovial joints the slides single out',
+      def: 'the shoulder, the elbow, the hip and the knee' },
+    { fact: true, term: 'What forms the shoulder joint',
+      def: 'the head of the humerus and the glenoid cavity of the scapula, a ball-and-socket with a very wide range including rotation and circumduction' },
+    { fact: true, term: 'What forms the elbow joint',
+      def: 'a hinge joint, permitting flexion and extension only' },
+    { fact: true, term: 'What forms the hip joint',
+      def: 'the head of the femur and the acetabulum of the hip bone, a ball-and-socket allowing a variety of movement but less than the shoulder' },
+    { fact: true, term: 'The three bones of the knee joint',
+      def: 'the femur at its medial and lateral condyles, the tibia at its medial and lateral condyles, and the patella, which articulates with the anterior surface of the femur' },
+    { fact: true, term: 'What cushions and separates the parts of the knee',
+      def: 'bursae and fat pads cushion it, and the menisci separate the femur from the tibia' },
+    { term: 'Bursitis', def: 'inflammation of a bursa, brought on by overuse or stress' },
+    { term: 'Arthritis', def: 'inflammation, swelling and pain in a joint' },
+    { term: 'Rheumatoid arthritis', def: 'the autoimmune form of joint disease' },
+    { term: 'Osteoarthritis', def: 'the degenerative form, the most common type, which comes on with aging' },
+    { term: 'Lyme arthritis', def: 'joint inflammation caused by an infection passed through a tick bite' },
+    { fact: true, term: 'The materials used to replace joints',
+      def: 'steel and titanium for larger joints, silicone for smaller ones, and ceramic for some' },
+    { fact: true, term: 'The most commonly replaced joint, according to the slides', def: 'the hip',
+      note: 'The textbook disagrees. It says most total joint replacements are of the knee and hip respectively, which puts the knee first, while these slides say hip replacements are the most common. The slides carry a 2019 copyright, so the ranking may simply have moved. Answer the slides on her test, but know the book says otherwise.' },
+    { term: 'Hydroxyapatite', def: 'the implant coating used because it resembles natural body chemicals' },
+    { fact: true, term: 'What 3D printing is used for in joint replacement',
+      def: 'creating custom replacement joints' },
+    { fact: true, term: 'The early sign of aging in joints', def: 'joint stiffness' },
+    { fact: true, term: 'Which joints change first with age, and what happens to them',
+      def: 'the fibrous joints change first, and they can strengthen over a lifetime' },
+    { fact: true, term: 'What happens to synchondroses and ligaments with age',
+      def: 'the cartilage in synchondroses stiffens and the ligaments lose their elasticity' },
+    { fact: true, term: 'Why height decreases with age',
+      def: 'changes in the symphysis joints of the vertebral column, caused by water loss from the intervertebral discs, which also diminishes flexibility' },
+    { fact: true, term: 'Why synovial joints lose function with age',
+      def: 'the capillary supply diminishes' },
+    { fact: true, term: 'The paradox of disuse the slides raise',
+      def: 'disuse hampers the nutrient supply to joints and speeds up stiffening, while activity and exercise keep them functional longer' }
+  ],
+  questions: [
+    { q: 'A suture between the flat bones of the skull is functionally classified as:',
+      choices: ['Synarthrotic', 'Amphiarthrotic', 'Diarthrotic', 'Multiaxial'], answer: 0,
+      why: 'The functional classes describe how much a joint moves, and a suture does not move at all. Multiaxial is the odd one out, since it describes directions rather than degree.' },
+    { q: 'Which joint type gives the widest range of motion?',
+      choices: ['Ball-and-socket', 'Condylar', 'Hinge', 'Pivot'], answer: 0,
+      why: 'It moves in all planes and rotates as well. Condylar also moves in two planes but cannot rotate, which is the distinction worth holding on to.' },
+    { q: 'The atlas turning on the dens of the axis is an example of which joint?',
+      choices: ['Pivot', 'Hinge', 'Condylar', 'Ball-and-socket'], answer: 0,
+      why: 'A cylindrical surface rotating inside a ring of bone. Both pivot and hinge joints are uniaxial, but a hinge bends rather than rotates.' },
+    { q: 'Which movement does the elbow permit, according to the slides?',
+      choices: ['Flexion and extension only', 'Rotation only',
+        'Movement in all planes', 'Back-and-forth and side-to-side'], answer: 0,
+      why: 'The slides treat the elbow as a straightforward hinge. The textbook adds a second articulation there that allows pronation and supination.' },
+    { q: 'Loss of height with age is caused by changes in which joints?',
+      choices: ['The symphysis joints of the vertebral column', 'The synovial joints of the knee',
+        'The fibrous joints of the skull', 'The synchondrosis of the first rib'], answer: 0,
+      why: 'The intervertebral discs lose water, so the column shortens and stiffens. The fibrous joints are the distractor worth noting, since those actually strengthen over a lifetime.' },
+    { q: 'Which type of arthritis is autoimmune?',
+      choices: ['Rheumatoid arthritis', 'Osteoarthritis', 'Lyme arthritis', 'Bursitis'], answer: 0,
+      why: 'Osteoarthritis is degenerative and Lyme arthritis follows a tick-borne infection, so all three have different causes. Bursitis is not arthritis at all, it is inflammation of a bursa.' }
+  ]
+},
 ];
