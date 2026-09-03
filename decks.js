@@ -5356,7 +5356,6 @@ window.DECKS = [
 {
   id: 'bio-ch7-1',
   group: 'Chapter 7',
-  current: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.1–7.3 — Bone Structure & Function',
@@ -5424,7 +5423,6 @@ window.DECKS = [
 {
   id: 'bio-ch7-2',
   group: 'Chapter 7',
-  current: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.4 — Bone Development, Growth & Repair',
@@ -5495,7 +5493,6 @@ window.DECKS = [
 {
   id: 'bio-ch7-3',
   group: 'Chapter 7',
-  current: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.5–7.6 — Skeletal Organization & the Skull',
@@ -5685,7 +5682,6 @@ window.DECKS = [
 {
   id: 'bio-ch7-4',
   group: 'Chapter 7',
-  current: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.7–7.8 — Vertebral Column & Thoracic Cage',
@@ -5808,7 +5804,6 @@ window.DECKS = [
 {
   id: 'bio-ch7-5',
   group: 'Chapter 7',
-  current: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.9–7.10 — Pectoral Girdle & Upper Limb',
@@ -5895,7 +5890,6 @@ window.DECKS = [
 {
   id: 'bio-ch7-6',
   group: 'Chapter 7',
-  current: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7.11–7.13 — Pelvic Girdle, Lower Limb & Aging',
@@ -5994,7 +5988,7 @@ window.DECKS = [
   id: 'bio-ch7-guide',
   group: 'Chapter 7',
   exam: true,
-  current: true,
+  retired: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 7 — Study Guide Slides',
@@ -6049,7 +6043,6 @@ window.DECKS = [
 {
   id: 'bio-ch8-1',
   group: 'Chapter 8',
-  current: true,
   added: '2026-08-27',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 8.1 — Types of Joints',
@@ -6134,7 +6127,6 @@ window.DECKS = [
 {
   id: 'bio-ch8-2',
   group: 'Chapter 8',
-  current: true,
   added: '2026-08-27',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 8.2 — Joint Movements',
@@ -6190,7 +6182,6 @@ window.DECKS = [
 {
   id: 'bio-ch8-3',
   group: 'Chapter 8',
-  current: true,
   added: '2026-08-27',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 8.3 — Examples of Synovial Joints',
@@ -6285,7 +6276,6 @@ window.DECKS = [
 {
   id: 'bio-ch8-4',
   group: 'Chapter 8',
-  current: true,
   added: '2026-08-27',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 8.4 — Life-Span Changes',
@@ -6328,7 +6318,7 @@ window.DECKS = [
   id: 'bio-ch8-guide',
   group: 'Chapter 8',
   exam: true,
-  current: true,
+  retired: true,
   added: '2026-09-02',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
   title: 'Ch. 8 — Study Guide Slides',
