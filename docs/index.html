@@ -8027,97 +8027,16 @@ window.DECKS = [
 /* ---------------------------------------------------------------------------
    DOSAGE CALCULATION
    ---------------------------------------------------------------------------
-   Two decks. This one holds the formula, the conversions and the order of
-   operations; the practice deck works problems with it.
+   Word problems, worked with D over H times Q. Recall only: a problem has one
+   sensible way to be studied, and flipping it as a flashcard grades nothing.
 
-   Recall shows the definition and asks for the term, so a card can only ask
-   for a number that is NOT already printed in the problem. That rules out
-   "which number is H" as a typed question — H is stated in the order — and it
-   is the right restriction, because reading a number back off the page is not
-   the skill. Identifying the parts is drilled here in the multiple choice
-   instead, and the practice deck asks for the values that have to be built:
-   the weight in kilograms, the stock strength converted, the desired dose. */
-
-{
-  id: 'mp49-dosage',
-  group: 'Medications',
-  current: true,
-  added: '2026-09-08',
-  course: 'M103 · Medical Procedures',
-  title: 'Dosage Calculation — The Formula',
-  source: 'Chapter 49 — dosage calculation',
-  cards: [
-    { fact: true, term: 'The dosage formula',
-      def: 'desired divided by have, times quantity — D over H, times Q' },
-    { term: 'Desired', also: ['D'],
-      def: 'the amount the prescriber ordered, which goes on top of the dosage fraction' },
-    { term: 'Have', also: ['H'],
-      def: 'the strength of the drug actually stocked, which goes on the bottom of the dosage fraction' },
-    { term: 'Quantity', also: ['Q'],
-      def: 'the form the stocked strength comes in, such as one tablet or 5 millilitres, which the ratio is multiplied by at the end' },
-    { fact: true, term: 'What the unit of the answer is',
-      def: 'whatever unit the quantity was in — tablets if the stock is written per tablet, millilitres if it is written per millilitre' },
-    { fact: true, term: 'The one thing to check before dividing',
-      def: 'that the ordered amount and the stocked strength are in the same unit, converting one of them if they are not' },
-    { fact: true, term: 'Why the quantity is not always 1',
-      def: 'a strength is often labelled across more than one unit of the form, such as 250 mg per 5 mL or 0.25 g per 2 tablets, and that whole packaged amount is what the ratio multiplies' },
-
-    { fact: true, term: 'Converting grams to milligrams',
-      def: 'move the decimal three places to the right, since a gram is 1,000 milligrams — 0.25 g becomes 250 mg' },
-    { fact: true, term: 'Converting milligrams to grams',
-      def: 'move the decimal three places to the left — 500 mg becomes 0.5 g' },
-    { fact: true, term: 'Converting milligrams to micrograms',
-      def: 'move the decimal three places to the right, since a milligram is 1,000 micrograms — 0.25 mg becomes 250 mcg' },
-    { fact: true, term: 'Converting pounds to kilograms',
-      def: 'divide the weight in pounds by 2.2 — 44 lb becomes 20 kg' },
-    { fact: true, term: 'The number of milligrams in a gram', def: '1,000' },
-    { fact: true, term: 'The number of micrograms in a milligram', def: '1,000' },
-    { fact: true, term: 'The number of pounds in a kilogram', def: '2.2' },
-    { fact: true, term: 'The number of millilitres in a litre', def: '1,000' },
-    { fact: true, term: 'Which way the decimal moves for a smaller unit',
-      def: 'to the right — a smaller unit means more of them, so the number gets bigger going from grams to milligrams or milligrams to micrograms' },
-
-    { term: 'Weight-based order',
-      def: 'an order written as an amount per kilogram rather than as a flat amount, so the prescribed dose has to be built from the patient’s weight before the formula can be used' },
-    { fact: true, term: 'The three steps a per-kilogram order adds',
-      def: 'divide the weight in pounds by 2.2 to get kilograms, multiply the kilograms by the per-kilogram order to get the desired amount, and only then divide by what is on hand' },
-    { term: 'Divided doses',
-      def: 'a daily total split across the day, so the ordered amount must be broken into the number of administrations before the formula is applied' },
-    { fact: true, term: 'How many doses a day q8h means', def: 'three' },
-    { fact: true, term: 'How many doses a day q6h means', def: 'four' },
-    { fact: true, term: 'How many doses a day q4h means', def: 'six' },
-    { fact: true, term: 'What to do when a per-day order is divided',
-      def: 'multiply the weight by the per-kilogram order to get the daily total, then divide that total by the number of doses in a day to get the amount for one administration' },
-    { fact: true, term: 'The most common cause of a wildly wrong answer',
-      def: 'a unit mismatch — dividing milligrams by grams, or micrograms by milligrams, without converting first' }
-  ],
-  questions: [
-    { q: 'An order reads 500 mg. The pharmacy stocks 250 mg in every 5 mL. Which value is H?',
-      choices: ['250 mg', '500 mg', '5 mL', '2 mL'], answer: 0,
-      why: 'H is always the strength stocked, never the amount ordered. The 500 mg is D and the 5 mL is Q.' },
-    { q: 'In that same order, which value is Q?',
-      choices: ['5 mL', '250 mg', '500 mg', '1 mL'], answer: 0,
-      why: 'Q is the form the stocked strength is packaged across. Because the label reads 250 mg per 5 mL, the 5 mL travels with the 250 mg and multiplies the ratio at the end.' },
-    { q: 'A drug is ordered at 10 mg/kg for a patient weighing 154 lb. What is the first step?',
-      choices: ['Divide 154 by 2.2', 'Multiply 154 by 10',
-        'Divide 154 by 10', 'Multiply 154 by 2.2'], answer: 0,
-      why: 'A per-kilogram order cannot be used against a weight in pounds. Converting first gives 70 kg, and only then is the dose 70 × 10 = 700 mg.' },
-    { q: 'An order reads 0.5 g and the stock is 250 mg tablets. Before dividing, you should:',
-      choices: ['Convert the 0.5 g to 500 mg', 'Convert the 250 mg to 0.25 g',
-        'Divide 0.5 by 250', 'Multiply 0.5 by 250'], answer: 0,
-      why: 'Either conversion is mathematically valid, but converting to the smaller unit avoids decimals and matches how the stock is labelled. Dividing 0.5 by 250 without converting gives an answer 1,000 times too small.' },
-    { q: 'Amoxicillin 30 mg/kg/day divided q8h is ordered for a 20 kg child. What is the amount for a single dose?',
-      choices: ['200 mg', '600 mg', '150 mg', '60 mg'], answer: 0,
-      why: '20 kg × 30 mg = 600 mg for the whole day, and q8h means three doses, so 600 ÷ 3 = 200 mg each. The 600 mg is the distractor worth watching, since it is a real number in the problem but it is the daily total, not the dose.' },
-    { q: 'If the stocked strength is written per tablet, the answer will be in:',
-      choices: ['Tablets', 'Milligrams', 'Millilitres', 'Grams'], answer: 0,
-      why: 'The answer always comes out in the unit of Q. That is a quick way to check a setup: if the question asks how much to give and the answer lands in milligrams, the quantity was left out.' },
-    { q: 'Digoxin 0.125 mg is ordered and the stock is 250 mcg tablets. What is D in micrograms?',
-      choices: ['125 mcg', '1,250 mcg', '12.5 mcg', '0.125 mcg'], answer: 0,
-      why: 'Milligrams to micrograms moves the decimal three places right, so 0.125 mg is 125 mcg. The dose then works out to half a tablet.' }
-  ]
-},
-
+   Recall shows the definition and asks for the term, so no card can ask for a
+   number already printed in the problem. That rules out "which number is H" as
+   a typed question, and rightly — H is stated in the order, and reading it back
+   is copying rather than calculating. Every answer below has to be built: a
+   weight converted, a stock strength converted, a dose computed from mg/kg, or
+   the final amount. The formula itself, and the unit conversions it leans on,
+   are taught by the notes shown after each answer. */
 {
   id: 'mp49-dosage-practice',
   group: 'Medications',
@@ -8138,8 +8057,8 @@ window.DECKS = [
      these ask "which number is H": H is stated in the order, and reading it
      back is not the skill. Every answer below has to be built — a weight
      converted, a stock strength converted, a dose computed from mg/kg, or the
-     final amount. Identifying the parts cold is drilled in the multiple choice
-     of the formula deck.
+     final amount. Which number is which is named in the note that
+     follows every answer.
 
      Answers are rounded the way volumes usually are, to the nearest tenth of a
      millilitre. Where rounding actually changes the number the note says so. */
