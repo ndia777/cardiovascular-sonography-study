@@ -1132,13 +1132,23 @@ function screenDeck(){
     modes.push(['chapter', `Whole Chapter Sheet`,
       `Every term across all ${chapterDecks(d).length} ${d.group} decks in one table, labelled by source.`]);
 
+  /* A deck may name the only modes it wants offered. A dosage problem has one
+     sensible way to be studied — work it out and type the answer back — and
+     pairing a word problem against "4.7 mL" in matching, or flipping it as a
+     flashcard, would teach nothing the typing does not. Order follows `only`
+     rather than the order built above, and a name the deck cannot support is
+     dropped rather than rendering a button that leads nowhere. */
+  const offered = d.only
+    ? d.only.map(k => modes.find(m => m[0] === k)).filter(Boolean)
+    : modes;
+
   app.innerHTML = `
     <button class="back" onclick="go('home')">← All decks</button>
     <h2 class="title">${esc(d.title)}</h2>
     <div class="srcline">${esc(d.course)} · ${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}<br>from ${esc(d.source)}</div>
     ${d.note ? `<div class="decknote">${esc(d.note)}</div>` : ''}
     <div class="modes">
-      ${modes.map(([m,t,s,cls]) => `<button class="mode ${cls || ''}" onclick="go('run','${d.id}','${m}')">
+      ${offered.map(([m,t,s,cls]) => `<button class="mode ${cls || ''}" onclick="go('run','${d.id}','${m}')">
         <strong>${t}</strong><span>${s}</span></button>`).join('')}
     </div>`;
 }

@@ -7405,4 +7405,233 @@ window.DECKS = [
   ]
 },
 
+
+/* ---------------------------------------------------------------------------
+   DOSAGE CALCULATION
+   ---------------------------------------------------------------------------
+   Two decks. This one holds the formula, the conversions and the order of
+   operations; the practice deck works problems with it.
+
+   Recall shows the definition and asks for the term, so a card can only ask
+   for a number that is NOT already printed in the problem. That rules out
+   "which number is H" as a typed question — H is stated in the order — and it
+   is the right restriction, because reading a number back off the page is not
+   the skill. Identifying the parts is drilled here in the multiple choice
+   instead, and the practice deck asks for the values that have to be built:
+   the weight in kilograms, the stock strength converted, the desired dose. */
+
+{
+  id: 'mp49-dosage',
+  group: 'Medications',
+  current: true,
+  added: '2026-09-08',
+  course: 'M103 · Medical Procedures',
+  title: 'Dosage Calculation — The Formula',
+  source: 'Chapter 49 — dosage calculation',
+  cards: [
+    { fact: true, term: 'The dosage formula',
+      def: 'desired divided by have, times quantity — D over H, times Q' },
+    { term: 'Desired', also: ['D'],
+      def: 'the amount the prescriber ordered, which goes on top of the dosage fraction' },
+    { term: 'Have', also: ['H'],
+      def: 'the strength of the drug actually stocked, which goes on the bottom of the dosage fraction' },
+    { term: 'Quantity', also: ['Q'],
+      def: 'the form the stocked strength comes in, such as one tablet or 5 millilitres, which the ratio is multiplied by at the end' },
+    { fact: true, term: 'What the unit of the answer is',
+      def: 'whatever unit the quantity was in — tablets if the stock is written per tablet, millilitres if it is written per millilitre' },
+    { fact: true, term: 'The one thing to check before dividing',
+      def: 'that the ordered amount and the stocked strength are in the same unit, converting one of them if they are not' },
+    { fact: true, term: 'Why the quantity is not always 1',
+      def: 'a strength is often labelled across more than one unit of the form, such as 250 mg per 5 mL or 0.25 g per 2 tablets, and that whole packaged amount is what the ratio multiplies' },
+
+    { fact: true, term: 'Converting grams to milligrams',
+      def: 'move the decimal three places to the right, since a gram is 1,000 milligrams — 0.25 g becomes 250 mg' },
+    { fact: true, term: 'Converting milligrams to grams',
+      def: 'move the decimal three places to the left — 500 mg becomes 0.5 g' },
+    { fact: true, term: 'Converting milligrams to micrograms',
+      def: 'move the decimal three places to the right, since a milligram is 1,000 micrograms — 0.25 mg becomes 250 mcg' },
+    { fact: true, term: 'Converting pounds to kilograms',
+      def: 'divide the weight in pounds by 2.2 — 44 lb becomes 20 kg' },
+    { fact: true, term: 'The number of milligrams in a gram', def: '1,000' },
+    { fact: true, term: 'The number of micrograms in a milligram', def: '1,000' },
+    { fact: true, term: 'The number of pounds in a kilogram', def: '2.2' },
+    { fact: true, term: 'The number of millilitres in a litre', def: '1,000' },
+    { fact: true, term: 'Which way the decimal moves for a smaller unit',
+      def: 'to the right — a smaller unit means more of them, so the number gets bigger going from grams to milligrams or milligrams to micrograms' },
+
+    { term: 'Weight-based order',
+      def: 'an order written as an amount per kilogram rather than as a flat amount, so the prescribed dose has to be built from the patient’s weight before the formula can be used' },
+    { fact: true, term: 'The three steps a per-kilogram order adds',
+      def: 'divide the weight in pounds by 2.2 to get kilograms, multiply the kilograms by the per-kilogram order to get the desired amount, and only then divide by what is on hand' },
+    { term: 'Divided doses',
+      def: 'a daily total split across the day, so the ordered amount must be broken into the number of administrations before the formula is applied' },
+    { fact: true, term: 'How many doses a day q8h means', def: 'three' },
+    { fact: true, term: 'How many doses a day q6h means', def: 'four' },
+    { fact: true, term: 'How many doses a day q4h means', def: 'six' },
+    { fact: true, term: 'What to do when a per-day order is divided',
+      def: 'multiply the weight by the per-kilogram order to get the daily total, then divide that total by the number of doses in a day to get the amount for one administration' },
+    { fact: true, term: 'The most common cause of a wildly wrong answer',
+      def: 'a unit mismatch — dividing milligrams by grams, or micrograms by milligrams, without converting first' }
+  ],
+  questions: [
+    { q: 'An order reads 500 mg. The pharmacy stocks 250 mg in every 5 mL. Which value is H?',
+      choices: ['250 mg', '500 mg', '5 mL', '2 mL'], answer: 0,
+      why: 'H is always the strength stocked, never the amount ordered. The 500 mg is D and the 5 mL is Q.' },
+    { q: 'In that same order, which value is Q?',
+      choices: ['5 mL', '250 mg', '500 mg', '1 mL'], answer: 0,
+      why: 'Q is the form the stocked strength is packaged across. Because the label reads 250 mg per 5 mL, the 5 mL travels with the 250 mg and multiplies the ratio at the end.' },
+    { q: 'A drug is ordered at 10 mg/kg for a patient weighing 154 lb. What is the first step?',
+      choices: ['Divide 154 by 2.2', 'Multiply 154 by 10',
+        'Divide 154 by 10', 'Multiply 154 by 2.2'], answer: 0,
+      why: 'A per-kilogram order cannot be used against a weight in pounds. Converting first gives 70 kg, and only then is the dose 70 × 10 = 700 mg.' },
+    { q: 'An order reads 0.5 g and the stock is 250 mg tablets. Before dividing, you should:',
+      choices: ['Convert the 0.5 g to 500 mg', 'Convert the 250 mg to 0.25 g',
+        'Divide 0.5 by 250', 'Multiply 0.5 by 250'], answer: 0,
+      why: 'Either conversion is mathematically valid, but converting to the smaller unit avoids decimals and matches how the stock is labelled. Dividing 0.5 by 250 without converting gives an answer 1,000 times too small.' },
+    { q: 'Amoxicillin 30 mg/kg/day divided q8h is ordered for a 20 kg child. What is the amount for a single dose?',
+      choices: ['200 mg', '600 mg', '150 mg', '60 mg'], answer: 0,
+      why: '20 kg × 30 mg = 600 mg for the whole day, and q8h means three doses, so 600 ÷ 3 = 200 mg each. The 600 mg is the distractor worth watching, since it is a real number in the problem but it is the daily total, not the dose.' },
+    { q: 'If the stocked strength is written per tablet, the answer will be in:',
+      choices: ['Tablets', 'Milligrams', 'Millilitres', 'Grams'], answer: 0,
+      why: 'The answer always comes out in the unit of Q. That is a quick way to check a setup: if the question asks how much to give and the answer lands in milligrams, the quantity was left out.' },
+    { q: 'Digoxin 0.125 mg is ordered and the stock is 250 mcg tablets. What is D in micrograms?',
+      choices: ['125 mcg', '1,250 mcg', '12.5 mcg', '0.125 mcg'], answer: 0,
+      why: 'Milligrams to micrograms moves the decimal three places right, so 0.125 mg is 125 mcg. The dose then works out to half a tablet.' }
+  ]
+},
+
+{
+  id: 'mp49-dosage-practice',
+  group: 'Medications',
+  current: true,
+  added: '2026-09-08',
+  course: 'M103 · Medical Procedures',
+  title: 'Dosage Calculation — Practice Problems',
+  source: 'Chapter 49 — dosage calculation practice',
+  note: 'Work each one on paper, then type the answer. Include the unit. The full setup, showing which number was D, which was H and which was Q, appears once you answer.',
+  /* RECALL ONLY. A word problem has one sensible way to be studied: work it out
+     and type the answer back. Flipping it as a flashcard grades nothing, and
+     matching "4.7 mL" against a paragraph is a puzzle about paragraph lengths.
+     `only` keeps the menu to the one mode, which also means every card here has
+     to be recallable — a `fact: true` card would never be reachable.
+
+     Because Recall shows the definition and asks for the term, no card can ask
+     for a number that is already printed in the problem. That is why none of
+     these ask "which number is H": H is stated in the order, and reading it
+     back is not the skill. Every answer below has to be built — a weight
+     converted, a stock strength converted, a dose computed from mg/kg, or the
+     final amount. Identifying the parts cold is drilled in the multiple choice
+     of the formula deck.
+
+     Answers are rounded the way volumes usually are, to the nearest tenth of a
+     millilitre. Where rounding actually changes the number the note says so. */
+  only: ['recall'],
+  cards: [
+    /* ---- the two worked from the lecture notes ---- */
+    { term: '0.5 mg',
+      def: 'Alprazolam 0.25 mg PO is ordered. The pharmacy stocks it as 0.0005 g per 2 tablets. Before anything can be divided, what is the strength on hand expressed in milligrams?',
+      note: 'Grams to milligrams moves the decimal three places right: 0.0005 g becomes 0.5 mg. So H is 0.5 mg and Q is 2 tablets — the 2 tablets is what that strength is spread across, not a second dose.' },
+    { term: '1 tablet', also: ['1 tab'],
+      def: 'Alprazolam 0.25 mg PO is ordered and the stock is 0.0005 g per 2 tablets. How much do you give?',
+      note: 'D is 0.25 mg, H is 0.5 mg once converted, Q is 2 tablets. 0.25 ÷ 0.5 = 0.5, and 0.5 × 2 tablets = 1 tablet. The 0.5 in the middle is the ratio, not the answer — stopping there and calling it half a tablet is the trap this problem sets.' },
+
+    { term: '54.5 kg',
+      def: 'Ondansetron 0.15 mg/kg IV is ordered for a patient weighing 120 lb, and the vial is labelled 0.002 g per 2 mL. What is the patient’s weight in kilograms, to the nearest tenth?',
+      note: '120 ÷ 2.2 = 54.545…, which rounds to 54.5 kg. A per-kilogram order can never be used against a weight in pounds, so this is always the first step.' },
+    { term: '8.175 mg',
+      def: 'Ondansetron 0.15 mg/kg IV is ordered for a patient weighing 120 lb, and the vial is labelled 0.002 g per 2 mL. What amount of drug is desired?',
+      note: '54.5 kg × 0.15 mg = 8.175 mg. This is D, built from the weight — it is not the answer to the question of how much to draw up, which still needs the formula.' },
+    { term: '8.2 mL',
+      def: 'Ondansetron 0.15 mg/kg IV is ordered for a patient weighing 120 lb, and the vial is labelled 0.002 g per 2 mL. What volume do you draw up?',
+      note: 'D is 8.175 mg (54.5 kg × 0.15). The vial converts to 2 mg per 2 mL, so H is 2 mg and Q is 2 mL — which is 1 mg in every millilitre. 8.175 ÷ 2 × 2 = 8.175 mL, rounded to 8.2 mL. Because the concentration works out to 1 mg/mL, the millilitres and the milligrams come out as the same number here, which is a coincidence of this vial and not a rule.' },
+
+    { term: '5 kg',
+      def: 'Kanamycin 15 mg/kg is ordered for an infant weighing 11 lb, and the stock is 0.25 g per 2 mL. What is the infant’s weight in kilograms?',
+      note: '11 ÷ 2.2 = 5 kg exactly.' },
+    { term: '75 mg',
+      def: 'Kanamycin 15 mg/kg is ordered for an infant weighing 11 lb, and the stock is 0.25 g per 2 mL. What amount of drug is desired?',
+      note: '5 kg × 15 mg = 75 mg. That is D.' },
+    { term: '0.6 mL',
+      def: 'Kanamycin 15 mg/kg is ordered for an infant weighing 11 lb, and the stock is 0.25 g per 2 mL. What volume do you draw up?',
+      note: 'D is 75 mg, H converts to 250 mg, Q is 2 mL. 75 ÷ 250 = 0.3, and 0.3 × 2 = 0.6 mL.' },
+
+    /* ---- weight-based, divided across the day ---- */
+    { term: '300 mg',
+      def: 'A child weighing 15 kg is prescribed amoxicillin 20 mg/kg/day in divided doses every 8 hours, and the pharmacy stocks a 250 mg per 5 mL suspension. How much drug is ordered for the whole day?',
+      note: '15 kg × 20 mg = 300 mg. Read the order carefully: this one is written per day, so this figure still has to be split before it becomes a dose.' },
+    { term: '100 mg',
+      def: 'A child weighing 15 kg is prescribed amoxicillin 20 mg/kg/day in divided doses every 8 hours, and the pharmacy stocks a 250 mg per 5 mL suspension. How many milligrams should be given per dose?',
+      note: 'The daily total is 15 × 20 = 300 mg, and every 8 hours means three doses in a day, so 300 ÷ 3 = 100 mg. That is D for a single administration.' },
+    { term: '2 mL',
+      def: 'A child weighing 15 kg is prescribed amoxicillin 20 mg/kg/day in divided doses every 8 hours, and the pharmacy stocks a 250 mg per 5 mL suspension. How much suspension is one dose?',
+      note: 'D is 100 mg (300 mg a day, divided by three). H is 250 mg and Q is 5 mL. 100 ÷ 250 = 0.4, and 0.4 × 5 = 2 mL.' },
+
+    { term: '80 kg',
+      def: 'Vancomycin 15 mg/kg IV is ordered for a patient weighing 176 lb, and the vial holds 500 mg per 10 mL. What is the patient’s weight in kilograms?',
+      note: '176 ÷ 2.2 = 80 kg exactly.' },
+    { term: '1200 mg', also: ['1,200 mg'],
+      def: 'Vancomycin 15 mg/kg IV is ordered for a patient weighing 176 lb, and the vial holds 500 mg per 10 mL. What amount of drug is desired?',
+      note: '80 kg × 15 mg = 1,200 mg. That is D.' },
+    { term: '24 mL',
+      def: 'Vancomycin 15 mg/kg IV is ordered for a patient weighing 176 lb, and the vial holds 500 mg per 10 mL. What volume is needed?',
+      note: 'D is 1,200 mg, H is 500 mg, Q is 10 mL. 1,200 ÷ 500 = 2.4, and 2.4 × 10 = 24 mL. An answer that large means more than two vials, which is worth noticing rather than glossing over.' },
+
+    { term: '15 kg',
+      def: 'A child weighing 33 lb is ordered acetaminophen 10 mg/kg PO every 6 hours as needed, and the bottle reads 160 mg per 5 mL. What is the child’s weight in kilograms?',
+      note: '33 ÷ 2.2 = 15 kg exactly.' },
+    { term: '150 mg',
+      def: 'A child weighing 33 lb is ordered acetaminophen 10 mg/kg PO every 6 hours as needed, and the bottle reads 160 mg per 5 mL. What amount of drug is desired for one dose?',
+      note: '15 kg × 10 mg = 150 mg. This order is written per dose rather than per day, so nothing is divided.' },
+    { term: '4.7 mL',
+      def: 'A child weighing 33 lb is ordered acetaminophen 10 mg/kg PO every 6 hours as needed, and the bottle reads 160 mg per 5 mL. How much should be measured out?',
+      note: 'D is 150 mg, H is 160 mg, Q is 5 mL. 150 ÷ 160 = 0.9375, and 0.9375 × 5 = 4.6875 mL, which rounds to 4.7 mL. Because the desired amount is slightly less than what is on hand, the answer has to come out slightly less than one full quantity.' },
+
+    { term: '25 kg',
+      def: 'Lithostat 10 mg/kg is ordered for a patient weighing 55 lb, and the stock is 0.250 g per 2 tablets. What is the patient’s weight in kilograms?',
+      note: '55 ÷ 2.2 = 25 kg exactly.' },
+    { term: '250 mg',
+      def: 'Lithostat 10 mg/kg is ordered for a patient weighing 55 lb, and the stock is 0.250 g per 2 tablets. What amount of drug is desired?',
+      note: 'D is 25 kg × 10 mg = 250 mg. The stock converts to 250 mg as well, spread across 2 tablets, so the ratio is 250 ÷ 250 = 1 and the dose is 1 × 2 = 2 tablets. When D and H come out equal the ratio is 1 and the answer is simply the quantity — worth recognising, because writing 1 tablet on reflex is the easy mistake.' },
+
+    /* ---- flat orders needing a unit conversion ---- */
+    { term: '500 mg',
+      def: 'Cefazolin 0.5 g PO is ordered and the pharmacy stocks 250 mg capsules. What is the ordered amount in milligrams?',
+      note: '0.5 g becomes 500 mg, moving the decimal three places right. Dividing 0.5 by 250 without converting would give an answer a thousand times too small.' },
+    { term: '2 capsules', also: ['2 caps'],
+      def: 'Cefazolin 0.5 g PO is ordered and the pharmacy stocks 250 mg capsules. How much do you give?',
+      note: 'Once D is converted to 500 mg it can be divided: 500 ÷ 250 = 2, and Q is one capsule, so 2 capsules.' },
+
+    { term: '250 mcg',
+      def: 'Digoxin 0.25 mg PO is ordered and the pharmacy stocks 125 mcg tablets. What is the ordered amount in micrograms?',
+      note: 'Milligrams to micrograms moves the decimal three places right, so 0.25 mg is 250 mcg. Digoxin is stocked both ways, which is exactly why this conversion matters.' },
+    { term: '2 tablets', also: ['2 tabs'],
+      def: 'Digoxin 0.25 mg PO is ordered and the pharmacy stocks 125 mcg tablets. How much do you give?',
+      note: 'D converts to 250 mcg, H is 125 mcg, Q is one tablet. 250 ÷ 125 = 2 tablets.' },
+
+    { term: '75 mcg',
+      def: 'Levothyroxine 0.075 mg PO daily is ordered and the pharmacy stocks 25 mcg tablets. What is the ordered amount in micrograms?',
+      note: '0.075 mg becomes 75 mcg. Levothyroxine is almost always labelled in micrograms, so this conversion comes up constantly.' },
+    { term: '3 tablets', also: ['3 tabs'],
+      def: 'Levothyroxine 0.075 mg PO daily is ordered and the pharmacy stocks 25 mcg tablets. How much do you give?',
+      note: 'D converts to 75 mcg, H is 25 mcg, Q is one tablet. 75 ÷ 25 = 3 tablets.' },
+
+    /* ---- flat orders, units already matching ---- */
+    { term: '10 mL',
+      def: 'Cephalexin 500 mg PO every 6 hours is ordered and the pharmacy stocks a 250 mg per 5 mL suspension. How much is one dose?',
+      note: 'D is 500 mg, H is 250 mg, Q is 5 mL. 500 ÷ 250 = 2, and 2 × 5 = 10 mL. The every-6-hours part tells you when, not how much — nothing here gets divided, because the order is already written per dose.' },
+    { term: '4 mL',
+      def: 'Furosemide 40 mg IV is ordered and the vial holds 10 mg per mL. What volume do you draw up?',
+      note: 'D is 40 mg, H is 10 mg, Q is 1 mL. 40 ÷ 10 = 4, and 4 × 1 = 4 mL.' },
+    { term: '0.5 mL',
+      def: 'Heparin 5,000 units subcutaneously is ordered and the vial is labelled 10,000 units per mL. What volume do you draw up?',
+      note: 'D is 5,000 units, H is 10,000 units, Q is 1 mL. 5,000 ÷ 10,000 = 0.5, and 0.5 × 1 = 0.5 mL. Units behave like any other unit of measure in the formula, as long as both sides of the fraction are in them.' },
+    { term: '0.5 tablet', also: ['½ tablet', 'half a tablet', '1/2 tablet', '0.5 tab', 'half tablet'],
+      def: 'Digoxin 0.125 mg PO is ordered and the pharmacy stocks 0.25 mg tablets. How much do you give?',
+      note: 'D is 0.125 mg, H is 0.25 mg, Q is one tablet. 0.125 ÷ 0.25 = 0.5, so half a tablet. Both numbers are already in milligrams, so no conversion is needed — the decimals make it look harder than it is.' },
+    { term: '20 mL',
+      def: 'Chloramphenicol 500 mg every 6 hours is ordered and the pharmacy stocks a 125 mg per 5 mL suspension. How much is one dose?',
+      note: 'D is 500 mg, H is 125 mg, Q is 5 mL. 500 ÷ 125 = 4, and 4 × 5 = 20 mL. Four times the stocked strength means four times the packaged volume.' }
+  ]
+},
+
 ];

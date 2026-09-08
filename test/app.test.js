@@ -110,7 +110,8 @@ const modesFor = d => {
   if (d.chest) m.push('chest');
   if (d.beat) m.push('beat');
   m.push('browse');
-  return m;
+  /* mirrors the engine: a deck may restrict itself to a subset of modes */
+  return d.only ? m.filter(x => d.only.includes(x)) : m;
 };
 const norm = x => x.toLowerCase().trim();
 const clashes = (a, b) => {
@@ -976,6 +977,33 @@ function suite(s, label, srcCss) {
     check(`[${label}] ${d.id} is not both`,
           !(d.cards.length > 0 && d.steps.length > 0),
           'mixing terms and steps makes the mode list ambiguous');
+  }
+
+  /* A deck that names `only` gets exactly those modes on its menu, in that
+     order. Two ways this goes wrong and neither is visible from the deck
+     data: naming a mode the deck cannot support (so the button silently
+     vanishes and the deck offers less than it meant to), and leaving a card
+     stranded — a `fact: true` card in a recall-only deck can never be seen,
+     because Recall is the one mode that skips it. */
+  for (const d of DECKS.filter(x => x.only)) {
+    const could = modesFor({ ...d, only: undefined });
+    const unsupported = d.only.filter(m => !could.includes(m));
+    check(`[${label}] ${d.id} only names modes the deck supports`,
+          !unsupported.length, `cannot offer ${unsupported.join(", ")}`);
+
+    go('deck', d.id);
+    const shown = [...s.__app.innerHTML.matchAll(/onclick="go\(.run.,.[^.]*.,.([^.]*).\)/g)]
+      .map(m => m[1]);
+    check(`[${label}] ${d.id} offers exactly the modes it names`,
+          JSON.stringify(shown) === JSON.stringify(d.only),
+          `menu shows ${shown.join(", ") || "nothing"}`);
+
+    if (d.only.length === 1 && d.only[0] === 'recall') {
+      const stranded = d.cards.filter(c => c.fact).map(c => c.term);
+      check(`[${label}] ${d.id} strands no card outside its one mode`,
+            !stranded.length,
+            `fact cards unreachable in a recall-only deck: ${stranded.join(" | ")}`);
+    }
   }
 
   /* ordering decks: every step must be placeable, in sequence, across all
