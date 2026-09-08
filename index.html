@@ -589,6 +589,9 @@
   /* names the category Recall is asking for, where the term declares one */
   .asks{color:var(--accent);font-weight:650}
   .note{display:block;margin-top:6px;font-size:12.5px;color:var(--warn);line-height:1.5}
+  /* the arithmetic behind a dosage step: shown every time, so it stays quiet
+     and unflagged, unlike .note which exists to raise an eyebrow */
+  .dwork{display:block;margin-top:5px;font-size:12.5px;color:var(--dim);line-height:1.5}
   .note::before{content:"⚑ ";}
 
   /* ---- results ---- */
@@ -955,12 +958,13 @@ function screenHome(){
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
       return `<button class="deck ${d.exam && !d.retired ? 'exam' : ''}${d.reference ? ' ref' : ''}" onclick="go('deck','${d.id}')">
         <h3>${esc(d.title)}</h3>
-        <div class="meta">${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
+        <div class="meta">${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         <div class="badges">
           ${d.exam ? `<span class="badge exam${d.retired ? ' past' : ''}">Study guide</span>` : ''}
           ${d.reference ? `<span class="badge ref">Reference</span>` : ''}
           ${d.current && bare ? `<span class="badge now">Current</span>` : ''}
           ${p.recallBest != null ? scoreBadge('Recall', p.recallBest) : ''}
+          ${p.doseBest != null ? scoreBadge('Dosage', p.doseBest) : ''}
           ${p.quizBest != null ? scoreBadge('Quiz best', p.quizBest) : ''}
           ${p.tfBest != null ? scoreBadge('T/F', p.tfBest) : ''}
           ${p.traceBest != null ? scoreBadge('Rhythms', p.traceBest) : ''}
@@ -1085,6 +1089,11 @@ function screenDeck(){
   /* Only offer modes the deck can actually support — a procedure has no terms
      to flip or match, and a vocabulary list has no order to reconstruct. */
   const modes = [];
+  /* A dose deck is a set of problems rather than a list of terms, so this
+     mode leads: the card modes below have nothing to work with. */
+  if ((d.dose || []).length)
+    modes.push(['dose', 'Work the Dose',
+      `Step through ${d.dose.length} orders — convert the weight, build D, read H and Q off the label, then divide. Every step is marked.`, 'hot']);
   /* First, and bordered, because this chapter is tested by diagram — the
      professor said so, and the mode order is how the page says which to do. */
   const lf = labelFigs(d);
@@ -1145,7 +1154,7 @@ function screenDeck(){
   app.innerHTML = `
     <button class="back" onclick="go('home')">← All decks</button>
     <h2 class="title">${esc(d.title)}</h2>
-    <div class="srcline">${esc(d.course)} · ${d.cards.length ? `${d.cards.length} terms` : `${d.steps.length} steps`}<br>from ${esc(d.source)}</div>
+    <div class="srcline">${esc(d.course)} · ${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}<br>from ${esc(d.source)}</div>
     ${d.note ? `<div class="decknote">${esc(d.note)}</div>` : ''}
     <div class="modes">
       ${offered.map(([m,t,s,cls]) => `<button class="mode ${cls || ''}" onclick="go('run','${d.id}','${m}')">
@@ -3562,6 +3571,271 @@ function results(d, big, lbl, missed, mode){
   keyHandler = null;
 }
 
+
+/* ═══════════════ DOSAGE CALCULATION ═══════════════ */
+/* A dose problem is not a term with a definition, so it does not belong in any
+   of the card modes. It is a short procedure: convert the weight, build the
+   desired amount, put the stocked strength into the same unit, read the
+   quantity off the label, then divide and multiply. Getting the last number
+   right while guessing at the middle is worth nothing on a med-pass, so this
+   mode asks for every step and marks each one.
+
+   NOTHING here is stored as an answer. The deck carries only what a real order
+   and a real label carry — the drug, the order, the patient's weight, the
+   stock strength — and every figure on screen, the problem text included, is
+   derived from those. A hard-coded answer would be a second source of truth
+   waiting to drift out of step with the numbers it claims to come from.
+
+   The WORKING UNIT is the smaller of the order's unit and the label's, which is
+   what a person does by hand: 0.5 g against 250 mg tablets becomes 500 against
+   250 rather than 0.5 against 0.25, because whole numbers are harder to slip a
+   decimal place in. */
+
+/* Metric mass against the milligram. Units of activity — heparin, insulin —
+   are deliberately absent: they convert to nothing, so an order in units can
+   only be filled from a label in units, and mixing them is a data error rather
+   than a conversion to perform. */
+const DOSE_METRIC = { g: 1000, mg: 1, mcg: 0.001 };
+const doseRound = (x, n) => { const f = Math.pow(10, n); return Math.round(x * f + 1e-9) / f; };
+/* prints 8.175 rather than 8.174999999999999, and 2 rather than 2.0000, and
+   groups the thousands so a heparin label reads 10,000 units the way it is
+   printed. Typed answers are compared after commas are stripped, so grouping
+   here never makes an answer harder to enter. */
+const doseNum = x => {
+  const [whole, frac] = String(+(+x).toFixed(6)).split('.');
+  return whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (frac ? '.' + frac : '');
+};
+const doseWorkingUnit = (a, b) => a === b ? a
+  : (DOSE_METRIC[a] && DOSE_METRIC[b]) ? (DOSE_METRIC[a] <= DOSE_METRIC[b] ? a : b) : a;
+const doseConvert = (amount, from, to) =>
+  from === to ? amount : amount * DOSE_METRIC[from] / DOSE_METRIC[to];
+/* millilitres never pluralise; tablets and capsules do */
+const doseForm = (n, form) =>
+  `${doseNum(n)} ${form}${n !== 1 && /tablet|capsule/.test(form) ? 's' : ''}`;
+
+function doseStockText(p){
+  const st = p.stock;
+  const strength = `${doseNum(st.amount)} ${st.unit}`;
+  /* "250 mg capsules" and "10,000 units per mL" are how labels read;
+     "per 1 mL" is not. */
+  if (st.per === 1) return /tablet|capsule/.test(st.form)
+    ? `${strength} ${st.form}s` : `${strength} per ${st.form}`;
+  return `${strength} per ${doseForm(st.per, st.form)}`;
+}
+function doseOrderText(p){
+  const o = p.order;
+  return `${doseNum(o.amount)} ${o.unit}${o.perKg ? '/kg' : ''}${o.perDay ? '/day' : ''}`;
+}
+function doseText(p){
+  const o = p.order;
+  let s = `${p.drug} ${doseOrderText(p)}`;
+  if (p.route) s += ` ${p.route}`;
+  if (o.perDay && o.doses) s += `, in divided doses every ${doseNum(24 / o.doses)} hours,`;
+  else if (o.everyHours) s += ` every ${doseNum(o.everyHours)} hours`;
+  s += ' is ordered';
+  const who = p.who || 'a patient';
+  if (p.weightLb != null) s += ` for ${who} weighing ${doseNum(p.weightLb)} lb`;
+  else if (p.weightKg != null) s += ` for ${who} weighing ${doseNum(p.weightKg)} kg`;
+  return `${s}. ${p.container || 'The pharmacy stocks'} ${doseStockText(p)}.`;
+}
+
+/* Returns the ordered steps plus the figures they build. Every value is
+   computed here; the deck supplies none of them. */
+function doseSolve(p){
+  const o = p.order, st = p.stock;
+  const work = doseWorkingUnit(o.unit, st.unit);
+  const steps = [];
+  let kg = p.weightKg;
+
+  if (p.weightLb != null){
+    kg = doseRound(p.weightLb / 2.2, 1);
+    steps.push({ key: 'kg', label: 'Weight in kilograms', unit: 'kg', value: kg,
+      ask: 'Convert the weight to kilograms.',
+      work: `${doseNum(p.weightLb)} lb ÷ 2.2 = ${doseNum(kg)} kg`,
+      why: 'A per-kilogram order cannot be worked against a weight in pounds, so this comes first every time.' });
+  }
+
+  let D;
+  if (o.perKg){
+    const built = doseConvert(kg * o.amount, o.unit, work);
+    if (o.perDay){
+      steps.push({ key: 'daily', label: 'Total for the day', unit: work, value: doseRound(built, 4),
+        ask: 'How much drug is ordered for the whole day?',
+        work: `${doseNum(kg)} kg × ${doseNum(o.amount)} ${o.unit} = ${doseNum(built)} ${work}`,
+        why: 'This order is written per day, so the figure it produces still has to be split before it becomes a dose.' });
+      D = built / o.doses;
+      steps.push({ key: 'd', label: 'Desired (D)', unit: work, value: doseRound(D, 4),
+        ask: 'How much is one dose?',
+        work: `${doseNum(built)} ${work} ÷ ${doseNum(o.doses)} = ${doseNum(D)} ${work}`,
+        why: `Every ${doseNum(24 / o.doses)} hours means ${doseNum(o.doses)} doses in a day.` });
+    } else {
+      D = built;
+      steps.push({ key: 'd', label: 'Desired (D)', unit: work, value: doseRound(D, 4),
+        ask: 'What amount of drug is desired?',
+        work: `${doseNum(kg)} kg × ${doseNum(o.amount)} ${o.unit} = ${doseNum(D)} ${work}`,
+        why: 'D is built from the weight. It is not yet how much you give — that still needs the label.' });
+    }
+  } else {
+    D = doseConvert(o.amount, o.unit, work);
+    const same = o.unit === work;
+    steps.push({ key: 'd', label: 'Desired (D)', unit: work, value: doseRound(D, 4),
+      ask: same ? 'What is D, the amount ordered?' : `What is D, converted to ${work}?`,
+      work: same ? `${doseNum(D)} ${work}, straight from the order`
+                 : `${doseNum(o.amount)} ${o.unit} = ${doseNum(D)} ${work}`,
+      why: same ? 'The order and the label are already in the same unit, so nothing needs converting.'
+                : 'D and H have to be in the same unit before anything is divided.' });
+  }
+
+  const H = doseConvert(st.amount, st.unit, work);
+  const sameH = st.unit === work;
+  steps.push({ key: 'h', label: 'Have (H)', unit: work, value: doseRound(H, 4),
+    ask: sameH ? 'What is H, the strength on hand?' : `What is H, converted to ${work}?`,
+    work: sameH ? `${doseNum(H)} ${work}, straight off the label`
+                : `${doseNum(st.amount)} ${st.unit} = ${doseNum(H)} ${work}`,
+    why: 'H is always the strength stocked, never the amount ordered.' });
+
+  steps.push({ key: 'q', label: 'Quantity (Q)', unit: st.form, value: st.per,
+    ask: 'What is Q, the form that strength comes in?',
+    work: `the label puts ${doseNum(H)} ${work} in ${doseForm(st.per, st.form)}`,
+    why: 'Q is what the ratio is multiplied by at the end, and it decides the unit the answer comes out in.' });
+
+  const raw = D / H * st.per;
+  const answer = doseRound(raw, p.round == null ? 2 : p.round);
+  steps.push({ key: 'give', label: 'Give', unit: st.form, value: answer,
+    ask: 'How much do you give?',
+    work: `${doseNum(D)} ÷ ${doseNum(H)} × ${doseNum(st.per)} = ${doseNum(raw)}${
+      raw !== answer ? `, rounded to ${doseNum(answer)}` : ''} ${st.form}`,
+    /* p.why is the closing remark on the whole problem and is shown once the
+       problem is finished — putting it here too would print it twice */
+    why: '' });
+
+  return { steps, work, kg, D, H, Q: st.per, raw, answer };
+}
+
+/* A step is satisfied by its own value, or by that value rounded to one or two
+   places. Asking for 8.175 and rejecting 8.18 would be marking arithmetic
+   presentation rather than arithmetic. */
+function doseMatches(typed, step){
+  const m = String(typed).toLowerCase().replace(/,/g, '').match(/-?\d*\.?\d+/);
+  if (!m) return false;
+  const got = parseFloat(m[0]);
+  /* the value itself first: a step held to four places (a daily total split
+     three ways lands on 116.6667) is not reachable by any of the roundings */
+  return Math.abs(got - step.value) < 1e-9
+      || [3, 2, 1].some(n => Math.abs(got - doseRound(step.value, n)) < 1e-9);
+}
+
+function runDose(d){
+  const probs = d.dose || [];
+  if (!session){
+    const order = shuffle(probs.map((_, i) => i));
+    const plan = order.map(i => doseSolve(probs[i]));
+    session = { order, plan, pi: 0, si: 0, typed: '', verdict: null,
+                right: 0, wrong: 0, done: 0, missed: [],
+                total: plan.reduce((n, x) => n + x.steps.length, 0) };
+  }
+  const s = session;
+
+  if (s.pi >= s.order.length){
+    const pct = Math.round(s.right / s.total * 100);
+    record(d.id, { doseBest: Math.max((load()[d.id] || {}).doseBest || 0, pct) });
+    return results(d, `${s.right}/${s.total}`,
+                   `steps right first time · ${s.wrong} missed`, s.missed, 'dose');
+  }
+
+  const p = probs[s.order[s.pi]], sol = s.plan[s.pi];
+  const finished = s.si >= sol.steps.length;
+  const step = sol.steps[Math.min(s.si, sol.steps.length - 1)];
+  const v = s.verdict;
+  const tone = v === 'wrong' ? 'var(--bad)' : 'var(--good)';
+  const solved = sol.steps.slice(0, s.si).map(x =>
+    `<div class="why"><b style="color:var(--good)">✓ ${esc(x.label)}</b> — <b style="color:var(--text)">${
+      esc(doseNum(x.value))} ${esc(x.unit)}</b><span class="dwork">${esc(x.work)}</span></div>`).join('');
+
+  app.innerHTML = `
+    ${sessionBar(d, s.done, s.total,
+       `Dosage · <span style="color:var(--good)">${s.right} right</span> · <span style="color:var(--bad)">${s.wrong} missed</span>`)}
+    <div class="q" style="font-weight:400">${esc(doseText(p))}</div>
+    <div class="why" style="border-left-color:var(--accent)">
+      <b style="color:var(--accent)">D ÷ H × Q</b><span class="note">Desired over Have, times the Quantity that strength comes in. Problem ${s.pi + 1} of ${s.order.length}.</span></div>
+    ${solved}
+    ${finished ? `
+      <div class="why" style="border-left-color:var(--good)">
+        <b style="color:var(--good)">Solved</b><br>
+        ${esc(doseNum(sol.D))} ${esc(sol.work)} ÷ ${esc(doseNum(sol.H))} ${esc(sol.work)} × ${esc(doseForm(sol.Q, p.stock.form))}
+        = <b style="color:var(--text)">${esc(doseForm(sol.answer, p.stock.form))}</b>
+        ${p.why ? `<span class="note">${esc(p.why)}</span>` : ''}
+      </div>
+      <button class="next" onclick="nextDoseProblem()">
+        ${s.pi + 1 < s.order.length ? 'Next problem →' : 'See results →'}</button>`
+    : `
+      <div class="q" style="font-weight:400">${esc(step.ask)}</div>
+      <input class="search" id="dosebox" autocomplete="off" autocapitalize="off" spellcheck="false"
+        inputmode="decimal" placeholder="Answer in ${esc(step.unit)}…"
+        value="${esc(s.typed)}" ${v ? 'disabled' : ''} style="${v ? `border-color:${tone}` : ''}">
+      ${v ? `
+        <div class="why" style="border-left-color:${tone}">
+          <b style="color:${tone}">${v === 'right' ? '✓ Correct' : '✗ Not quite'}</b><br>
+          ${v === 'wrong' && s.typed.trim()
+            ? `You entered: <b style="color:var(--bad)">${esc(s.typed.trim())}</b><br>` : ''}
+          ${esc(step.label)}: <b style="color:var(--text)">${esc(doseNum(step.value))} ${esc(step.unit)}</b>
+          <span class="dwork">${esc(step.work)}</span>
+          ${step.why ? `<span class="note">${esc(step.why)}</span>` : ''}
+        </div>
+        <button class="next" onclick="nextDoseStep()">
+          ${s.si + 1 < sol.steps.length ? 'Next step →' : 'Finish this one →'}</button>`
+      : `<div class="row" style="margin-top:12px">
+          <button onclick="checkDose()" style="border-color:var(--accent);color:var(--accent)">Check this step</button>
+          <button onclick="revealDose()">Show me</button>
+        </div>`}`}`;
+
+  const box = document.getElementById('dosebox');
+  if (box && !v){
+    box.focus();
+    box.oninput = e => { s.typed = e.target.value; };
+    box.onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); checkDose(); } };
+  }
+  keyHandler = e => {
+    if (!v && !finished) return;
+    if (e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      finished ? nextDoseProblem() : nextDoseStep();
+    }
+  };
+}
+/* Only the first attempt at a step moves the tally. */
+function scoreDose(wrong){
+  const s = session, p = (deckById(view.deck).dose || [])[s.order[s.pi]];
+  const step = s.plan[s.pi].steps[s.si];
+  s.verdict = wrong ? 'wrong' : 'right';
+  if (wrong){
+    s.wrong++;
+    s.missed.push({ q: `${esc(p.drug)} — ${esc(step.label)}`,
+                    a: `${doseNum(step.value)} ${step.unit}` });
+  } else s.right++;
+  render();
+}
+function checkDose(){
+  const s = session;
+  if (s.verdict || !s.typed.trim()) return;
+  scoreDose(!doseMatches(s.typed, s.plan[s.pi].steps[s.si]));
+}
+function revealDose(){
+  if (session.verdict) return;
+  scoreDose(true);
+}
+function nextDoseStep(){
+  const s = session;
+  if (!s.verdict) return;
+  s.done++; s.si++; s.typed = ''; s.verdict = null;
+  render();
+}
+function nextDoseProblem(){
+  const s = session;
+  s.pi++; s.si = 0; s.typed = ''; s.verdict = null;
+  render();
+}
+
 /* ═══════════════ ROUTER ═══════════════ */
 function render(){
   keyHandler = null;
@@ -3572,7 +3846,7 @@ function render(){
   ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
      chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse,
      chapter: runChapter, trace: runTrace, parts: runParts,
-     figure: runFigure, region: runRegion, label: runLabel
+     figure: runFigure, region: runRegion, label: runLabel, dose: runDose
    }[String(view.mode).split(':')[0]] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {

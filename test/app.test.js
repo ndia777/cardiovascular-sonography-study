@@ -89,6 +89,8 @@ const modesFor = d => {
   const steps = (d.steps || []).length;
   const written = (d.questions || []).length;
   const m = [];
+  /* a problem set leads, ahead of the card modes it gives nothing to */
+  if ((d.dose || []).length) m.push('dose');
   if (steps) m.push('order');
   if (recallableCards(d).length) m.push('recall');
   if (cards) m.push('learn', 'match');
@@ -804,6 +806,90 @@ function suite(s, label, srcCss) {
           `${past.length} retired guide(s) should render the muted tag`);
   }
 
+
+  /* ---- DOSAGE -----------------------------------------------------------
+
+     The dose deck stores no answers — only the order and the label, the way a
+     real chart does — so these checks recompute every figure with arithmetic
+     written independently of the engine. Comparing the engine to itself would
+     pass no matter what it did.
+
+     The working unit is the smaller of the order's and the label's, which is
+     what a person does by hand: 0.5 g against 250 mg tablets becomes 500
+     against 250, because a whole number is harder to slip a decimal in. */
+  {
+    const SCALE = { g: 1000, mg: 1, mcg: 0.001 };
+    const rnd = (x, n) => { const f = Math.pow(10, n); return Math.round(x * f + 1e-9) / f; };
+    const solve = vm.runInContext('doseSolve', s);
+    const text = vm.runInContext('doseText', s);
+    for (const d of DECKS.filter(x => (x.dose || []).length)) {
+      const wrong = [], mute = [], unsound = [];
+      for (const p of d.dose) {
+        const ou = p.order.unit, su = p.stock.unit;
+        /* a metric order can only be filled from a metric label, and units of
+           activity only from units — anything else is a data error */
+        if ((!!SCALE[ou]) !== (!!SCALE[su]) || (!SCALE[ou] && ou !== su))
+          unsound.push(`${p.drug}: cannot fill ${ou} from ${su}`);
+        if (p.order.perKg && p.weightLb == null && p.weightKg == null)
+          unsound.push(`${p.drug}: per-kilogram order with no weight`);
+        if (p.order.perDay && !p.order.doses)
+          unsound.push(`${p.drug}: per-day order with no dose count`);
+
+        const work = ou === su ? ou
+          : (SCALE[ou] && SCALE[su] ? (SCALE[ou] <= SCALE[su] ? ou : su) : ou);
+        const conv = (a, from) => from === work ? a : a * SCALE[from] / SCALE[work];
+        const kg = p.weightLb != null ? rnd(p.weightLb / 2.2, 1) : p.weightKg;
+        let D = p.order.perKg ? conv(kg * p.order.amount, ou) : conv(p.order.amount, ou);
+        if (p.order.perDay) D /= p.order.doses;
+        const H = conv(p.stock.amount, su);
+        const want = rnd(D / H * p.stock.per, p.round == null ? 2 : p.round);
+
+        const got = solve(p);
+        if (Math.abs(got.answer - want) > 1e-9)
+          wrong.push(`${p.drug}: engine ${got.answer}, expected ${want} ${p.stock.form}`);
+        if (Math.abs(got.D - D) > 1e-9) wrong.push(`${p.drug}: D ${got.D} vs ${D}`);
+        if (Math.abs(got.H - H) > 1e-9) wrong.push(`${p.drug}: H ${got.H} vs ${H}`);
+        if (got.work !== work) wrong.push(`${p.drug}: worked in ${got.work}, expected ${work}`);
+        if (!(got.answer > 0)) wrong.push(`${p.drug}: answer ${got.answer} is not a dose`);
+        for (const st of got.steps) {
+          if (!Number.isFinite(st.value)) wrong.push(`${p.drug}/${st.key}: ${st.value}`);
+          if (!st.ask || !st.unit) wrong.push(`${p.drug}/${st.key}: missing prompt or unit`);
+        }
+        /* the last step must be the one that answers the question asked */
+        if (got.steps[got.steps.length - 1].key !== 'give')
+          wrong.push(`${p.drug}: does not end on the amount to give`);
+
+        const t = text(p);
+        if (!t.includes(p.drug) || /undefined|NaN/.test(t)) mute.push(`${p.drug}: ${t}`);
+      }
+      check(`[${label}] ${d.id} every dose matches independent arithmetic`,
+            !wrong.length, wrong.join('\n      '));
+      check(`[${label}] ${d.id} every order can actually be filled`,
+            !unsound.length, unsound.join('\n      '));
+      check(`[${label}] ${d.id} every problem reads as a sentence`,
+            !mute.length, mute.join('\n      '));
+
+      /* a full run, answering every step correctly, must reach the results
+         screen — the mode is a state machine and it can strand itself */
+      go('run', d.id, 'dose');
+      let guard = 0, steps = $('session.total');
+      while (guard++ < 400) {
+        const pi = $('session.pi');
+        if (pi >= $('session.order.length')) break;
+        const si = $('session.si'), plan = $(`session.plan[${pi}]`);
+        if (si >= plan.steps.length) { vm.runInContext('nextDoseProblem()', s); continue; }
+        vm.runInContext(`session.typed = String(session.plan[${pi}].steps[${si}].value)`, s);
+        vm.runInContext('checkDose()', s);
+        vm.runInContext('nextDoseStep()', s);
+      }
+      check(`[${label}] ${d.id} a perfect run finishes`,
+            $('session.pi') >= $('session.order.length') && $('session.wrong') === 0,
+            `stopped at problem ${$('session.pi')} with ${$('session.wrong')} missed`);
+      check(`[${label}] ${d.id} a perfect run scores every step`,
+            $('session.right') === steps, `${$('session.right')} of ${steps}`);
+    }
+  }
+
   /* The review sheet lists terms alphabetically, ignoring leading punctuation.
      Read the order out of the rendered table, not out of a re-sorted array. */
   for (const d of DECKS.filter(x => x.cards.length)) {
@@ -972,11 +1058,12 @@ function suite(s, label, srcCss) {
 
   /* a deck is a vocabulary list or a sequence, and must offer matching modes */
   for (const d of DECKS) {
-    check(`[${label}] ${d.id} has cards or steps`,
-          d.cards.length > 0 || d.steps.length > 0, 'deck has neither');
-    check(`[${label}] ${d.id} is not both`,
-          !(d.cards.length > 0 && d.steps.length > 0),
-          'mixing terms and steps makes the mode list ambiguous');
+    const kinds = [d.cards.length > 0, d.steps.length > 0, (d.dose || []).length > 0];
+    check(`[${label}] ${d.id} holds terms, steps or problems`,
+          kinds.some(Boolean), 'deck holds none of the three');
+    check(`[${label}] ${d.id} holds only one of them`,
+          kinds.filter(Boolean).length < 2,
+          'mixing kinds makes the mode list ambiguous');
   }
 
   /* A deck that names `only` gets exactly those modes on its menu, in that
