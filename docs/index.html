@@ -8041,7 +8041,10 @@ window.DECKS = [
 /* ---------------------------------------------------------------------------
    DOSAGE CALCULATION
    ---------------------------------------------------------------------------
-   Fifteen orders, worked with D over H times Q.
+   Fourteen orders, worked with D over H times Q. Every one gives a single
+   amount to hand over — none is written per day and split across doses, which
+   is a second idea stacked on the formula and one the course has not reached.
+   The engine still handles it, so such an order is one entry away.
 
    NO ANSWER IS WRITTEN DOWN HERE. Each entry carries only what a real order and
    a real label carry — the drug, what was prescribed, the patient's weight, the
@@ -8085,28 +8088,20 @@ window.DECKS = [
       stock: { amount: 0.25, unit: 'g', per: 2, form: 'tablet' },
       why: 'D and H come out equal, so the ratio is 1 and the answer is simply the quantity. Writing one tablet on reflex is the easy mistake here.' },
     { drug: 'Chloramphenicol', round: 1,
-      order: { amount: 500, unit: 'mg', everyHours: 6 },
+      order: { amount: 500, unit: 'mg' },
       stock: { amount: 125, unit: 'mg', per: 5, form: 'mL' } },
 
-    /* weight-based, and one of them divided across the day */
-    { drug: 'Amoxicillin', round: 1, weightKg: 15, who: 'a child',
-      order: { amount: 20, unit: 'mg', perKg: true, perDay: true, doses: 3 },
-      stock: { amount: 250, unit: 'mg', per: 5, form: 'mL' },
-      why: 'The daily total and the dose are different numbers, and only one of them goes into the formula.' },
+    /* weight-based, each giving one amount to draw up */
     { drug: 'Vancomycin', route: 'IV', round: 1, weightLb: 176,
       order: { amount: 15, unit: 'mg', perKg: true },
       stock: { amount: 500, unit: 'mg', per: 10, form: 'mL' },
       container: 'The vial holds',
       why: 'An answer this large means more than two vials, which is worth noticing rather than drawing up on autopilot.' },
     { drug: 'Acetaminophen', route: 'PO', round: 1, weightLb: 33, who: 'a child',
-      order: { amount: 10, unit: 'mg', perKg: true, everyHours: 6 },
+      order: { amount: 10, unit: 'mg', perKg: true },
       stock: { amount: 160, unit: 'mg', per: 5, form: 'mL' },
       container: 'The bottle reads',
       why: 'The desired amount is a little less than the strength on hand, so the answer has to come out a little under one full quantity.' },
-    { drug: 'Gentamicin', route: 'IV', round: 1, weightLb: 154,
-      order: { amount: 5, unit: 'mg', perKg: true, perDay: true, doses: 3 },
-      stock: { amount: 40, unit: 'mg', per: 1, form: 'mL' },
-      container: 'The vial is labelled' },
 
     /* flat orders that need a unit conversion first */
     { drug: 'Cefazolin', route: 'PO', round: 2,
@@ -8123,9 +8118,9 @@ window.DECKS = [
 
     /* flat orders already in matching units */
     { drug: 'Cephalexin', route: 'PO', round: 1,
-      order: { amount: 500, unit: 'mg', everyHours: 6 },
+      order: { amount: 500, unit: 'mg' },
       stock: { amount: 250, unit: 'mg', per: 5, form: 'mL' },
-      why: 'The every-six-hours part says when, not how much. Nothing is divided, because the order is already written per dose.' },
+      why: 'Order and label are already in the same unit, so nothing needs converting — twice the stocked strength means twice the packaged volume.' },
     { drug: 'Furosemide', route: 'IV', round: 1,
       order: { amount: 40, unit: 'mg' },
       stock: { amount: 10, unit: 'mg', per: 1, form: 'mL' },
