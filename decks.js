@@ -4049,7 +4049,6 @@ window.DECKS = [
 {
   id: 'mp49-pharmacology',
   group: 'Medications',
-  current: true,
   added: '2026-08-17',
   course: 'M103 · Medical Procedures',
   title: 'Ch. 49 — Pharmacology Fundamentals',
@@ -4121,7 +4120,7 @@ window.DECKS = [
 {
   id: 'mp49-test-review',
   group: 'Medications',
-  current: true,
+  retired: true,
   exam: true,
   added: '2026-08-31',
   course: 'M103 · Medical Procedures',
@@ -4187,7 +4186,7 @@ window.DECKS = [
 {
   id: 'mp49-abbreviations',
   group: 'Medications',
-  current: true,
+  retired: true,
   exam: true,
   added: '2026-08-31',
   course: 'M103 · Medical Procedures',
@@ -4290,7 +4289,6 @@ window.DECKS = [
 {
   id: 'mp51-administration',
   group: 'Medications',
-  current: true,
   added: '2026-08-17',
   course: 'M103 · Medical Procedures',
   title: 'Ch. 51 — Oral & Noninjectable Administration',
@@ -7421,7 +7419,7 @@ window.DECKS = [
    in an oral syringe, and tablets go to a half. */
 {
   id: 'mp49-dosage',
-  group: 'Medications',
+  group: 'Dosage',
   current: true,
   added: '2026-09-08',
   course: 'M103 · Medical Procedures',
