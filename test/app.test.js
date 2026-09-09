@@ -2092,6 +2092,44 @@ function suite(s, label, srcCss) {
   check(`[${label}] nothing addresses one reader's private material`, !personal.length,
         personal.join('\n      '));
 
+  /* A note is read by every classmate, and it is the one place on a card where
+     it is easy to slip out of teaching and into bookkeeping. "The study guide
+     lists this one twice, so this card carries both halves" explains the deck
+     to someone who has never seen how the deck was built and cannot act on the
+     answer either way. Nicholas asked for these to be barred outright: a note
+     must be about the material, not about the artefact or about a document
+     only some readers hold.
+
+     Deck notes are exempt. "This deck only covers the slides" is orientation
+     that every reader needs before they start, and it is about coverage rather
+     than construction. Sources are exempt too, since a card may fairly say the
+     textbook and the slides disagree — both are documents the whole class has. */
+  const META = [
+    [/\bthis (card|deck)\b/i, "talks about itself"],
+    [/\b(these|those) (cards|decks)\b/i, "talks about the deck"],
+    [/\bboth halves\b/i, "describes how the card was assembled"],
+    [/\bcarr(ies|y) both\b/i, "describes how the card was assembled"],
+    [/\blists? (this|it)( one)? twice\b/i, "bookkeeping about the source"],
+    [/\bdefines? (this|it) twice\b/i, "bookkeeping about the source"],
+    [/\bthe (study guide|shared notes|test review)\b/i, "points at a document not every reader holds"],
+    [/\bshared (class )?notes\b/i, "points at a document not every reader holds"],
+    [/\b(accepted|answered) here\b/i, "describes what the app will mark right"],
+    [/\bare accepted\b/i, "describes what the app will mark right"],
+    [/\bthe quiz (format|needs)\b/i, "describes the quiz rather than the material"],
+  ];
+  const meta = [];
+  for (const d of DECKS) {
+    const flag = (where, text) => {
+      if (!text) return;
+      for (const [re, why] of META)
+        if (re.test(text)) { meta.push(`${d.id} / ${where} — ${why}: "${text.slice(0, 90)}…"`); return; }
+    };
+    for (const c of d.cards) flag(`"${c.term}" note`, c.note);
+    for (const q of d.questions || []) flag(`question "${String(q.q).slice(0, 34)}…"`, q.why);
+  }
+  check(`[${label}] no note explains the deck instead of the material`, !meta.length,
+        meta.join('\n      '));
+
   /* No deck may define the same term twice, and no two Recall cards may reduce
      to the same typed answer — "DNA" and "DNA", or two terms differing only in
      a parenthetical. Either way the second card is unanswerable: whatever you
