@@ -2186,6 +2186,29 @@ function suite(s, label, srcCss) {
   check(`[${label}] no note explains the deck instead of the material`, !meta.length,
         meta.join('\n      '));
 
+  /* A definition has to define. "Torticollis — wryneck" renames the term with a
+     word just as obscure, and a reader who did not know the first will not know
+     the second either; Nicholas hit exactly that card mid-study and called it
+     nonsensical, which it was.
+
+     The rule is narrow on purpose, because most one-word definitions in this app
+     are correct. A word part IS its gloss — arthr/o means joint and there is
+     nothing to add — and an abbreviation IS its expansion. So both are exempt,
+     and what is left is ordinary terms, where one word is never enough. Two is
+     the floor rather than something more ambitious: "Clavicle — the collarbone"
+     is a good card, and a rule that forced it to grow would be churn. */
+  const partLike = t => /\/|^-|-$/.test(t);
+  const abbrevLike = t => { const first = String(t).split(',')[0].trim();
+    return first.length <= 5 && !/\s/.test(first); };
+  const thin = [];
+  for (const d of DECKS) for (const c of d.cards) {
+    if (partLike(c.term) || abbrevLike(c.term)) continue;
+    if (String(c.def).trim().split(/\s+/).length < 2)
+      thin.push(`${d.id} / "${c.term}" — defined only as "${c.def}"`);
+  }
+  check(`[${label}] no definition merely renames its term`, !thin.length,
+        thin.join('\n      '));
+
   /* No deck may define the same term twice, and no two Recall cards may reduce
      to the same typed answer — "DNA" and "DNA", or two terms differing only in
      a parenthetical. Either way the second card is unanswerable: whatever you
