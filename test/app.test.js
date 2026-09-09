@@ -809,87 +809,138 @@ function suite(s, label, srcCss) {
 
   /* ---- DOSAGE -----------------------------------------------------------
 
-     The dose deck stores no answers — only the order and the label, the way a
-     real chart does — so these checks recompute every figure with arithmetic
-     written independently of the engine. Comparing the engine to itself would
-     pass no matter what it did.
+     The deck stores no answers, only the order and the label, so these checks
+     recompute every figure with arithmetic written here. Comparing the engine
+     to itself would pass no matter what it did.
 
-     The working unit is the smaller of the order's and the label's, which is
-     what a person does by hand: 0.5 g against 250 mg tablets becomes 500
-     against 250, because a whole number is harder to slip a decimal in. */
+     Beyond the arithmetic there are three behaviours worth pinning down,
+     because each is a decision rather than a calculation: the conversion stage
+     appears exactly when a conversion is needed and never as busywork; a
+     reader may work in whatever unit they like so long as D and H agree; and
+     putting H on top is simply wrong, with no hint offered. */
   {
     const SCALE = { g: 1000, mg: 1, mcg: 0.001 };
+    const sc = u => SCALE[u] || 1;
     const rnd = (x, n) => { const f = Math.pow(10, n); return Math.round(x * f + 1e-9) / f; };
-    const solve = vm.runInContext('doseSolve', s);
-    const text = vm.runInContext('doseText', s);
+    const stagesOf = vm.runInContext('doseStages', s);
+    const judgeOf = vm.runInContext('doseJudge', s);
+    const textOf = vm.runInContext('doseText', s);
+
     for (const d of DECKS.filter(x => (x.dose || []).length)) {
-      const wrong = [], mute = [], unsound = [];
+      const wrong = [], unsound = [], mute = [], staging = [], units = [];
       for (const p of d.dose) {
-        const ou = p.order.unit, su = p.stock.unit;
-        /* a metric order can only be filled from a metric label, and units of
-           activity only from units — anything else is a data error */
-        if ((!!SCALE[ou]) !== (!!SCALE[su]) || (!SCALE[ou] && ou !== su))
-          unsound.push(`${p.drug}: cannot fill ${ou} from ${su}`);
-        if (p.order.perKg && p.weightLb == null && p.weightKg == null)
+        const o = p.order, st = p.stock;
+        if ((!!SCALE[o.unit]) !== (!!SCALE[st.unit]) || (!SCALE[o.unit] && o.unit !== st.unit))
+          unsound.push(`${p.drug}: cannot fill ${o.unit} from ${st.unit}`);
+        if (o.perKg && p.weightLb == null && p.weightKg == null)
           unsound.push(`${p.drug}: per-kilogram order with no weight`);
-        if (p.order.perDay && !p.order.doses)
-          unsound.push(`${p.drug}: per-day order with no dose count`);
+        if (o.perDay && !o.doses) unsound.push(`${p.drug}: per-day order with no dose count`);
 
-        const work = ou === su ? ou
-          : (SCALE[ou] && SCALE[su] ? (SCALE[ou] <= SCALE[su] ? ou : su) : ou);
-        const conv = (a, from) => from === work ? a : a * SCALE[from] / SCALE[work];
         const kg = p.weightLb != null ? rnd(p.weightLb / 2.2, 1) : p.weightKg;
-        let D = p.order.perKg ? conv(kg * p.order.amount, ou) : conv(p.order.amount, ou);
-        if (p.order.perDay) D /= p.order.doses;
-        const H = conv(p.stock.amount, su);
-        const want = rnd(D / H * p.stock.per, p.round == null ? 2 : p.round);
+        let D = o.perKg ? kg * o.amount : o.amount;
+        if (o.perDay) D /= o.doses;
+        const want = rnd((D * sc(o.unit)) / (st.amount * sc(st.unit)) * st.per,
+                         p.round == null ? 2 : p.round);
 
-        const got = solve(p);
-        if (Math.abs(got.answer - want) > 1e-9)
-          wrong.push(`${p.drug}: engine ${got.answer}, expected ${want} ${p.stock.form}`);
-        if (Math.abs(got.D - D) > 1e-9) wrong.push(`${p.drug}: D ${got.D} vs ${D}`);
-        if (Math.abs(got.H - H) > 1e-9) wrong.push(`${p.drug}: H ${got.H} vs ${H}`);
-        if (got.work !== work) wrong.push(`${p.drug}: worked in ${got.work}, expected ${work}`);
-        if (!(got.answer > 0)) wrong.push(`${p.drug}: answer ${got.answer} is not a dose`);
-        for (const st of got.steps) {
-          if (!Number.isFinite(st.value)) wrong.push(`${p.drug}/${st.key}: ${st.value}`);
-          if (!st.ask || !st.unit) wrong.push(`${p.drug}/${st.key}: missing prompt or unit`);
+        const plan = stagesOf(p);
+        if (Math.abs(plan.answer - want) > 1e-9)
+          wrong.push(`${p.drug}: engine ${plan.answer}, expected ${want} ${st.form}`);
+        if (!(plan.answer > 0)) wrong.push(`${p.drug}: ${plan.answer} is not a dose`);
+
+        /* stage 1 shows up when, and only when, something is out of line */
+        const needs = p.weightLb != null || (o.unit !== st.unit);
+        const has = plan.stages[0].kind === 'convert';
+        if (has !== needs)
+          staging.push(`${p.drug}: convert stage ${has ? "shown" : "hidden"}, needed ${needs}`);
+        const last = plan.stages[plan.stages.length - 1];
+        if (last.kind !== 'solve') staging.push(`${p.drug}: does not end on the answer`);
+        for (const g of plan.stages){
+          if (!g.prompts.length) staging.push(`${p.drug}: empty ${g.kind} stage`);
+          for (const pr of g.prompts){
+            if (!Number.isFinite(pr.val)) wrong.push(`${p.drug}/${pr.key}: ${pr.val}`);
+            if (!pr.unit) wrong.push(`${p.drug}/${pr.key}: no unit`);
+          }
         }
-        /* the last step must be the one that answers the question asked */
-        if (got.steps[got.steps.length - 1].key !== 'give')
-          wrong.push(`${p.drug}: does not end on the amount to give`);
 
-        const t = text(p);
+        /* every prompt has to accept the value the engine itself would show */
+        for (const g of plan.stages){
+          const fill = {};
+          for (const pr of g.prompts){ fill[pr.key + '_n'] = String(pr.val); fill[pr.key + '_u'] = pr.unit; }
+          const v = judgeOf(g, fill);
+          for (const pr of g.prompts)
+            if (!v[pr.key]) wrong.push(`${p.drug}/${g.kind}/${pr.key}: rejects its own answer ${pr.val} ${pr.unit}`);
+        }
+
+        /* the equation: any unit, so long as D and H are the same one */
+        const eq = plan.stages.find(g => g.kind === 'equation');
+        const dP = eq.prompts.find(x => x.slot === 'top');
+        const hP = eq.prompts.find(x => x.slot === 'bottom');
+        const qP = eq.prompts.find(x => x.slot === 'times');
+        if (SCALE[dP.unit]){
+          /* worked entirely in grams, which is unusual but not wrong */
+          const g2 = { d_n: String(dP.val * sc(dP.unit) / 1000), d_u: "g",
+                       h_n: String(hP.val * sc(hP.unit) / 1000), h_u: "g",
+                       q_n: String(qP.val), q_u: qP.unit };
+          const okG = judgeOf(eq, g2);
+          if (!okG.d || !okG.h) units.push(`${p.drug}: refuses a correct answer worked in grams`);
+
+          /* the one thing that must never pass: D and H in different units */
+          const mixed = { d_n: String(dP.val), d_u: dP.unit,
+                          h_n: String(hP.val * sc(hP.unit) / 1000), h_u: "g",
+                          q_n: String(qP.val), q_u: qP.unit };
+          const bad = judgeOf(eq, mixed);
+          if (bad.d || bad.h) units.push(`${p.drug}: accepts D and H in different units`);
+        }
+
+        /* swapping D and H is wrong, and is not softened into a hint */
+        if (Math.abs(dP.val - hP.val) > 1e-9){
+          const sw = judgeOf(eq, { d_n: String(hP.val), d_u: hP.unit,
+                                   h_n: String(dP.val), h_u: dP.unit,
+                                   q_n: String(qP.val), q_u: qP.unit });
+          if (sw.d || sw.h) units.push(`${p.drug}: accepts H over D`);
+        }
+
+        const t = textOf(p);
         if (!t.includes(p.drug) || /undefined|NaN/.test(t)) mute.push(`${p.drug}: ${t}`);
       }
       check(`[${label}] ${d.id} every dose matches independent arithmetic`,
             !wrong.length, wrong.join('\n      '));
       check(`[${label}] ${d.id} every order can actually be filled`,
             !unsound.length, unsound.join('\n      '));
+      check(`[${label}] ${d.id} stages appear only where they are needed`,
+            !staging.length, staging.join('\n      '));
+      check(`[${label}] ${d.id} judges units as quantities, not spellings`,
+            !units.length, units.join('\n      '));
       check(`[${label}] ${d.id} every problem reads as a sentence`,
             !mute.length, mute.join('\n      '));
 
-      /* a full run, answering every step correctly, must reach the results
-         screen — the mode is a state machine and it can strand itself */
+      /* a full run, every stage answered correctly, must reach the results
+         screen — the mode is a state machine and can strand itself */
       go('run', d.id, 'dose');
-      let guard = 0, steps = $('session.total');
-      while (guard++ < 400) {
+      const steps = $('session.total');
+      let guard = 0;
+      while (guard++ < 500) {
         const pi = $('session.pi');
         if (pi >= $('session.order.length')) break;
-        const si = $('session.si'), plan = $(`session.plan[${pi}]`);
-        if (si >= plan.steps.length) { vm.runInContext('nextDoseProblem()', s); continue; }
-        vm.runInContext(`session.typed = String(session.plan[${pi}].steps[${si}].value)`, s);
+        const gi = $('session.gi');
+        if (gi >= $(`session.plan[${pi}].stages.length`)) {
+          vm.runInContext('nextDoseProblem()', s); continue;
+        }
+        vm.runInContext(`(function(){ var g = session.plan[${pi}].stages[${gi}];
+          session.fields = {};
+          for (var i = 0; i < g.prompts.length; i++){ var pr = g.prompts[i];
+            session.fields[pr.key + '_n'] = String(pr.val);
+            session.fields[pr.key + '_u'] = pr.unit; } })()`, s);
         vm.runInContext('checkDose()', s);
-        vm.runInContext('nextDoseStep()', s);
+        vm.runInContext('nextDoseStage()', s);
       }
       check(`[${label}] ${d.id} a perfect run finishes`,
             $('session.pi') >= $('session.order.length') && $('session.wrong') === 0,
             `stopped at problem ${$('session.pi')} with ${$('session.wrong')} missed`);
-      check(`[${label}] ${d.id} a perfect run scores every step`,
+      check(`[${label}] ${d.id} a perfect run scores every prompt`,
             $('session.right') === steps, `${$('session.right')} of ${steps}`);
     }
   }
-
   /* The review sheet lists terms alphabetically, ignoring leading punctuation.
      Read the order out of the rendered table, not out of a re-sorted array. */
   for (const d of DECKS.filter(x => x.cards.length)) {

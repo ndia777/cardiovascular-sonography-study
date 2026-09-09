@@ -7409,4 +7409,108 @@ window.DECKS = [
       why: 'That is the National Institute on Aging guidance the chapter cites, alongside aerobics for oxygen use and endurance.' }
   ]
 },
+/* ---------------------------------------------------------------------------
+   DOSAGE CALCULATION
+   ---------------------------------------------------------------------------
+   Fifteen orders, worked with D over H times Q.
+
+   NO ANSWER IS WRITTEN DOWN HERE. Each entry carries only what a real order and
+   a real label carry — the drug, what was prescribed, the patient's weight, the
+   strength stocked — and the engine derives the rest, the problem text
+   included. Storing "0.6 mL" next to the numbers it came from would be a second
+   source of truth, and the moment one of those numbers changed the two would
+   disagree with no way to tell which was right.
+
+   `round` is the number of decimal places the final amount is given to, and it
+   is the one judgement call the data makes: a millilitre is measured to a tenth
+   in an oral syringe, and tablets go to a half. */
+{
+  id: 'mp49-dosage',
+  group: 'Medications',
+  current: true,
+  added: '2026-09-08',
+  course: 'M103 · Medical Procedures',
+  title: 'Dosage Calculation',
+  source: 'Chapter 49 — dosage calculation',
+  note: 'Every step is asked and marked, not just the final amount. Enter the number — the unit is already shown.',
+  only: ['dose'],
+  cards: [],
+  dose: [
+    /* the two the lecture notes leave unfinished */
+    { drug: 'Alprazolam', route: 'PO', round: 2,
+      order: { amount: 0.25, unit: 'mg' },
+      stock: { amount: 0.0005, unit: 'g', per: 2, form: 'tablet' },
+      why: 'The ratio comes out at 0.5, which is not the answer — it still owes the quantity. Stopping there gives half a tablet, which is half the dose ordered.' },
+    { drug: 'Ondansetron', route: 'IV', round: 1, weightLb: 120,
+      order: { amount: 0.15, unit: 'mg', perKg: true },
+      stock: { amount: 0.002, unit: 'g', per: 2, form: 'mL' },
+      container: 'The vial is labelled',
+      why: 'This vial works out to 1 mg in every millilitre, so the millilitres and the milligrams happen to be the same number. That is this vial, not a rule.' },
+
+    /* the rest of the lecture examples */
+    { drug: 'Kanamycin', round: 1, weightLb: 11, who: 'an infant',
+      order: { amount: 15, unit: 'mg', perKg: true },
+      stock: { amount: 0.25, unit: 'g', per: 2, form: 'mL' } },
+    { drug: 'Lithostat', round: 2, weightLb: 55,
+      order: { amount: 10, unit: 'mg', perKg: true },
+      stock: { amount: 0.25, unit: 'g', per: 2, form: 'tablet' },
+      why: 'D and H come out equal, so the ratio is 1 and the answer is simply the quantity. Writing one tablet on reflex is the easy mistake here.' },
+    { drug: 'Chloramphenicol', round: 1,
+      order: { amount: 500, unit: 'mg', everyHours: 6 },
+      stock: { amount: 125, unit: 'mg', per: 5, form: 'mL' } },
+
+    /* weight-based, and one of them divided across the day */
+    { drug: 'Amoxicillin', round: 1, weightKg: 15, who: 'a child',
+      order: { amount: 20, unit: 'mg', perKg: true, perDay: true, doses: 3 },
+      stock: { amount: 250, unit: 'mg', per: 5, form: 'mL' },
+      why: 'The daily total and the dose are different numbers, and only one of them goes into the formula.' },
+    { drug: 'Vancomycin', route: 'IV', round: 1, weightLb: 176,
+      order: { amount: 15, unit: 'mg', perKg: true },
+      stock: { amount: 500, unit: 'mg', per: 10, form: 'mL' },
+      container: 'The vial holds',
+      why: 'An answer this large means more than two vials, which is worth noticing rather than drawing up on autopilot.' },
+    { drug: 'Acetaminophen', route: 'PO', round: 1, weightLb: 33, who: 'a child',
+      order: { amount: 10, unit: 'mg', perKg: true, everyHours: 6 },
+      stock: { amount: 160, unit: 'mg', per: 5, form: 'mL' },
+      container: 'The bottle reads',
+      why: 'The desired amount is a little less than the strength on hand, so the answer has to come out a little under one full quantity.' },
+    { drug: 'Gentamicin', route: 'IV', round: 1, weightLb: 154,
+      order: { amount: 5, unit: 'mg', perKg: true, perDay: true, doses: 3 },
+      stock: { amount: 40, unit: 'mg', per: 1, form: 'mL' },
+      container: 'The vial is labelled' },
+
+    /* flat orders that need a unit conversion first */
+    { drug: 'Cefazolin', route: 'PO', round: 2,
+      order: { amount: 0.5, unit: 'g' },
+      stock: { amount: 250, unit: 'mg', per: 1, form: 'capsule' },
+      why: 'Dividing 0.5 by 250 without converting gives an answer a thousand times too small, which is the classic decimal error.' },
+    { drug: 'Digoxin', route: 'PO', round: 2,
+      order: { amount: 0.25, unit: 'mg' },
+      stock: { amount: 125, unit: 'mcg', per: 1, form: 'tablet' },
+      why: 'Digoxin is stocked labelled both ways, in milligrams and in micrograms, which is exactly why this conversion matters.' },
+    { drug: 'Levothyroxine', route: 'PO daily', round: 2,
+      order: { amount: 0.075, unit: 'mg' },
+      stock: { amount: 25, unit: 'mcg', per: 1, form: 'tablet' } },
+
+    /* flat orders already in matching units */
+    { drug: 'Cephalexin', route: 'PO', round: 1,
+      order: { amount: 500, unit: 'mg', everyHours: 6 },
+      stock: { amount: 250, unit: 'mg', per: 5, form: 'mL' },
+      why: 'The every-six-hours part says when, not how much. Nothing is divided, because the order is already written per dose.' },
+    { drug: 'Furosemide', route: 'IV', round: 1,
+      order: { amount: 40, unit: 'mg' },
+      stock: { amount: 10, unit: 'mg', per: 1, form: 'mL' },
+      container: 'The vial holds' },
+    { drug: 'Heparin', route: 'subcutaneously', round: 2,
+      order: { amount: 5000, unit: 'units' },
+      stock: { amount: 10000, unit: 'units', per: 1, form: 'mL' },
+      container: 'The vial is labelled',
+      why: 'Units of activity behave like any other unit in the formula, as long as both sides of the fraction are in them. What they never do is convert to milligrams.' },
+    { drug: 'Digoxin', route: 'PO', round: 2,
+      order: { amount: 0.125, unit: 'mg' },
+      stock: { amount: 0.25, unit: 'mg', per: 1, form: 'tablet' },
+      why: 'Both numbers are already in milligrams, so nothing needs converting — the decimals make this look harder than it is.' }
+  ]
+},
+
 ];

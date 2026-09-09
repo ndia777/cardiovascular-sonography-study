@@ -592,6 +592,22 @@
   /* the arithmetic behind a dosage step: shown every time, so it stays quiet
      and unflagged, unlike .note which exists to raise an eyebrow */
   .dwork{display:block;margin-top:5px;font-size:12.5px;color:var(--dim);line-height:1.5}
+  /* ---- dosage ---- */
+  .dlegend{margin-top:10px;font-size:12.5px;color:var(--dim);letter-spacing:.02em}
+  .dstage{margin-top:18px;font-size:13px;font-weight:600;color:var(--accent);
+    text-transform:uppercase;letter-spacing:.06em}
+  .dask{margin-top:12px;font-size:14.5px;line-height:1.55;color:var(--text)}
+  .dslot{display:inline-flex;gap:6px;margin-top:8px}
+  .dosein{background:var(--card2);border:1px solid var(--line);border-radius:8px;
+    padding:9px 10px;font:inherit;font-size:15px;color:var(--text);min-width:0}
+  .dosein:focus{outline:none;border-color:var(--accent)}
+  .dosein.num{width:96px}
+  .dosein.unit{width:82px}
+  /* the equation. Wraps rather than scrolls, so a 360px phone stacks it */
+  .eqn{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+  .eqfrac{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+  .eqbar{display:block;width:100%;height:2px;background:var(--text);opacity:.75}
+  .eqop{font-size:20px;color:var(--dim)}
   .note::before{content:"⚑ ";}
 
   /* ---- results ---- */
@@ -8030,6 +8046,110 @@ window.DECKS = [
       why: 'That is the National Institute on Aging guidance the chapter cites, alongside aerobics for oxygen use and endurance.' }
   ]
 },
+/* ---------------------------------------------------------------------------
+   DOSAGE CALCULATION
+   ---------------------------------------------------------------------------
+   Fifteen orders, worked with D over H times Q.
+
+   NO ANSWER IS WRITTEN DOWN HERE. Each entry carries only what a real order and
+   a real label carry — the drug, what was prescribed, the patient's weight, the
+   strength stocked — and the engine derives the rest, the problem text
+   included. Storing "0.6 mL" next to the numbers it came from would be a second
+   source of truth, and the moment one of those numbers changed the two would
+   disagree with no way to tell which was right.
+
+   `round` is the number of decimal places the final amount is given to, and it
+   is the one judgement call the data makes: a millilitre is measured to a tenth
+   in an oral syringe, and tablets go to a half. */
+{
+  id: 'mp49-dosage',
+  group: 'Medications',
+  current: true,
+  added: '2026-09-08',
+  course: 'M103 · Medical Procedures',
+  title: 'Dosage Calculation',
+  source: 'Chapter 49 — dosage calculation',
+  note: 'Every step is asked and marked, not just the final amount. Enter the number — the unit is already shown.',
+  only: ['dose'],
+  cards: [],
+  dose: [
+    /* the two the lecture notes leave unfinished */
+    { drug: 'Alprazolam', route: 'PO', round: 2,
+      order: { amount: 0.25, unit: 'mg' },
+      stock: { amount: 0.0005, unit: 'g', per: 2, form: 'tablet' },
+      why: 'The ratio comes out at 0.5, which is not the answer — it still owes the quantity. Stopping there gives half a tablet, which is half the dose ordered.' },
+    { drug: 'Ondansetron', route: 'IV', round: 1, weightLb: 120,
+      order: { amount: 0.15, unit: 'mg', perKg: true },
+      stock: { amount: 0.002, unit: 'g', per: 2, form: 'mL' },
+      container: 'The vial is labelled',
+      why: 'This vial works out to 1 mg in every millilitre, so the millilitres and the milligrams happen to be the same number. That is this vial, not a rule.' },
+
+    /* the rest of the lecture examples */
+    { drug: 'Kanamycin', round: 1, weightLb: 11, who: 'an infant',
+      order: { amount: 15, unit: 'mg', perKg: true },
+      stock: { amount: 0.25, unit: 'g', per: 2, form: 'mL' } },
+    { drug: 'Lithostat', round: 2, weightLb: 55,
+      order: { amount: 10, unit: 'mg', perKg: true },
+      stock: { amount: 0.25, unit: 'g', per: 2, form: 'tablet' },
+      why: 'D and H come out equal, so the ratio is 1 and the answer is simply the quantity. Writing one tablet on reflex is the easy mistake here.' },
+    { drug: 'Chloramphenicol', round: 1,
+      order: { amount: 500, unit: 'mg', everyHours: 6 },
+      stock: { amount: 125, unit: 'mg', per: 5, form: 'mL' } },
+
+    /* weight-based, and one of them divided across the day */
+    { drug: 'Amoxicillin', round: 1, weightKg: 15, who: 'a child',
+      order: { amount: 20, unit: 'mg', perKg: true, perDay: true, doses: 3 },
+      stock: { amount: 250, unit: 'mg', per: 5, form: 'mL' },
+      why: 'The daily total and the dose are different numbers, and only one of them goes into the formula.' },
+    { drug: 'Vancomycin', route: 'IV', round: 1, weightLb: 176,
+      order: { amount: 15, unit: 'mg', perKg: true },
+      stock: { amount: 500, unit: 'mg', per: 10, form: 'mL' },
+      container: 'The vial holds',
+      why: 'An answer this large means more than two vials, which is worth noticing rather than drawing up on autopilot.' },
+    { drug: 'Acetaminophen', route: 'PO', round: 1, weightLb: 33, who: 'a child',
+      order: { amount: 10, unit: 'mg', perKg: true, everyHours: 6 },
+      stock: { amount: 160, unit: 'mg', per: 5, form: 'mL' },
+      container: 'The bottle reads',
+      why: 'The desired amount is a little less than the strength on hand, so the answer has to come out a little under one full quantity.' },
+    { drug: 'Gentamicin', route: 'IV', round: 1, weightLb: 154,
+      order: { amount: 5, unit: 'mg', perKg: true, perDay: true, doses: 3 },
+      stock: { amount: 40, unit: 'mg', per: 1, form: 'mL' },
+      container: 'The vial is labelled' },
+
+    /* flat orders that need a unit conversion first */
+    { drug: 'Cefazolin', route: 'PO', round: 2,
+      order: { amount: 0.5, unit: 'g' },
+      stock: { amount: 250, unit: 'mg', per: 1, form: 'capsule' },
+      why: 'Dividing 0.5 by 250 without converting gives an answer a thousand times too small, which is the classic decimal error.' },
+    { drug: 'Digoxin', route: 'PO', round: 2,
+      order: { amount: 0.25, unit: 'mg' },
+      stock: { amount: 125, unit: 'mcg', per: 1, form: 'tablet' },
+      why: 'Digoxin is stocked labelled both ways, in milligrams and in micrograms, which is exactly why this conversion matters.' },
+    { drug: 'Levothyroxine', route: 'PO daily', round: 2,
+      order: { amount: 0.075, unit: 'mg' },
+      stock: { amount: 25, unit: 'mcg', per: 1, form: 'tablet' } },
+
+    /* flat orders already in matching units */
+    { drug: 'Cephalexin', route: 'PO', round: 1,
+      order: { amount: 500, unit: 'mg', everyHours: 6 },
+      stock: { amount: 250, unit: 'mg', per: 5, form: 'mL' },
+      why: 'The every-six-hours part says when, not how much. Nothing is divided, because the order is already written per dose.' },
+    { drug: 'Furosemide', route: 'IV', round: 1,
+      order: { amount: 40, unit: 'mg' },
+      stock: { amount: 10, unit: 'mg', per: 1, form: 'mL' },
+      container: 'The vial holds' },
+    { drug: 'Heparin', route: 'subcutaneously', round: 2,
+      order: { amount: 5000, unit: 'units' },
+      stock: { amount: 10000, unit: 'units', per: 1, form: 'mL' },
+      container: 'The vial is labelled',
+      why: 'Units of activity behave like any other unit in the formula, as long as both sides of the fraction are in them. What they never do is convert to milligrams.' },
+    { drug: 'Digoxin', route: 'PO', round: 2,
+      order: { amount: 0.125, unit: 'mg' },
+      stock: { amount: 0.25, unit: 'mg', per: 1, form: 'tablet' },
+      why: 'Both numbers are already in milligrams, so nothing needs converting — the decimals make this look harder than it is.' }
+  ]
+},
+
 ];
 
 </script>
@@ -10987,62 +11107,97 @@ function results(d, big, lbl, missed, mode){
 
 
 /* ═══════════════ DOSAGE CALCULATION ═══════════════ */
-/* A dose problem is not a term with a definition, so it does not belong in any
-   of the card modes. It is a short procedure: convert the weight, build the
-   desired amount, put the stocked strength into the same unit, read the
-   quantity off the label, then divide and multiply. Getting the last number
-   right while guessing at the middle is worth nothing on a med-pass, so this
-   mode asks for every step and marks each one.
+/* A dose problem is a short procedure, not a term with a definition, so it gets
+   its own mode. The work runs in STAGES rather than as a flat list of prompts,
+   because that is the order it is done on paper: line the units up in the
+   margin, work out what was actually ordered, set the equation up, solve it.
 
-   NOTHING here is stored as an answer. The deck carries only what a real order
-   and a real label carry — the drug, the order, the patient's weight, the
-   stock strength — and every figure on screen, the problem text included, is
-   derived from those. A hard-coded answer would be a second source of truth
-   waiting to drift out of step with the numbers it claims to come from.
+   The stages a problem gets are derived from the problem. A flat order in
+   matching units skips straight to the equation; a per-kilogram order divided
+   across the day gets all four. A stage that would have nothing to ask is never
+   shown, so its presence does say "there is a conversion here" — that is
+   deliberate, and it is the fair trade against a stage of busywork on every
+   simple problem.
 
-   The WORKING UNIT is the smaller of the order's unit and the label's, which is
-   what a person does by hand: 0.5 g against 250 mg tablets becomes 500 against
-   250 rather than 0.5 against 0.25, because whole numbers are harder to slip a
-   decimal place in. */
+   THE SLOTS IN THE EQUATION ARE NOT LABELLED. The legend says what D, H and Q
+   stand for and stops there; knowing that D belongs on top is the thing being
+   tested, and a labelled blank tests nothing. For the same reason the units are
+   typed rather than printed beside each box — a printed "mg" next to the slot
+   for a strength stocked in grams hands over the conversion.
 
-/* Metric mass against the milligram. Units of activity — heparin, insulin —
-   are deliberately absent: they convert to nothing, so an order in units can
-   only be filled from a label in units, and mixing them is a data error rather
-   than a conversion to perform. */
+   UNITS ARE JUDGED AS QUANTITIES, NOT AS SPELLINGS. 0.25 mg over 0.5 mg and
+   0.00025 g over 0.0005 g are the same division and both are right. What is
+   never right is dividing milligrams by grams, so the equation stage requires D
+   and H to be in the same unit as each other and otherwise takes any unit the
+   reader likes. Nothing here detects a swap and offers a hint: putting H on top
+   is simply wrong, and knowing which is which is the skill. */
+
 const DOSE_METRIC = { g: 1000, mg: 1, mcg: 0.001 };
 const doseRound = (x, n) => { const f = Math.pow(10, n); return Math.round(x * f + 1e-9) / f; };
-/* prints 8.175 rather than 8.174999999999999, and 2 rather than 2.0000, and
-   groups the thousands so a heparin label reads 10,000 units the way it is
-   printed. Typed answers are compared after commas are stripped, so grouping
-   here never makes an answer harder to enter. */
+/* prints 8.175 rather than 8.174999999999999, and groups thousands so a heparin
+   label reads 10,000 units the way it is printed */
 const doseNum = x => {
   const [whole, frac] = String(+(+x).toFixed(6)).split('.');
   return whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (frac ? '.' + frac : '');
 };
-const doseWorkingUnit = (a, b) => a === b ? a
-  : (DOSE_METRIC[a] && DOSE_METRIC[b]) ? (DOSE_METRIC[a] <= DOSE_METRIC[b] ? a : b) : a;
-const doseConvert = (amount, from, to) =>
-  from === to ? amount : amount * DOSE_METRIC[from] / DOSE_METRIC[to];
-/* millilitres never pluralise; tablets and capsules do */
+const doseScale = u => DOSE_METRIC[u] || 1;
+
+/* Spellings a reader might reasonably type, folded onto one canonical form.
+   Judging "milligrams" wrong would be marking typing, not pharmacology. */
+const DOSE_WORDS = {
+  g: 'g', gm: 'g', gms: 'g', gram: 'g', grams: 'g',
+  mg: 'mg', mgs: 'mg', milligram: 'mg', milligrams: 'mg',
+  mcg: 'mcg', mcgs: 'mcg', ug: 'mcg', 'µg': 'mcg', microgram: 'mcg', micrograms: 'mcg',
+  ml: 'mL', mls: 'mL', cc: 'mL', milliliter: 'mL', millilitre: 'mL',
+  milliliters: 'mL', millilitres: 'mL',
+  kg: 'kg', kgs: 'kg', kilo: 'kg', kilogram: 'kg', kilograms: 'kg',
+  lb: 'lb', lbs: 'lb', pound: 'lb', pounds: 'lb',
+  u: 'units', unit: 'units', units: 'units',
+  tab: 'tablet', tabs: 'tablet', tablet: 'tablet', tablets: 'tablet',
+  cap: 'capsule', caps: 'capsule', capsule: 'capsule', capsules: 'capsule',
+};
+const doseUnit = raw => {
+  const k = String(raw || '').trim().toLowerCase().replace(/[.\s]/g, '');
+  return DOSE_WORDS[k] || (k ? k : '');
+};
+const doseMetric = u => DOSE_METRIC[u] !== undefined;
+const DOSE_SPELLED = { g: 'grams', mg: 'milligrams', mcg: 'micrograms',
+                       kg: 'kilograms', mL: 'millilitres' };
+const doseSpell = u => DOSE_SPELLED[u] || u;
+
+/* Accepts the exact value, or the value rounded to any number of places that
+   costs less than half a percent. That takes 8.18 and 8.2 for 8.175 and still
+   refuses 8, and it survives a reader who chose to work in grams, where the
+   true figure is 0.008175 and rounding to two places would leave nothing. */
+function doseNear(theirs, truth){
+  if (Math.abs(theirs - truth) < 1e-9) return true;
+  for (let n = 0; n <= 8; n++){
+    const r = doseRound(truth, n);
+    if (r !== 0 && Math.abs(theirs - r) < 1e-9
+        && Math.abs(r - truth) <= Math.abs(truth) * 0.005) return true;
+  }
+  return false;
+}
+/* A typed quantity matches a true one when it means the same amount. Metric
+   units convert; anything else has to be named the same way. */
+function doseQtyOk(theirVal, theirUnit, trueVal, trueUnit){
+  if (!isFinite(theirVal) || !theirUnit) return false;
+  if (doseMetric(theirUnit) && doseMetric(trueUnit))
+    return doseNear(theirVal * doseScale(theirUnit), trueVal * doseScale(trueUnit));
+  return theirUnit === trueUnit && doseNear(theirVal, trueVal);
+}
+
 const doseForm = (n, form) =>
   `${doseNum(n)} ${form}${n !== 1 && /tablet|capsule/.test(form) ? 's' : ''}`;
-
 function doseStockText(p){
-  const st = p.stock;
-  const strength = `${doseNum(st.amount)} ${st.unit}`;
-  /* "250 mg capsules" and "10,000 units per mL" are how labels read;
-     "per 1 mL" is not. */
+  const st = p.stock, strength = `${doseNum(st.amount)} ${st.unit}`;
   if (st.per === 1) return /tablet|capsule/.test(st.form)
     ? `${strength} ${st.form}s` : `${strength} per ${st.form}`;
   return `${strength} per ${doseForm(st.per, st.form)}`;
 }
-function doseOrderText(p){
-  const o = p.order;
-  return `${doseNum(o.amount)} ${o.unit}${o.perKg ? '/kg' : ''}${o.perDay ? '/day' : ''}`;
-}
 function doseText(p){
   const o = p.order;
-  let s = `${p.drug} ${doseOrderText(p)}`;
+  let s = `${p.drug} ${doseNum(o.amount)} ${o.unit}${o.perKg ? '/kg' : ''}${o.perDay ? '/day' : ''}`;
   if (p.route) s += ` ${p.route}`;
   if (o.perDay && o.doses) s += `, in divided doses every ${doseNum(24 / o.doses)} hours,`;
   else if (o.everyHours) s += ` every ${doseNum(o.everyHours)} hours`;
@@ -11053,100 +11208,123 @@ function doseText(p){
   return `${s}. ${p.container || 'The pharmacy stocks'} ${doseStockText(p)}.`;
 }
 
-/* Returns the ordered steps plus the figures they build. Every value is
-   computed here; the deck supplies none of them. */
-function doseSolve(p){
+/* Builds the stages. Every figure is derived; the deck stores no answers. */
+function doseStages(p){
   const o = p.order, st = p.stock;
-  const work = doseWorkingUnit(o.unit, st.unit);
-  const steps = [];
-  let kg = p.weightKg;
+  const kg = p.weightLb != null ? doseRound(p.weightLb / 2.2, 1) : p.weightKg;
+  const stages = [];
 
-  if (p.weightLb != null){
-    kg = doseRound(p.weightLb / 2.2, 1);
-    steps.push({ key: 'kg', label: 'Weight in kilograms', unit: 'kg', value: kg,
+  /* ---- line up the units, but only where something is genuinely out of line */
+  const conv = [];
+  if (p.weightLb != null)
+    conv.push({ key: 'kg', shown: `${doseNum(p.weightLb)} lb`,
       ask: 'Convert the weight to kilograms.',
-      work: `${doseNum(p.weightLb)} lb ÷ 2.2 = ${doseNum(kg)} kg`,
-      why: 'A per-kilogram order cannot be worked against a weight in pounds, so this comes first every time.' });
+      val: kg, unit: 'kg', fixed: true,
+      work: `${doseNum(p.weightLb)} lb ÷ 2.2 = ${doseNum(kg)} kg` });
+  if (o.unit !== st.unit && doseMetric(o.unit) && doseMetric(st.unit)){
+    /* restate whichever side is written in the larger unit, which is the way it
+       is done by hand — whole numbers hide a slipped decimal less easily */
+    const orderBigger = doseScale(o.unit) > doseScale(st.unit);
+    const from = orderBigger ? { amt: o.amount, u: o.unit, what: 'the amount ordered' }
+                             : { amt: st.amount, u: st.unit, what: 'the strength on the label' };
+    const to = orderBigger ? st.unit : o.unit;
+    const lined = from.amt * doseScale(from.u) / doseScale(to);
+    /* The target unit is named outright. That does hand over which way the
+       conversion goes, and it is the trade taken on purpose: a reader who
+       cannot tell what is being asked learns nothing from being stuck. With
+       the unit named, only that unit is right — `fixed` enforces it. */
+    conv.push({ key: 'align', shown: `${doseNum(from.amt)} ${from.u}`,
+      ask: `Convert ${from.what} to ${doseSpell(to)}.`,
+      val: lined, unit: to, fixed: true,
+      work: `${doseNum(from.amt)} ${from.u} = ${doseNum(lined)} ${to}` });
   }
+  if (conv.length) stages.push({ kind: 'convert', title: 'Line up the units', prompts: conv });
 
-  let D;
+  /* ---- work out what was actually ordered, where that is not simply given */
+  const dAmt = o.perKg ? kg * o.amount : o.amount;
   if (o.perKg){
-    const built = doseConvert(kg * o.amount, o.unit, work);
+    const build = [];
     if (o.perDay){
-      steps.push({ key: 'daily', label: 'Total for the day', unit: work, value: doseRound(built, 4),
-        ask: 'How much drug is ordered for the whole day?',
-        work: `${doseNum(kg)} kg × ${doseNum(o.amount)} ${o.unit} = ${doseNum(built)} ${work}`,
-        why: 'This order is written per day, so the figure it produces still has to be split before it becomes a dose.' });
-      D = built / o.doses;
-      steps.push({ key: 'd', label: 'Desired (D)', unit: work, value: doseRound(D, 4),
-        ask: 'How much is one dose?',
-        work: `${doseNum(built)} ${work} ÷ ${doseNum(o.doses)} = ${doseNum(D)} ${work}`,
-        why: `Every ${doseNum(24 / o.doses)} hours means ${doseNum(o.doses)} doses in a day.` });
+      build.push({ key: 'daily', ask: 'How much is ordered for the whole day?',
+        val: dAmt, unit: o.unit,
+        work: `${doseNum(kg)} kg × ${doseNum(o.amount)} ${o.unit} = ${doseNum(dAmt)} ${o.unit}` });
+      build.push({ key: 'dose', ask: 'How much is that for one dose?',
+        val: dAmt / o.doses, unit: o.unit,
+        work: `${doseNum(dAmt)} ${o.unit} ÷ ${doseNum(o.doses)} = ${doseNum(dAmt / o.doses)} ${o.unit}` });
     } else {
-      D = built;
-      steps.push({ key: 'd', label: 'Desired (D)', unit: work, value: doseRound(D, 4),
-        ask: 'What amount of drug is desired?',
-        work: `${doseNum(kg)} kg × ${doseNum(o.amount)} ${o.unit} = ${doseNum(D)} ${work}`,
-        why: 'D is built from the weight. It is not yet how much you give — that still needs the label.' });
+      build.push({ key: 'dose', ask: 'How much drug does the order come to?',
+        val: dAmt, unit: o.unit,
+        work: `${doseNum(kg)} kg × ${doseNum(o.amount)} ${o.unit} = ${doseNum(dAmt)} ${o.unit}` });
     }
-  } else {
-    D = doseConvert(o.amount, o.unit, work);
-    const same = o.unit === work;
-    steps.push({ key: 'd', label: 'Desired (D)', unit: work, value: doseRound(D, 4),
-      ask: same ? 'What is D, the amount ordered?' : `What is D, converted to ${work}?`,
-      work: same ? `${doseNum(D)} ${work}, straight from the order`
-                 : `${doseNum(o.amount)} ${o.unit} = ${doseNum(D)} ${work}`,
-      why: same ? 'The order and the label are already in the same unit, so nothing needs converting.'
-                : 'D and H have to be in the same unit before anything is divided.' });
+    stages.push({ kind: 'build', title: 'Work out what is ordered', prompts: build });
   }
 
-  const H = doseConvert(st.amount, st.unit, work);
-  const sameH = st.unit === work;
-  steps.push({ key: 'h', label: 'Have (H)', unit: work, value: doseRound(H, 4),
-    ask: sameH ? 'What is H, the strength on hand?' : `What is H, converted to ${work}?`,
-    work: sameH ? `${doseNum(H)} ${work}, straight off the label`
-                : `${doseNum(st.amount)} ${st.unit} = ${doseNum(H)} ${work}`,
-    why: 'H is always the strength stocked, never the amount ordered.' });
+  const D = o.perDay ? dAmt / o.doses : dAmt;
+  /* The answer shown for D and H uses one unit, the smaller of the two, which
+     is what a person would reach for. Any unit is still accepted, so long as
+     the two agree with each other — that agreement is the real test. */
+  const wu = (doseMetric(o.unit) && doseMetric(st.unit))
+    ? (doseScale(o.unit) <= doseScale(st.unit) ? o.unit : st.unit) : o.unit;
+  stages.push({ kind: 'equation', title: 'Set up the equation', prompts: [
+    { key: 'd', slot: 'top', val: D * doseScale(o.unit) / doseScale(wu), unit: wu },
+    { key: 'h', slot: 'bottom', val: st.amount * doseScale(st.unit) / doseScale(wu), unit: wu },
+    { key: 'q', slot: 'times', val: st.per, unit: st.form },
+  ]});
 
-  steps.push({ key: 'q', label: 'Quantity (Q)', unit: st.form, value: st.per,
-    ask: 'What is Q, the form that strength comes in?',
-    work: `the label puts ${doseNum(H)} ${work} in ${doseForm(st.per, st.form)}`,
-    why: 'Q is what the ratio is multiplied by at the end, and it decides the unit the answer comes out in.' });
-
-  const raw = D / H * st.per;
+  const raw = (D * doseScale(o.unit)) / (st.amount * doseScale(st.unit)) * st.per;
   const answer = doseRound(raw, p.round == null ? 2 : p.round);
-  steps.push({ key: 'give', label: 'Give', unit: st.form, value: answer,
-    ask: 'How much do you give?',
-    work: `${doseNum(D)} ÷ ${doseNum(H)} × ${doseNum(st.per)} = ${doseNum(raw)}${
-      raw !== answer ? `, rounded to ${doseNum(answer)}` : ''} ${st.form}`,
-    /* p.why is the closing remark on the whole problem and is shown once the
-       problem is finished — putting it here too would print it twice */
-    why: '' });
+  stages.push({ kind: 'solve', title: 'Solve it', prompts: [
+    { key: 'give', ask: 'How much do you give?', val: answer, unit: st.form, fixed: true,
+      work: `${doseNum(D * doseScale(o.unit) / doseScale(wu))} ÷ ${doseNum(st.amount * doseScale(st.unit) / doseScale(wu))} × ${
+        doseNum(st.per)} = ${doseNum(raw)}${raw !== answer ? `, rounded to ${doseNum(answer)}` : ''}` }]});
 
-  return { steps, work, kg, D, H, Q: st.per, raw, answer };
+  return { stages, kg, D, H: st.amount, Q: st.per, answer, raw,
+           total: stages.reduce((n, g) => n + g.prompts.length, 0) };
 }
 
-/* A step is satisfied by its own value, or by that value rounded to one or two
-   places. Asking for 8.175 and rejecting 8.18 would be marking arithmetic
-   presentation rather than arithmetic. */
-function doseMatches(typed, step){
-  const m = String(typed).toLowerCase().replace(/,/g, '').match(/-?\d*\.?\d+/);
-  if (!m) return false;
-  const got = parseFloat(m[0]);
-  /* the value itself first: a step held to four places (a daily total split
-     three ways lands on 116.6667) is not reachable by any of the roundings */
-  return Math.abs(got - step.value) < 1e-9
-      || [3, 2, 1].some(n => Math.abs(got - doseRound(step.value, n)) < 1e-9);
+/* Judges one filled-in stage. Returns a verdict per prompt plus, for the
+   equation, the one cross-check that matters: D and H in the same unit. */
+function doseJudge(stage, fields){
+  const out = {};
+  for (const pr of stage.prompts){
+    const v = parseFloat(String(fields[pr.key + '_n'] || '').replace(/,/g, ''));
+    const u = doseUnit(fields[pr.key + '_u']);
+    let ok = doseQtyOk(v, u, pr.val, pr.unit);
+    /* where the prompt names the unit, that unit is the only right answer */
+    if (ok && pr.fixed && u !== doseUnit(pr.unit)) ok = false;
+    out[pr.key] = ok;
+  }
+  if (stage.kind === 'equation'){
+    const du = doseUnit(fields.d_u), hu = doseUnit(fields.h_u);
+    if (du && hu && du !== hu){ out.d = false; out.h = false; out.mismatch = true; }
+  }
+  return out;
+}
+
+const DOSE_LEGEND = 'D = Doctors Orders &nbsp;·&nbsp; H = On Hand &nbsp;·&nbsp; Q = Quantity';
+
+/* number box and unit box, side by side. Two boxes rather than one so the
+   number keeps the numeric keypad on a phone and the feedback can say which
+   half was wrong. */
+function doseBox(pr, s, locked){
+  const st = k => s.res && s.res[pr.key] !== undefined
+    ? (s.res[pr.key] ? 'style="border-color:var(--good)"' : 'style="border-color:var(--bad)"') : '';
+  return `<span class="dslot">
+    <input class="dosein num" id="f_${pr.key}_n" inputmode="decimal" autocomplete="off"
+      spellcheck="false" value="${esc(s.fields[pr.key + '_n'] || '')}" ${locked ? 'disabled' : ''} ${st()}>
+    <input class="dosein unit" id="f_${pr.key}_u" autocomplete="off" autocapitalize="off"
+      spellcheck="false" placeholder="unit" value="${esc(s.fields[pr.key + '_u'] || '')}"
+      ${locked ? 'disabled' : ''} ${st()}></span>`;
 }
 
 function runDose(d){
   const probs = d.dose || [];
   if (!session){
     const order = shuffle(probs.map((_, i) => i));
-    const plan = order.map(i => doseSolve(probs[i]));
-    session = { order, plan, pi: 0, si: 0, typed: '', verdict: null,
+    const plan = order.map(i => doseStages(probs[i]));
+    session = { order, plan, pi: 0, gi: 0, fields: {}, res: null, past: [],
                 right: 0, wrong: 0, done: 0, missed: [],
-                total: plan.reduce((n, x) => n + x.steps.length, 0) };
+                total: plan.reduce((n, x) => n + x.total, 0) };
   }
   const s = session;
 
@@ -11154,99 +11332,141 @@ function runDose(d){
     const pct = Math.round(s.right / s.total * 100);
     record(d.id, { doseBest: Math.max((load()[d.id] || {}).doseBest || 0, pct) });
     return results(d, `${s.right}/${s.total}`,
-                   `steps right first time · ${s.wrong} missed`, s.missed, 'dose');
+                   `right first time · ${s.wrong} missed`, s.missed, 'dose');
   }
 
-  const p = probs[s.order[s.pi]], sol = s.plan[s.pi];
-  const finished = s.si >= sol.steps.length;
-  const step = sol.steps[Math.min(s.si, sol.steps.length - 1)];
-  const v = s.verdict;
-  const tone = v === 'wrong' ? 'var(--bad)' : 'var(--good)';
-  const solved = sol.steps.slice(0, s.si).map(x =>
-    `<div class="why"><b style="color:var(--good)">✓ ${esc(x.label)}</b> — <b style="color:var(--text)">${
-      esc(doseNum(x.value))} ${esc(x.unit)}</b><span class="dwork">${esc(x.work)}</span></div>`).join('');
+  const p = probs[s.order[s.pi]], plan = s.plan[s.pi];
+  const done = s.gi >= plan.stages.length;
+  const stage = plan.stages[Math.min(s.gi, plan.stages.length - 1)];
+  const locked = !!s.res;
+
+  /* what has already been settled, kept on screen the way margin work stays on
+     the page next to the equation it feeds */
+  /* Each settled stage keeps the verdict it actually earned. Showing a green
+     tick over a stage that was revealed or got wrong tells the reader they
+     have it when they do not, which is the one lie a study tool cannot tell. */
+  const settled = plan.stages.slice(0, s.gi).map((g, i) => {
+    const past = s.past[i] || {};
+    const missed = g.prompts.filter(x => !past[x.key]).length;
+    const tone = missed ? 'var(--bad)' : 'var(--good)';
+    return `<div class="why" style="border-left-color:${tone}"><b style="color:${tone}">${
+      missed ? '✗' : '✓'} ${esc(g.title)}</b>${
+      g.prompts.map(x => `<span class="dwork">${esc(x.work || `${doseNum(x.val)} ${x.unit}`)}</span>`).join('')
+    }</div>`;
+  }).join('');
+
+  let body = '';
+  if (done){
+    body = `<div class="why" style="border-left-color:var(--good)">
+        <b style="color:var(--good)">Solved</b>
+        <span class="dwork">${esc(doseForm(plan.answer, p.stock.form))}</span>
+        ${p.why ? `<span class="note">${esc(p.why)}</span>` : ''}</div>
+      <button class="next" onclick="nextDoseProblem()">${
+        s.pi + 1 < s.order.length ? 'Next problem →' : 'See results →'}</button>`;
+  } else if (stage.kind === 'equation'){
+    const top = stage.prompts.find(x => x.slot === 'top');
+    const bot = stage.prompts.find(x => x.slot === 'bottom');
+    const tim = stage.prompts.find(x => x.slot === 'times');
+    body = `<div class="dstage">${esc(stage.title)}</div>
+      <div class="eqn">
+        <span class="eqfrac">
+          ${doseBox(top, s, locked)}
+          <span class="eqbar"></span>
+          ${doseBox(bot, s, locked)}
+        </span>
+        <span class="eqop">×</span>
+        ${doseBox(tim, s, locked)}
+      </div>`;
+  } else {
+    body = `<div class="dstage">${esc(stage.title)}</div>` + stage.prompts.map(pr =>
+      `<div class="dask">${esc(pr.ask)}${pr.shown ? ` <b>${esc(pr.shown)}</b>` : ''}</div>
+       ${doseBox(pr, s, locked)}`).join('');
+  }
+
+  const feedback = !s.res ? '' : (() => {
+    const bad = stage.prompts.filter(pr => !s.res[pr.key]);
+    const tone = bad.length ? 'var(--bad)' : 'var(--good)';
+    return `<div class="why" style="border-left-color:${tone}">
+      <b style="color:${tone}">${bad.length ? '✗ Not right' : '✓ Correct'}</b>
+      ${s.res.mismatch ? '<br>D and H are not in the same unit, so the division does not hold.' : ''}
+      ${bad.map(pr => `<span class="dwork">${esc(pr.work || `${doseNum(pr.val)} ${pr.unit}`)}</span>`).join('')}
+      </div>
+      <button class="next" onclick="nextDoseStage()">${
+        s.gi + 1 < plan.stages.length ? 'Next stage →' : 'Finish this one →'}</button>`;
+  })();
 
   app.innerHTML = `
     ${sessionBar(d, s.done, s.total,
        `Dosage · <span style="color:var(--good)">${s.right} right</span> · <span style="color:var(--bad)">${s.wrong} missed</span>`)}
     <div class="q" style="font-weight:400">${esc(doseText(p))}</div>
-    <div class="why" style="border-left-color:var(--accent)">
-      <b style="color:var(--accent)">D ÷ H × Q</b><span class="note">Desired over Have, times the Quantity that strength comes in. Problem ${s.pi + 1} of ${s.order.length}.</span></div>
-    ${solved}
-    ${finished ? `
-      <div class="why" style="border-left-color:var(--good)">
-        <b style="color:var(--good)">Solved</b><br>
-        ${esc(doseNum(sol.D))} ${esc(sol.work)} ÷ ${esc(doseNum(sol.H))} ${esc(sol.work)} × ${esc(doseForm(sol.Q, p.stock.form))}
-        = <b style="color:var(--text)">${esc(doseForm(sol.answer, p.stock.form))}</b>
-        ${p.why ? `<span class="note">${esc(p.why)}</span>` : ''}
-      </div>
-      <button class="next" onclick="nextDoseProblem()">
-        ${s.pi + 1 < s.order.length ? 'Next problem →' : 'See results →'}</button>`
-    : `
-      <div class="q" style="font-weight:400">${esc(step.ask)}</div>
-      <input class="search" id="dosebox" autocomplete="off" autocapitalize="off" spellcheck="false"
-        inputmode="decimal" placeholder="Answer in ${esc(step.unit)}…"
-        value="${esc(s.typed)}" ${v ? 'disabled' : ''} style="${v ? `border-color:${tone}` : ''}">
-      ${v ? `
-        <div class="why" style="border-left-color:${tone}">
-          <b style="color:${tone}">${v === 'right' ? '✓ Correct' : '✗ Not quite'}</b><br>
-          ${v === 'wrong' && s.typed.trim()
-            ? `You entered: <b style="color:var(--bad)">${esc(s.typed.trim())}</b><br>` : ''}
-          ${esc(step.label)}: <b style="color:var(--text)">${esc(doseNum(step.value))} ${esc(step.unit)}</b>
-          <span class="dwork">${esc(step.work)}</span>
-          ${step.why ? `<span class="note">${esc(step.why)}</span>` : ''}
-        </div>
-        <button class="next" onclick="nextDoseStep()">
-          ${s.si + 1 < sol.steps.length ? 'Next step →' : 'Finish this one →'}</button>`
-      : `<div class="row" style="margin-top:12px">
-          <button onclick="checkDose()" style="border-color:var(--accent);color:var(--accent)">Check this step</button>
-          <button onclick="revealDose()">Show me</button>
-        </div>`}`}`;
+    <div class="dlegend">${DOSE_LEGEND}</div>
+    ${settled}
+    ${body}
+    ${feedback}
+    ${!done && !s.res ? `<div class="row" style="margin-top:12px">
+        <button onclick="checkDose()" style="border-color:var(--accent);color:var(--accent)">Check</button>
+        <button onclick="revealDose()">Show me</button>
+      </div>` : ''}`;
 
-  const box = document.getElementById('dosebox');
-  if (box && !v){
-    box.focus();
-    box.oninput = e => { s.typed = e.target.value; };
-    box.onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); checkDose(); } };
+  if (!done && !locked){
+    for (const pr of stage.prompts) for (const half of ['n', 'u']){
+      const box = document.getElementById(`f_${pr.key}_${half}`);
+      if (!box) continue;
+      box.oninput = e => { s.fields[`${pr.key}_${half}`] = e.target.value; };
+      box.onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); checkDose(); } };
+    }
+    const first = document.getElementById(`f_${stage.prompts[0].key}_n`);
+    if (first) first.focus();
   }
   keyHandler = e => {
-    if (!v && !finished) return;
+    if (!s.res && !done) return;
     if (e.key === 'Enter' || e.key === ' '){
       e.preventDefault();
-      finished ? nextDoseProblem() : nextDoseStep();
+      done ? nextDoseProblem() : nextDoseStage();
     }
   };
 }
-/* Only the first attempt at a step moves the tally. */
-function scoreDose(wrong){
-  const s = session, p = (deckById(view.deck).dose || [])[s.order[s.pi]];
-  const step = s.plan[s.pi].steps[s.si];
-  s.verdict = wrong ? 'wrong' : 'right';
-  if (wrong){
-    s.wrong++;
-    s.missed.push({ q: `${esc(p.drug)} — ${esc(step.label)}`,
-                    a: `${doseNum(step.value)} ${step.unit}` });
-  } else s.right++;
+/* Only the first attempt at a prompt moves the tally. */
+function doseSettle(res){
+  const s = session, plan = s.plan[s.pi], stage = plan.stages[s.gi];
+  const p = (deckById(view.deck).dose || [])[s.order[s.pi]];
+  s.res = res;
+  s.past[s.gi] = res;
+  for (const pr of stage.prompts){
+    if (res[pr.key]) s.right++;
+    else {
+      s.wrong++;
+      s.missed.push({ q: `${esc(p.drug)} — ${esc(stage.title)}`,
+                      a: `${doseNum(pr.val)} ${pr.unit}` });
+    }
+  }
   render();
 }
 function checkDose(){
   const s = session;
-  if (s.verdict || !s.typed.trim()) return;
-  scoreDose(!doseMatches(s.typed, s.plan[s.pi].steps[s.si]));
+  if (s.res) return;
+  const stage = s.plan[s.pi].stages[s.gi];
+  if (stage.prompts.some(pr => !String(s.fields[pr.key + '_n'] || '').trim())) return;
+  doseSettle(doseJudge(stage, s.fields));
 }
 function revealDose(){
-  if (session.verdict) return;
-  scoreDose(true);
-}
-function nextDoseStep(){
   const s = session;
-  if (!s.verdict) return;
-  s.done++; s.si++; s.typed = ''; s.verdict = null;
+  if (s.res) return;
+  const stage = s.plan[s.pi].stages[s.gi];
+  const all = {};
+  for (const pr of stage.prompts) all[pr.key] = false;
+  doseSettle(all);
+}
+function nextDoseStage(){
+  const s = session, stage = s.plan[s.pi].stages[s.gi];
+  if (!s.res) return;
+  s.done += stage.prompts.length;
+  s.gi++; s.res = null; s.fields = {};
   render();
 }
 function nextDoseProblem(){
   const s = session;
-  s.pi++; s.si = 0; s.typed = ''; s.verdict = null;
+  s.pi++; s.gi = 0; s.res = null; s.fields = {}; s.past = [];
   render();
 }
 
