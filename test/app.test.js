@@ -1348,11 +1348,16 @@ function suite(s, label, srcCss) {
 
       /* And the aliases actually cover what the cards claim: a note saying
          "Also called X" has to be backed by an alias, or the card goes on
-         teaching a name Recall rejects. Current chapters only — finished ones
-         are frozen, and this reports rather than fails for those. */
+         teaching a name Recall rejects.
+
+         EVERY deck, not just the current ones. This was scoped to current
+         chapters on the reasoning that finished ones are frozen, but a card
+         that marks you wrong for typing the name it just taught is a defect
+         rather than a change of scope — and the retired decks are still there
+         to be revised from. Nicholas asked for them to be swept too. */
       const stated = /\b(?:also called|also known as|older name:)\s+([^.—;]+)/i;
       const behind = [];
-      for (const d of DECKS.filter(x => x.current)) {
+      for (const d of DECKS) {
         for (const c of d.cards || []) {
           const m = stated.exec((c.note || '') + ' ' + (c.def || ''));
           if (!m) continue;
@@ -1367,7 +1372,7 @@ function suite(s, label, srcCss) {
           }
         }
       }
-      check(`[${label}] a current card that names an alias accepts it`, !behind.length,
+      check(`[${label}] a card that names an alias accepts it`, !behind.length,
             behind.join('; '));
     }
   }
