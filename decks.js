@@ -7419,8 +7419,7 @@ window.DECKS = [
    in an oral syringe, and tablets go to a half. */
 {
   id: 'mp49-dosage',
-  group: 'Dosage',
-  current: true,
+  group: 'Medications',
   added: '2026-09-08',
   course: 'M103 · Medical Procedures',
   title: 'Dosage Calculation',
