@@ -738,7 +738,8 @@ window.DECKS = [
     { term: 'Droplet transmission', def: 'infected moisture sprayed from the airway reaching someone standing nearby.\nExample: measles, colds, COVID-19 and flu' },
     { term: 'Indirect contact transmission', def: 'contact with a contaminated surface — which is why hand washing matters so much' },
     { term: 'Airborne transmission', def: 'pathogens floating in the air, which stay aloft and can infect someone long after the infected person has left.\nExample: tuberculosis, measles and chicken pox' },
-    { term: 'Foodborne transmission', also: ['Fecal-oral transmission'], def: 'consuming contaminated food or water — also called fecal-oral transmission' },
+    { term: 'Foodborne transmission', def: 'spread of infection by consuming contaminated food or water',
+      note: 'One vehicle for fecal-oral spread, which also travels on contaminated hands and objects.' },
     { term: 'Vector-borne transmission', def: 'an insect bite from a blood-sucking vector.\nExample: mosquitoes carrying malaria and West Nile virus' },
 
     /* ---- outbreaks ---- */
@@ -763,14 +764,16 @@ window.DECKS = [
     { term: 'Anomaly', def: 'a deviation from what is regarded as normal' },
     { term: 'Premature birth', def: 'birth before the 37th week' },
     { term: 'Aging', def: 'the normal progression of the life cycle, eventually ending in death' },
-    { term: 'Geriatrics', also: ['Gerontology'], def: 'the study of the medical problems and care of older people — also called gerontology' },
+    { term: 'Geriatrics', def: 'the branch of medicine concerned with the medical problems and care of older people',
+      note: 'Not the same as gerontology, which is the study of ageing itself, much of it outside medicine.' },
     { term: 'Postmortem', def: 'after death' },
     { term: 'Autopsy', def: 'a postmortem examination, usually done to determine the cause of death' },
 
     /* ---- advance directives ---- */
     { term: 'Advance directives', def: 'documents setting out what treatment someone wants, and who may decide for them, if they cannot speak for themselves' },
     { term: 'Health care proxy', def: 'a durable power of attorney for health care — appoints a trusted person to make treatment decisions' },
-    { term: 'Living will', also: ['POLST'], def: 'a statement of wishes for end-of-life medical care, also known as a POLST' },
+    { term: 'Living will', def: 'a document written in advance stating a person’s wishes for end-of-life medical care',
+      note: 'Not the same as a POLST, which is a medical order signed by a physician rather than a statement written by the patient.' },
     { term: 'Do Not Resuscitate order', also: ['No code', 'Allow natural death'], def: 'states that the person does not wish to receive CPR — also called no code, or allow natural death' },
 
     /* ---- abbreviations ---- */
