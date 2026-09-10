@@ -7691,4 +7691,184 @@ window.DECKS = [
   ]
 },
 
+{
+  id: 'bio-ch9-guide',
+  group: 'Chapter 9',
+  exam: true,
+  current: true,
+  added: '2026-09-10',
+  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  title: 'Ch. 9 — Muscles: Study Guide Slides',
+  source: 'Chapter 9 — posted lecture outline slides',
+  note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material.",
+  /* Forty slides, and the scope is narrower than the chapter in ways worth
+     knowing rather than quietly filling in.
+
+     ELEVEN OF THE SLIDES ARE FIGURES WITH NO TEXT — the major muscles, anterior
+     and posterior, then facial expression and mastication, the head and
+     vertebral column, the pectoral girdle, the arm, the forearm, the leg and the
+     foot. They name no individual muscle. Not one is imported here from the
+     textbook; the muscles live in Ch. 9.8, and this deck exists to say what the
+     slides say. One fact card records which figures were shown.
+
+     Smooth muscle is thinner still: slide 26 covers visceral smooth muscle only,
+     and multiunit is absent entirely.
+
+     TWO LINES CARRY THE INSTRUCTOR'S OWN EMPHASIS, marked with ** in the file —
+     the muscle coverings on slide 5, and the first event of contraction on slide
+     9. Both are cards.
+
+     ONE SLIDE HAS AN ERROR. Slide 33 lists "botulism toxin" among the TMJ
+     treatments. Botulism is the illness; the injected substance is botulinum
+     toxin. The card says the right thing and its note names the slip. */
+  cards: [
+    /* ---- the three types ---- */
+    { fact: true, term: 'The three types of muscle tissue', def: 'skeletal, cardiac and smooth' },
+    { term: 'Skeletal muscle', def: 'the type attached to the bones of the skeleton and the skin of the face, under conscious voluntary control' },
+    { term: 'Cardiac muscle', def: 'the type making up most of the wall of the heart, involuntary, responsible for its pumping action' },
+    { term: 'Smooth muscle', def: 'the involuntary type found in the walls of internal organs, such as those of the digestive tract' },
+    { fact: true, term: 'What a skeletal muscle is, in the language of body organisation',
+      def: 'an organ of the muscular system' },
+
+    /* ---- coverings, flagged on the slides ---- */
+    { fact: true, term: 'The connective tissue coverings over skeletal muscles',
+      def: 'fascia, tendons and aponeuroses' },
+    { term: 'Epimysium', def: 'the covering that surrounds a whole muscle' },
+    { term: 'Perimysium', def: 'the covering that surrounds the fascicles within a muscle' },
+    { term: 'Endomysium', def: 'the covering that surrounds the muscle fibers within a fascicle' },
+
+    /* ---- the fiber ---- */
+    { term: 'Skeletal muscle fiber', def: 'a muscle cell — multinucleated, and filled with many myofibrils' },
+    { term: 'Sarcolemma', def: 'the cell membrane of a muscle fiber' },
+    { term: 'Sarcoplasm', def: 'the cytoplasm of a muscle fiber' },
+    { term: 'Myofibril', def: 'the long structure filling a muscle fiber, built of sarcomeres joined end to end' },
+    { term: 'Sarcomere', def: 'the unit extending from one Z line to the next' },
+    { fact: true, term: 'What the myofibrils are made of',
+      def: 'thin actin filaments and thick myosin filaments' },
+    { fact: true, term: 'What makes the striation pattern',
+      def: 'the arrangement of the myofilaments within the myofibrils' },
+    { term: 'Thick filaments', def: 'the filaments composed of myosin protein, whose heads form the cross-bridges' },
+    { term: 'Thin filaments', def: 'the filaments composed of actin protein' },
+
+    /* ---- contraction ---- */
+    { fact: true, term: 'What happens inside the myofibrils during contraction',
+      def: 'the actin and myosin filaments slide past one another, shortening the sarcomeres, and the fiber pulls on its attachment points' },
+    { fact: true, term: 'The first event in muscle fiber contraction',
+      def: 'acetylcholine is released from the axon of the motor neuron' },
+    { term: 'Neuromuscular junction', also: ['Myoneural junction', 'NMJ'],
+      def: 'the synapse where the axon of a motor neuron and a skeletal muscle fiber interact' },
+    { fact: true, term: 'The parts of a neuromuscular junction the slides list',
+      def: 'the motor neuron, the synaptic cleft, the synaptic vesicles and the neurotransmitters' },
+    { fact: true, term: 'When a skeletal muscle fiber contracts',
+      def: 'only when it is stimulated by a motor neuron' },
+    { term: 'Acetylcholine', also: ['ACh'],
+      def: 'the neurotransmitter released from the synaptic vesicles when a nerve impulse arrives' },
+    { term: 'Sliding filament model',
+      def: 'the account in which the thick and thin filaments slide past one another as the sarcomeres shorten, drawing the Z lines closer together' },
+    { term: 'Acetylcholinesterase',
+      def: 'the enzyme that rapidly decomposes the neurotransmitter left in the synapse, which is what stops the muscle impulse' },
+
+    /* ---- energy, fatigue, heat ---- */
+    { term: 'Myoglobin', def: 'the pigment that stores extra oxygen in the muscles' },
+    { term: 'Anaerobic threshold', also: ['Lactic acid threshold'],
+      def: 'the shift from aerobic to anaerobic metabolism during strenuous activity, when the respiratory and cardiovascular systems cannot supply the oxygen needed; lactic acid is produced' },
+    { term: 'Oxygen debt',
+      def: 'the amount of oxygen the liver cells need to convert accumulated lactic acid back to glucose, and to restore muscle ATP and creatine phosphate' },
+    { term: 'Muscle fatigue', def: 'the inability to contract a muscle' },
+    { fact: true, term: 'The common causes of fatigue the slides list',
+      def: 'decreased blood flow, ion imbalances across the sarcolemma, loss of the desire to continue exercising, and accumulation of lactic acid, which the slides mark as controversial' },
+    { term: 'Muscle cramp',
+      def: 'a sustained, involuntary contraction, possibly caused by changes in electrolyte concentration in the fluid around the fibers' },
+    { fact: true, term: 'Where body heat largely comes from',
+      def: 'the muscle cells, as a by-product of cellular respiration in active cells' },
+
+    /* ---- responses ---- */
+    { term: 'Threshold stimulus',
+      def: 'the minimum strength of stimulation needed to make a muscle fiber contract, at which an action potential is generated' },
+    { term: 'Twitch', def: 'the contractile response of a single muscle fiber to a single impulse' },
+    { fact: true, term: 'The three parts of a twitch',
+      def: 'the latent period, the period of contraction and the period of relaxation' },
+    { term: 'Summation',
+      def: 'the process by which the forces of individual twitches combine, producing sustained contractions and leading to partial or complete tetanic ones' },
+    { term: 'Motor unit', def: 'a motor neuron plus all of the muscle fibers it controls' },
+    { fact: true, term: 'What produces coarse movements', def: 'large numbers of fibers in a motor unit' },
+    { fact: true, term: 'What produces precise movements', def: 'fewer muscle fibers in a motor unit' },
+    { term: 'Recruitment', def: 'the increase in the number of motor units activated, to produce more force' },
+    { term: 'Muscle tone', def: 'the continuous state of partial contraction in resting muscles' },
+
+    /* ---- kinds of contraction ---- */
+    { term: 'Isotonic contraction', def: 'the kind in which the muscle changes length while the force stays equal' },
+    { term: 'Concentric contraction', def: 'the shortening kind, where the force is greater than the resistance' },
+    { term: 'Eccentric contraction', def: 'the lengthening kind, where the force is less than the resistance' },
+    { term: 'Isometric contraction', def: 'the kind in which the muscle does not change length and the force changes instead' },
+    { term: 'Hypertrophy', def: 'the enlargement of a skeletal muscle that is exercised' },
+    { term: 'Atrophy', def: 'the decrease in size and strength of a skeletal muscle that is unused' },
+
+    /* ---- smooth and cardiac ---- */
+    { term: 'Visceral smooth muscle', also: ['Single-unit smooth muscle'],
+      def: 'the single-unit type whose cells respond as one, found in the walls of most hollow organs' },
+    { term: 'Peristalsis', def: 'the rhythmic wave of muscular contraction that the single-unit type conducts' },
+    { term: 'Intercalated discs', def: 'what joins cardiac muscle fibers to one another' },
+    { fact: true, term: 'What makes cardiac muscle able to drive itself',
+      def: 'it is self-exciting and rhythmic' },
+
+    /* ---- attachments and roles ---- */
+    { term: 'Origin', def: 'the less movable end of a skeletal muscle' },
+    { term: 'Insertion', def: 'the more movable end, which is pulled toward the other when the muscle contracts' },
+    { term: 'Agonist', def: 'the muscle that causes an action' },
+    { term: 'Prime mover', def: 'the agonist primarily responsible for a movement' },
+    { term: 'Synergists', def: 'the muscles that assist the agonist' },
+    { term: 'Antagonist', def: 'the muscle whose contraction moves in the opposite direction to the prime mover' },
+
+    /* ---- the clinical slide ---- */
+    { term: 'Temporomandibular joint syndrome', also: ['TMJ syndrome'],
+      def: 'the articulation problem between the mandibular condyle and the mandibular fossa of the temporal bone, which affects the nerves passing through the neck and jaw' },
+    { fact: true, term: 'What causes TMJ syndrome, as the slides give it',
+      def: 'a misaligned jaw, and grinding or clenching the teeth' },
+    { fact: true, term: 'The signs of TMJ syndrome the slides list',
+      def: 'a clicking jaw, facial pain, ringing in the ears, insomnia, teeth sensitive to heat and cold, backache, dizziness and ear pain' },
+    { fact: true, term: 'The treatments for TMJ syndrome the slides list',
+      def: 'physical therapy, oral appliances, arthrocentesis, and injections of botulinum toxin or steroids',
+      note: 'The slides write "botulism toxin". Botulism is the illness; the substance injected is botulinum toxin.' },
+
+    /* ---- what the figure slides showed ---- */
+    { fact: true, term: 'The muscle groups the figure slides cover',
+      def: 'the superficial muscles anterior and posterior, then facial expression and mastication, the head and vertebral column, the pectoral girdle, the arm, the forearm, the leg and the foot' }
+  ],
+  questions: [
+    { q: 'Which covering surrounds a whole muscle?',
+      choices: ['Epimysium', 'Perimysium', 'Endomysium', 'Fascicle'], answer: 0,
+      why: 'Work inward: perimysium wraps a fascicle, endomysium wraps a single fiber. A fascicle is the bundle itself, not a covering.' },
+    { q: 'The first event in muscle fiber contraction is:',
+      choices: ['Acetylcholine is released from the motor neuron axon',
+        'Calcium binds to troponin', 'The sarcomere shortens',
+        'Acetylcholinesterase decomposes the neurotransmitter'], answer: 0,
+      why: 'Everything else follows from it. Acetylcholinesterase acting is the event that ends the impulse, not the one that starts it.' },
+    { q: 'A motor unit is:',
+      choices: ['A motor neuron plus all the fibers it controls',
+        'A single muscle fiber and its sarcomeres', 'One neuromuscular junction',
+        'A fascicle and its perimysium'], answer: 0,
+      why: 'Coarse movements come from units holding many fibers, precise ones from units holding few — which only makes sense once the unit is neuron plus fibers.' },
+    { q: 'A muscle contracts but does not change length. That is:',
+      choices: ['Isometric', 'Isotonic', 'Concentric', 'Eccentric'], answer: 0,
+      why: 'The other three all change length; concentric and eccentric are the two isotonic cases, shortening and lengthening.' },
+    { q: 'Which is the shortening contraction?',
+      choices: ['Concentric', 'Eccentric', 'Isometric', 'Tetanic'], answer: 0,
+      why: 'The force is greater than the resistance, so the muscle wins and shortens. Eccentric is the reverse, lengthening under a load it cannot overcome.' },
+    { q: 'Which end of a muscle is pulled toward the other when it contracts?',
+      choices: ['The insertion is pulled toward the origin',
+        'The origin is pulled toward the insertion', 'Both ends move equally',
+        'Neither end moves'], answer: 0,
+      why: 'The origin is the less movable end, so it is the anchor and the insertion is what travels.' },
+    { q: 'Oxygen debt is the oxygen needed to:',
+      choices: ['Convert accumulated lactic acid back to glucose and restore ATP and creatine phosphate',
+        'Reach the anaerobic threshold', 'Decompose acetylcholine in the synapse',
+        'Store extra oxygen in myoglobin'], answer: 0,
+      why: 'The anaerobic threshold is the shift that creates the debt; this is what repaying it costs.' },
+    { q: 'Visceral smooth muscle conducts:',
+      choices: ['Peristalsis', 'Tetany', 'Summation', 'Recruitment'], answer: 0,
+      why: 'It is single-unit muscle, so the cells respond as one and the contraction travels as a wave. The other three are skeletal muscle terms.' }
+  ]
+},
+
 ];
