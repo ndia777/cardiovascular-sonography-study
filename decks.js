@@ -6501,7 +6501,7 @@ window.DECKS = [
     { term: 'Sarcomere', def: 'the repeating contractile unit extending from one Z line to the next, and the functional unit of skeletal muscle' },
     { term: 'I band', def: 'the light striation, made of thin filaments only, held by direct attachment to the Z lines' },
     { term: 'A band', def: 'the dark striation, running the full length of the thick filaments and taking in the regions where they overlap the thin filaments' },
-    { term: 'Z line', def: 'the structure in the center of each light striation that anchors the thin filaments' },
+    { term: 'Z line', also: ['Z disc'], def: 'the structure in the center of each light striation that anchors the thin filaments' },
     { term: 'H zone', def: 'the slightly lighter central region of the dark striation, containing thick filaments only' },
     { term: 'M line', def: 'the thickening at the center of the dark striation, made of proteins that hold the thick filaments in place' },
     { term: 'Titin', also: ['Connectin'], def: 'the large protein that attaches the thick filaments to the Z lines' },
