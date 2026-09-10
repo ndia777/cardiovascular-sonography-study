@@ -73,6 +73,44 @@
   .cname{font-size:15.5px;letter-spacing:.04em;text-transform:uppercase;
     color:var(--text);font-weight:700}
   .pastbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-left:auto}
+
+  /* ---- the archive drawer ----
+
+     Finished chapters were a row of chips that grew all term, and folding
+     them into a panel below the current chapter only moved the clutter: it
+     opened somewhere the eye was not, so it read as nothing happening.
+
+     A drawer is a PLACE instead. It comes in over the page from the right,
+     dims what is behind it, and holds the whole archive of a course at once
+     — every finished chapter, every deck under it, one click to any of them.
+     Nothing is nested twice and nothing has to be hunted for. */
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;
+    animation:scrimin .18s ease both;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,90vw);z-index:41;
+    background:var(--bg2);border-left:1px solid var(--line);display:flex;flex-direction:column;
+    box-shadow:-28px 0 60px rgba(0,0,0,.4);animation:drawerin .24s cubic-bezier(.2,.85,.25,1) both}
+  @keyframes drawerin{from{transform:translateX(100%)}to{transform:translateX(0)}}
+  @keyframes scrimin{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.drawer,.scrim{animation:none}}
+  .drawer .dhead{position:relative;padding:20px 52px 15px 20px;border-bottom:1px solid var(--line);flex:none}
+  .drawer .dtitle{font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+  .drawer .dsub{font-size:12px;color:var(--dim);margin-top:3px}
+  .drawer .dclose{position:absolute;top:16px;right:14px;width:32px;height:32px;
+    border:1px solid var(--line);background:var(--card);color:var(--dim);border-radius:9px;
+    font:inherit;font-size:15px;line-height:1;cursor:pointer;transition:.15s}
+  .drawer .dclose:hover{color:var(--text);border-color:var(--accent)}
+  .drawer .dbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:6px 12px 24px}
+  .dchap{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);
+    margin:18px 8px 7px;font-weight:600}
+  .dchap:first-child{margin-top:10px}
+  .ditem{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;
+    border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);
+    cursor:pointer;transition:.13s}
+  .ditem:hover{background:var(--card2);border-color:var(--line)}
+  .ditem .dmeta{display:block;font-size:11.5px;color:var(--dim);margin-top:3px}
+  .ditem .dflag{display:inline-block;font-size:10px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--warn);border:1px solid var(--warn);border-radius:5px;padding:1px 5px;margin-left:7px;
+    vertical-align:1px;opacity:.8}
   .pastlabel{font-size:10.5px;letter-spacing:.08em;color:var(--dim);opacity:.75}
   /* Chips are deliberately quiet — sentence case, no weight, no fill. They are
      signposts to material already covered, and must never pull the eye away
@@ -770,6 +808,7 @@ let keyHandler = null;
 function go(screen, deck, mode){
   view = { screen, deck, mode };
   session = null;
+  archive = null;
   window.scrollTo(0, 0);
   render();
 }
@@ -862,6 +901,51 @@ function resetScores(btn){
    "never touched it" — otherwise a section that defaults open springs back on
    the next re-render. */
 let chipOpen = {};   /* chip key -> bool. Session-only, never saved. */
+/* Which course’s archive is open, or null. Session-only like the chips, and
+   cleared on every navigation: a drawer is a detour, not a destination. */
+let archive = null;
+function openArchive(btn){ archive = btn.dataset.course; screenHome(); }
+function closeArchive(){ if (archive === null) return; archive = null; screenHome(); }
+/* Straight to the deck. The drawer is a way THROUGH to something, so it
+   never leaves itself standing behind the thing it just opened. */
+function archiveGo(id){ archive = null; go('deck', id); }
+
+/* Every finished chapter of one course, and every deck under it. Built from
+   the deck list rather than from whatever the page happens to be showing, so
+   it cannot drift out of step with what was retired. */
+function archiveHtml(c){
+  const rest = DECKS.filter(d => d.course === c && !pinned(d) && !standing(d));
+  const inG = g => rest.filter(d => d.group === g);
+  const done = [...new Set(rest.map(d => d.group).filter(Boolean))]
+    .filter(g => !inG(g).some(d => d.current))
+    .sort((a, b) => (inG(a)[0].added || '').localeCompare(inG(b)[0].added || ''));
+  const loose = rest.filter(d => !d.group && !d.current);
+  const progress = load();
+  const row = d => {
+    const p = progress[d.id] || {};
+    const n = d.cards.length ? `${d.cards.length} terms`
+      : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`;
+    return `<button type="button" class="ditem" onclick="archiveGo('${d.id}')">${esc(d.title)}${
+      d.exam ? '<span class="dflag">Study guide</span>' : ''
+    }<span class="dmeta">${n}${p.last ? ' · started' : ''}</span></button>`;
+  };
+  /* study guides first within a chapter — the tested material is what you
+     come back for, and in a list this long it should not be hunted for */
+  const guideFirst = ds => [...ds].sort((a, b) => (b.exam ? 1 : 0) - (a.exam ? 1 : 0));
+  const block = (label, decks) =>
+    `<div class="dchap">${esc(label)}</div>` + guideFirst(decks).map(row).join('');
+  const body = done.map(g => block(g, inG(g))).join('')
+    + (loose.length ? block('Other decks', loose) : '');
+  return `<div class="scrim" onclick="closeArchive()"></div>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-label="Earlier chapters">
+      <div class="dhead">
+        <div class="dtitle">Earlier chapters</div>
+        <div class="dsub">${esc(c)}</div>
+        <button type="button" class="dclose" onclick="closeArchive()" aria-label="Close">✕</button>
+      </div>
+      <div class="dbody">${body}</div>
+    </aside>`;
+}
 function togglePast(btn){
   const panel = document.getElementById(btn.getAttribute('aria-controls'));
   if (!panel) return;
@@ -1053,9 +1137,28 @@ function screenHome(){
     const chips = panels.map(chipFor).join('');
     const refChips = refPanels.map(chipFor).join('');
 
+    /* ONE chip for everything finished, rather than one per chapter. A chip
+       per chapter cost nothing the week it appeared and everything by the end
+       of term: the row grew without bound, and it was paying for itself in
+       attention every time the page was opened, for material he says he
+       almost never returns to once the test is done.
+
+       The chapter chips are not thrown away, they move down one level and
+       live inside the panel this chip opens. So reaching an old deck is two
+       clicks rather than one, which is the right trade when the honest
+       answer is "almost never", and the page reads as what is current.
+
+       The count rides in the label because it is the one thing worth knowing
+       without opening it. The REFERENCE chip stays outside: a standing
+       reference is not finished with, and filing it under "Earlier" would
+       say it was. */
+    const earlier = panels.length
+      ? `<button type="button" class="chip" data-course="${esc(c)}" aria-haspopup="dialog"
+          onclick="openArchive(this)">Earlier (${panels.length})</button>`
+      : '';
+
     html += `<div class="coursehead"><span class="cname">${esc(c)}</span>${
-      refChips || chips ? `<span class="pastbar">${refChips}${
-        chips ? `<span class="pastlabel">Earlier</span>${chips}` : ''}</span>` : ''}</div>`;
+      refChips || earlier ? `<span class="pastbar">${refChips}${earlier}</span>` : ''}</div>`;
 
     if (lead.length) html += `<div class="decks">${lead.map(d => deckCard(d, true)).join('')}</div>`;
 
@@ -1086,12 +1189,21 @@ function screenHome(){
         `<div class="decks">${inG(g).map(d => deckCard(d, false)).join('')}</div>`;
     });
 
-    panels.concat(refPanels).forEach(p => {
-      html += `<div class="pastwrap" id="${p.id}"${p.open ? '' : ' hidden'}>${
-        sect(p.label, false, p.decks)}<div class="decks">${
-        p.decks.map(d => deckCard(d, false)).join('')}</div></div>`;
-    });
+    const panelHtml = p => `<div class="pastwrap" id="${p.id}"${p.open ? '' : ' hidden'}>${
+      sect(p.label, false, p.decks)}<div class="decks">${
+      p.decks.map(d => deckCard(d, false)).join('')}</div></div>`;
+
+    /* Finished chapters live in the drawer now, not on the page. A reference
+       panel stays here: it is not finished with, and it is reached in one
+       click the way a thing you look up should be.
+
+       While a search is running they come back inline, because a search that
+       cannot show you what it found is not a search. */
+    if (q) panels.forEach(p => { html += panelHtml(p); });
+    refPanels.forEach(p => { html += panelHtml(p); });
   });
+
+  if (archive) html += archiveHtml(archive);
 
   app.innerHTML = html;
   const box = document.getElementById('search');
@@ -3968,6 +4080,7 @@ function render(){
 document.addEventListener('keydown', e => {
   /* Escape closes the share panel before it navigates — otherwise dismissing
      the panel would also throw the reader out of whatever they were studying. */
+  if (e.key === 'Escape' && archive !== null){ return closeArchive(); }
   if (e.key === 'Escape' && qrOpen()){ return closeQR(); }
   if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }
   if (e.target.tagName === 'INPUT') return;   /* typing shouldn't fire shortcuts */

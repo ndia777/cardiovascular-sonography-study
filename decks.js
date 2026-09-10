@@ -910,7 +910,7 @@ window.DECKS = [
   group: 'Chapter 1',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
-  title: 'Ch. 1 — Study Guide',
+  title: 'Ch. 1 — Word Parts: Study Guide',
   source: 'Chapter 1 — instructor study guide',
   cards: [
     { term: 'disease', def: 'a condition in which one or more body parts are not functioning normally' },
@@ -985,7 +985,7 @@ window.DECKS = [
   group: 'Chapter 2',
   added: '2026-08-05',
   course: 'M159 · Medical Terminology 1',
-  title: 'Ch. 2 — Study Guide',
+  title: 'Ch. 2 — Body Structure: Study Guide',
   source: 'Chapter 2 — instructor study guide',
   cards: [
     { term: 'cell', def: 'the basic structural and functional unit of the body' },
@@ -1717,7 +1717,7 @@ window.DECKS = [
 
   added: "2026-07-30",
   course: "BIO101 · Anatomy & Physiology 1 Lecture",
-  title: "Ch. 3 — Study Guide",
+  title: "Ch. 3 — Cells: Study Guide",
   source: "Chapter 3 — study guide slides and course notes",
   cards: [
     {"term":"Nucleus","def":"the innermost control center, enclosed by a double-layered nuclear envelope"},
@@ -1839,7 +1839,7 @@ window.DECKS = [
 
   added: '2026-07-30',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 4 — Study Guide',
+  title: 'Ch. 4 — Cellular Metabolism: Study Guide',
   source: 'Chapter 4 — study guide slides and course notes',
   cards: [
     { term: 'Metabolism',  def: 'the sum of all the chemical reactions in the body' },
@@ -3827,7 +3827,7 @@ window.DECKS = [
   retired: true,
   added: '2026-08-12',
   course: 'M159 · Medical Terminology 1',
-  title: 'Ch. 12 — Study Guide',
+  title: 'Ch. 12 — Skin: Study Guide',
   source: 'Chapter 12 — instructor study guide (skin)',
   /* The guide is 65 flat "X is Y" statements, so these are near-verbatim, only
      turned around into term/definition. Where the guide gives an "also known
@@ -5986,7 +5986,7 @@ window.DECKS = [
   retired: true,
   added: '2026-08-20',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 7 — Study Guide Slides',
+  title: 'Ch. 7 — Skeletal System: Study Guide Slides',
   source: 'Chapter 7 — posted lecture outline slides',
   note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material.",
   cards: [
@@ -6316,7 +6316,7 @@ window.DECKS = [
   retired: true,
   added: '2026-09-02',
   course: 'BIO101 · Anatomy & Physiology 1 Lecture',
-  title: 'Ch. 8 — Study Guide Slides',
+  title: 'Ch. 8 — Joints: Study Guide Slides',
   source: 'Chapter 8 — posted lecture outline slides',
   note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material.",
   /* Twenty-one slides, and the scope is narrower than the chapter in two ways

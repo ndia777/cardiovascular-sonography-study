@@ -135,6 +135,14 @@ function suite(s, label, srcCss) {
   const tagOf = d => `go('deck','${d.id}')`;
   const byId = new Map(DECKS.map(d => [d.id, d]));
 
+  /* Finished chapters live in the archive drawer rather than on the page, so
+     anything asking "is this reachable" has to look there too. The drawer is
+     built on demand from the deck list, so rendering one costs nothing and
+     asks the engine rather than re-deriving what it ought to say. */
+  const archiveOf = c => vm.runInContext(`archiveHtml(${JSON.stringify(c)})`, s);
+  const archiveIds = c => [...archiveOf(c).matchAll(/archiveGo\('([^']+)'\)/g)].map(m => m[1]);
+  const archiveChaps = c => [...archiveOf(c).matchAll(/class="dchap">([^<]*)</g)].map(m => m[1].trim());
+
   /* Course sections must RENDER alphabetically by subject name. Read the order
      out of the markup the app actually produced — comparing a sorted list to
      itself would pass no matter what the app did. */
@@ -279,18 +287,49 @@ function suite(s, label, srcCss) {
     /* The converse: a retired guide belongs inside the panel with its chapter.
        Without this, dropping `retired` from the engine would sail through — the
        check above only ever gets stricter when guides stop being retired. */
+    /* The converse of the check above, and the reason `retired` exists at all:
+       a guide that has been put away is in the archive and nowhere else. Both
+       halves are asserted, because either alone can be satisfied by a bug —
+       dropping it from the archive leaves it merely absent from the page, and
+       leaving it on the page while also filing it means nothing was put away. */
     const stowed = DECKS.filter(d => d.exam && d.retired)
-      .filter(d => !insidePanels.includes(tagOf(d)))
+      .filter(d => !archiveIds(d.course).includes(d.id))
       .map(d => d.title);
-    check(`[${label}] a retired study guide is put away with its chapter`, !stowed.length,
+    check(`[${label}] a retired study guide is put away in the archive`, !stowed.length,
           stowed.join(', '));
+    const lingering = DECKS.filter(d => d.exam && d.retired)
+      .filter(d => html.includes(tagOf(d)))
+      .map(d => d.title);
+    check(`[${label}] a retired study guide is off the page`, !lingering.length,
+          lingering.join(', '));
 
-    /* Every deck must still be reachable from the home screen — folded is fine,
-       dropped is not. This is the check that catches a filtering slip turning
-       "collapse" into "lose". */
+    /* Every deck must still be reachable — folded is fine, dropped is not.
+       This is the check that catches a filtering slip turning "collapse" into
+       "lose". Since finished chapters moved into the archive, reachable now
+       means the page OR the drawer of the deck's own course, and both have to
+       be asked or a deck could vanish from one and be counted by the other. */
     const shown = new Set([...html.matchAll(DECK_ID)].map(m => m[1]));
+    for (const c of new Set(DECKS.map(d => d.course)))
+      for (const id of archiveIds(c)) shown.add(id);
     const lost = DECKS.filter(d => !shown.has(d.id)).map(d => d.id);
-    check(`[${label}] every deck is still listed on the home screen`, !lost.length, lost.join(', '));
+    check(`[${label}] every deck is reachable from the page or its archive`,
+          !lost.length, lost.join(', '));
+
+    /* And the archive holds only what is finished. A current deck filed there
+       would be a chapter put away while it is still being studied. */
+    const early = [];
+    for (const c of new Set(DECKS.map(d => d.course)))
+      for (const id of archiveIds(c)) {
+        const d = byId.get(id);
+        if (d && d.current) early.push(`${d.title} (${subj(c)})`);
+      }
+    check(`[${label}] no current deck is filed in the archive`, !early.length,
+          early.join(', '));
+
+    /* The drawer is a detour, so a fresh page must not already be showing one. */
+    check(`[${label}] the archive starts closed`,
+          !/class="drawer"/.test(html) && !/class="scrim"/.test(html),
+          'the home screen rendered an open drawer');
 
     /* A search must not leave a match sealed inside a collapsed fold. Set the
        query the way the search box does — go() nulls the session, so calling it
@@ -298,9 +337,20 @@ function suite(s, label, srcCss) {
     go('home');
     vm.runInContext('session = { q: "purkinje" }; screenHome();', s);
     const searched = s.__app.innerHTML;
-    const openChips = [...searched.matchAll(/class="chip"([^>]*)>/g)].map(m => m[1]);
-    check(`[${label}] searching opens every chapter`,
-          openChips.length > 0 && openChips.every(a => /aria-expanded="true"/.test(a)),
+    /* A search brings the finished chapters back onto the page, because a
+       search that cannot show you what it found is not a search. Two things
+       follow: the matching deck is actually on screen, and any chip that owns
+       a panel is open. The archive chip owns a dialog rather than a panel and
+       carries no expanded state, so it is not one of those. */
+    const hit = DECKS.find(d => d.cards.some(c =>
+      (c.term + ' ' + c.def).toLowerCase().includes('purkinje')));
+    check(`[${label}] a search puts what it found on the page`,
+          !!hit && searched.includes(tagOf(hit)),
+          hit ? `${hit.title} was not rendered` : 'nothing matched the probe term');
+    const openChips = [...searched.matchAll(/class="chip"([^>]*)>/g)]
+      .map(m => m[1]).filter(a => /aria-expanded=/.test(a));
+    check(`[${label}] searching opens every panel chip`,
+          openChips.every(a => /aria-expanded="true"/.test(a)),
           `${openChips.filter(a => !/aria-expanded="true"/.test(a)).length} of ${
             openChips.length} stayed shut`);
     /* aria-expanded and the panel's own hidden attribute have to agree, or the
@@ -328,15 +378,29 @@ function suite(s, label, srcCss) {
       const was = flagged.map(d => [d.exam, d.current]);
       flagged.forEach(d => { d.exam = false; d.current = false; });
       go('home');
-      const dormant = chipsIn(s.__app.innerHTML, c);
+      const dormantHtml = s.__app.innerHTML;
+      /* read while it is still dormant — after the flags go back every chapter
+         is current again and the archive rightly holds none of them */
+      const dormantChaps = archiveChaps(c);
       flagged.forEach((d, i) => { d.exam = was[i][0]; d.current = was[i][1]; });
       go('home');
 
-      const closed = dormant.filter(([open]) => !open).map(([, t]) => t);
-      check(`[${label}] a course with nothing spotlighted opens its chapters`,
-            dormant.length > 0 && !closed.length,
-            dormant.length ? `${closed.join(', ')} stayed shut in ${subj(c)}` :
-                             `${subj(c)} rendered no chips to check`);
+      /* A course with nothing current is not broken, it is between chapters —
+         which is exactly M103 today. What it must never be is a dead end: the
+         heading has to offer a way in, and that way has to lead to every
+         chapter the course has. */
+      const sec = sectionOf(dormantHtml, c);
+      const opens = /onclick="openArchive\(this\)"/.test(sec);
+      const listed = dormantChaps;
+      /* groupsOf is declared further down in another block, so name the
+         chapters here rather than reach forward for it */
+      const mine = [...new Set(DECKS.filter(d => d.course === c && !pin(d) && d.group)
+        .map(d => d.group))];
+      const absent = mine.filter(g => !listed.includes(g));
+      check(`[${label}] a course with nothing spotlighted still opens its archive`,
+            opens, `${subj(c)} offered no way into its finished chapters`);
+      check(`[${label}] that archive lists every chapter the course has`,
+            !absent.length, absent.join(', '));
     }
 
     /* Chips remember their state for the session but must never persist it.
@@ -445,8 +509,17 @@ function suite(s, label, srcCss) {
       const missingHead = [], spurious = [];
       for (const c of renderedCourses) {
         const sects = sectsIn(openHtml, c);
+        const filed = archiveChaps(c);
         for (const g of groupsOf(c)) {
-          const titled = !(nowIn(c, g) && sizeOf(c, g) === 1);
+          /* A finished chapter is headed inside the archive now, not on the
+             page; a current one keeps its heading here unless it holds a
+             single deck, where the heading would only repeat the card. */
+          if (!nowIn(c, g)) {
+            if (!filed.includes(g)) missingHead.push(`${g} (${subj(c)}, archive)`);
+            if (sects.includes(g)) spurious.push(`${g} (${subj(c)}) is filed and still on the page`);
+            continue;
+          }
+          const titled = sizeOf(c, g) !== 1;
           if (titled && !sects.includes(g)) missingHead.push(`${g} (${subj(c)})`);
           if (!titled && sects.includes(g)) spurious.push(`${g} (${subj(c)})`);
         }
@@ -475,13 +548,26 @@ function suite(s, label, srcCss) {
 
       /* Every finished chapter is reachable from a chip — that is the only way
          to it now, so a chapter without one is unreachable, not merely tidy. */
-      const chipless = [];
+      /* Every finished chapter is reachable from its archive — that is the only
+         way to it now, so a chapter missing from the drawer is unreachable
+         rather than merely tidy. And the guide leads its chapter there, the way
+         a pinned guide leads a course: it is the tested material. */
+      const chipless = [], buriedGuide = [];
       for (const c of renderedCourses) {
-        const labels = chipsIn(openHtml, c).map(([, t]) => t);
-        for (const g of groupsOf(c)) if (!nowIn(c, g) && !labels.includes(g))
+        const filed = archiveChaps(c);
+        for (const g of groupsOf(c)) if (!nowIn(c, g) && !filed.includes(g))
           chipless.push(`${g} (${subj(c)})`);
+        const ids = archiveIds(c);
+        for (const g of groupsOf(c)) {
+          if (nowIn(c, g)) continue;
+          const inChap = ids.map(i => byId.get(i)).filter(d => d && d.group === g);
+          const at = inChap.findIndex(d => d.exam);
+          if (at > 0) buriedGuide.push(`${inChap[at].title} sits ${at} deep in ${g}`);
+        }
       }
-      check(`[${label}] every finished chapter has a chip`, !chipless.length, chipless.join(', '));
+      check(`[${label}] every finished chapter is in its archive`, !chipless.length, chipless.join(', '));
+      check(`[${label}] a study guide leads its chapter in the archive`,
+            !buriedGuide.length, buriedGuide.join('; '));
 
       /* Current single-deck chapters share one grid, so they sit beside each
          other rather than stacked. Test it by looking for a container boundary
@@ -796,14 +882,20 @@ function suite(s, label, srcCss) {
        and that distinction is the reason to keep the label after the chapter is
        behind us — the border is about what to study now, the tag about what a
        deck IS. Matching "badge exam" loosely covers the muted variant too. */
-    check(`[${label}] every study guide keeps a readable label`,
-          (html.match(/class="badge exam[^"]*">Study guide</g) || []).length === marked.length,
+    /* A live guide wears the tag on its card; a retired one wears it in the
+       archive. Both are words rather than colour, which is the point — a
+       border alone would not reach a colour-blind reader. */
+    const live = marked.filter(d => !d.retired);
+    check(`[${label}] every live study guide keeps a readable label`,
+          (html.match(/class="badge exam[^"]*">Study guide</g) || []).length === live.length,
           'colour alone would not reach a colour-blind reader');
-    /* and the retired ones are visibly the quieter of the two */
     const past = DECKS.filter(d => d.exam && d.retired);
-    check(`[${label}] a retired guide's label is muted`,
-          (html.match(/class="badge exam past">Study guide</g) || []).length === past.length,
-          `${past.length} retired guide(s) should render the muted tag`);
+    let tagged = 0;
+    for (const c of new Set(past.map(d => d.course)))
+      tagged += (archiveOf(c).match(/class="dflag">Study guide</g) || []).length;
+    check(`[${label}] a retired guide is still labelled in the archive`,
+          tagged === past.length,
+          `${tagged} of ${past.length} retired guide(s) carry the tag`);
   }
 
 
@@ -1295,7 +1387,12 @@ function suite(s, label, srcCss) {
          the classes it exists to police — it passed with the collision put back
          deliberately. Restore the store afterwards. */
       const snap = s.$('load')();
-      const probe = DECKS.find(d => d.cards.length);
+      /* The probe has to be a deck the home screen renders. A finished one now
+         lives in the archive, where a score badge never appears, so seeding it
+         would leave this inspecting a page with none of the classes it exists
+         to police — passing while proving nothing. */
+      const probe = DECKS.find(d => d.cards.length && d.current)
+        || DECKS.find(d => d.cards.length);
       s.$('record')(probe.id, { recallBest: 72, quizBest: 91, matchBest: 40 });
       go('home');
       const mods = new Set();
