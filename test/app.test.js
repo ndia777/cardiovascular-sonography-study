@@ -1045,6 +1045,30 @@ function suite(s, label, srcCss) {
           `first few: ${shown.slice(0, 4).join(' | ')}`);
   }
 
+  /* The fold that lets the chapter sheet show one row per term. It has to be
+     loose enough to catch an article, a hyphen or a plural, and tight enough to
+     leave two real meanings alone — "gene" is the unit of heredity in one
+     Chapter 2 deck and the word part "producing" in another, and merging those
+     would delete a definition the sheet exists to show. */
+  check(`[${label}] the engine exposes the sheet fold`, typeof s.saysTheSame === 'function');
+  if (typeof s.saysTheSame === 'function') {
+    const folds = [
+      ['surgical removal of the appendix', 'the surgical removal of the appendix'],
+      ['higher than normal blood pressure', 'higher-than-normal blood pressure'],
+      ['the study of all aspects of disease', 'the study of all aspects of diseases'],
+      ['atrial depolarization', 'ATRIAL DEPOLARIZATION (contraction) — the first impulse recorded, begun by the SA node']
+    ];
+    const apart = [
+      ['the fundamental physical and functional unit of heredity', 'producing'],
+      ['a drug that induces sleep, such as Seconal', 'a drug that relieves convulsions, such as Dilantin'],
+      ['the light striation, made of thin filaments only', 'the dark striation, the full length of the thick filaments']
+    ];
+    const missed = folds.filter(([a, b]) => !s.saysTheSame(a, b)).map(([a]) => a.slice(0, 40));
+    const merged = apart.filter(([a, b]) => s.saysTheSame(a, b)).map(([a]) => a.slice(0, 40));
+    check(`[${label}] the sheet fold catches a reworded definition`, !missed.length, missed.join(' | '));
+    check(`[${label}] the sheet fold leaves two real meanings apart`, !merged.length, merged.join(' | '));
+  }
+
   /* The whole-chapter sheet gathers every deck sharing a course and chapter.
      Three things have to hold, and none of them can be checked from the deck
      data alone — read the rendered table.
@@ -1087,6 +1111,44 @@ function suite(s, label, srcCss) {
     check(`[${label}] ${d.id} every chapter row names its source deck`,
           srcs.length === shown.length && srcs.every(m => m[1].trim()),
           `${srcs.length} source cells for ${shown.length} rows`);
+
+    /* A–Z IS ONE ROW PER TERM. It used to key on term+def, so a word two decks
+       worded slightly differently was listed twice and the sheet read as a pile
+       of duplicates. Nothing may be lost to that: a definition only disappears
+       when another row already says the same thing, and anything genuinely
+       different has to still be on the page, stacked inside the term's row. */
+    const dupTerms = shown.filter((t, i) => shown.findIndex(x => x.toLowerCase() === t.toLowerCase()) !== i);
+    check(`[${label}] ${d.id} chapter sheet lists each term once`,
+          !dupTerms.length, `repeated: ${[...new Set(dupTerms)].slice(0, 4).join(', ')}`);
+
+    /* fold the deck data the way the sheet should, then hold the render to it */
+    /* In the engine's own deck order. Folding is single-link, so it is not
+       transitive — "atrial depolarization" matches both the long EKG wording and
+       "atrial depolarization on the tracing", which do not match each other —
+       and reading the decks in a different order really does give a different
+       grouping. The order is fixed (study guides lead), so the sheet is stable;
+       the check just has to use the same one instead of the file order. */
+    const wantDefs = new Map();
+    for (const o of s.chapterDecks(d)) for (const c of o.cards) {
+      const k = esc(c.term).toLowerCase();
+      if (!wantDefs.has(k)) wantDefs.set(k, []);
+      /* grouped, and matched against every wording in a group — the same rule
+         the sheet uses, so this stays a check on the render and not a rerun of
+         whichever order the decks were read in */
+      const kept = wantDefs.get(k);
+      const group = kept.find(g => g.some(def => s.saysTheSame(def, c.def)));
+      if (group) group.push(c.def); else kept.push([c.def]);
+    }
+    let wrongStack = '';
+    for (const m of html.matchAll(/<tr>\s*<td class="t">([^<]*)<\/td>([\s\S]*?)<\/tr>/g)) {
+      const term = m[1].trim().toLowerCase();
+      const alts = (m[2].match(/class="alt"/g) || []).length;
+      const want = (wantDefs.get(term) || []).length;
+      if (alts !== want && !wrongStack)
+        wrongStack = `${term}: ${alts} definition(s) shown, ${want} distinct in the decks`;
+    }
+    check(`[${label}] ${d.id} chapter sheet keeps every distinct definition`,
+          !wrongStack, wrongStack);
 
     /* Grouped by deck: every card sits under its own deck's heading, alphabetical
        within the block, and nothing is merged away — a term in two decks belongs

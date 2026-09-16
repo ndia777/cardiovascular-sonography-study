@@ -617,6 +617,9 @@
   .seg button:hover{color:var(--text)}
   .seg button.on{background:var(--accent);color:#04161c;font-weight:650}
   html[data-theme="light"] .seg button.on{color:#fff}
+  /* a term worded two different ways keeps both, stacked and labelled */
+  table.browse.chapter .alt + .alt{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+  table.browse.chapter .alt .from{display:block;font-size:11px;color:var(--dim);margin-top:3px}
   table.browse td.src{width:18%;font-size:11.5px;color:var(--dim);line-height:1.45;
     text-align:right;vertical-align:top}
   @media(max-width:560px){ table.browse td.src{display:none} }
@@ -2419,7 +2422,7 @@ window.DECKS = [
     {"term":"Selectively permeable","def":"describing a barrier that lets some substances through while blocking others","note":"This is the property that lets the cell membrane regulate entry and exit."},
     {"fact":true,"term":"What the bilayer admits","def":"lipid-soluble substances cross freely; water-soluble ones cannot and need a channel or carrier"},
     {"fact":true,"term":"Cell size","def":"measured in micrometers"},
-    {"fact":true,"term":"Faulty ion channels","def":"channel mutations can disturb heart rhythm, impair hearing, or cause cystic fibrosis","note":"Which ion channel goes with which condition is worth checking against the lecture slides."},
+    {"fact":true,"term":"Faulty ion channels","def":"channel mutations can disturb heart rhythm, impair hearing, or cause cystic fibrosis"},
     {"term":"Cystic fibrosis","def":"caused by abnormal chloride channels — thick mucus, breathing difficulty, a clogged pancreas and salty sweat"},
     {"term":"Differentiated","def":"describing a cell that has taken on specialized characteristics"},
     {"term":"Receptors (membrane protein)","def":"respond to extracellular signals"},
@@ -6666,7 +6669,7 @@ window.DECKS = [
   note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material.",
   cards: [
     { term: 'The tissues that make up a bone', def: 'bone tissue, cartilage, dense connective tissue, blood and nervous tissue', fact: true },
-    { term: 'The four things bones do, as the slides list them', def: 'support and protect softer tissues, provide points of attachment for muscles, house blood-producing cells, and store inorganic salts', fact: true },
+    { term: 'The four things bones do', def: 'support and protect softer tissues, provide points of attachment for muscles, house blood-producing cells, and store inorganic salts', fact: true },
     { term: 'Long bone', def: 'long and narrow, with expanded ends' },
     { term: 'Short bone', def: 'cube-like, with length about equal to width' },
     { term: 'Flat bone', def: 'plate-like, with broad surfaces' },
@@ -7012,7 +7015,7 @@ window.DECKS = [
      Neither is silently preferred; see the note on that card. */
   cards: [
     { term: 'Joint', also: ['Articulation'], def: 'a functional junction between bones' },
-    { fact: true, term: 'The four things joints do, as the slides list them',
+    { fact: true, term: 'The four things joints do',
       def: 'bind parts of the skeletal system together, make bone growth possible, permit parts of the skeleton to change shape during childbirth, and enable the body to move in response to skeletal muscle contraction' },
     { fact: true, term: 'The three structural classes of joint',
       def: 'fibrous, cartilaginous and synovial' },
@@ -7022,18 +7025,18 @@ window.DECKS = [
     { term: 'Suture', def: 'the immovable fibrous joint found between the flat bones of the skull' },
     { term: 'Sutural ligament', def: 'the thin layer of connective tissue that connects the bones at a suture' },
     { term: 'Symphysis', def: 'the slightly movable joint in which a pad of fibrocartilage lies between bones whose surfaces are covered by hyaline cartilage' },
-    { fact: true, term: 'The two examples of a symphysis the slides give',
+    { fact: true, term: 'The two examples of a symphysis',
       def: 'the pubic symphysis, and the joint between the bodies of adjacent vertebrae, where the intervertebral discs sit' },
     { term: 'Synovial joint', def: 'the freely movable joint type that most joints of the body belong to' },
     { term: 'Articular cartilage', def: 'the covering over the articular ends of the bones in a freely movable joint' },
     { term: 'Joint capsule', def: 'the two-layered sleeve of a freely movable joint, an outer fibrous layer of ligaments and an inner membrane' },
     { term: 'Synovial membrane', def: 'the inner layer of the joint capsule, the one that does the secreting' },
     { term: 'Synovial fluid', def: 'what the inner layer of the joint capsule releases into the cavity' },
-    { fact: true, term: 'The parts of a synovial joint, as the slides list them',
+    { fact: true, term: 'The parts of a synovial joint',
       def: 'articular cartilage, joint capsule, ligaments, synovial membrane, synovial cavity, synovial fluid, and in some joints menisci and bursae' },
     { term: 'Ball-and-socket joint', also: ['Spheroidal joint'],
       def: 'a round head sitting in a cup-shaped cavity, giving the widest range of motion of any joint, multiaxial plus rotation' },
-    { fact: true, term: 'The two ball-and-socket joints the slides name', def: 'the hip and the shoulder' },
+    { fact: true, term: 'The two ball-and-socket joints', def: 'the hip and the shoulder' },
     { term: 'Condylar joint', also: ['Ellipsoidal joint'],
       def: 'an oval condyle fitting into an elliptical cavity, allowing back-and-forth and side-to-side movement in two planes but no rotation' },
     { term: 'Hinge joint', def: 'a convex surface fitting into the concave surface of another bone, moving in one plane only' },
@@ -7042,11 +7045,11 @@ window.DECKS = [
     { term: 'Multiaxial', def: 'moving in all planes, the range a ball-and-socket allows' },
     { term: 'Biaxial', def: 'moving in two planes' },
     { term: 'Uniaxial', def: 'moving in one plane only' },
-    { fact: true, term: 'The joint the slides give as the pivot example',
+    { fact: true, term: 'The example of a pivot joint',
       def: 'the atlas (C1) turning on the dens of the axis (C2)' },
-    { fact: true, term: 'The joint movements the slides illustrate',
+    { fact: true, term: 'The joint movements to know',
       def: 'abduction and adduction, flexion, extension and hyperextension, lateral flexion, dorsiflexion and plantar flexion, circumduction and rotation, medial and lateral rotation, and supination and pronation' },
-    { fact: true, term: 'The four large complex synovial joints the slides single out',
+    { fact: true, term: 'The four large complex synovial joints',
       def: 'the shoulder, the elbow, the hip and the knee' },
     { fact: true, term: 'What forms the shoulder joint',
       def: 'the head of the humerus and the glenoid cavity of the scapula, a ball-and-socket with a very wide range including rotation and circumduction' },
@@ -7065,8 +7068,8 @@ window.DECKS = [
     { term: 'Lyme arthritis', def: 'joint inflammation caused by an infection passed through a tick bite' },
     { fact: true, term: 'The materials used to replace joints',
       def: 'steel and titanium for larger joints, silicone for smaller ones, and ceramic for some' },
-    { fact: true, term: 'The most commonly replaced joint, according to the slides', def: 'the hip',
-      note: 'The textbook puts the knee first and the hip second. The slides carry a 2019 copyright, so the ranking may simply have moved since.' },
+    { fact: true, term: 'The most commonly replaced joint', def: 'the hip',
+      note: 'Sources disagree on the ranking, and some put the knee first and the hip second.' },
     { term: 'Hydroxyapatite', def: 'the implant coating used because it resembles natural body chemicals' },
     { fact: true, term: 'What 3D printing is used for in joint replacement',
       def: 'creating custom replacement joints' },
@@ -7079,7 +7082,7 @@ window.DECKS = [
       def: 'changes in the symphysis joints of the vertebral column, caused by water loss from the intervertebral discs, which also diminishes flexibility' },
     { fact: true, term: 'Why synovial joints lose function with age',
       def: 'the capillary supply diminishes' },
-    { fact: true, term: 'The paradox of disuse the slides raise',
+    { fact: true, term: 'The paradox of disuse',
       def: 'disuse hampers the nutrient supply to joints and speeds up stiffening, while activity and exercise keep them functional longer' }
   ],
   questions: [
@@ -7092,10 +7095,10 @@ window.DECKS = [
     { q: 'The atlas turning on the dens of the axis is an example of which joint?',
       choices: ['Pivot', 'Hinge', 'Condylar', 'Ball-and-socket'], answer: 0,
       why: 'A cylindrical surface rotating inside a ring of bone. Both pivot and hinge joints are uniaxial, but a hinge bends rather than rotates.' },
-    { q: 'Which movement does the elbow permit, according to the slides?',
+    { q: 'Which movement does the elbow permit?',
       choices: ['Flexion and extension only', 'Rotation only',
         'Movement in all planes', 'Back-and-forth and side-to-side'], answer: 0,
-      why: 'The slides treat the elbow as a straightforward hinge. The textbook adds a second articulation there that allows pronation and supination.' },
+      why: 'It is a hinge, so it flexes and extends. A second articulation at the elbow also allows pronation and supination of the forearm.' },
     { q: 'Loss of height with age is caused by changes in which joints?',
       choices: ['The symphysis joints of the vertebral column', 'The synovial joints of the knee',
         'The fibrous joints of the skull', 'The synchondrosis of the first rib'], answer: 0,
@@ -8432,7 +8435,7 @@ window.DECKS = [
       def: 'acetylcholine is released from the axon of the motor neuron' },
     { term: 'Neuromuscular junction', also: ['Myoneural junction', 'NMJ'],
       def: 'the synapse where the axon of a motor neuron and a skeletal muscle fiber interact' },
-    { fact: true, term: 'The parts of a neuromuscular junction the slides list',
+    { fact: true, term: 'The parts of a neuromuscular junction',
       def: 'the motor neuron, the synaptic cleft, the synaptic vesicles and the neurotransmitters' },
     { fact: true, term: 'When a skeletal muscle fiber contracts',
       def: 'only when it is stimulated by a motor neuron' },
@@ -8450,8 +8453,8 @@ window.DECKS = [
     { term: 'Oxygen debt',
       def: 'the amount of oxygen the liver cells need to convert accumulated lactic acid back to glucose, and to restore muscle ATP and creatine phosphate' },
     { term: 'Muscle fatigue', def: 'the inability to contract a muscle' },
-    { fact: true, term: 'The common causes of fatigue the slides list',
-      def: 'decreased blood flow, ion imbalances across the sarcolemma, loss of the desire to continue exercising, and accumulation of lactic acid, which the slides mark as controversial' },
+    { fact: true, term: 'The common causes of muscle fatigue',
+      def: 'decreased blood flow, ion imbalances across the sarcolemma, loss of the desire to continue exercising, and accumulation of lactic acid, which is controversial' },
     { term: 'Muscle cramp',
       def: 'a sustained, involuntary contraction, possibly caused by changes in electrolyte concentration in the fluid around the fibers' },
     { fact: true, term: 'Where body heat largely comes from',
@@ -8498,16 +8501,16 @@ window.DECKS = [
     /* ---- the clinical slide ---- */
     { term: 'Temporomandibular joint syndrome', also: ['TMJ syndrome'],
       def: 'the articulation problem between the mandibular condyle and the mandibular fossa of the temporal bone, which affects the nerves passing through the neck and jaw' },
-    { fact: true, term: 'What causes TMJ syndrome, as the slides give it',
+    { fact: true, term: 'What causes TMJ syndrome',
       def: 'a misaligned jaw, and grinding or clenching the teeth' },
-    { fact: true, term: 'The signs of TMJ syndrome the slides list',
+    { fact: true, term: 'The signs of TMJ syndrome',
       def: 'a clicking jaw, facial pain, ringing in the ears, insomnia, teeth sensitive to heat and cold, backache, dizziness and ear pain' },
-    { fact: true, term: 'The treatments for TMJ syndrome the slides list',
+    { fact: true, term: 'The treatments for TMJ syndrome',
       def: 'physical therapy, oral appliances, arthrocentesis, and injections of botulinum toxin or steroids',
-      note: 'The slides write "botulism toxin". Botulism is the illness; the substance injected is botulinum toxin.' },
+      note: 'Botulism is the illness; the substance injected is botulinum toxin.' },
 
     /* ---- what the figure slides showed ---- */
-    { fact: true, term: 'The muscle groups the figure slides cover',
+    { fact: true, term: 'The muscle groups covered in this chapter',
       def: 'the superficial muscles anterior and posterior, then facial expression and mastication, the head and vertebral column, the pectoral girdle, the arm, the forearm, the leg and the foot' }
   ],
   questions: [
@@ -11634,14 +11637,38 @@ function placeStep(i){
    the home screen uses. Only decks that actually hold terms: a procedure is a
    numbered sequence, and it would contribute a heading with nothing under it
    while inflating the deck count in the subtitle. */
-const chapterDecks = d => (d.group
-  ? DECKS.filter(o => o.course === d.course && o.group === d.group && o.cards.length)
-         .slice().sort((a, b) => (b.exam ? 1 : 0) - (a.exam ? 1 : 0))
-  : (d.cards.length ? [d] : []));
+/* a declaration, not a const arrow, so the test suite can read the real order
+   rather than keeping its own copy of it */
+function chapterDecks(d){
+  return d.group
+    ? DECKS.filter(o => o.course === d.course && o.group === d.group && o.cards.length)
+           .slice().sort((a, b) => (b.exam ? 1 : 0) - (a.exam ? 1 : 0))
+    : (d.cards.length ? [d] : []);
+}
 /* the deck name shown against a row — trimmed of the chapter prefix the heading
    already states, so it stays narrow and scannable */
 const shortDeck = t => t.replace(/^Ch\.\s*\d+\s*[—-]\s*/, '').replace(/^[^—-]*[—-]\s*/, '');
 const alphaKey = t => t.toLowerCase().replace(/^[^a-z0-9]+/, '');
+/* Two decks defining one term rarely word it identically, and the chapter sheet
+   should not show the same thing twice over an article or a plural. Folded
+   harder than the quiz's similarity measure on purpose: hyphens split and
+   plurals collapse, so "higher-than-normal" meets "higher than normal" and
+   "disease" meets "diseases". One definition containing the other's whole
+   vocabulary counts as the same thing said at more length. */
+const sheetWords = t => new Set(String(t).toLowerCase()
+  .replace(/<[^>]*>/g, ' ').replace(/[^a-z0-9\s]/g, ' ').split(/\s+/)
+  .map(x => x.replace(/ies$/, 'y').replace(/s$/, ''))
+  .filter(x => x.length >= 3 && !STOP.has(x)));
+const SAME_ENOUGH = 0.6;
+function saysTheSame(a, b){
+  if (String(a).toLowerCase() === String(b).toLowerCase()) return true;
+  const A = sheetWords(a), B = sheetWords(b);
+  if (!A.size || !B.size) return false;
+  let shared = 0;
+  for (const w of A) if (B.has(w)) shared++;
+  if (shared === A.size || shared === B.size) return true;
+  return shared / (A.size + B.size - shared) >= SAME_ENOUGH;
+}
 function chapterOrder(v){ session.bydeck = v; render(); }
 
 function runChapter(d){
@@ -11673,23 +11700,51 @@ function runChapter(d){
       body += rows.map(c => `<tr>${cell(c)}</tr>`).join('');
     }
   } else {
-    /* Straight A–Z across the chapter. One term can legitimately appear in
-       several decks — notes re-covering a lecture, a study guide restating a
-       word list — so identical entries collapse to one row naming both sources,
-       while genuinely different wordings stay separate and labelled. */
+    /* Straight A–Z across the chapter, ONE ROW PER TERM. A term legitimately
+       appears in several decks — notes re-covering a lecture, a study guide
+       restating a word list — and matching on term+def meant the same word
+       listed twice whenever the wording differed by an article, so the sheet
+       read as a list of duplicates. Rows key on the term alone now.
+
+       Definitions still have to survive that. Wordings that say the same thing
+       fold together, keeping the fuller one and naming every deck it came from.
+       Wordings that genuinely differ — "gene" is heredity's unit in one deck and
+       the word part "producing" in another — stack inside the row, each labelled
+       with its deck. */
     const seen = new Map();
     for (const deck of decks)
       for (const c of deck.cards){
-        const k = (c.term + '|' + c.def).toLowerCase();
-        if (seen.has(k)) seen.get(k).from.push(deck.title);
-        else seen.set(k, { card: c, from: [deck.title] });
+        const k = c.term.toLowerCase();
+        if (!seen.has(k)) seen.set(k, { defs: [] });
+        const row = seen.get(k);
+        /* Matched against every wording already in the group, not just the one
+           being displayed. The displayed wording is swapped for a fuller one as
+           the group grows, and comparing against only that made the fold depend
+           on the order the decks happened to arrive in: three decks wording
+           "cytoplasm" three ways collapsed to one row or two depending on which
+           was read first. */
+        const same = row.defs.find(e => e.all.some(x => saysTheSame(x.def, c.def)));
+        if (same){
+          same.all.push(c);
+          if (!same.from.includes(deck.title)) same.from.push(deck.title);
+          /* keep whichever wording carries more, and its note with it */
+          if (sheetWords(c.def).size > sheetWords(same.card.def).size) same.card = c;
+        } else row.defs.push({ card: c, all: [c], from: [deck.title] });
       }
-    const all = [...seen.values()].sort((a, b) => alphaKey(a.card.term).localeCompare(alphaKey(b.card.term)));
+    const all = [...seen.values()].sort((a, b) =>
+      alphaKey(a.defs[0].card.term).localeCompare(alphaKey(b.defs[0].card.term)));
     total = all.length;
-    const rows = all.filter(r => hit(r.card) || r.from.join(' ').toLowerCase().includes(f));
+    const rows = all.filter(r => r.defs.some(e => hit(e.card))
+      || r.defs.some(e => e.from.join(' ').toLowerCase().includes(f)));
     shown = rows.length;
-    body = rows.map(r => `<tr>${cell(r.card)}
-      <td class="src">${r.from.map(t => esc(shortDeck(t))).join('<br>')}</td></tr>`).join('');
+    const srcOf = r => [...new Set(r.defs.flatMap(e => e.from))];
+    body = rows.map(r => `<tr>
+      <td class="t">${esc(r.defs[0].card.term)}</td>
+      <td class="${s.hide ? 'hidden-def' : ''}" onclick="this.classList.remove('hidden-def')">
+        ${r.defs.map(e => `<div class="alt">${defHtml(e.card.def)}${
+          e.card.note && !s.hide ? `<span class="note">${esc(e.card.note)}</span>` : ''}${
+          r.defs.length > 1 ? `<span class="from">${esc(shortDeck(e.from[0]))}</span>` : ''}</div>`).join('')}</td>
+      <td class="src">${srcOf(r).map(t => esc(shortDeck(t))).join('<br>')}</td></tr>`).join('');
   }
 
   app.innerHTML = `
