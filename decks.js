@@ -7878,7 +7878,7 @@ window.DECKS = [
   current: true,
   added: '2026-09-15',
   course: 'M103 · Medical Procedures',
-  title: 'Test Review — Drug Classes, Routes & the PDR',
+  title: 'Test Review — Pharmacology Lecture Test',
   source: 'Chapter 49 — the instructor’s test review questions',
   /* Built from the review a student transcribed by hand from the recording,
      then checked against a second transcript of the same session made by AI.
