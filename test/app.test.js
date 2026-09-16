@@ -1305,6 +1305,56 @@ function suite(s, label, srcCss) {
     }
   }
 
+  /* HAND-WRITTEN QUESTIONS ARE STORED ANSWER-FIRST. Every one of them writes
+     the right answer as choices[0], so displaying them in the stored order put
+     the correct answer at A in every question of every quiz — the whole deck
+     was answerable without reading it. The session must shuffle them.
+
+     Three things have to hold at once: the choices are the same set, the answer
+     index still points at the same text, and the answer does not sit at A every
+     time. The last one is what catches a shuffle that was never applied.
+
+     "All of the above" is the exception and must stay at the bottom, so the
+     position check ignores questions that carry one. */
+  {
+    /* keyed by deck as well as text — two decks ask the crenation question in
+       almost the same words, and keying on the text alone crosses them */
+    const stored = new Map();
+    for (const d of DECKS) for (const q of (d.questions || [])) stored.set(d.id + '\n' + q.q, q);
+
+    let seen = 0, atA = 0, wrongText = '', wrongSet = '', strayAbove = '';
+    const positions = new Set();
+    for (const d of DECKS) {
+      if (!(d.questions || []).length) continue;
+      for (let r = 0; r < 25; r++) {
+        go('run', d.id, 'quiz');
+        for (const q of $('session.qs')) {
+          const src = q.card ? null : stored.get(d.id + '\n' + q.q);
+          if (!src) continue;
+          seen++;
+          const pinned = src.choices.filter(c => /^(all|none|both) of the above\b/i.test(c));
+          if (q.choices[q.answer] !== src.choices[src.answer] && !wrongText)
+            wrongText = `${d.id}: "${q.q}" answers "${q.choices[q.answer]}", stored "${src.choices[src.answer]}"`;
+          if ([...q.choices].sort().join('|') !== [...src.choices].sort().join('|') && !wrongSet)
+            wrongSet = `${d.id}: "${q.q}" changed its choices`;
+          if (pinned.length) {
+            if (q.choices[q.choices.length - 1] !== pinned[pinned.length - 1] && !strayAbove)
+              strayAbove = `${d.id}: "${q.q}" moved "${pinned[pinned.length - 1]}" off the bottom`;
+          } else {
+            positions.add(q.answer);
+            if (q.answer === 0) atA++;
+          }
+        }
+      }
+    }
+    check(`[${label}] written questions keep their answer through the shuffle`, !wrongText, wrongText);
+    check(`[${label}] written questions keep their four choices`, !wrongSet, wrongSet);
+    check(`[${label}] "all of the above" stays the last choice`, !strayAbove, strayAbove);
+    check(`[${label}] the right answer is not always choice A`,
+          seen > 200 && positions.size === 4 && atA < seen * 0.45,
+          `${seen} written questions, ${atA} of them at A, positions used: ${[...positions].sort().join(',')}`);
+  }
+
   /* Wrong answers must sit in the same subject area as the right one. Drawing
      them at random leaves three obviously irrelevant choices and the question
      answers itself. Measure it: compare how close the chosen distractors are to

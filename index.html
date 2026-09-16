@@ -785,6 +785,8 @@ document.addEventListener('click', e => {
 /* ---------- helpers ---------- */
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const sample  = (a, n) => shuffle(a).slice(0, n);
+/* a choice that has to stay at the bottom of the list to make sense */
+const ABOVE = /^(all|none|both) of the above\b/i;
 /* Decks run oldest-first inside a course, so the list follows the order the
    material was actually covered rather than the order the file happens to be
    written in. Dates are ISO, so a plain string compare is a date compare.
@@ -2830,7 +2832,17 @@ function nextTF(){ session.i++; session.picked = null; render(); }
 
 function runQuiz(d){
   if (!session){
-    const written = (d.questions || []).map(q => Object.assign({}, q, { written: true }));
+    /* Hand-written questions are stored answer-first, so showing the choices in
+       the order they were written put the right answer at A every single time.
+       Shuffle them as the session is built. "All of the above" and "none of the
+       above" are pinned last, since they only read as answers from the bottom
+       of the list. */
+    const written = (d.questions || []).map(q => {
+      const right = q.choices[q.answer];
+      const loose = shuffle(q.choices.filter(c => !ABOVE.test(c)));
+      const choices = loose.concat(q.choices.filter(c => ABOVE.test(c)));
+      return Object.assign({}, q, { choices, answer: choices.indexOf(right), written: true });
+    });
 
     /* A card can produce two questions — "what does X mean" and "which term
        means X" — and being asked both in one sitting reads as a duplicate.
