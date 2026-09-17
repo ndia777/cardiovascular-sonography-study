@@ -105,7 +105,10 @@
     animation:scrimin .18s ease both;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
   .drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,90vw);z-index:41;
     background:var(--bg2);border-left:1px solid var(--line);display:flex;flex-direction:column;
-    box-shadow:-28px 0 60px rgba(0,0,0,.4);animation:drawerin .24s cubic-bezier(.2,.85,.25,1) both}
+    box-shadow:-28px 0 60px rgba(0,0,0,.4);animation:drawerin .24s cubic-bezier(.2,.85,.25,1) both;
+    /* Nothing inside the drawer can affect the layout or painting of the page
+       behind it, so say so: a change in the list stays inside the list. */
+    contain:layout paint}
   @keyframes drawerin{from{transform:translateX(100%)}to{transform:translateX(0)}}
   @keyframes scrimin{from{opacity:0}to{opacity:1}}
   @media (prefers-reduced-motion:reduce){.drawer,.scrim{animation:none}}
@@ -117,7 +120,15 @@
     border:1px solid var(--line);background:var(--card);color:var(--dim);border-radius:9px;
     font:inherit;font-size:15px;line-height:1;cursor:pointer;transition:.15s}
   .drawer .dclose:hover{color:var(--text);border-color:var(--accent)}
-  .drawer .dbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:6px 12px 24px}
+  /* No top padding: a sticky chapter heading stops at the scroll area's padding
+     edge, so any padding here leaves a strip above it where the list shows
+     through as it scrolls. The first heading's own margin gives the breathing
+     room instead. */
+  /* An opaque background plus will-change lets the browser scroll the list on
+     the graphics layer. With a transparent background it often cannot, and
+     redraws every row's text, in two web fonts, on each frame of a scroll. */
+  .drawer .dbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 12px 24px;
+    background:var(--bg2);will-change:scroll-position}
   /* The chapter a drawer item belongs to. It was set as fine print, which made
      a long list of retired decks hard to place — you could see the deck names
      but not which chapter you were in. Sized to be read, and stuck to the top
@@ -129,7 +140,11 @@
   .dchap:first-child{margin-top:4px}
   .ditem{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;
     border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);
-    cursor:pointer;transition:.13s}
+    cursor:pointer;
+    /* Only the two properties the hover changes. A bare "transition" animates
+       every property, and rows slide under the cursor one after another while
+       the list scrolls. */
+    transition:background-color .13s,border-color .13s}
   .ditem:hover{background:var(--card2);border-color:var(--line)}
   .ditem + .ditem{margin-top:3px}
   /* A study guide carries a gold bar down its left side, drawn the same way as
