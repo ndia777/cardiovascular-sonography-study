@@ -1716,7 +1716,7 @@ window.DECKS = [
   group: 'Chapter 3',
 
   added: "2026-07-30",
-  course: "BIO101 · Anatomy & Physiology 1 Lecture",
+  course: "BIO101 · Anatomy & Physiology 1",
   title: "Ch. 3 — Cells: Study Guide",
   source: "Chapter 3 — study guide slides and course notes",
   cards: [
@@ -1838,7 +1838,7 @@ window.DECKS = [
   group: 'Chapter 4',
 
   added: '2026-07-30',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 4 — Cellular Metabolism: Study Guide',
   source: 'Chapter 4 — study guide slides and course notes',
   cards: [
@@ -2043,7 +2043,7 @@ window.DECKS = [
   id: 'bio-ch5-1',
   group: 'Chapter 5',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.1 — Tissue Types & Junctions',
   source: 'Chapter 5.1 — course notes',
   cards: [
@@ -2095,7 +2095,7 @@ window.DECKS = [
   id: 'bio-ch5-2',
   group: 'Chapter 5',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.2 — Epithelial Tissues',
   source: 'Chapter 5.2 — course notes',
   cards: [
@@ -2189,7 +2189,7 @@ window.DECKS = [
   id: 'bio-ch5-3',
   group: 'Chapter 5',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.2 — Glandular Epithelium',
   source: 'Chapter 5.2 — course notes',
   cards: [
@@ -2251,7 +2251,7 @@ window.DECKS = [
   id: 'bio-ch5-4',
   group: 'Chapter 5',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.3 — Connective Tissues',
   source: 'Chapter 5.3 — course notes',
   cards: [
@@ -2295,7 +2295,7 @@ window.DECKS = [
   id: 'bio-ch5-5',
   group: 'Chapter 5',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.3 — Cartilage, Bone & Blood',
   source: 'Chapter 5.3 — course notes',
   cards: [
@@ -2337,7 +2337,7 @@ window.DECKS = [
   id: 'bio-ch5-6',
   group: 'Chapter 5',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.4–5.6 — Membranes, Muscle & Nervous Tissue',
   source: 'Chapter 5.4-5.6 — course notes',
   cards: [
@@ -2413,7 +2413,7 @@ window.DECKS = [
   id: 'bio-ch6-1',
   group: 'Chapter 6',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.1 — Skin & Its Layers',
   source: 'Chapter 6.1 — course notes',
   figure: {
@@ -2497,7 +2497,7 @@ window.DECKS = [
   id: 'bio-ch6-2',
   group: 'Chapter 6',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.1 — Pigment, Cells & Skin Conditions',
   source: 'Chapter 6.1 — course notes',
   cards: [
@@ -2549,7 +2549,7 @@ window.DECKS = [
   id: 'bio-ch6-3',
   group: 'Chapter 6',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.2 — Accessory Structures',
   source: 'Chapter 6.2 — course notes',
   cards: [
@@ -2596,7 +2596,7 @@ window.DECKS = [
   id: 'bio-ch6-4',
   group: 'Chapter 6',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.3 — Skin Functions & Temperature',
   source: 'Chapter 6.3 — course notes',
   cards: [
@@ -2640,7 +2640,7 @@ window.DECKS = [
   id: 'bio-ch6-5',
   group: 'Chapter 6',
   added: '2026-08-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.4 — Wounds, Burns & Ageing',
   source: 'Chapter 6.4 - Life-Span Changes — course notes',
   cards: [
@@ -3922,7 +3922,7 @@ window.DECKS = [
      chapter it came from rather than holding a shelf of its own. */
   group: 'Chapter 3',
   added: '2026-08-12',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Osmosis — Focused Review',
   source: 'Chapter 3.3 — Movements Into and Out of the Cell',
   /* Osmosis only, pulled out of the Chapter 3 guide because a test on one topic
@@ -5352,7 +5352,7 @@ window.DECKS = [
   id: 'bio-ch7-1',
   group: 'Chapter 7',
   added: '2026-08-20',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.1–7.3 — Bone Structure & Function',
   source: 'Chapter 7 — course notes',
   cards: [
@@ -5419,7 +5419,7 @@ window.DECKS = [
   id: 'bio-ch7-2',
   group: 'Chapter 7',
   added: '2026-08-20',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.4 — Bone Development, Growth & Repair',
   source: 'Chapter 7 — course notes',
   cards: [
@@ -5489,7 +5489,7 @@ window.DECKS = [
   id: 'bio-ch7-3',
   group: 'Chapter 7',
   added: '2026-08-20',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.5–7.6 — Skeletal Organization & the Skull',
   source: 'Chapter 7 — course notes',
   label: {
@@ -5678,7 +5678,7 @@ window.DECKS = [
   id: 'bio-ch7-4',
   group: 'Chapter 7',
   added: '2026-08-20',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.7–7.8 — Vertebral Column & Thoracic Cage',
   source: 'Chapter 7 — course notes',
   labels: [{
@@ -5800,7 +5800,7 @@ window.DECKS = [
   id: 'bio-ch7-5',
   group: 'Chapter 7',
   added: '2026-08-20',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.9–7.10 — Pectoral Girdle & Upper Limb',
   source: 'Chapter 7 — course notes',
   region: {
@@ -5886,7 +5886,7 @@ window.DECKS = [
   id: 'bio-ch7-6',
   group: 'Chapter 7',
   added: '2026-08-20',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.11–7.13 — Pelvic Girdle, Lower Limb & Aging',
   source: 'Chapter 7 — course notes',
   region: {
@@ -5985,7 +5985,7 @@ window.DECKS = [
   exam: true,
   retired: true,
   added: '2026-08-20',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7 — Skeletal System: Study Guide Slides',
   source: 'Chapter 7 — posted lecture outline slides',
   note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material.",
@@ -6039,7 +6039,7 @@ window.DECKS = [
   id: 'bio-ch8-1',
   group: 'Chapter 8',
   added: '2026-08-27',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.1 — Types of Joints',
   source: 'Chapter 8 — course notes',
   /* The chapter's backbone. Joints get classified TWICE, by tissue and by
@@ -6123,7 +6123,7 @@ window.DECKS = [
   id: 'bio-ch8-2',
   group: 'Chapter 8',
   added: '2026-08-27',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.2 — Joint Movements',
   source: 'Chapter 8 — course notes',
   /* Almost every term here belongs to an opposed pair, and the chapter
@@ -6178,7 +6178,7 @@ window.DECKS = [
   id: 'bio-ch8-3',
   group: 'Chapter 8',
   added: '2026-08-27',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.3 — Examples of Synovial Joints',
   source: 'Chapter 8 — course notes',
   /* Five named joints, and for each the assessment asks the same three things:
@@ -6272,7 +6272,7 @@ window.DECKS = [
   id: 'bio-ch8-4',
   group: 'Chapter 8',
   added: '2026-08-27',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.4 — Life-Span Changes',
   source: 'Chapter 8 — course notes',
   /* Short section, organised by joint category — and the assessment question
@@ -6315,7 +6315,7 @@ window.DECKS = [
   exam: true,
   retired: true,
   added: '2026-09-02',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8 — Joints: Study Guide Slides',
   source: 'Chapter 8 — posted lecture outline slides',
   note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material.",
@@ -6451,7 +6451,7 @@ window.DECKS = [
   id: 'bio-ch9-1',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.1–9.2 — Muscle Types & Muscle Structure',
   source: 'Chapter 9 — course notes',
   /* The chapter opens by nesting things inside other things twice over: fibers
@@ -6544,7 +6544,7 @@ window.DECKS = [
   id: 'bio-ch9-2',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.3 — Skeletal Muscle Contraction',
   source: 'Chapter 9 — course notes',
   /* The longest section in the chapter, and the one where the order of events
@@ -6660,7 +6660,7 @@ window.DECKS = [
   id: 'bio-ch9-3',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.4 — Muscular Responses',
   source: 'Chapter 9 — course notes',
   /* Two pairs of terms here are almost designed to be confused, and the
@@ -6752,7 +6752,7 @@ window.DECKS = [
   id: 'bio-ch9-4',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.5–9.6 — Smooth & Cardiac Muscle',
   source: 'Chapter 9 — course notes',
   /* Both of these sections are written as comparisons against skeletal muscle,
@@ -6824,7 +6824,7 @@ window.DECKS = [
   id: 'bio-ch9-5',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.7 — Levers, Attachments & Muscle Roles',
   source: 'Chapter 9 — course notes',
   /* Short section, but it supplies the vocabulary the whole of 9.8 is written
@@ -6881,7 +6881,7 @@ window.DECKS = [
   id: 'bio-ch9-6',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Muscles of the Head, Neck & Vertebral Column',
   source: 'Chapter 9 — course notes',
   /* Tables 9.4, 9.5 and 9.6, carried whole. The erector spinae subdivisions are
@@ -6989,7 +6989,7 @@ window.DECKS = [
   id: 'bio-ch9-7',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Muscles of the Shoulder & Upper Limb',
   source: 'Chapter 9 — course notes',
   /* Tables 9.7 through 9.10, carried whole: the pectoral girdle, the arm, the
@@ -7128,7 +7128,7 @@ window.DECKS = [
   id: 'bio-ch9-8',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Abdominal Wall, Pelvic Floor & Perineum',
   source: 'Chapter 9 — course notes',
   /* Tables 9.11 and 9.12. The abdominal wall is a small table where the three
@@ -7204,7 +7204,7 @@ window.DECKS = [
   id: 'bio-ch9-9',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Muscles of the Lower Limb',
   source: 'Chapter 9 — course notes',
   /* Tables 9.13, 9.14 and 9.15, carried whole: the thigh, the leg and the foot.
@@ -7344,7 +7344,7 @@ window.DECKS = [
   id: 'bio-ch9-10',
   group: 'Chapter 9',
   added: '2026-09-03',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.9 — Life-Span Changes',
   source: 'Chapter 9 — course notes',
   /* Short section, and the assessment asks for three aging-related changes and
@@ -7687,7 +7687,7 @@ window.DECKS = [
   retired: true,
   exam: true,
   added: '2026-09-10',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9 — Muscles: Study Guide Slides',
   source: 'Chapter 9 — posted lecture outline slides',
   note: "This deck only references the ‘study guide PowerPoint’ from Canvas. Be sure to review the other sections for the whole scope of the material, and review the online workbook for the diagrams, since the lab test asks you to identify muscles visually.",
@@ -8074,7 +8074,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.1 — Characteristics of Blood',
   source: 'Chapter 14 — course notes',
   cards: [
@@ -8123,7 +8123,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.2 — Red Blood Cells',
   source: 'Chapter 14 — course notes',
   cards: [
@@ -8203,7 +8203,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.2 — White Blood Cells & Platelets',
   source: 'Chapter 14 — course notes',
   cards: [
@@ -8279,7 +8279,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.3 — Plasma',
   source: 'Chapter 14 — course notes',
   cards: [
@@ -8333,7 +8333,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.4 — Hemostasis',
   source: 'Chapter 14 — course notes',
   cards: [
@@ -8414,7 +8414,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.5 — Blood Groups & Transfusions',
   source: 'Chapter 14 — course notes',
   cards: [
@@ -8478,7 +8478,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.1–16.3 — Lymphatic Pathways & Lymph',
   source: 'Chapter 16 — course notes',
   cards: [
@@ -8543,7 +8543,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.4 — Lymph Nodes, Thymus & Spleen',
   source: 'Chapter 16 — course notes',
   cards: [
@@ -8614,7 +8614,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.5 — Innate Defenses',
   source: 'Chapter 16 — course notes',
   cards: [
@@ -8690,7 +8690,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.5 — T Cells, B Cells & Antibodies',
   source: 'Chapter 16 — course notes',
   cards: [
@@ -8768,7 +8768,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
-  course: 'BIO101 · Anatomy & Physiology 1 Lecture',
+  course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.5–16.6 — Immune Responses, Disorders & Aging',
   source: 'Chapter 16 — course notes',
   cards: [
