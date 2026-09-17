@@ -197,12 +197,13 @@
     padding:11px 14px;text-align:left;transition:.13s;display:block;width:100%}
   .deck:hover{border-color:var(--accent);transform:translateY(-2px)}
   /* Decks built from a study guide — the material actually being tested — carry
-     a thin coloured edge so they stand out in the grid. Warn rather than accent,
-     because accent is already the hover colour and the two would cancel out.
-     Hover still brightens the same edge, so the signal survives the interaction
-     instead of being replaced by it. */
-  .deck.exam{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
-  .deck.exam:hover{border-color:var(--warn)}
+     a gold bar down the left side, drawn the same way as the bar on study
+     guides in the Earlier drawer and on its chapter headings. Warn rather than
+     accent, because accent is the hover colour and the two would cancel out;
+     the bar stays put on hover while the border lights up as on any card. The
+     card keeps its rounded corners, so the bar follows the curve at top and
+     bottom. That softer edge is the one he picked from the samples. */
+  .deck.exam{box-shadow:inset 3px 0 0 var(--warn)}
   .badge.exam{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));color:var(--warn)}
   .badge.ref{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent)}
   .deck.ref{border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
