@@ -204,6 +204,9 @@
      card keeps its rounded corners, so the bar follows the curve at top and
      bottom. That softer edge is the one he picked from the samples. */
   .deck.exam{box-shadow:inset 3px 0 0 var(--warn)}
+  /* Hover lights the border gold on a study guide, where any other card lights
+     it blue, so the colour stays the study guide's colour throughout. */
+  .deck.exam:hover{border-color:var(--warn)}
   .badge.exam{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));color:var(--warn)}
   .badge.ref{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent)}
   .deck.ref{border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
@@ -265,6 +268,15 @@
   .back:hover{color:var(--accent)}
   h2.title{font-size:23px;margin:0 0 4px;letter-spacing:-.01em}
   .srcline{color:var(--dim);font-size:12.5px;margin-bottom:22px;word-break:break-word}
+  /* The deck page header matches its card: the prefix as an accent label, the
+     name in the title serif, and the class name in the display face. Scoped to
+     the deck page; the study modes keep their own headings. */
+  .titlepre{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 3px;line-height:1.3;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  h2.title.deckname{font-family:"Lora",Georgia,"Times New Roman",serif;font-weight:600;font-size:24px;letter-spacing:0}
+  .srcline .srccourse{font-weight:600;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
   .mode{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:16px;text-align:left;transition:.13s}
@@ -9997,7 +10009,7 @@ function screenHome(){
       const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
       return `<button class="deck ${d.exam && !d.retired ? 'exam' : ''}${d.reference ? ' ref' : ''}" onclick="go('deck','${d.id}')">
         ${titleParts(d.title)}
-        <div class="meta">${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}${d.questions ? ` · ${d.questions.length} written questions` : ''}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
+        <div class="meta">${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         ${badgeRow(`
           ${d.exam ? `<span class="badge exam${d.retired ? ' past' : ''}">Study guide</span>` : ''}
           ${d.reference ? `<span class="badge ref">Reference</span>` : ''}
@@ -10219,8 +10231,8 @@ function screenDeck(){
 
   app.innerHTML = `
     <button class="back" onclick="go('home')">← All decks</button>
-    <h2 class="title">${esc(d.title)}</h2>
-    <div class="srcline">${esc(d.course)} · ${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}<br>from ${esc(d.source)}</div>
+    ${((t) => `${t.pre ? `<div class="titlepre">${esc(t.pre)}</div>` : ''}<h2 class="title deckname">${esc(t.name)}</h2>`)(splitTitle(d.title))}
+    <div class="srcline"><span class="srccourse">${esc(d.course)}</span> · ${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}<br>from ${esc(d.source)}</div>
     ${d.note ? `<div class="decknote">${esc(d.note)}</div>` : ''}
     <div class="modes">
       ${offered.map(([m,t,s,cls]) => `<button class="mode ${cls || ''}" onclick="go('run','${d.id}','${m}')">
