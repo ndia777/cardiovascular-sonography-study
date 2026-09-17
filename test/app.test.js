@@ -597,8 +597,12 @@ function suite(s, label, srcCss) {
         const snapshot = loadP();
         saveP({});
 
-        /* a CURRENT multi-deck chapter, so its heading renders on arrival */
-        const target = DECKS.find(d => d.current && d.group &&
+        /* A CURRENT multi-deck chapter, so its heading renders on arrival. The
+           current deck must not itself be pinned: a study guide can be current
+           while every other deck in its chapter is retired (the pharmacology
+           review, once the Medications chapter was put away), and that chapter
+           lives in the drawer, where no reset is drawn. */
+        const target = DECKS.find(d => d.current && !pin(d) && d.group &&
           DECKS.filter(o => o.group === d.group && o.course === d.course && !pin(o)).length > 1);
         const chapter = target
           ? DECKS.filter(o => o.group === target.group && o.course === target.course && !pin(o))
