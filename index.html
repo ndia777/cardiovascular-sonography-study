@@ -67,10 +67,11 @@
   /* The controls travel together, so a narrow screen breaks between the title
      and the group rather than stranding one button on its own line. */
   .tools{display:flex;gap:8px;flex:none}
-  /* The search toggle is a phone-only control: on a wide screen the box is
-     always open and the button would be dead weight. */
-  .sbtn{display:none}
   .iconbtn.on{color:var(--text);border-color:var(--accent-dim)}
+  /* The search box is put away until it is asked for, on every screen size.
+     Landing on this page should show decks, not an empty field. */
+  .searchwrap{display:none}
+  .searchwrap.open{display:block}
 
   /* ---- share QR ----
      Fixed rather than anchored to the button so it survives a re-render of
@@ -104,11 +105,17 @@
      squeezing either half. */
   /* Sits directly above the first course's rule and shares its left edge. The
      rule below it does the separating, so this needs no line of its own. */
+  .toprow{display:flex;align-items:center;margin:30px 0 0;min-height:0}
+  /* No label means no term to announce, so the row keeps no space of its own;
+     on a phone it still carries the controls, which the rule below handles. */
+  .toprow.bare{margin:0}
   .termlabel{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
-    color:var(--dim);margin:30px 0 0;font-weight:600;
+    color:var(--dim);font-weight:600;
     font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   /* The label already provides the gap, so the rule tucks straight under it. */
-  .termlabel + .coursehead{margin-top:7px}
+  .toprow + .coursehead{margin-top:7px}
+  /* On a wide screen the controls live beside the title, so this copy is idle. */
+  .toprow .tools{display:none;margin-left:auto}
   .coursehead{margin:30px 0 12px;padding-top:18px;
     border-top:1px solid var(--line);
     display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 14px}
@@ -794,18 +801,27 @@
        to halfway down the screen. The three controls drop their words and sit
        as icons in the top right, and the search box collapses behind its own
        button, so the decks start near the top. */
+    /* The controls come off the title's row and sit at the right-hand end of
+       the term line instead, against the rule. That hands the title the whole
+       width of the screen, which is what keeps it on one line, and puts the
+       buttons lower down where a thumb reaches them. */
     header.top{gap:8px;margin-bottom:14px;flex-wrap:nowrap}
-    /* Scaled down in proportion, not left behind: the three icon buttons still
-       have to share this row, which is what set the old 17px. */
     header.top h1{font-size:22px}
     header.top > div:first-child{min-width:0}
-    .tools{gap:7px}
+    header.top .tools{display:none}
+    .toprow .tools{display:flex;gap:7px}
+    /* The buttons make this row much taller than the label, and centring left
+       the term floating in the middle of that height, well clear of the rule.
+       Aligning to the bottom drops it back down onto the line it belongs to,
+       the same distance above the rule as it sits on a wide screen. */
+    .toprow{margin-top:20px;align-items:flex-end}
+    .toprow.bare{margin-top:14px}
     .iconbtn{padding:7px 9px;font-size:14px;line-height:1}
     .btxt{display:none}
-    .sbtn{display:inline-block}
-    .searchwrap{display:none}
-    .searchwrap.open{display:block}
     .search{margin-bottom:14px}
+    /* Share sits lower down now, so the code stops pretending to hang off the
+       top right and becomes a sheet across the bottom, near the thumb. */
+    .qrpop{left:12px;right:12px;top:auto;bottom:14px}
     /* The back button moves to the top right, where a thumb reaches it, and
        floats so only the first line or two of the title makes room for it.
        That puts the page heading flush with the top of the screen. Type sizes
@@ -1199,17 +1215,22 @@ function screenHome(){
   /* A live query always wins: the box stays open while it has something in it,
      whatever the toggle last said. */
   if (session && session.q) searchOpen = true;
+  /* The same three controls are emitted twice and CSS shows one set: beside the
+     title on a wide screen, and down on the term line on a phone, where the
+     title needs the whole width to stay on one line. Written once here so the
+     two can never drift apart. */
+  const tools = `
+      <div class="tools">
+        <button class="iconbtn sbtn${searchOpen?' on':''}" onclick="toggleSearch()" title="Search decks or terms">${SEARCH_ICON}<span class="btxt"> Search</span></button>
+        <button class="iconbtn qrbtn" onclick="toggleQR()" title="Share this study guide">▦<span class="btxt"> Share</span></button>
+        <button class="iconbtn" onclick="toggleTheme()" title="${theme==='dark'?'Light mode':'Dark mode'}">${theme==='dark'?'☀':'☾'}<span class="btxt">${theme==='dark'?' Light':' Dark'}</span></button>
+      </div>`;
   let html = `
     <header class="top">
       <div>
         <h1>Cardiovascular Sonography</h1>
       </div>
-      <div class="spacer"></div>
-      <div class="tools">
-        <button class="iconbtn sbtn${searchOpen?' on':''}" onclick="toggleSearch()" title="Search decks or terms">${SEARCH_ICON}</button>
-        <button class="iconbtn qrbtn" onclick="toggleQR()" title="Share this study guide">▦<span class="btxt"> Share</span></button>
-        <button class="iconbtn" onclick="toggleTheme()" title="${theme==='dark'?'Light mode':'Dark mode'}">${theme==='dark'?'☀':'☾'}<span class="btxt">${theme==='dark'?' Light':' Dark'}</span></button>
-      </div>
+      <div class="spacer"></div>${tools}
     </header>
     <div class="searchwrap${searchOpen?' open':''}">
       <input class="search" id="search" placeholder="Search decks or terms…" value="${esc(session&&session.q||'')}">
@@ -1217,11 +1238,14 @@ function screenHome(){
 
   if (!list.length) html += `<p style="color:var(--dim)">No decks match that search.</p>`;
 
-  /* The term sits above the first course's rule, aligned to its left end, so
-     it labels everything below it rather than crowding the app title. Nothing
-     is drawn when a search has filtered every course away, or it would caption
-     an empty page. */
-  if (courses.length) html += `<div class="termlabel">Term 1</div>`;
+  /* The term sits above the first course's rule, aligned to its left end, so it
+     labels everything below it rather than crowding the app title. The label
+     itself is dropped when a search has filtered every course away, or it would
+     caption an empty page — but the row still renders, because on a phone it is
+     carrying the controls, and losing them would strand you on a page with no
+     way back out of the search. */
+  html += `<div class="toprow${courses.length ? '' : ' bare'}">${
+    courses.length ? `<div class="termlabel">Term 1</div>` : ''}${tools}</div>`;
 
   /* Study-guide decks lead each section — they are the tested material — and
      everything else folds away behind a disclosure so the page stays short as
