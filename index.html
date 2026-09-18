@@ -54,9 +54,11 @@
 
   /* ---- header ---- */
   header.top{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
-  header.top h1{font-size:19px;margin:0;font-weight:650;letter-spacing:-.01em;
+  /* Dropping the deck and term counts left the title alone on its line, so it
+     carries the size the space allows. The tracking tightens as it grows,
+     which is what a display face wants. */
+  header.top h1{font-size:28px;margin:0;font-weight:650;letter-spacing:-.022em;line-height:1.15;
     font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  header.top .sub{color:var(--dim);font-size:13px;margin-top:2px}
   .spacer{flex:1}
   .iconbtn{border:1px solid var(--line);background:var(--card);padding:7px 12px;
     border-radius:8px;font-size:13px;color:var(--dim)}
@@ -100,6 +102,13 @@
   /* The course line carries its own name on the left and its finished chapters
      on the right. Wraps to a second line on a narrow screen rather than
      squeezing either half. */
+  /* Sits directly above the first course's rule and shares its left edge. The
+     rule below it does the separating, so this needs no line of its own. */
+  .termlabel{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--dim);margin:30px 0 0;font-weight:600;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  /* The label already provides the gap, so the rule tucks straight under it. */
+  .termlabel + .coursehead{margin-top:7px}
   .coursehead{margin:30px 0 12px;padding-top:18px;
     border-top:1px solid var(--line);
     display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 14px}
@@ -786,7 +795,9 @@
        as icons in the top right, and the search box collapses behind its own
        button, so the decks start near the top. */
     header.top{gap:8px;margin-bottom:14px;flex-wrap:nowrap}
-    header.top h1{font-size:17px}
+    /* Scaled down in proportion, not left behind: the three icon buttons still
+       have to share this row, which is what set the old 17px. */
+    header.top h1{font-size:22px}
     header.top > div:first-child{min-width:0}
     .tools{gap:7px}
     .iconbtn{padding:7px 9px;font-size:14px;line-height:1}
@@ -1192,7 +1203,6 @@ function screenHome(){
     <header class="top">
       <div>
         <h1>Cardiovascular Sonography</h1>
-        <div class="sub">${DECKS.length} decks · ${DECKS.reduce((n,d)=>n+d.cards.length,0)} terms · Term 1</div>
       </div>
       <div class="spacer"></div>
       <div class="tools">
@@ -1206,6 +1216,12 @@ function screenHome(){
     </div>`;
 
   if (!list.length) html += `<p style="color:var(--dim)">No decks match that search.</p>`;
+
+  /* The term sits above the first course's rule, aligned to its left end, so
+     it labels everything below it rather than crowding the app title. Nothing
+     is drawn when a search has filtered every course away, or it would caption
+     an empty page. */
+  if (courses.length) html += `<div class="termlabel">Term 1</div>`;
 
   /* Study-guide decks lead each section — they are the tested material — and
      everything else folds away behind a disclosure so the page stays short as
