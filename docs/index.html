@@ -6,14 +6,15 @@
 <title>Cardiovascular Sonography — Study</title>
 <style>
   :root{
-    /* Deep Indigo with a violet accent and an antique gold. The coral and the
-       brighter amber it replaced were both running at full chroma, and two
-       shouting warms side by side read as one smear rather than two marks;
-       violet sits opposite gold instead. --now is the current marker and the
-       progress colours: a muted teal, green enough to read as "go". */
+    /* Deep Indigo with a coral accent and an antique gold. The clash the gold
+       used to have with the coral was a matter of chroma, not hue: both ran at
+       full saturation, and two shouting warms side by side read as one smear.
+       Dropping the gold to an antique settles it, and the coral can stay.
+       --now is the current marker and the progress colours: a muted teal,
+       green enough to read as "go". */
     --bg:#0f1020; --bg2:#161930; --card:#1d2038; --card2:#262a45;
-    --line:#333757; --text:#e8e6f5; --dim:#918fb5; --accent:#a78bfa;
-    --accent-dim:#5b4a8c; --good:#5ed3a0; --bad:#ef5f6b; --warn:#c9a227;
+    --line:#333757; --text:#e8e6f5; --dim:#918fb5; --accent:#ff7a66;
+    --accent-dim:#8f4034; --good:#5ed3a0; --bad:#ef5f6b; --warn:#c9a227;
     --now:#5fa8a0;
     --radius:12px;
   }
@@ -153,12 +154,9 @@
      of the scrolling list so the chapter stays named while you move through it. */
   .dchap{font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text);
     margin:20px 0 8px;padding:7px 8px 7px 11px;font-weight:700;
-    border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 var(--now);
+    border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 var(--accent);
     position:sticky;top:0;background:var(--bg2);z-index:1;font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .dchap:first-child{margin-top:4px}
-  /* Light mode keeps the accent bar it always had: on cream the brick and the
-     darker gold sit together without the clash the dark theme had. */
-  html[data-theme="light"] .dchap{box-shadow:inset 3px 0 0 var(--accent)}
   .ditem{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;
     border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);
     cursor:pointer;
