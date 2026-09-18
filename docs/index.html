@@ -97,8 +97,14 @@
     border:1px solid color-mix(in srgb,var(--warn) 40%,var(--line))}
 
   /* ---- home ---- */
+  /* 16px is not a taste decision. iOS zooms the page in whenever a text field
+     set smaller than 16px takes focus, and it does not zoom back out, so a 15px
+     box left you pinching to reach the back button after every answer. This is
+     WebKit, not Safari, and every browser on an iPhone is WebKit underneath, so
+     switching browsers does not escape it. Any text input here stays at 16px
+     or larger. */
   .search{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--line);
-    background:var(--card);color:var(--text);font-size:15px;margin-bottom:24px}
+    background:var(--card);color:var(--text);font-size:16px;margin-bottom:24px}
   .search:focus{outline:none;border-color:var(--accent)}
   /* The course line carries its own name on the left and its finished chapters
      on the right. Wraps to a second line on a narrow screen rather than
@@ -766,8 +772,10 @@
     text-transform:uppercase;letter-spacing:.06em}
   .dask{margin-top:12px;font-size:14.5px;line-height:1.55;color:var(--text)}
   .dslot{display:inline-flex;gap:6px;margin-top:8px}
+  /* 16px for the same reason as .search: anything smaller and iOS zooms in the
+     moment the field takes focus. */
   .dosein{background:var(--card2);border:1px solid var(--line);border-radius:8px;
-    padding:9px 10px;font:inherit;font-size:15px;color:var(--text);min-width:0}
+    padding:9px 10px;font:inherit;font-size:16px;color:var(--text);min-width:0}
   .dosein:focus{outline:none;border-color:var(--accent)}
   .dosein.num{width:96px}
   .dosein.unit{width:82px}

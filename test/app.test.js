@@ -2628,6 +2628,30 @@ function suite(s, label, srcCss) {
    outline and on their own side of the septum. Scaling a chamber about its own
    centre tears a gap down the midline, which is what kept the old animation too
    subtle to see — this is the check that says so out loud.                  */
+/* ------------------------------------------------------- input font size */
+/* iOS zooms the page in when a text field smaller than 16px takes focus, and
+   never zooms back out, which left the back button off the edge of the screen
+   after every typed answer. It is a WebKit behaviour, so no iPhone browser
+   escapes it. Every class used on an <input> here has to carry at least 16px.
+   The sizes look arbitrary from the CSS alone, so without this check trimming
+   one back to 15px looks harmless. */
+function inputFontSize(html, label) {
+  const classes = new Set();
+  [...html.matchAll(/<input[^>]*\bclass="([^"]+)"/g)].forEach(m =>
+    m[1].split(/\s+/).filter(Boolean).forEach(c => classes.add(c)));
+  check(`[${label}] every input carries a class`, classes.size > 0, 'found no classed inputs');
+
+  classes.forEach(c => {
+    /* the rule that sets a size for this class on its own, not in combination */
+    const rule = new RegExp(`\\.${c}\\{([^}]*)\\}`).exec(html);
+    if (!rule) return;            /* a modifier class like .num carries no size */
+    const size = /font-size:\s*([\d.]+)px/.exec(rule[1]);
+    if (!size) return;
+    check(`[${label}] .${c} inputs are 16px or larger`, parseFloat(size[1]) >= 16,
+          `${size[1]}px — iOS will zoom the page in when this field is focused`);
+  });
+}
+
 function heartGeometry(html, label) {
   const pathOf = re => { const m = re.exec(html); return m ? m[1] : null; };
   const chamber = cls => pathOf(new RegExp(`class="ch ${cls}"\\s+d="([^"]+)"`));
@@ -2746,6 +2770,7 @@ check('index.html has exactly one inline script', srcInline.length === 1, `found
 
 suite(boot(decksSrc, srcInline[0], 'source'), 'source', srcHtml);
 heartGeometry(srcHtml, 'source');
+inputFontSize(srcHtml, 'source');
 
 /* build.ps1 prints a card count from a regex over decks.js, because PowerShell
    cannot evaluate the deck data. That count has been wrong twice — once missing
@@ -2773,6 +2798,7 @@ if (!fs.existsSync(bundlePath)) {
   check('docs/index.html has two inline scripts', parts.length === 2, `found ${parts.length}`);
   if (parts.length === 2) suite(boot(parts[0], parts[1], 'bundle'), 'bundle', bundle);
   heartGeometry(bundle, 'bundle');
+  inputFontSize(bundle, 'bundle');
 
   /* Reproduce exactly what build.ps1 would emit and compare the whole file.
      Comparing only the script contents would miss edits to the CSS or markup,
