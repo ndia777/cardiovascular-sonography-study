@@ -122,6 +122,17 @@
   .toprow + .coursehead{margin-top:7px}
   /* On a wide screen the controls live beside the title, so this copy is idle. */
   .toprow .tools{display:none;margin-left:auto}
+  /* Finished terms, at the foot of the page. Quiet on purpose: this is a way
+     back to material already covered, not something to be drawn toward. */
+  .pastterms{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;
+    margin:34px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+  .ptlabel{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--dim);font-weight:600;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  /* A class from a finished term can only appear through a search, so its
+     heading says which term it came from. */
+  .termtag{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--dim);border:1px solid var(--line);border-radius:20px;padding:2px 8px}
   .coursehead{margin:30px 0 12px;padding-top:18px;
     border-top:1px solid var(--line);
     display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 14px}
@@ -179,6 +190,14 @@
     border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 var(--accent);
     position:sticky;top:0;background:var(--bg2);z-index:1;font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .dchap:first-child{margin-top:4px}
+  /* When a whole term is open the drawer gains a level above the chapters, so
+     the class name is set the way it is on the home page and does not stick —
+     only one thing should be pinned to the top of a scrolling list at a time. */
+  .dcourse{font-size:13px;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
+    color:var(--text);margin:22px 0 2px;padding:0 4px;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .dcourse:first-child{margin-top:12px}
+  .dcourse + .dgroup .dchap{margin-top:8px}
   .ditem{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;
     border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);
     cursor:pointer;
@@ -1100,10 +1119,17 @@ function resetScores(btn){
    "never touched it" — otherwise a section that defaults open springs back on
    the next re-render. */
 let chipOpen = {};   /* chip key -> bool. Session-only, never saved. */
-/* Which course’s archive is open, or null. Session-only like the chips, and
-   cleared on every navigation: a drawer is a detour, not a destination. */
+/* What the drawer is showing, or null: either one course's finished chapters
+   or a whole finished term. Held as an object rather than a bare course name
+   so the two can never be confused. Session-only like the chips, and cleared
+   on every navigation: a drawer is a detour, not a destination. */
 let archive = null;
-function openArchive(btn){ archive = btn.dataset.course; screenHome(); }
+function openArchive(btn){
+  archive = btn.dataset.term
+    ? { term: Number(btn.dataset.term) }
+    : { course: btn.dataset.course };
+  screenHome();
+}
 function closeArchive(){ if (archive === null) return; archive = null; screenHome(); }
 /* Straight to the deck. The drawer is a way THROUGH to something, so it
    never leaves itself standing behind the thing it just opened. */
@@ -1112,13 +1138,14 @@ function archiveGo(id){ archive = null; go('deck', id); }
 /* Every finished chapter of one course, and every deck under it. Built from
    the deck list rather than from whatever the page happens to be showing, so
    it cannot drift out of step with what was retired. */
-function archiveHtml(c){
-  const rest = DECKS.filter(d => d.course === c && !pinned(d) && !standing(d));
-  const inG = g => rest.filter(d => d.group === g);
-  const done = [...new Set(rest.map(d => d.group).filter(Boolean))]
-    .filter(g => !inG(g).some(d => d.current))
-    .sort((a, b) => (inG(a)[0].added || '').localeCompare(inG(b)[0].added || ''));
-  const loose = rest.filter(d => !d.group && !d.current);
+function archiveHtml(a){
+  const forTerm = a.term != null;
+  /* A finished term is finished whole: every deck of it belongs in here,
+     whatever its own chapter still claims about being current, and study
+     guides included. Within a live course only the retired chapters do. */
+  const scope = forTerm
+    ? DECKS.filter(d => termOf(d) === a.term)
+    : DECKS.filter(d => d.course === a.course && !pinned(d) && !standing(d));
   const progress = load();
   const row = d => {
     const p = progress[d.id] || {};
@@ -1141,13 +1168,35 @@ function archiveHtml(c){
   const block = (label, decks) =>
     `<section class="dgroup"><div class="dchap">${esc(label)}</div>`
     + guideFirst(decks).map(row).join('') + `</section>`;
-  const body = done.map(g => block(g, inG(g))).join('')
-    + (loose.length ? block('Other decks', loose) : '');
+
+  /* One course's decks, split into its chapters. Used on its own for a live
+     course, and once per class when a whole term is open. */
+  const courseBody = (decks, keepCurrent) => {
+    const inG = g => decks.filter(d => d.group === g);
+    const groups = [...new Set(decks.map(d => d.group).filter(Boolean))]
+      .filter(g => keepCurrent || !inG(g).some(d => d.current))
+      .sort((x, y) => (inG(x)[0].added || '').localeCompare(inG(y)[0].added || ''));
+    const loose = decks.filter(d => !d.group && (keepCurrent || !d.current));
+    return groups.map(g => block(g, inG(g))).join('')
+      + (loose.length ? block('Other decks', loose) : '');
+  };
+
+  const body = forTerm
+    /* Classes first, chapters under each: the extra level is what stops a
+       term's worth of chapters reading as one undifferentiated list. */
+    ? [...new Set(scope.map(d => d.course))].sort().map(c =>
+        `<div class="dcourse">${esc(c)}</div>` +
+        courseBody(scope.filter(d => d.course === c), true)).join('')
+    : courseBody(scope, false);
+
   return `<div class="scrim" onclick="closeArchive()"></div>
-    <aside class="drawer" role="dialog" aria-modal="true" aria-label="Earlier chapters">
+    <aside class="drawer" role="dialog" aria-modal="true" aria-label="${
+      forTerm ? `Term ${a.term}` : 'Earlier chapters'}">
       <div class="dhead">
-        <div class="dtitle">Earlier chapters</div>
-        <div class="dsub">${esc(c)}</div>
+        <div class="dtitle">${forTerm ? `Term ${a.term}` : 'Earlier chapters'}</div>
+        <div class="dsub">${forTerm
+          ? `${[...new Set(scope.map(d => d.course))].length} classes · ${scope.length} decks`
+          : esc(a.course)}</div>
         <button type="button" class="dclose" onclick="closeArchive()" aria-label="Close">✕</button>
       </div>
       <div class="dbody">${body}</div>
@@ -1190,12 +1239,30 @@ const pinned = d => !!d.exam && !d.retired;
    retires the way a chapter does. */
 const standing = d => !!d.reference && !d.retired;
 
+/* ---------- terms ----------
+   A class belongs to a term of the program, so the term lives on the deck and
+   the current one lives in the data beside it. The home page shows the current
+   term only; a finished term moves wholly into the Earlier drawer, which is
+   the rule he set. Ending a term is therefore one number in decks.js — no deck
+   needs its flags changed, because a past term is past whatever its chapters
+   still say about themselves. The fallbacks mean a deck written before this
+   existed still lands in Term 1 rather than vanishing. */
+let TERM_NOW = Number(window.CURRENT_TERM) || 1;
+const termOf = d => Number(d.termNo) || 1;
+const pastTerms = () => [...new Set(DECKS.map(termOf))].filter(t => t < TERM_NOW).sort((a, b) => b - a);
+const coursesInTerm = t => [...new Set(DECKS.filter(d => termOf(d) === t).map(d => d.course))].sort();
+
 /* ═══════════════ HOME ═══════════════ */
 function screenHome(){
   const q = (session && session.q || '').toLowerCase();
   const progress = load();
 
-  let list = DECKS;
+  /* The page is this term's page. A finished term is reached through the
+     drawer, never by scrolling past it. Search is the one exception: looking
+     something up is a deliberate act, and a term ending is no reason to make
+     last term's material unfindable — those matches keep their term named
+     beside the class so it is obvious where they came from. */
+  let list = DECKS.filter(d => termOf(d) === TERM_NOW);
   if (q) list = DECKS.filter(d =>
     (d.title + ' ' + d.course).toLowerCase().includes(q) ||
     d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
@@ -1253,7 +1320,7 @@ function screenHome(){
      carrying the controls, and losing them would strand you on a page with no
      way back out of the search. */
   html += `<div class="toprow${courses.length ? '' : ' bare'}">${
-    courses.length ? `<div class="termlabel">Term 1</div>` : ''}${tools}</div>`;
+    courses.length ? `<div class="termlabel">Term ${TERM_NOW}</div>` : ''}${tools}</div>`;
 
   /* Study-guide decks lead each section — they are the tested material — and
      everything else folds away behind a disclosure so the page stays short as
@@ -1393,7 +1460,12 @@ function screenHome(){
           onclick="openArchive(this)">Earlier (${panels.length})</button>`
       : '';
 
-    html += `<div class="coursehead"><span class="cname">${esc(c)}</span>${
+    /* Only a search can surface a class from a finished term, and when it does
+       the term is named, so a Term 1 result never passes for current work. */
+    const cTerm = termOf(list.find(d => d.course === c) || {});
+    const termTag = cTerm !== TERM_NOW ? `<span class="termtag">Term ${cTerm}</span>` : '';
+
+    html += `<div class="coursehead"><span class="cname">${esc(c)}</span>${termTag}${
       refChips || earlier ? `<span class="pastbar">${refChips}${earlier}</span>` : ''}</div>`;
 
     if (lead.length) html += `<div class="decks">${lead.map(d => deckCard(d, true)).join('')}</div>`;
@@ -1438,6 +1510,20 @@ function screenHome(){
     if (q) panels.forEach(p => { html += panelHtml(p); });
     refPanels.forEach(p => { html += panelHtml(p); });
   });
+
+  /* Finished terms sit at the foot of the page as one chip each, the way a
+     finished chapter sits at the end of its course. Nothing renders while
+     there is only one term, so this is invisible until the first one ends.
+     Hidden during a search, because the results above already reach across
+     terms and a second way in would only confuse what is being looked at. */
+  const past = pastTerms();
+  if (past.length && !q) html += `<div class="pastterms">
+      <span class="ptlabel">Earlier terms</span>
+      ${past.map(t => { const n = coursesInTerm(t).length;
+        return `<button type="button" class="chip" data-term="${t}" aria-haspopup="dialog"
+          onclick="openArchive(this)">Term ${t} (${n} ${n === 1 ? 'class' : 'classes'})</button>`;
+      }).join('')}
+    </div>`;
 
   if (archive) html += archiveHtml(archive);
 

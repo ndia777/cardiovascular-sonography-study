@@ -122,6 +122,17 @@
   .toprow + .coursehead{margin-top:7px}
   /* On a wide screen the controls live beside the title, so this copy is idle. */
   .toprow .tools{display:none;margin-left:auto}
+  /* Finished terms, at the foot of the page. Quiet on purpose: this is a way
+     back to material already covered, not something to be drawn toward. */
+  .pastterms{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;
+    margin:34px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+  .ptlabel{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--dim);font-weight:600;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  /* A class from a finished term can only appear through a search, so its
+     heading says which term it came from. */
+  .termtag{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--dim);border:1px solid var(--line);border-radius:20px;padding:2px 8px}
   .coursehead{margin:30px 0 12px;padding-top:18px;
     border-top:1px solid var(--line);
     display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 14px}
@@ -179,6 +190,14 @@
     border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 var(--accent);
     position:sticky;top:0;background:var(--bg2);z-index:1;font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .dchap:first-child{margin-top:4px}
+  /* When a whole term is open the drawer gains a level above the chapters, so
+     the class name is set the way it is on the home page and does not stick —
+     only one thing should be pinned to the top of a scrolling list at a time. */
+  .dcourse{font-size:13px;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
+    color:var(--text);margin:22px 0 2px;padding:0 4px;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .dcourse:first-child{margin-top:12px}
+  .dcourse + .dgroup .dchap{margin-top:8px}
   .ditem{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;
     border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);
     cursor:pointer;
@@ -852,6 +871,7 @@
    the app picks it up automatically on refresh.
 
      id        unique slug (used to save your progress in the browser)
+     termNo    which term of the program the class was taken in
      course    shown as the small label above the deck title
      title     deck name
      source    which note file it came from (shown in Browse mode)
@@ -860,6 +880,12 @@
                 (multiple choice is also auto-generated from the cards, so
                  `questions` is only for concepts that aren't term/definition)
    ========================================================================== */
+
+/* The term the program is in right now. The home page shows only this
+   term; everything before it moves into the Earlier drawer. Bump this when
+   a term ends — no deck needs editing, because each one carries its own
+   term below. */
+window.CURRENT_TERM = 1;
 
 window.DECKS = [
 
@@ -870,6 +896,7 @@ window.DECKS = [
   group: 'Chapter 1',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Word Roots',
   source: 'Chapter 1 — course notes',
@@ -963,6 +990,7 @@ window.DECKS = [
   group: 'Chapter 1',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Suffixes',
   source: 'Chapter 1 — course notes',
@@ -1029,6 +1057,7 @@ window.DECKS = [
   group: 'Chapter 1',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Prefixes',
   source: 'Chapter 1 — course notes',
@@ -1095,6 +1124,7 @@ window.DECKS = [
   group: 'Chapter 1',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Medical Terms',
   source: 'Chapter 1 — course notes',
@@ -1220,6 +1250,7 @@ window.DECKS = [
   group: 'Chapter 2',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Word Parts (Body Structure)',
   source: 'Chapter 2 — course notes',
@@ -1268,6 +1299,7 @@ window.DECKS = [
   group: 'Chapter 2',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Body Structure & Disease',
   source: 'Chapter 2 — course notes',
@@ -1439,6 +1471,7 @@ window.DECKS = [
   group: 'Chapter 2',
 
   added: '2026-07-31',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Overview (Lecture Slides)',
   source: 'Chapter 2 — lecture slides',
@@ -1755,6 +1788,7 @@ window.DECKS = [
   retired: true,
   group: 'Chapter 1',
   added: '2026-08-05',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 1 — Word Parts: Study Guide',
   source: 'Chapter 1 — instructor study guide',
@@ -1830,6 +1864,7 @@ window.DECKS = [
   retired: true,
   group: 'Chapter 2',
   added: '2026-08-05',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 2 — Body Structure: Study Guide',
   source: 'Chapter 2 — instructor study guide',
@@ -1946,6 +1981,7 @@ window.DECKS = [
   id: 'mt12-parts',
   group: 'Chapter 12',
   added: '2026-08-10',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Word Parts',
   source: 'Chapter 12 — course notes',
@@ -2009,6 +2045,7 @@ window.DECKS = [
   id: 'mt12-structure',
   group: 'Chapter 12',
   added: '2026-08-06',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Structure & Function',
   source: 'Chapter 12 — lecture slides',
@@ -2101,6 +2138,7 @@ window.DECKS = [
   id: 'mt12-glands-hair-nails',
   group: 'Chapter 12',
   added: '2026-08-06',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Disorders of the Glands, Hair & Nails',
   source: 'Chapter 12 — lecture slides',
@@ -2181,6 +2219,7 @@ window.DECKS = [
   id: 'mt12-lesions',
   group: 'Chapter 12',
   added: '2026-08-06',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Lesions, Wounds & Skin Marks',
   source: 'Chapter 12 — lecture slides',
@@ -2285,6 +2324,7 @@ window.DECKS = [
   id: 'mt12-conditions',
   group: 'Chapter 12',
   added: '2026-08-06',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Conditions, Infections & Cancer',
   source: 'Chapter 12 — lecture slides',
@@ -2426,6 +2466,7 @@ window.DECKS = [
   id: 'mt12-procedures',
   group: 'Chapter 12',
   added: '2026-08-06',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Procedures & Abbreviations',
   source: 'Chapter 12 — lecture slides',
@@ -2562,6 +2603,7 @@ window.DECKS = [
   group: 'Chapter 3',
 
   added: "2026-07-30",
+  termNo: 1,
   course: "BIO101 · Anatomy & Physiology 1",
   title: "Ch. 3 — Cells: Study Guide",
   source: "Chapter 3 — study guide slides and course notes",
@@ -2684,6 +2726,7 @@ window.DECKS = [
   group: 'Chapter 4',
 
   added: '2026-07-30',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 4 — Cellular Metabolism: Study Guide',
   source: 'Chapter 4 — study guide slides and course notes',
@@ -2889,6 +2932,7 @@ window.DECKS = [
   id: 'bio-ch5-1',
   group: 'Chapter 5',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.1 — Tissue Types & Junctions',
   source: 'Chapter 5.1 — course notes',
@@ -2941,6 +2985,7 @@ window.DECKS = [
   id: 'bio-ch5-2',
   group: 'Chapter 5',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.2 — Epithelial Tissues',
   source: 'Chapter 5.2 — course notes',
@@ -3035,6 +3080,7 @@ window.DECKS = [
   id: 'bio-ch5-3',
   group: 'Chapter 5',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.2 — Glandular Epithelium',
   source: 'Chapter 5.2 — course notes',
@@ -3097,6 +3143,7 @@ window.DECKS = [
   id: 'bio-ch5-4',
   group: 'Chapter 5',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.3 — Connective Tissues',
   source: 'Chapter 5.3 — course notes',
@@ -3141,6 +3188,7 @@ window.DECKS = [
   id: 'bio-ch5-5',
   group: 'Chapter 5',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.3 — Cartilage, Bone & Blood',
   source: 'Chapter 5.3 — course notes',
@@ -3183,6 +3231,7 @@ window.DECKS = [
   id: 'bio-ch5-6',
   group: 'Chapter 5',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 5.4–5.6 — Membranes, Muscle & Nervous Tissue',
   source: 'Chapter 5.4-5.6 — course notes',
@@ -3259,6 +3308,7 @@ window.DECKS = [
   id: 'bio-ch6-1',
   group: 'Chapter 6',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.1 — Skin & Its Layers',
   source: 'Chapter 6.1 — course notes',
@@ -3343,6 +3393,7 @@ window.DECKS = [
   id: 'bio-ch6-2',
   group: 'Chapter 6',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.1 — Pigment, Cells & Skin Conditions',
   source: 'Chapter 6.1 — course notes',
@@ -3395,6 +3446,7 @@ window.DECKS = [
   id: 'bio-ch6-3',
   group: 'Chapter 6',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.2 — Accessory Structures',
   source: 'Chapter 6.2 — course notes',
@@ -3442,6 +3494,7 @@ window.DECKS = [
   id: 'bio-ch6-4',
   group: 'Chapter 6',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.3 — Skin Functions & Temperature',
   source: 'Chapter 6.3 — course notes',
@@ -3486,6 +3539,7 @@ window.DECKS = [
   id: 'bio-ch6-5',
   group: 'Chapter 6',
   added: '2026-08-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 6.4 — Wounds, Burns & Ageing',
   source: 'Chapter 6.4 - Life-Span Changes — course notes',
@@ -3552,6 +3606,7 @@ window.DECKS = [
   group: 'The Heart',
 
   added: '2026-08-03',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'The Heart — Anatomy & Blood Flow',
   source: 'The Circulatory System — lecture notes',
@@ -3691,6 +3746,7 @@ window.DECKS = [
   group: 'The Heart',
 
   added: '2026-08-03',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'The Heart — Trace a Drop of Blood',
   source: 'The Circulatory System — lecture notes',
@@ -3778,6 +3834,7 @@ window.DECKS = [
   group: 'EKG',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'EKG — Waves, Intervals & Paper',
   source: 'Chapter 45 — lecture notes and EKG lab notes',
@@ -3951,6 +4008,7 @@ window.DECKS = [
   group: 'EKG',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'EKG — The 12 Leads & Electrode Placement',
   source: 'Chapter 45 — lecture notes',
@@ -4132,6 +4190,7 @@ window.DECKS = [
   group: 'EKG',
 
   added: '2026-08-03',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'EKG — The Conduction System',
   source: 'Chapter 45 — lecture notes, with conduction velocities and intrinsic rates from standard references',
@@ -4259,6 +4318,7 @@ window.DECKS = [
   group: 'EKG',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'EKG — Artifacts & Arrhythmias',
   source: 'Chapter 45 — lecture notes',
@@ -4355,6 +4415,7 @@ window.DECKS = [
   group: 'EKG',
 
   added: '2026-07-29',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'EKG — Performing the Procedure',
   source: 'Chapter 45 — lecture notes',
@@ -4496,6 +4557,7 @@ window.DECKS = [
   retired: true,
 
   added: '2026-08-11',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'Test Review — Cardiology, EKG & Stress Tests',
   source: 'the in-class test review',
@@ -4672,6 +4734,7 @@ window.DECKS = [
   exam: true,
   retired: true,
   added: '2026-08-12',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 12 — Skin: Study Guide',
   source: 'Chapter 12 — instructor study guide (skin)',
@@ -4768,6 +4831,7 @@ window.DECKS = [
      chapter it came from rather than holding a shelf of its own. */
   group: 'Chapter 3',
   added: '2026-08-12',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Osmosis — Focused Review',
   source: 'Chapter 3.3 — Movements Into and Out of the Cell',
@@ -4896,6 +4960,7 @@ window.DECKS = [
   id: 'mp49-pharmacology',
   group: 'Medications',
   added: '2026-08-17',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'Ch. 49 — Pharmacology Fundamentals',
   source: 'Chapter 49 — Medical Assisting: Administrative & Clinical Competencies',
@@ -4969,6 +5034,7 @@ window.DECKS = [
   retired: true,
   exam: true,
   added: '2026-08-31',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'Test Review — Pharmacology',
   source: 'Chapter 49 — the questions the instructor released for the test',
@@ -5035,6 +5101,7 @@ window.DECKS = [
   retired: true,
   exam: true,
   added: '2026-08-31',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'Test Review — Abbreviations',
   source: 'the shared class notes, ABBREVIATIONS section',
@@ -5136,6 +5203,7 @@ window.DECKS = [
   id: 'mp51-administration',
   group: 'Medications',
   added: '2026-08-17',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'Ch. 51 — Oral & Noninjectable Administration',
   source: 'Chapter 51 — Medical Assisting: Administrative & Clinical Competencies',
@@ -5211,6 +5279,7 @@ window.DECKS = [
   id: 'mt3-parts',
   group: 'Chapter 3',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 3 — Skeletal: Word Parts',
   source: 'Chapter 3 — course notes',
@@ -5259,6 +5328,7 @@ window.DECKS = [
   id: 'mt3-structure',
   group: 'Chapter 3',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 3 — Bone Structure & Joints',
   source: 'Chapter 3 — course notes',
@@ -5313,6 +5383,7 @@ window.DECKS = [
   id: 'mt3-skeleton',
   group: 'Chapter 3',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 3 — The Skeleton',
   source: 'Chapter 3 — course notes',
@@ -5381,6 +5452,7 @@ window.DECKS = [
   id: 'mt3-pathology',
   group: 'Chapter 3',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 3 — Skeletal Pathology',
   source: 'Chapter 3 — course notes',
@@ -5462,6 +5534,7 @@ window.DECKS = [
   id: 'mt3-procedures',
   group: 'Chapter 3',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 3 — Specialists, Diagnostics & Treatment',
   source: 'Chapter 3 — course notes',
@@ -5527,6 +5600,7 @@ window.DECKS = [
   retired: true,
   exam: true,
   added: '2026-08-26',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 3 — Skeletal: Study Guide',
   source: 'Chapter 3 — instructor study guide (skeletal system)',
@@ -5616,6 +5690,7 @@ window.DECKS = [
   id: 'mt4-parts',
   group: 'Chapter 4',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 4 — Muscular: Word Parts',
   source: 'Chapter 4 — course notes',
@@ -5668,6 +5743,7 @@ window.DECKS = [
   id: 'mt4-structure',
   group: 'Chapter 4',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 4 — Muscle Structure & Function',
   source: 'Chapter 4 — course notes',
@@ -5725,6 +5801,7 @@ window.DECKS = [
   id: 'mt4-motions',
   group: 'Chapter 4',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 4 — Muscle Motions',
   source: 'Chapter 4 — course notes',
@@ -5771,6 +5848,7 @@ window.DECKS = [
   id: 'mt4-pathology',
   group: 'Chapter 4',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 4 — Muscular Pathology',
   source: 'Chapter 4 — course notes',
@@ -5858,6 +5936,7 @@ window.DECKS = [
   id: 'mt4-procedures',
   group: 'Chapter 4',
   added: '2026-08-19',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 4 — Specialists, Diagnostics & Treatment',
   source: 'Chapter 4 — course notes',
@@ -5920,6 +5999,7 @@ window.DECKS = [
   retired: true,
   exam: true,
   added: '2026-08-26',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 4 — Muscular: Study Guide',
   source: 'Chapter 4 — instructor study guide (muscular system)',
@@ -6000,6 +6080,7 @@ window.DECKS = [
   id: 'mtref-prefixes',
   reference: true,
   added: '2026-08-20',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Word Parts — Prefixes',
   source: 'Every prefix taught so far, from all chapters',
@@ -6040,6 +6121,7 @@ window.DECKS = [
   id: 'mtref-roots',
   reference: true,
   added: '2026-08-20',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Word Parts — Roots',
   source: 'Every combining form taught so far, from all chapters',
@@ -6137,6 +6219,7 @@ window.DECKS = [
   id: 'mtref-suffixes',
   reference: true,
   added: '2026-08-20',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Word Parts — Suffixes',
   source: 'Every suffix taught so far, from all chapters',
@@ -6198,6 +6281,7 @@ window.DECKS = [
   id: 'bio-ch7-1',
   group: 'Chapter 7',
   added: '2026-08-20',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.1–7.3 — Bone Structure & Function',
   source: 'Chapter 7 — course notes',
@@ -6265,6 +6349,7 @@ window.DECKS = [
   id: 'bio-ch7-2',
   group: 'Chapter 7',
   added: '2026-08-20',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.4 — Bone Development, Growth & Repair',
   source: 'Chapter 7 — course notes',
@@ -6335,6 +6420,7 @@ window.DECKS = [
   id: 'bio-ch7-3',
   group: 'Chapter 7',
   added: '2026-08-20',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.5–7.6 — Skeletal Organization & the Skull',
   source: 'Chapter 7 — course notes',
@@ -6524,6 +6610,7 @@ window.DECKS = [
   id: 'bio-ch7-4',
   group: 'Chapter 7',
   added: '2026-08-20',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.7–7.8 — Vertebral Column & Thoracic Cage',
   source: 'Chapter 7 — course notes',
@@ -6646,6 +6733,7 @@ window.DECKS = [
   id: 'bio-ch7-5',
   group: 'Chapter 7',
   added: '2026-08-20',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.9–7.10 — Pectoral Girdle & Upper Limb',
   source: 'Chapter 7 — course notes',
@@ -6732,6 +6820,7 @@ window.DECKS = [
   id: 'bio-ch7-6',
   group: 'Chapter 7',
   added: '2026-08-20',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7.11–7.13 — Pelvic Girdle, Lower Limb & Aging',
   source: 'Chapter 7 — course notes',
@@ -6831,6 +6920,7 @@ window.DECKS = [
   exam: true,
   retired: true,
   added: '2026-08-20',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 7 — Skeletal System: Study Guide Slides',
   source: 'Chapter 7 — posted lecture outline slides',
@@ -6885,6 +6975,7 @@ window.DECKS = [
   id: 'bio-ch8-1',
   group: 'Chapter 8',
   added: '2026-08-27',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.1 — Types of Joints',
   source: 'Chapter 8 — course notes',
@@ -6969,6 +7060,7 @@ window.DECKS = [
   id: 'bio-ch8-2',
   group: 'Chapter 8',
   added: '2026-08-27',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.2 — Joint Movements',
   source: 'Chapter 8 — course notes',
@@ -7024,6 +7116,7 @@ window.DECKS = [
   id: 'bio-ch8-3',
   group: 'Chapter 8',
   added: '2026-08-27',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.3 — Examples of Synovial Joints',
   source: 'Chapter 8 — course notes',
@@ -7118,6 +7211,7 @@ window.DECKS = [
   id: 'bio-ch8-4',
   group: 'Chapter 8',
   added: '2026-08-27',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8.4 — Life-Span Changes',
   source: 'Chapter 8 — course notes',
@@ -7161,6 +7255,7 @@ window.DECKS = [
   exam: true,
   retired: true,
   added: '2026-09-02',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 8 — Joints: Study Guide Slides',
   source: 'Chapter 8 — posted lecture outline slides',
@@ -7297,6 +7392,7 @@ window.DECKS = [
   id: 'bio-ch9-1',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.1–9.2 — Muscle Types & Muscle Structure',
   source: 'Chapter 9 — course notes',
@@ -7390,6 +7486,7 @@ window.DECKS = [
   id: 'bio-ch9-2',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.3 — Skeletal Muscle Contraction',
   source: 'Chapter 9 — course notes',
@@ -7506,6 +7603,7 @@ window.DECKS = [
   id: 'bio-ch9-3',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.4 — Muscular Responses',
   source: 'Chapter 9 — course notes',
@@ -7598,6 +7696,7 @@ window.DECKS = [
   id: 'bio-ch9-4',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.5–9.6 — Smooth & Cardiac Muscle',
   source: 'Chapter 9 — course notes',
@@ -7670,6 +7769,7 @@ window.DECKS = [
   id: 'bio-ch9-5',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.7 — Levers, Attachments & Muscle Roles',
   source: 'Chapter 9 — course notes',
@@ -7727,6 +7827,7 @@ window.DECKS = [
   id: 'bio-ch9-6',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Muscles of the Head, Neck & Vertebral Column',
   source: 'Chapter 9 — course notes',
@@ -7835,6 +7936,7 @@ window.DECKS = [
   id: 'bio-ch9-7',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Muscles of the Shoulder & Upper Limb',
   source: 'Chapter 9 — course notes',
@@ -7974,6 +8076,7 @@ window.DECKS = [
   id: 'bio-ch9-8',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Abdominal Wall, Pelvic Floor & Perineum',
   source: 'Chapter 9 — course notes',
@@ -8050,6 +8153,7 @@ window.DECKS = [
   id: 'bio-ch9-9',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.8 — Muscles of the Lower Limb',
   source: 'Chapter 9 — course notes',
@@ -8190,6 +8294,7 @@ window.DECKS = [
   id: 'bio-ch9-10',
   group: 'Chapter 9',
   added: '2026-09-03',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9.9 — Life-Span Changes',
   source: 'Chapter 9 — course notes',
@@ -8257,6 +8362,7 @@ window.DECKS = [
   id: 'mp49-dosage',
   group: 'Medications',
   added: '2026-09-08',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'Dosage Calculation',
   source: 'Chapter 49 — dosage calculation',
@@ -8339,6 +8445,7 @@ window.DECKS = [
   current: true,
   exam: true,
   added: '2026-09-09',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 5 — Cardiovascular: Study Guide',
   source: 'Chapter 5 — instructor study guide (cardiovascular system)',
@@ -8404,6 +8511,7 @@ window.DECKS = [
   current: true,
   exam: true,
   added: '2026-09-09',
+  termNo: 1,
   course: 'M159 · Medical Terminology 1',
   title: 'Ch. 6 — Lymphatic: Study Guide',
   source: 'Chapter 6 — instructor study guide (lymphatic system)',
@@ -8533,6 +8641,7 @@ window.DECKS = [
   retired: true,
   exam: true,
   added: '2026-09-10',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 9 — Muscles: Study Guide Slides',
   source: 'Chapter 9 — posted lecture outline slides',
@@ -8713,6 +8822,7 @@ window.DECKS = [
   exam: true,
   current: true,
   added: '2026-09-15',
+  termNo: 1,
   course: 'M103 · Medical Procedures',
   title: 'Test Review — Pharmacology Lecture Test',
   source: 'Chapter 49 — the instructor’s test review questions',
@@ -8920,6 +9030,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.1 — Characteristics of Blood',
   source: 'Chapter 14 — course notes',
@@ -8969,6 +9080,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.2 — Red Blood Cells',
   source: 'Chapter 14 — course notes',
@@ -9049,6 +9161,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.2 — White Blood Cells & Platelets',
   source: 'Chapter 14 — course notes',
@@ -9125,6 +9238,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.3 — Plasma',
   source: 'Chapter 14 — course notes',
@@ -9179,6 +9293,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.4 — Hemostasis',
   source: 'Chapter 14 — course notes',
@@ -9260,6 +9375,7 @@ window.DECKS = [
   group: 'Chapter 14',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 14.5 — Blood Groups & Transfusions',
   source: 'Chapter 14 — course notes',
@@ -9324,6 +9440,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.1–16.3 — Lymphatic Pathways & Lymph',
   source: 'Chapter 16 — course notes',
@@ -9389,6 +9506,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.4 — Lymph Nodes, Thymus & Spleen',
   source: 'Chapter 16 — course notes',
@@ -9460,6 +9578,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.5 — Innate Defenses',
   source: 'Chapter 16 — course notes',
@@ -9536,6 +9655,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.5 — T Cells, B Cells & Antibodies',
   source: 'Chapter 16 — course notes',
@@ -9614,6 +9734,7 @@ window.DECKS = [
   group: 'Chapter 16',
   current: true,
   added: '2026-09-17',
+  termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
   title: 'Ch. 16.5–16.6 — Immune Responses, Disorders & Aging',
   source: 'Chapter 16 — course notes',
@@ -9954,10 +10075,17 @@ function resetScores(btn){
    "never touched it" — otherwise a section that defaults open springs back on
    the next re-render. */
 let chipOpen = {};   /* chip key -> bool. Session-only, never saved. */
-/* Which course’s archive is open, or null. Session-only like the chips, and
-   cleared on every navigation: a drawer is a detour, not a destination. */
+/* What the drawer is showing, or null: either one course's finished chapters
+   or a whole finished term. Held as an object rather than a bare course name
+   so the two can never be confused. Session-only like the chips, and cleared
+   on every navigation: a drawer is a detour, not a destination. */
 let archive = null;
-function openArchive(btn){ archive = btn.dataset.course; screenHome(); }
+function openArchive(btn){
+  archive = btn.dataset.term
+    ? { term: Number(btn.dataset.term) }
+    : { course: btn.dataset.course };
+  screenHome();
+}
 function closeArchive(){ if (archive === null) return; archive = null; screenHome(); }
 /* Straight to the deck. The drawer is a way THROUGH to something, so it
    never leaves itself standing behind the thing it just opened. */
@@ -9966,13 +10094,14 @@ function archiveGo(id){ archive = null; go('deck', id); }
 /* Every finished chapter of one course, and every deck under it. Built from
    the deck list rather than from whatever the page happens to be showing, so
    it cannot drift out of step with what was retired. */
-function archiveHtml(c){
-  const rest = DECKS.filter(d => d.course === c && !pinned(d) && !standing(d));
-  const inG = g => rest.filter(d => d.group === g);
-  const done = [...new Set(rest.map(d => d.group).filter(Boolean))]
-    .filter(g => !inG(g).some(d => d.current))
-    .sort((a, b) => (inG(a)[0].added || '').localeCompare(inG(b)[0].added || ''));
-  const loose = rest.filter(d => !d.group && !d.current);
+function archiveHtml(a){
+  const forTerm = a.term != null;
+  /* A finished term is finished whole: every deck of it belongs in here,
+     whatever its own chapter still claims about being current, and study
+     guides included. Within a live course only the retired chapters do. */
+  const scope = forTerm
+    ? DECKS.filter(d => termOf(d) === a.term)
+    : DECKS.filter(d => d.course === a.course && !pinned(d) && !standing(d));
   const progress = load();
   const row = d => {
     const p = progress[d.id] || {};
@@ -9995,13 +10124,35 @@ function archiveHtml(c){
   const block = (label, decks) =>
     `<section class="dgroup"><div class="dchap">${esc(label)}</div>`
     + guideFirst(decks).map(row).join('') + `</section>`;
-  const body = done.map(g => block(g, inG(g))).join('')
-    + (loose.length ? block('Other decks', loose) : '');
+
+  /* One course's decks, split into its chapters. Used on its own for a live
+     course, and once per class when a whole term is open. */
+  const courseBody = (decks, keepCurrent) => {
+    const inG = g => decks.filter(d => d.group === g);
+    const groups = [...new Set(decks.map(d => d.group).filter(Boolean))]
+      .filter(g => keepCurrent || !inG(g).some(d => d.current))
+      .sort((x, y) => (inG(x)[0].added || '').localeCompare(inG(y)[0].added || ''));
+    const loose = decks.filter(d => !d.group && (keepCurrent || !d.current));
+    return groups.map(g => block(g, inG(g))).join('')
+      + (loose.length ? block('Other decks', loose) : '');
+  };
+
+  const body = forTerm
+    /* Classes first, chapters under each: the extra level is what stops a
+       term's worth of chapters reading as one undifferentiated list. */
+    ? [...new Set(scope.map(d => d.course))].sort().map(c =>
+        `<div class="dcourse">${esc(c)}</div>` +
+        courseBody(scope.filter(d => d.course === c), true)).join('')
+    : courseBody(scope, false);
+
   return `<div class="scrim" onclick="closeArchive()"></div>
-    <aside class="drawer" role="dialog" aria-modal="true" aria-label="Earlier chapters">
+    <aside class="drawer" role="dialog" aria-modal="true" aria-label="${
+      forTerm ? `Term ${a.term}` : 'Earlier chapters'}">
       <div class="dhead">
-        <div class="dtitle">Earlier chapters</div>
-        <div class="dsub">${esc(c)}</div>
+        <div class="dtitle">${forTerm ? `Term ${a.term}` : 'Earlier chapters'}</div>
+        <div class="dsub">${forTerm
+          ? `${[...new Set(scope.map(d => d.course))].length} classes · ${scope.length} decks`
+          : esc(a.course)}</div>
         <button type="button" class="dclose" onclick="closeArchive()" aria-label="Close">✕</button>
       </div>
       <div class="dbody">${body}</div>
@@ -10044,12 +10195,30 @@ const pinned = d => !!d.exam && !d.retired;
    retires the way a chapter does. */
 const standing = d => !!d.reference && !d.retired;
 
+/* ---------- terms ----------
+   A class belongs to a term of the program, so the term lives on the deck and
+   the current one lives in the data beside it. The home page shows the current
+   term only; a finished term moves wholly into the Earlier drawer, which is
+   the rule he set. Ending a term is therefore one number in decks.js — no deck
+   needs its flags changed, because a past term is past whatever its chapters
+   still say about themselves. The fallbacks mean a deck written before this
+   existed still lands in Term 1 rather than vanishing. */
+let TERM_NOW = Number(window.CURRENT_TERM) || 1;
+const termOf = d => Number(d.termNo) || 1;
+const pastTerms = () => [...new Set(DECKS.map(termOf))].filter(t => t < TERM_NOW).sort((a, b) => b - a);
+const coursesInTerm = t => [...new Set(DECKS.filter(d => termOf(d) === t).map(d => d.course))].sort();
+
 /* ═══════════════ HOME ═══════════════ */
 function screenHome(){
   const q = (session && session.q || '').toLowerCase();
   const progress = load();
 
-  let list = DECKS;
+  /* The page is this term's page. A finished term is reached through the
+     drawer, never by scrolling past it. Search is the one exception: looking
+     something up is a deliberate act, and a term ending is no reason to make
+     last term's material unfindable — those matches keep their term named
+     beside the class so it is obvious where they came from. */
+  let list = DECKS.filter(d => termOf(d) === TERM_NOW);
   if (q) list = DECKS.filter(d =>
     (d.title + ' ' + d.course).toLowerCase().includes(q) ||
     d.cards.some(c => (c.term + ' ' + c.def).toLowerCase().includes(q)));
@@ -10107,7 +10276,7 @@ function screenHome(){
      carrying the controls, and losing them would strand you on a page with no
      way back out of the search. */
   html += `<div class="toprow${courses.length ? '' : ' bare'}">${
-    courses.length ? `<div class="termlabel">Term 1</div>` : ''}${tools}</div>`;
+    courses.length ? `<div class="termlabel">Term ${TERM_NOW}</div>` : ''}${tools}</div>`;
 
   /* Study-guide decks lead each section — they are the tested material — and
      everything else folds away behind a disclosure so the page stays short as
@@ -10247,7 +10416,12 @@ function screenHome(){
           onclick="openArchive(this)">Earlier (${panels.length})</button>`
       : '';
 
-    html += `<div class="coursehead"><span class="cname">${esc(c)}</span>${
+    /* Only a search can surface a class from a finished term, and when it does
+       the term is named, so a Term 1 result never passes for current work. */
+    const cTerm = termOf(list.find(d => d.course === c) || {});
+    const termTag = cTerm !== TERM_NOW ? `<span class="termtag">Term ${cTerm}</span>` : '';
+
+    html += `<div class="coursehead"><span class="cname">${esc(c)}</span>${termTag}${
       refChips || earlier ? `<span class="pastbar">${refChips}${earlier}</span>` : ''}</div>`;
 
     if (lead.length) html += `<div class="decks">${lead.map(d => deckCard(d, true)).join('')}</div>`;
@@ -10292,6 +10466,20 @@ function screenHome(){
     if (q) panels.forEach(p => { html += panelHtml(p); });
     refPanels.forEach(p => { html += panelHtml(p); });
   });
+
+  /* Finished terms sit at the foot of the page as one chip each, the way a
+     finished chapter sits at the end of its course. Nothing renders while
+     there is only one term, so this is invisible until the first one ends.
+     Hidden during a search, because the results above already reach across
+     terms and a second way in would only confuse what is being looked at. */
+  const past = pastTerms();
+  if (past.length && !q) html += `<div class="pastterms">
+      <span class="ptlabel">Earlier terms</span>
+      ${past.map(t => { const n = coursesInTerm(t).length;
+        return `<button type="button" class="chip" data-term="${t}" aria-haspopup="dialog"
+          onclick="openArchive(this)">Term ${t} (${n} ${n === 1 ? 'class' : 'classes'})</button>`;
+      }).join('')}
+    </div>`;
 
   if (archive) html += archiveHtml(archive);
 

@@ -139,7 +139,9 @@ function suite(s, label, srcCss) {
      anything asking "is this reachable" has to look there too. The drawer is
      built on demand from the deck list, so rendering one costs nothing and
      asks the engine rather than re-deriving what it ought to say. */
-  const archiveOf = c => vm.runInContext(`archiveHtml(${JSON.stringify(c)})`, s);
+  /* The drawer takes an object now: one course's finished chapters, or a whole
+     finished term. These checks are all about a course. */
+  const archiveOf = c => vm.runInContext(`archiveHtml({ course: ${JSON.stringify(c)} })`, s);
   const archiveIds = c => [...archiveOf(c).matchAll(/archiveGo\('([^']+)'\)/g)].map(m => m[1]);
   const archiveChaps = c => [...archiveOf(c).matchAll(/class="dchap">([^<]*)</g)].map(m => m[1].trim());
 
@@ -2628,6 +2630,70 @@ function suite(s, label, srcCss) {
    outline and on their own side of the septum. Scaling a chamber about its own
    centre tears a gap down the midline, which is what kept the old animation too
    subtle to see — this is the check that says so out loud.                  */
+/* -------------------------------------------------------------- terms */
+/* The term structure is built well before it is needed, so nothing on the page
+   exercises it today — which is exactly why it needs testing. These checks
+   simulate the rollover: they push the existing classes back a term, declare a
+   new current term, and then assert the three rules he set. A finished term
+   leaves the home page entirely, it is reachable only through the drawer, and
+   it takes its whole self with it including the study guides. */
+function terms(s, label) {
+  const c = (n, ok, why) => check(`[${label}] terms: ${n}`, ok, why);
+  const D = s.DECKS;
+
+  c('every deck names the term it was taken in',
+    D.every(d => Number.isFinite(Number(d.termNo)) && Number(d.termNo) >= 1),
+    D.filter(d => !Number.isFinite(Number(d.termNo))).map(d => d.id).slice(0, 5).join(', ') || 'bad value');
+  c('the current term is declared in the data, not the engine',
+    Number.isFinite(Number(s.window.CURRENT_TERM)), `got ${s.window.CURRENT_TERM}`);
+  c('every deck is in the current term or earlier',
+    D.every(d => Number(d.termNo) <= Number(s.window.CURRENT_TERM)),
+    'a deck claims a term that has not started yet');
+
+  /* Course names carry an ampersand, and the page escapes it. Comparing raw
+     names against rendered HTML silently never matches — which would have made
+     the negative check below pass no matter what the page did. */
+  const esc = t => String(t).replace(/[&<>"]/g, ch =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+
+  /* ---- the rollover ---- */
+  const was = D.map(d => d.termNo);
+  const moved = D[0].course;                       /* one class stays current */
+  D.forEach(d => { d.termNo = d.course === moved ? 2 : 1; });
+  s.$('TERM_NOW = 2; session = null; archive = null; screenHome();');
+  const home = s.__app.innerHTML;
+
+  c('the label names the term the page is showing', home.includes('Term 2'), 'label did not follow');
+  const gone = [...new Set(D.filter(d => d.termNo === 1).map(d => d.course))];
+  c('a finished term leaves the home page',
+    gone.every(name => !home.includes(`<span class="cname">${esc(name)}`)),
+    'a past class still has a section on the home page');
+  c('a finished term is offered at the foot of the page',
+    home.includes('Earlier terms') && home.includes('data-term="1"'), 'no way through to it');
+
+  /* ---- and is reachable, whole, through the drawer ---- */
+  s.$('archive = { term: 1 }; screenHome();');
+  const drawer = s.__app.innerHTML;
+  c('the drawer holds every class of that term',
+    gone.every(name => drawer.includes(esc(name))), 'a class is missing from the term drawer');
+  const inTerm = D.filter(d => d.termNo === 1);
+  c('and every deck of them, study guides included',
+    inTerm.every(d => drawer.includes(`archiveGo('${d.id}')`)),
+    `${inTerm.filter(d => !drawer.includes(`archiveGo('${d.id}')`)).length} decks unreachable`);
+  c('a study guide from a finished term is still marked as one',
+    !inTerm.some(d => d.exam) || drawer.includes('ditem exam'), 'guides lost their mark');
+
+  /* ---- search still crosses terms, and says so ---- */
+  const word = (inTerm.find(d => d.cards.length) || { cards: [{ term: '' }] }).cards[0].term;
+  s.$(`archive = null; session = { q: ${JSON.stringify(String(word).slice(0, 12))} }; screenHome();`);
+  const found = s.__app.innerHTML;
+  c('a search still reaches a finished term', found.includes('termtag'),
+    'last term became unfindable, not just tucked away');
+
+  D.forEach((d, i) => { d.termNo = was[i]; });
+  s.$('TERM_NOW = Number(window.CURRENT_TERM) || 1; session = null; archive = null; screenHome();');
+}
+
 /* ------------------------------------------------------- input font size */
 /* iOS zooms the page in when a text field smaller than 16px takes focus, and
    never zooms back out, which left the back button off the edge of the screen
@@ -2769,6 +2835,7 @@ const srcInline = inlineScripts(srcHtml);
 check('index.html has exactly one inline script', srcInline.length === 1, `found ${srcInline.length}`);
 
 suite(boot(decksSrc, srcInline[0], 'source'), 'source', srcHtml);
+terms(boot(decksSrc, srcInline[0], 'terms'), 'source');
 heartGeometry(srcHtml, 'source');
 inputFontSize(srcHtml, 'source');
 
