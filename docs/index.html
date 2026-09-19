@@ -62,7 +62,7 @@
   .spacer{flex:1}
   .iconbtn{border:1px solid var(--line);background:var(--card);padding:7px 12px;
     border-radius:8px;font-size:13px;color:var(--dim)}
-  .iconbtn:hover{color:var(--text);border-color:var(--accent-dim)}
+  @media (hover: hover){ .iconbtn:hover{color:var(--text);border-color:var(--accent-dim)} }
   .iconbtn svg{vertical-align:-2px}
   /* The controls travel together, so a narrow screen breaks between the title
      and the group rather than stranding one button on its own line. */
@@ -171,7 +171,7 @@
   .drawer .dclose{position:absolute;top:16px;right:14px;width:32px;height:32px;
     border:1px solid var(--line);background:var(--card);color:var(--dim);border-radius:9px;
     font:inherit;font-size:15px;line-height:1;cursor:pointer;transition:.15s}
-  .drawer .dclose:hover{color:var(--text);border-color:var(--accent)}
+  @media (hover: hover){ .drawer .dclose:hover{color:var(--text);border-color:var(--accent)} }
   /* No top padding: a sticky chapter heading stops at the scroll area's padding
      edge, so any padding here leaves a strip above it where the list shows
      through as it scrolls. The first heading's own margin gives the breathing
@@ -205,7 +205,7 @@
        every property, and rows slide under the cursor one after another while
        the list scrolls. */
     transition:background-color .13s,border-color .13s}
-  .ditem:hover{background:var(--card2);border-color:var(--line)}
+  @media (hover: hover){ .ditem:hover{background:var(--card2);border-color:var(--line)} }
   .ditem + .ditem{margin-top:3px}
   /* A study guide carries a gold bar down its left side, drawn the same way as
      the accent bar on the chapter headings, so the tested material is easy to
@@ -239,7 +239,7 @@
     font-weight:500;color:var(--dim);background:transparent;
     border:1px solid var(--line);border-radius:20px;padding:3px 11px;cursor:pointer;
     transition:color .15s ease,border-color .15s ease}
-  .chip:hover{color:var(--text);border-color:color-mix(in srgb,var(--text) 30%,var(--line))}
+  @media (hover: hover){ .chip:hover{color:var(--text);border-color:color-mix(in srgb,var(--text) 30%,var(--line))} }
   .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   /* An open chip has to look pressed, or the panel that appeared below has no
      visible cause. */
@@ -264,7 +264,7 @@
     background:transparent;border:1px solid transparent;border-radius:20px;
     padding:2px 9px;cursor:pointer;
     transition:color .15s ease,border-color .15s ease,background .15s ease}
-  .sect .reset:hover{color:var(--text);border-color:var(--line)}
+  @media (hover: hover){ .sect .reset:hover{color:var(--text);border-color:var(--line)} }
   .sect .reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   /* Armed. Red only at this point — the resting control is not a warning. */
   .sect .reset[data-armed="1"]{color:var(--bad);
@@ -280,7 +280,7 @@
   .decks + .decks{margin-top:20px}
   .deck{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:11px 14px;text-align:left;transition:.13s;display:block;width:100%}
-  .deck:hover{border-color:var(--accent);transform:translateY(-2px)}
+  @media (hover: hover){ .deck:hover{border-color:var(--accent);transform:translateY(-2px)} }
   /* Decks built from a study guide — the material actually being tested — carry
      a gold bar down the left side, drawn the same way as the bar on study
      guides in the Earlier drawer and on its chapter headings. Warn rather than
@@ -291,7 +291,7 @@
   .deck.exam{box-shadow:inset 3px 0 0 var(--warn)}
   /* Hover lights the border gold on a study guide, where any other card lights
      it blue, so the colour stays the study guide's colour throughout. */
-  .deck.exam:hover{border-color:var(--warn)}
+  @media (hover: hover){ .deck.exam:hover{border-color:var(--warn)} }
   .badge.exam{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));color:var(--warn)}
   .badge.ref{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent)}
   .deck.ref{border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
@@ -353,7 +353,7 @@
      shouted louder than the page title it sits beside. */
   .back{color:var(--dim);font-size:13px;margin-bottom:14px;display:inline-block;
     border:0;background:none;padding:0;transition:color .15s ease}
-  .back:hover{color:var(--text)}
+  @media (hover: hover){ .back:hover{color:var(--text)} }
   h2.title{font-size:23px;margin:0 0 4px;letter-spacing:-.01em}
   .srcline{color:var(--dim);font-size:12.5px;margin-bottom:22px;word-break:break-word}
   /* The deck page header matches its card: the prefix as an accent label, the
@@ -368,7 +368,7 @@
   .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
   .mode{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
     padding:16px;text-align:left;transition:.13s}
-  .mode:hover{border-color:var(--accent);background:var(--card2)}
+  @media (hover: hover){ .mode:hover{border-color:var(--accent);background:var(--card2)} }
   /* The diagram mode carries the accent border so it reads as the priority
      one before anything is clicked. */
   /* ---- label the diagram ---- */
@@ -387,7 +387,7 @@
   .lfigtab{padding:5px 11px;border:1px solid var(--line);border-radius:999px;
     background:var(--card);color:var(--dim);font-size:12px;line-height:1.2;cursor:pointer;
     transition:border-color .12s,color .12s,background .12s}
-  .lfigtab:hover{color:var(--text);border-color:var(--dim)}
+  @media (hover: hover){ .lfigtab:hover{color:var(--text);border-color:var(--dim)} }
   .lfigtab.on{border-color:var(--accent);color:var(--text);background:var(--card2)}
   .lfigtab.done::after{content:' ✓';color:var(--good)}
   .lfigtab.part::after{content:" ·";color:var(--dim)}
@@ -459,7 +459,7 @@
   .lchip{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);
     font-size:13px;color:var(--text);touch-action:none;cursor:grab;user-select:none;
     transition:border-color .12s,background .12s}
-  .lchip:hover{border-color:var(--accent)}
+  @media (hover: hover){ .lchip:hover{border-color:var(--accent)} }
   .lchip.picked{border-color:var(--accent);background:var(--card2)}
   .lchip.ghost{position:fixed;z-index:60;pointer-events:none;opacity:.92;cursor:grabbing;
     box-shadow:0 6px 20px rgba(0,0,0,.35)}
@@ -475,7 +475,7 @@
      one before anything is clicked. */
 
   .mode.hot{border-color:var(--accent);background:var(--card2)}
-  .mode.hot:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  @media (hover: hover){ .mode.hot:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)} }
   .mode strong{display:block;font-size:15px;margin-bottom:4px}
   .mode span{font-size:12.5px;color:var(--dim);line-height:1.45}
 
@@ -488,7 +488,7 @@
   .fc{background:var(--card);border:1px solid var(--line);border-radius:16px;
     min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:36px 28px;text-align:center;cursor:pointer;user-select:none}
-  .fc:hover{border-color:var(--accent-dim)}
+  @media (hover: hover){ .fc:hover{border-color:var(--accent-dim)} }
   .fc .side{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
   .fc .term{font-size:29px;font-weight:600;line-height:1.25;letter-spacing:-.015em}
   .fc .def{font-size:19px;line-height:1.5;max-width:560px}
@@ -496,8 +496,8 @@
   .grade{display:flex;gap:12px;margin-top:16px}
   .grade button{flex:1;padding:14px;border-radius:10px;border:1px solid var(--line);
     background:var(--card);font-size:15px;font-weight:550}
-  .grade .again:hover{border-color:var(--bad);color:var(--bad)}
-  .grade .ok:hover{border-color:var(--good);color:var(--good)}
+  @media (hover: hover){ .grade .again:hover{border-color:var(--bad);color:var(--bad)} }
+  @media (hover: hover){ .grade .ok:hover{border-color:var(--good);color:var(--good)} }
 
   /* ---- quiz ---- */
   .q{font-size:19px;line-height:1.45;margin-bottom:20px;font-weight:500}
@@ -507,13 +507,13 @@
   .choice{border:1px solid var(--line);background:var(--card);border-radius:10px;
     padding:13px 15px;text-align:left;display:flex;gap:12px;align-items:flex-start;
     line-height:1.45;font-size:15px;transition:.1s}
-  .choice:hover:not(:disabled){border-color:var(--accent)}
+  @media (hover: hover){ .choice:hover:not(:disabled){border-color:var(--accent)} }
   /* two big targets rather than a list of four — the whole point of the mode is
      that the decision is binary and quick */
   .tfrow{gap:12px;margin-top:18px}
   .tf{flex:1;padding:16px;border:1px solid var(--line);border-radius:var(--radius);
     background:var(--card);font-size:16px;font-weight:600;transition:.13s}
-  .tf:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  @media (hover: hover){ .tf:hover:not(:disabled){border-color:var(--accent);color:var(--accent)} }
   .tf.correct{border-color:var(--good);color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--card))}
   .tf.wrong{border-color:var(--bad);color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card))}
   .tf:disabled{cursor:default}
@@ -538,7 +538,7 @@
   .mcol{display:flex;flex-direction:column;gap:9px}
   .mitem{border:1px solid var(--line);background:var(--card);border-radius:10px;
     padding:12px 13px;text-align:left;font-size:14px;line-height:1.4;transition:.12s}
-  .mitem:hover:not(:disabled){border-color:var(--accent)}
+  @media (hover: hover){ .mitem:hover:not(:disabled){border-color:var(--accent)} }
   .mitem.sel{border-color:var(--accent);background:var(--card2)}
   .mitem.done{opacity:.32;border-style:dashed;cursor:default}
   .mitem.bad{border-color:var(--bad);animation:shake .3s}
@@ -591,7 +591,7 @@
   .figcredit{color:var(--dim);font-size:11.5px;text-align:center;margin-top:6px;
     opacity:.8;line-height:1.6}
   .figcredit a{color:var(--dim);text-decoration:underline}
-  .figcredit a:hover{color:var(--accent)}
+  @media (hover: hover){ .figcredit a:hover{color:var(--accent)} }
   /* Sized as a share of the figure, not fixed px, so the spacing between
      electrodes stays proportional and dots never collide on a narrow screen. */
   .dot{position:absolute;width:5.2%;aspect-ratio:1;transform:translate(-50%,-50%);
@@ -599,7 +599,7 @@
     background:color-mix(in srgb,var(--accent) 30%,var(--bg));
     display:flex;align-items:center;justify-content:center;
     font-size:clamp(7px,1.55vw,10.5px);font-weight:700;color:var(--text);transition:.12s}
-  .dot:hover:not(:disabled){transform:translate(-50%,-50%) scale(1.2)}
+  @media (hover: hover){ .dot:hover:not(:disabled){transform:translate(-50%,-50%) scale(1.2)} }
   .dot.correct{border-color:var(--good);background:var(--good);color:#04120b}
   .dot.wrong{border-color:var(--bad);background:var(--bad);color:#fff}
   .dot.muted{opacity:.4}
@@ -622,7 +622,7 @@
   .rhythms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
   .rbtn{border:1px solid var(--line);background:var(--card);border-radius:20px;
     padding:6px 12px;font-size:12.5px;color:var(--dim);transition:.12s}
-  .rbtn:hover{border-color:var(--accent);color:var(--text)}
+  @media (hover: hover){ .rbtn:hover{border-color:var(--accent);color:var(--text)} }
   .rbtn.on{background:var(--accent);border-color:var(--accent);color:#04161c;font-weight:650}
   html[data-theme="light"] .rbtn.on{color:#fff}
   .rbtn.danger{border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
@@ -743,7 +743,7 @@
   .steps{display:flex;flex-direction:column;gap:8px}
   .step{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;
     text-align:left;font-size:14.5px;line-height:1.45;transition:.12s;width:100%}
-  .step:hover{border-color:var(--accent);background:var(--card2)}
+  @media (hover: hover){ .step:hover{border-color:var(--accent);background:var(--card2)} }
   .step.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card));animation:shake .3s}
 
   /* ---- browse ---- */
@@ -776,7 +776,7 @@
   /* two-way switch for the ordering */
   .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
   .seg button{padding:6px 12px;font-size:12.5px;color:var(--dim);background:var(--card)}
-  .seg button:hover{color:var(--text)}
+  @media (hover: hover){ .seg button:hover{color:var(--text)} }
   .seg button.on{background:var(--accent);color:#04161c;font-weight:650}
   html[data-theme="light"] .seg button.on{color:#fff}
   /* a term worded two different ways keeps both, stacked and labelled */
@@ -785,9 +785,9 @@
   table.browse td.src{width:18%;font-size:11.5px;color:var(--dim);line-height:1.45;
     text-align:right;vertical-align:top}
   @media(max-width:560px){ table.browse td.src{display:none} }
-  table.browse tr:hover td{background:var(--card)}
+  @media (hover: hover){ table.browse tr:hover td{background:var(--card)} }
   .hidden-def{color:transparent;background:var(--card2);border-radius:4px;cursor:pointer}
-  .hidden-def:hover{color:var(--dim)}
+  @media (hover: hover){ .hidden-def:hover{color:var(--dim)} }
   .eg{color:var(--accent);font-weight:650}
   /* names the category Recall is asking for, where the term declares one */
   .asks{color:var(--accent);font-weight:650}
@@ -822,7 +822,7 @@
   .row{display:flex;gap:10px;margin-top:24px}
   .row button{flex:1;padding:13px;border-radius:10px;border:1px solid var(--line);
     background:var(--card);font-weight:550;font-size:14.5px}
-  .row button:hover{border-color:var(--accent)}
+  @media (hover: hover){ .row button:hover{border-color:var(--accent)} }
   .missed{margin-top:26px;text-align:left}
   .missed h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:0 0 10px}
   .missed div{padding:11px 13px;border-radius:9px;background:var(--card);border:1px solid var(--line);
