@@ -1947,6 +1947,110 @@ function distractors(pool, n, keyOf, taken, nearTo){
   }
   return null;
 }
+/* ═══════════════ VALUE ANSWERS ═══════════════
+   "Normal blood pH?" used to be given away by its shape: the answer was the
+   only choice with a number in it, so you could pick it without knowing the
+   value. When the answer IS a value, the wrong answers have to be values too.
+
+   They are made from the right answer rather than found: every number in it is
+   moved and the words around them are left exactly as they were, so all four
+   choices read alike and only the figure differs. A range slides by its own
+   width, which is what an exam does — 7.35 to 7.45 sits beside 7.25 to 7.35.
+
+   Nothing generated here may be true. Every candidate is checked against every
+   real definition in the app, so a decoy can never be a fact borrowed from
+   another card, and never the right answer wearing different rounding. */
+const NUM_RE = /\d[\d,]*(?:\.\d+)?/g;
+const numTokens = s => String(s).match(NUM_RE) || [];
+const numKey = s => numTokens(s).map(t => t.replace(/,/g, '')).join('|');
+const asNum = t => parseFloat(String(t).replace(/,/g, ''));
+const decimalsOf = t => (String(t).split('.')[1] || '').length;
+/* keep the written form: decimal places, and thousands separators if it had them */
+function likeNumber(v, model){
+  let s = v.toFixed(decimalsOf(model));
+  if (String(model).includes(',')) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return s;
+}
+/* Normalised so "7.4." and "7.4" cannot slip past each other. */
+const defKey = s => String(s).toLowerCase().replace(/\s+/g, ' ').replace(/[.,;]+$/, '').trim();
+let REAL_DEFS = null;
+function realDefs(){
+  if (!REAL_DEFS){
+    REAL_DEFS = new Set();
+    DECKS.forEach(d => (d.cards || []).forEach(c => { if (c.def) REAL_DEFS.add(defKey(c.def)); }));
+  }
+  return REAL_DEFS;
+}
+
+/* A value answer is one where the figures carry the meaning: at least one
+   number, and little enough prose around it that the number is the point.
+   Ordinals are left alone — shifting "the 37th week" only produces "the 42th". */
+function valueAnswer(def){
+  const toks = numTokens(def);
+  if (!toks.length) return false;
+  if (/\d(st|nd|rd|th)\b/i.test(def)) return false;
+  /* A digit hanging off a letter is a name, not a quantity — V1, C5, T4. Move
+     it and you get "V2 through V12", a lead that does not exist. */
+  if (/[A-Za-z]\d/.test(def)) return false;
+  const words = String(def).replace(NUM_RE, ' ').split(/\s+/).filter(w => /[a-z]/i.test(w));
+  return words.length <= 8;
+}
+
+function valueDecoys(def, n){
+  const toks = numTokens(def);
+  const vals = toks.map(asNum);
+  if (!vals.length || vals.some(v => !isFinite(v))) return null;
+  /* a percentage that starts under 100 must stay under it */
+  const capAt100 = def.includes('%') && vals.every(v => v <= 100);
+  /* Which move suits depends on the shape, and getting this wrong is what
+     separates an exam-grade decoy from a silly one.
+
+     A range must SLIDE, by its own width: 7.35 to 7.45 becomes 7.25 to 7.35,
+     a near miss of exactly the kind a real paper uses. Scaling a range is
+     wrong twice over — it lands far away and it stretches the width, so
+     7.35 to 7.45 comes out as 3.67 to 3.73 and no longer even looks like the
+     same measurement.
+
+     Anything else must SCALE, because the numbers are usually related to each
+     other: "206 — 80 axial and 126 appendicular" still adds up when every
+     figure is multiplied, and stops adding up the moment they are slid. */
+  const between = vals.length === 2
+    ? String(def).slice(String(def).indexOf(toks[0]) + toks[0].length, String(def).lastIndexOf(toks[1]))
+    : '';
+  const isRange = vals.length === 2 && /^\s*(to|–|—|-|and)\s*$/.test(between);
+  const width = isRange ? Math.abs(vals[1] - vals[0]) : 0;
+  const step = width || Math.max(Math.pow(10, -decimalsOf(toks[0])), Math.abs(vals[0]) * 0.15);
+
+  const slides = shuffle([1, -1, 2, -2]).concat(shuffle([3, -3, 4, -4]))
+    .map(k => v => v + k * step);
+  const scales = shuffle([0.5, 1.5, 2, 0.75, 1.25, 3, 0.25]).map(f => v => v * f);
+  /* the fitting strategy first, the other only if the deck leaves no choice */
+  const moves = isRange ? slides.concat(scales) : scales.concat(slides);
+
+  const banned = realDefs();
+  const out = [];
+  for (const move of moves){
+    let ok = true;
+    const s = String(def).replace(NUM_RE, m => {
+      const v = move(asNum(m));
+      if (!(v > 0) || (capAt100 && v > 100)) ok = false;
+      return likeNumber(v, m);
+    });
+    if (!ok) continue;
+    if (numKey(s) === numKey(def)) continue;          /* rounded back to the truth */
+    /* Figures that differed in the real answer must still differ here, or
+       rounding turns "7 pairs, 3 pairs and 2 pairs" into two identical counts
+       and the decoy stops making the distinction the answer is about. */
+    const got = numTokens(s).map(asNum);
+    if (new Set(vals).size === vals.length && new Set(got).size !== got.length) continue;
+    if (banned.has(defKey(s))) continue;              /* it is a fact somewhere else */
+    if (out.some(x => numKey(x) === numKey(s))) continue;
+    out.push(s);
+    if (out.length === n) return out;
+  }
+  return null;
+}
+
 function autoQuestions(d){
   const out = [];
   d.cards.forEach(card => {
@@ -1955,9 +2059,13 @@ function autoQuestions(d){
 
     /* Each question carries its source card so the quiz can avoid asking the
        same card twice — see runQuiz. */
-    const fwd = distractors(pool, 3, c => c.def, [card.def], card.def);
+    /* A value answer takes manufactured values, so the shape of the choices
+       gives nothing away. Anything else keeps drawing from the deck, where the
+       other cards are the best wrong answers there are. */
+    const made = valueAnswer(card.def) ? valueDecoys(card.def, 3) : null;
+    const fwd = made || distractors(pool, 3, c => c.def, [card.def], card.def);
     if (fwd){
-      const ch = shuffle([card.def, ...fwd.map(c => c.def)]);
+      const ch = shuffle([card.def, ...(made ? made : fwd.map(c => c.def))]);
       /* "What does Parts of ATP mean?" reads badly — a fact card is a topic, so
          pose it as the topic itself. */
       const stem = card.fact

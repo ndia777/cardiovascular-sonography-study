@@ -116,9 +116,26 @@ const modesFor = d => {
   return d.only ? m.filter(x => d.only.includes(x)) : m;
 };
 const norm = x => x.toLowerCase().trim();
+/* Two choices clash when one says everything the other does, so a reader could
+   defend either — "disease" beside "disease, suffering".
+   Containment has to respect boundaries. A bare indexOf also matches when one
+   string merely ends up inside the other by accident, which is exactly what
+   happens to figures: "5 mL, a teaspoon" sits inside "15 mL, a teaspoon"
+   because of the leading 1. Those two are different answers, not
+   interchangeable ones. */
 const clashes = (a, b) => {
   a = norm(a); b = norm(b);
-  return a === b || a.includes(b) || b.includes(a);
+  if (a === b) return true;
+  const edge = ch => ch === '' || /[^a-z0-9]/.test(ch);
+  const within = (hay, needle) => {
+    for (let i = hay.indexOf(needle); i !== -1; i = hay.indexOf(needle, i + 1)){
+      const before = i === 0 ? '' : hay[i - 1];
+      const after = i + needle.length >= hay.length ? '' : hay[i + needle.length];
+      if (edge(before) && edge(after)) return true;
+    }
+    return false;
+  };
+  return within(a, b) || within(b, a);
 };
 
 function suite(s, label, srcCss) {
@@ -1430,7 +1447,45 @@ function suite(s, label, srcCss) {
      Random selection makes those two numbers equal, so a real margin is the
      only thing that can produce a pass here. */
   const sim = s.similarity;
+  const numsOf = t => (String(t).match(/\d[\d,]*(?:\.\d+)?/g) || []).join('|');
   check(`[${label}] the engine exposes a similarity measure`, typeof sim === 'function');
+
+  /* ---- value answers ----
+     When the answer is a value, every wrong answer must be a value too, or the
+     shape of the choices gives it away before the numbers are read. And no
+     manufactured value may be a real definition anywhere in the app: a decoy
+     that is quietly true is worse than no decoy at all, because it teaches a
+     fact against the wrong question. */
+  {
+    const realDef = new Set();
+    DECKS.forEach(d => (d.cards || []).forEach(c => {
+      if (c.def) realDef.add(String(c.def).toLowerCase().replace(/\s+/g, ' ').replace(/[.,;]+$/, '').trim());
+    }));
+    let valueQs = 0, shapeMismatch = '', trueDecoy = '', sameNumbers = '';
+    for (const d of DECKS) {
+      for (let r = 0; r < 6; r++) {
+        for (const q of autoQuestions(d)) {
+          if (!q.choices.includes(q.card.def)) continue;      /* forward only */
+          if (!s.valueAnswer(q.card.def)) continue;
+          valueQs++;
+          for (const ch of q.choices) {
+            if (ch === q.card.def) continue;
+            if (!numsOf(ch) && !shapeMismatch)
+              shapeMismatch = `${d.id} / "${q.card.term}": wrong answer "${ch}" carries no figure`;
+            if (numsOf(ch) === numsOf(q.card.def) && !sameNumbers)
+              sameNumbers = `${d.id} / "${q.card.term}": "${ch}" repeats the right answer's figures`;
+            const k = String(ch).toLowerCase().replace(/\s+/g, ' ').replace(/[.,;]+$/, '').trim();
+            if (realDef.has(k) && !trueDecoy)
+              trueDecoy = `${d.id} / "${q.card.term}": "${ch}" is a real definition elsewhere`;
+          }
+        }
+      }
+    }
+    check(`[${label}] value answers are actually being asked`, valueQs > 40, `only ${valueQs}`);
+    check(`[${label}] a value answer's wrong answers are values too`, !shapeMismatch, shapeMismatch);
+    check(`[${label}] no manufactured value repeats the right answer's figures`, !sameNumbers, sameNumbers);
+    check(`[${label}] no manufactured value is true somewhere else`, !trueDecoy, trueDecoy);
+  }
   if (typeof sim === 'function') {
     let chosenSum = 0, chosenN = 0, poolSum = 0, poolN = 0, tooClose = '';
     for (const d of DECKS) {
@@ -1443,7 +1498,13 @@ function suite(s, label, srcCss) {
             if (ch === q.card.def) continue;
             const v = sim(q.card.def, ch);
             chosenSum += v; chosenN++;
-            if (v > 0.75 && !tooClose)
+            /* A value answer's decoys share every word with it on purpose —
+               only the figure moves, which is the whole point of them. The
+               similarity measure drops short tokens, so "7.35 to 7.45" and
+               "7.25 to 7.35" both reduce to the words around the numbers and
+               score 1.00. Different figures are a different claim, so they are
+               never arguable and this test does not apply to them. */
+            if (v > 0.75 && numsOf(ch) === numsOf(q.card.def) && !tooClose)
               tooClose = `${d.id} / "${q.card.term}": a wrong choice scores ${v.toFixed(2)}`;
           }
         }
