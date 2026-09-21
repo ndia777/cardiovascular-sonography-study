@@ -2755,6 +2755,108 @@ function terms(s, label) {
   s.$('TERM_NOW = Number(window.CURRENT_TERM) || 1; session = null; archive = null; screenHome();');
 }
 
+/* ------------------------------------------------------------- themes */
+/* Eleven palettes, each with a night set and a day set. Three things have to
+   hold for every one of them, and two of the three have already gone wrong
+   once in this app, which is why they are tested rather than trusted.
+
+   The menu hard-codes its swatch colours, because a theme it is not wearing
+   has no custom properties to read — so that copy can drift from the
+   stylesheet. Signal colours have to stay readable on the card they sit on.
+   And the accent has to stay clear of the study-guide colour around the wheel:
+   two warm colours at similar chroma read as one smear, which is the mistake
+   that produced "ketchup and mustard" the first time round. */
+function themes(html, label) {
+  const c = (n, ok, why) => check(`[${label}] themes: ${n}`, ok, why);
+
+  const at = html.indexOf('const PALETTES = [');
+  const lit = at < 0 ? '' : html.slice(at, html.indexOf('\n];', at));
+  const list = [...lit.matchAll(/\{\s*id:'([a-z]*)',[\s\S]*?light:\s*\{([^}]*)\}\s*\}/g)].map(m => {
+    const chunk = m[0];
+    const grab = which => {
+      const seg = new RegExp(`${which}:\\s*\\{([^}]*)\\}`).exec(chunk);
+      const out = {};
+      if (seg) [...seg[1].matchAll(/(\w+):\s*'(#[0-9a-f]{6})'/g)].forEach(x => { out[x[1]] = x[2]; });
+      return out;
+    };
+    return { id: m[1], dark: grab('dark'), light: grab('light') };
+  });
+  c('the menu offers a good spread of palettes', list.length >= 8, `found ${list.length}`);
+
+  const block = (id, mode) => {
+    const sel = id === ''
+      ? (mode === 'dark' ? ':root\\{' : 'html\\[data-mode="light"\\]\\{')
+      : (mode === 'dark' ? `html\\[data-theme="${id}"\\]\\{`
+                         : `html\\[data-theme="${id}"\\]\\[data-mode="light"\\]\\{`);
+    const m = new RegExp(sel + '([^}]*)\\}').exec(html);
+    return m ? m[1] : null;
+  };
+  const varOf = (txt, name) => {
+    const m = new RegExp(`--${name}:\\s*(#[0-9a-f]{3,8})`).exec(txt || '');
+    return m ? m[1] : null;
+  };
+  const lum = h => { const t = h.length === 4
+      ? h.slice(1).split('').map(x => x + x) : h.slice(1).match(/\w\w/g);
+    const v = t.map(x => parseInt(x, 16) / 255)
+      .map(u => u <= .03928 ? u / 12.92 : ((u + .055) / 1.055) ** 2.4);
+    return .2126 * v[0] + .7152 * v[1] + .0722 * v[2]; };
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + .05) / (y + .05); };
+  const hue = h => { const [r, g, b] = h.slice(1).match(/\w\w/g).map(x => parseInt(x, 16) / 255);
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    if (!d) return 0;
+    const x = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return ((x * 60) + 360) % 360; };
+  const apart = (a, b) => { const d = Math.abs(hue(a) - hue(b)) % 360; return Math.min(d, 360 - d); };
+  const chroma = h => { const v = h.slice(1).match(/\w\w/g).map(x => parseInt(x, 16) / 255);
+    return Math.max(...v) - Math.min(...v); };
+  /* What makes two colours smear into one is chroma, not hue. Measured against
+     the two pairings this app has already judged by eye: the one he rejected
+     sat 34° apart with chroma 0.60/0.78, and the one he chose sits 38° apart
+     with chroma 0.60/0.64 — all but identical in hue, and told apart only by
+     how loud the second colour is. A hue threshold cannot separate those two,
+     so it would be fitted to noise. Nearly the same hue is still wrong however
+     quiet both are, which is what caught Espresso's caramel beside its tan at
+     5° apart. */
+  const smears = (a, b) => apart(a, b) < 20
+    || (apart(a, b) < 45 && Math.max(chroma(a), chroma(b)) > 0.72);
+
+  let missing = '', drift = '', faint = '', smear = '', unreadable = '';
+  for (const p of list) {
+    for (const mode of ['dark', 'light']) {
+      const b = block(p.id, mode);
+      if (!b) { if (!missing) missing = `${p.id || 'default'} has no ${mode} block`; continue; }
+      /* the menu's copy must say what the stylesheet says */
+      for (const [k, hex] of Object.entries(p[mode])) {
+        const real = varOf(b, k === 'bg' ? 'bg' : k);
+        if (real && real !== hex && !drift)
+          drift = `${p.id || 'default'} ${mode} ${k}: menu ${hex}, stylesheet ${real}`;
+      }
+      const card = varOf(b, 'card'), accent = varOf(b, 'accent'),
+            warn = varOf(b, 'warn'), now = varOf(b, 'now');
+      if (!card || !accent || !warn || !now) continue;
+      for (const [name, col] of [['accent', accent], ['guide', warn], ['progress', now]])
+        if (ratio(col, card) < 4.5 && !faint)
+          faint = `${p.id || 'default'} ${mode} ${name} is ${ratio(col, card).toFixed(1)}:1 on its card`;
+      if (smears(accent, warn) && !smear)
+        smear = `${p.id || 'default'} ${mode}: accent ${accent} sits ${apart(accent, warn).toFixed(0)}°`
+              + ` from guide ${warn}, at chroma ${chroma(accent).toFixed(2)}/${chroma(warn).toFixed(2)}`;
+      /* Buttons filled with a signal colour carry a fixed text colour, which
+         only works while night signals stay light and day signals stay dark. */
+      const on = mode === 'dark' ? '#04161c' : '#ffffff';
+      for (const [name, col] of [['accent', accent], ['progress', now]])
+        if (ratio(on, col) < 4 && !unreadable)
+          unreadable = `${p.id || 'default'} ${mode}: text on a ${name}-filled button is ${ratio(on, col).toFixed(1)}:1`;
+    }
+  }
+  c('every palette has both a night and a day set', !missing, missing);
+  c('the menu swatches match the stylesheet', !drift, drift);
+  c('every signal colour is readable on its card', !faint, faint);
+  c('no accent smears into the study-guide colour', !smear, smear);
+  c('text stays readable on a colour-filled button', !unreadable, unreadable);
+  c('nothing still keys light mode off data-theme', !/data-theme="light"/.test(html),
+    'data-theme holds the palette now; light lives on data-mode');
+}
+
 /* ------------------------------------------------------- input font size */
 /* iOS zooms the page in when a text field smaller than 16px takes focus, and
    never zooms back out, which left the back button off the edge of the screen
@@ -2899,6 +3001,7 @@ suite(boot(decksSrc, srcInline[0], 'source'), 'source', srcHtml);
 terms(boot(decksSrc, srcInline[0], 'terms'), 'source');
 heartGeometry(srcHtml, 'source');
 inputFontSize(srcHtml, 'source');
+themes(srcHtml, 'source');
 
 /* build.ps1 prints a card count from a regex over decks.js, because PowerShell
    cannot evaluate the deck data. That count has been wrong twice — once missing
@@ -2927,6 +3030,7 @@ if (!fs.existsSync(bundlePath)) {
   if (parts.length === 2) suite(boot(parts[0], parts[1], 'bundle'), 'bundle', bundle);
   heartGeometry(bundle, 'bundle');
   inputFontSize(bundle, 'bundle');
+  themes(bundle, 'bundle');
 
   /* Reproduce exactly what build.ps1 would emit and compare the whole file.
      Comparing only the script contents would miss edits to the CSS or markup,

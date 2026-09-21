@@ -15,17 +15,123 @@
     --bg:#0f1020; --bg2:#161930; --card:#1d2038; --card2:#262a45;
     --line:#333757; --text:#e8e6f5; --dim:#918fb5; --accent:#ff7a66;
     --accent-dim:#8f4034; --good:#5ed3a0; --bad:#ef5f6b; --warn:#c9a227;
-    --now:#5fa8a0;
+    --now:#5fa8a0; --on-now:#04161c;
     --radius:12px;
   }
-  html[data-theme="light"]{
+  html[data-mode="light"]{
     /* Sand & Slate: a warm page against cool cards, with the coral and teal
        darkened to hold their contrast on white. */
     --bg:#f4f1ea; --bg2:#fdfdfe; --card:#fdfdfe; --card2:#eae7e0;
     --line:#d9d4ca; --text:#1a1c22; --dim:#5e6069; --accent:#bf4529;
     --accent-dim:#e8b3a8; --good:#127a4c; --bad:#b8352b; --warn:#86610f;
-    --now:#1c6a62;
+    --now:#1c6a62; --on-now:#ffffff;
   }
+
+  /* Ten complete themes. Every colour moves with the theme, including the
+     accent, the mark on study guides, the progress colour and the right/wrong
+     colours — a theme is a different room, not a different wallpaper. Each has
+     a night set and a day set; :root above is the original pair, kept as the
+     default so the link already shared keeps looking like itself. */
+  /* ---- Graphite: cool charcoal, acid lime ---- */
+  html[data-theme="graphite"]{
+    --bg:#141619; --bg2:#1a1d21; --card:#1f2328; --card2:#282d33; --line:#343a41; --text:#e8eaed; --dim:#9198a1;
+    --accent:#c2e85c; --accent-dim:#5c6b2a; --good:#9fd356; --bad:#e2626b; --warn:#e9a06a; --now:#7fa8d4; --on-now:#0e1114;
+  }
+  html[data-theme="graphite"][data-mode="light"]{
+    --bg:#f2f3f4; --bg2:#ffffff; --card:#ffffff; --card2:#e8eaec; --line:#d5d9dd; --text:#16181b; --dim:#5c636c;
+    --accent:#5f7a12; --accent-dim:#cfe08f; --good:#2f6b1f; --bad:#b03340; --warn:#a25a1e; --now:#255d8f; --on-now:#ffffff;
+  }
+
+  /* ---- Greige: warm grey, cobalt ---- */
+  html[data-theme="greige"]{
+    --bg:#191714; --bg2:#201d1a; --card:#272320; --card2:#312c28; --line:#3e3833; --text:#ece7e1; --dim:#a2988c;
+    --accent:#5b8fd9; --accent-dim:#2d4a72; --good:#9ac48e; --bad:#dd6a63; --warn:#cba14a; --now:#9fc08a; --on-now:#14120f;
+  }
+  html[data-theme="greige"][data-mode="light"]{
+    --bg:#f5f2ed; --bg2:#fffdfa; --card:#fffdfa; --card2:#ebe5dc; --line:#dbd3c8; --text:#1d1a16; --dim:#6b6154;
+    --accent:#2f5fae; --accent-dim:#bdd2ee; --good:#2e6b28; --bad:#ab3a33; --warn:#8a6a1e; --now:#4a6b2a; --on-now:#ffffff;
+  }
+
+  /* ---- Slate: blue grey, fuchsia ---- */
+  html[data-theme="slate"]{
+    --bg:#14171c; --bg2:#191d23; --card:#1e232a; --card2:#272d36; --line:#333b45; --text:#e4e8ee; --dim:#8d97a4;
+    --accent:#e07ab8; --accent-dim:#733c5e; --good:#86ceb0; --bad:#e0707e; --warn:#b9a5e0; --now:#7fd4b0; --on-now:#0d1114;
+  }
+  html[data-theme="slate"][data-mode="light"]{
+    --bg:#eef1f5; --bg2:#ffffff; --card:#ffffff; --card2:#e2e7ee; --line:#ccd4de; --text:#141922; --dim:#56616f;
+    --accent:#a52d7a; --accent-dim:#f0bcdc; --good:#186b52; --bad:#b23346; --warn:#5b44a3; --now:#126b52; --on-now:#ffffff;
+  }
+
+  /* ---- Espresso: dark brown, turquoise ---- */
+  html[data-theme="espresso"]{
+    --bg:#171310; --bg2:#1d1815; --card:#241e1a; --card2:#2e2722; --line:#3b322b; --text:#eee6de; --dim:#a4948a;
+    --accent:#56c7c0; --accent-dim:#2a6360; --good:#8fc9a0; --bad:#dd6f66; --warn:#e0a45c; --now:#93a8e8; --on-now:#0f1116;
+  }
+  html[data-theme="espresso"][data-mode="light"]{
+    --bg:#f6f2ec; --bg2:#fffdf9; --card:#fffdf9; --card2:#ece3d8; --line:#ded1c2; --text:#1c1611; --dim:#6d5f52;
+    --accent:#12716b; --accent-dim:#b4e0dc; --good:#2b6a45; --bad:#ac3a31; --warn:#9a5f18; --now:#3b4fa0; --on-now:#ffffff;
+  }
+
+  /* ---- Pewter: green-grey, orchid ---- */
+  html[data-theme="pewter"]{
+    --bg:#151816; --bg2:#1b1f1c; --card:#212522; --card2:#2a2f2b; --line:#363c38; --text:#e7eae7; --dim:#929a94;
+    --accent:#b57ad9; --accent-dim:#5a3d6d; --good:#93cb94; --bad:#dd6f76; --warn:#ddc57a; --now:#7cc2c6; --on-now:#0f1312;
+  }
+  html[data-theme="pewter"][data-mode="light"]{
+    --bg:#f1f3f1; --bg2:#ffffff; --card:#ffffff; --card2:#e6eae7; --line:#d3d9d5; --text:#161a17; --dim:#5d655f;
+    --accent:#6b3fa0; --accent-dim:#d9c6ee; --good:#2c6a33; --bad:#ac3540; --warn:#77611a; --now:#186668; --on-now:#ffffff;
+  }
+
+  /* ---- Ink: deep navy, butter yellow ---- */
+  html[data-theme="ink"]{
+    --bg:#101422; --bg2:#151a2b; --card:#1a2034; --card2:#232a42; --line:#2e3752; --text:#e4e8f2; --dim:#8b95ad;
+    --accent:#f2d16b; --accent-dim:#786434; --good:#7fd0ac; --bad:#e56f7e; --warn:#eb9aa6; --now:#74d4b4; --on-now:#0b1016;
+  }
+  html[data-theme="ink"][data-mode="light"]{
+    --bg:#eef1f8; --bg2:#ffffff; --card:#ffffff; --card2:#e3e8f3; --line:#ccd4e4; --text:#101627; --dim:#556180;
+    --accent:#8a6206; --accent-dim:#f0dca6; --good:#16684f; --bad:#b2334a; --warn:#a93c55; --now:#106b54; --on-now:#ffffff;
+  }
+
+  /* ---- Moss: deep forest, sky ---- */
+  html[data-theme="moss"]{
+    --bg:#111713; --bg2:#161d18; --card:#1c241e; --card2:#242e27; --line:#303c34; --text:#e6ece7; --dim:#8ea093;
+    --accent:#7fc4e8; --accent-dim:#3d6273; --good:#7fc9a8; --bad:#e0716b; --warn:#b9a8dd; --now:#9fd45c; --on-now:#101610;
+  }
+  html[data-theme="moss"][data-mode="light"]{
+    --bg:#eff3ef; --bg2:#ffffff; --card:#ffffff; --card2:#e3eae4; --line:#d0dad2; --text:#131a15; --dim:#576358;
+    --accent:#1f6b96; --accent-dim:#bcdcee; --good:#3c6a1c; --bad:#ab3833; --warn:#5a44a0; --now:#43691a; --on-now:#ffffff;
+  }
+
+  /* ---- Oxblood: deep wine, old gold ---- */
+  html[data-theme="oxblood"]{
+    --bg:#1a1214; --bg2:#211619; --card:#291b1f; --card2:#332329; --line:#412c33; --text:#f0e6e7; --dim:#a8929a;
+    --accent:#e0b955; --accent-dim:#705c2a; --good:#9dbb8e; --bad:#e8737f; --warn:#7fb8b0; --now:#9dbb8e; --on-now:#141010;
+  }
+  html[data-theme="oxblood"][data-mode="light"]{
+    --bg:#f7f1f2; --bg2:#fffdfd; --card:#fffdfd; --card2:#ece0e2; --line:#dfccd0; --text:#1e1416; --dim:#6d5a5f;
+    --accent:#8a6a12; --accent-dim:#e8d9a4; --good:#356633; --bad:#b0333f; --warn:#1c6b62; --now:#3f6634; --on-now:#ffffff;
+  }
+
+  /* ---- Violet Ash: grey violet, icy lilac ---- */
+  html[data-theme="violet"]{
+    --bg:#16151c; --bg2:#1c1a24; --card:#22202c; --card2:#2b2836; --line:#383445; --text:#e9e6f0; --dim:#968fa8;
+    --accent:#c4b5f0; --accent-dim:#5f5878; --good:#8ccfae; --bad:#e57288; --warn:#f0b088; --now:#6fc9d4; --on-now:#0e1316;
+  }
+  html[data-theme="violet"][data-mode="light"]{
+    --bg:#f2f0f7; --bg2:#ffffff; --card:#ffffff; --card2:#e7e4f0; --line:#d6d1e4; --text:#17151f; --dim:#5f5872;
+    --accent:#5a41a8; --accent-dim:#cfc6ea; --good:#20684a; --bad:#b0304c; --warn:#9c5320; --now:#166670; --on-now:#ffffff;
+  }
+
+  /* ---- Onyx: near black, electric blue ---- */
+  html[data-theme="onyx"]{
+    --bg:#0b0c0e; --bg2:#101114; --card:#15171b; --card2:#1d2026; --line:#282c33; --text:#f0f2f5; --dim:#8a9099;
+    --accent:#5b8cff; --accent-dim:#2d4680; --good:#8fe0b0; --bad:#ff5d6c; --warn:#ffb020; --now:#3ddc84; --on-now:#07120b;
+  }
+  html[data-theme="onyx"][data-mode="light"]{
+    --bg:#f7f8fa; --bg2:#ffffff; --card:#ffffff; --card2:#eceef2; --line:#dcdfe5; --text:#0b0c0e; --dim:#575d66;
+    --accent:#1f4fd8; --accent-dim:#bcccf5; --good:#0d7a45; --bad:#c32b3c; --warn:#9a6200; --now:#0d7a45; --on-now:#ffffff;
+  }
+
   *{box-sizing:border-box}
   body{
     margin:0; background:var(--bg); color:var(--text);
@@ -80,6 +186,29 @@
     background:var(--card);border:1px solid var(--line);border-radius:12px;
     padding:12px;box-shadow:0 12px 32px rgba(0,0,0,.28);text-align:center}
   .qrpop.open{display:block}
+
+  /* ---- the palette menu ----
+     Same fixed panel as the QR code. It scrolls rather than running off the
+     bottom of a phone, and every row carries the theme's own colours. */
+  .palpop{position:fixed;top:60px;right:20px;z-index:60;display:none;width:252px;
+    max-height:min(76vh,580px);overflow-y:auto;overscroll-behavior:contain;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:8px;box-shadow:0 12px 32px rgba(0,0,0,.30)}
+  .palpop.open{display:block}
+  .palhead{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+    padding:4px 8px 8px;font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .palrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;
+    padding:7px 8px;border-radius:8px;cursor:pointer;background:none;border:1px solid transparent;
+    color:var(--text);transition:background-color .13s,border-color .13s}
+  .palrow:hover{background:var(--card2)}
+  .palrow.on{border-color:var(--accent)}
+  /* the swatch is the theme's page colour carrying its three signal colours */
+  .palsw{width:40px;height:24px;border-radius:6px;border:1px solid var(--line);flex:none;
+    display:flex;align-items:center;justify-content:center;gap:3px}
+  .palsw i{width:6px;height:6px;border-radius:50%}
+  .palnm{font-size:13.5px;line-height:1.25;min-width:0}
+  .palnm em{display:block;font-style:normal;font-size:11px;color:var(--dim);margin-top:1px}
+  .paltick{margin-left:auto;color:var(--accent);font-size:12px;flex:none}
   /* Always light, whatever the theme — an inverted code will not scan. */
   .qrplate{background:#fff;border-radius:8px;padding:8px;line-height:0}
   .qrurl{color:var(--dim);font-size:11px;margin:9px 0 8px;max-width:190px;word-break:break-all}
@@ -342,7 +471,7 @@
      the badge falls back to the plain one above, which is legible and correct,
      only uncoloured. */
   :root{ --s-l:.76; --s-c:.115; --s-border-l:.52; --s-bg-l:.26 }
-  html[data-theme="light"]{ --s-l:.46; --s-c:.115; --s-border-l:.70; --s-bg-l:.955 }
+  html[data-mode="light"]{ --s-l:.46; --s-c:.115; --s-border-l:.70; --s-bg-l:.955 }
   .badge.scored{
     color:oklch(var(--s-l) var(--s-c) var(--sh));
     border-color:oklch(var(--s-border-l) calc(var(--s-c) * .8) var(--sh));
@@ -530,8 +659,7 @@
   /* The button that carries you forward takes the progress colour rather than
      the accent: green-teal for go, the way a green light reads. */
   .next{margin-top:18px;width:100%;padding:14px;border-radius:10px;background:var(--now);
-    color:#04161c;font-weight:650;font-size:15px}
-  html[data-theme="light"] .next{color:#fff}
+    color:var(--on-now);font-weight:650;font-size:15px}
 
   /* ---- match ---- */
   .matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
@@ -624,7 +752,7 @@
     padding:6px 12px;font-size:12.5px;color:var(--dim);transition:.12s}
   @media (hover: hover){ .rbtn:hover{border-color:var(--accent);color:var(--text)} }
   .rbtn.on{background:var(--accent);border-color:var(--accent);color:#04161c;font-weight:650}
-  html[data-theme="light"] .rbtn.on{color:#fff}
+  html[data-mode="light"] .rbtn.on{color:#fff}
   .rbtn.danger{border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
   .rbtn.danger.on{background:var(--bad);border-color:var(--bad);color:#fff}
 
@@ -754,7 +882,7 @@
      a colour; the light theme's deeper brick sits fine on cream, so it keeps
      the accent. */
   table.browse td.t{font-weight:600;width:34%;color:var(--text)}
-  html[data-theme="light"] table.browse td.t{color:var(--accent)}
+  html[data-mode="light"] table.browse td.t{color:var(--accent)}
   /* which deck a row came from — present but quiet, so it explains an overlap
      without competing with the term or the definition */
   table.browse.chapter td.t{width:26%}
@@ -778,7 +906,7 @@
   .seg button{padding:6px 12px;font-size:12.5px;color:var(--dim);background:var(--card)}
   @media (hover: hover){ .seg button:hover{color:var(--text)} }
   .seg button.on{background:var(--accent);color:#04161c;font-weight:650}
-  html[data-theme="light"] .seg button.on{color:#fff}
+  html[data-mode="light"] .seg button.on{color:#fff}
   /* a term worded two different ways keeps both, stacked and labelled */
   table.browse.chapter .alt + .alt{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
   table.browse.chapter .alt .from{display:block;font-size:11px;color:var(--dim);margin-top:3px}
@@ -9861,13 +9989,66 @@ function record(deckId, patch){
 
 /* ---------- theme ---------- */
 /* Dark by default — these get used at night. The toggle sticks once it's set. */
+/* Two choices that do not interfere: which palette, and day or night. Picking
+   a theme keeps your dark/light setting, and switching to light keeps your
+   theme. The dark/light key is the original one, so anyone who already chose
+   light stays on light. */
+const PALETTES = [
+  { id:'', name:'Indigo', kind:'the original — coral and antique gold',
+    dark:{ bg:'#0f1020', accent:'#ff7a66', warn:'#c9a227', now:'#5fa8a0' },
+    light:{ bg:'#f4f1ea', accent:'#bf4529', warn:'#86610f', now:'#1c6a62' } },
+  { id:'graphite', name:'Graphite', kind:'cool charcoal, acid lime',
+    dark:{ bg:'#141619', accent:'#c2e85c', warn:'#e9a06a', now:'#7fa8d4' },
+    light:{ bg:'#f2f3f4', accent:'#5f7a12', warn:'#a25a1e', now:'#255d8f' } },
+  { id:'greige', name:'Greige', kind:'warm grey, cobalt',
+    dark:{ bg:'#191714', accent:'#5b8fd9', warn:'#cba14a', now:'#9fc08a' },
+    light:{ bg:'#f5f2ed', accent:'#2f5fae', warn:'#8a6a1e', now:'#4a6b2a' } },
+  { id:'slate', name:'Slate', kind:'blue grey, fuchsia',
+    dark:{ bg:'#14171c', accent:'#e07ab8', warn:'#b9a5e0', now:'#7fd4b0' },
+    light:{ bg:'#eef1f5', accent:'#a52d7a', warn:'#5b44a3', now:'#126b52' } },
+  { id:'espresso', name:'Espresso', kind:'dark brown, turquoise',
+    dark:{ bg:'#171310', accent:'#56c7c0', warn:'#e0a45c', now:'#93a8e8' },
+    light:{ bg:'#f6f2ec', accent:'#12716b', warn:'#9a5f18', now:'#3b4fa0' } },
+  { id:'pewter', name:'Pewter', kind:'green-grey, orchid',
+    dark:{ bg:'#151816', accent:'#b57ad9', warn:'#ddc57a', now:'#7cc2c6' },
+    light:{ bg:'#f1f3f1', accent:'#6b3fa0', warn:'#77611a', now:'#186668' } },
+  { id:'ink', name:'Ink', kind:'deep navy, butter yellow',
+    dark:{ bg:'#101422', accent:'#f2d16b', warn:'#eb9aa6', now:'#74d4b4' },
+    light:{ bg:'#eef1f8', accent:'#8a6206', warn:'#a93c55', now:'#106b54' } },
+  { id:'moss', name:'Moss', kind:'deep forest, sky',
+    dark:{ bg:'#111713', accent:'#7fc4e8', warn:'#b9a8dd', now:'#9fd45c' },
+    light:{ bg:'#eff3ef', accent:'#1f6b96', warn:'#5a44a0', now:'#43691a' } },
+  { id:'oxblood', name:'Oxblood', kind:'deep wine, old gold',
+    dark:{ bg:'#1a1214', accent:'#e0b955', warn:'#7fb8b0', now:'#9dbb8e' },
+    light:{ bg:'#f7f1f2', accent:'#8a6a12', warn:'#1c6b62', now:'#3f6634' } },
+  { id:'violet', name:'Violet Ash', kind:'grey violet, icy lilac',
+    dark:{ bg:'#16151c', accent:'#c4b5f0', warn:'#f0b088', now:'#6fc9d4' },
+    light:{ bg:'#f2f0f7', accent:'#5a41a8', warn:'#9c5320', now:'#166670' } },
+  { id:'onyx', name:'Onyx', kind:'near black, electric blue',
+    dark:{ bg:'#0b0c0e', accent:'#5b8cff', warn:'#ffb020', now:'#3ddc84' },
+    light:{ bg:'#f7f8fa', accent:'#1f4fd8', warn:'#9a6200', now:'#0d7a45' } },
+];
+let palette = localStorage.getItem('cvs-palette') || '';
+if (!PALETTES.some(p => p.id === palette)) palette = '';
 let theme = localStorage.getItem('cvs-theme') || 'dark';
-document.documentElement.dataset.theme = theme;
+function applyTheme(){
+  const el = document.documentElement;
+  if (palette) el.dataset.theme = palette; else delete el.dataset.theme;
+  el.dataset.mode = theme;
+}
+applyTheme();
 function toggleTheme(){
   theme = theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = theme;
   localStorage.setItem('cvs-theme', theme);
+  applyTheme();
   render();
+}
+function setPalette(id){
+  palette = id;
+  localStorage.setItem('cvs-palette', id);
+  applyTheme();
+  render();
+  if (palOpen()) drawPalMenu();
 }
 
 /* ---------- share QR ---------- */
@@ -9918,6 +10099,52 @@ function qrPop(){
 }
 function toggleQR(){ qrPop().classList.toggle('open'); }
 
+/* ---------- the palette menu ----------
+   Fixed and on <body> for the same reason as the QR panel: it outlives any
+   re-render of the header. Each row previews the theme in the mode you are
+   already in, so what you see is what picking it gives you. */
+const PAL_ICON =
+  '<svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
+  '<path d="M10 1.6c-4.6 0-8.4 3.5-8.4 7.9 0 4.3 3.4 7.2 7.3 7.2 1.5 0 2.3-.9 2.3-1.9 0-.5-.2-.9-.5-1.2-.3-.3-.4-.6-.4-1 0-.8.7-1.4 1.6-1.4h1.6c2.6 0 4.5-1.8 4.5-4.4 0-3.1-3.3-5.2-8-5.2Z" ' +
+  'fill="none" stroke="currentColor" stroke-width="1.3"/>' +
+  '<circle cx="6.1" cy="7.2" r="1.25" fill="var(--accent)"/>' +
+  '<circle cx="9.9" cy="5.2" r="1.25" fill="var(--warn)"/>' +
+  '<circle cx="13.6" cy="7.4" r="1.25" fill="var(--now)"/>' +
+  '<circle cx="5.6" cy="11.4" r="1.25" fill="var(--good)"/></svg>';
+
+function palPop(){
+  let el = document.getElementById('palpop');
+  if (!el){
+    el = document.createElement('div');
+    el.id = 'palpop'; el.className = 'palpop';
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Theme');
+    document.body.appendChild(el);
+  }
+  return el;
+}
+const palOpen = () => { const el = document.getElementById('palpop');
+  return !!el && el.classList.contains('open'); };
+const closePal = () => { const el = document.getElementById('palpop');
+  if (el) el.classList.remove('open'); };
+function drawPalMenu(){
+  palPop().innerHTML = `<div class="palhead">Theme</div>` + PALETTES.map(p => {
+    const c = p[theme === 'light' ? 'light' : 'dark'];
+    return `<button type="button" class="palrow${p.id === palette ? ' on' : ''}"
+      onclick="setPalette('${p.id}')">
+      <span class="palsw" style="background:${c.bg}"><i style="background:${c.accent}"></i
+        ><i style="background:${c.warn}"></i><i style="background:${c.now}"></i></span>
+      <span class="palnm">${esc(p.name)}<em>${esc(p.kind)}</em></span>
+      <span class="paltick">${p.id === palette ? '✓' : ''}</span>
+    </button>`;
+  }).join('');
+}
+function togglePalette(){
+  const el = palPop();
+  if (el.classList.contains('open')){ el.classList.remove('open'); return; }
+  drawPalMenu();
+  el.classList.add('open');
+}
+
 /* ---------- search box ---------- */
 /* On a phone the box is collapsed behind a button so the decks start near the
    top of the screen; on a wide screen the CSS keeps it open and hides the
@@ -9949,11 +10176,15 @@ function copyLink(btn){
   else done(false);
 }
 
-/* Clicking anywhere else puts it away, which is what a discreet panel should do. */
+/* Clicking anywhere else puts them away, which is what a discreet panel should
+   do. The path rather than the target: picking a theme redraws the menu, which
+   detaches the button that was clicked, and a detached node's closest() finds
+   nothing — so the menu would put itself away every time it was used. */
 document.addEventListener('click', e => {
-  if (!qrOpen()) return;
-  if (e.target.closest('#qrpop') || e.target.closest('.qrbtn')) return;
-  closeQR();
+  const path = e.composedPath ? e.composedPath() : [e.target];
+  const hit = sel => path.some(n => n.nodeType === 1 && n.matches && n.matches(sel));
+  if (qrOpen() && !hit('#qrpop, #qrpop *, .qrbtn, .qrbtn *')) closeQR();
+  if (palOpen() && !hit('#palpop, #palpop *, .palbtn, .palbtn *')) closePal();
 });
 
 /* ---------- helpers ---------- */
@@ -10267,6 +10498,7 @@ function screenHome(){
       <div class="tools">
         <button class="iconbtn sbtn${searchOpen?' on':''}" onclick="toggleSearch()" title="Search decks or terms">${SEARCH_ICON}<span class="btxt"> Search</span></button>
         <button class="iconbtn qrbtn" onclick="toggleQR()" title="Share this study guide">▦<span class="btxt"> Share</span></button>
+        <button class="iconbtn palbtn${palOpen()?' on':''}" onclick="togglePalette()" title="Theme">${PAL_ICON}<span class="btxt"> Theme</span></button>
         <button class="iconbtn" onclick="toggleTheme()" title="${theme==='dark'?'Light mode':'Dark mode'}">${theme==='dark'?'☀':'☾'}<span class="btxt">${theme==='dark'?' Light':' Dark'}</span></button>
       </div>`;
   let html = `
@@ -13543,6 +13775,7 @@ document.addEventListener('keydown', e => {
      the panel would also throw the reader out of whatever they were studying. */
   if (e.key === 'Escape' && archive !== null){ return closeArchive(); }
   if (e.key === 'Escape' && qrOpen()){ return closeQR(); }
+  if (e.key === 'Escape' && palOpen()){ return closePal(); }
   if (e.key === 'Escape'){ return view.screen === 'run' ? go('deck', view.deck) : go('home'); }
   if (e.target.tagName === 'INPUT') return;   /* typing shouldn't fire shortcuts */
   if (keyHandler) keyHandler(e);
