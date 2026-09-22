@@ -8166,7 +8166,7 @@ window.DECKS = [
   id: 'mp49-test-review-2',
   group: 'Medications',
   exam: true,
-  current: true,
+  retired: true,
   added: '2026-09-15',
   termNo: 1,
   course: 'M103 · Medical Procedures',
