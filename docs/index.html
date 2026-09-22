@@ -5413,9 +5413,18 @@ window.DECKS = [
       why: 'Lot numbers let the manufacturer trace adverse events back to a batch. Manufacturer, serial number and expiration date come with it.' },
   ],
 },
-/* Scoped deliberately tight: the three routes as a spec sheet, the seven
-   rights, and the parts. That is what the lab test covers, and the broader
-   chapter decks sit beside it for anyone who wants the rest. */
+/* Scoped tight to the packet: the three routes as a spec sheet, the seven
+   rights, and the parts.
+
+   Every spec card is phrased as its own question and marked `fact`, which is
+   what makes the quiz ask "What gauge is used for an intradermal injection?"
+   and answer it with a gauge. One card per route per spec, rather than one
+   question that names a route and a footnote listing the other two — he asked
+   to be made to produce the number, not to recognise it in a list.
+
+   Leaving the answers as bare values also hands them to valueDecoys, so the
+   wrong choices are manufactured gauges and volumes of the same shape rather
+   than whatever else the deck happens to contain. */
 {
   id: 'mp52-lab',
   group: 'Injections',
@@ -5425,49 +5434,44 @@ window.DECKS = [
   course: 'M103 · Medical Procedures',
   title: 'Lab Test — Injection Specs, 7 Rights & Parts',
   source: 'Injections — lab notes',
-  note: 'Drilled straight off the lab notes. Every number here is the one given in lab.',
+  note: 'Every number here is the one from the packet.',
   cards: [
-    { term: 'Intradermal angle', fact: true, def: '10 to 15 degrees' },
-    { term: 'Intradermal syringe', fact: true, def: 'a 1 mL syringe' },
-    { term: 'Intradermal gauge', fact: true, def: '27 to 30 gauge' },
-    { term: 'Intradermal maximum amount', fact: true, def: 'no more than 0.1 mL' },
-    { term: 'Intradermal aspiration and massage', fact: true, def: 'neither one — no aspiration and no massage' },
-    { term: 'Intradermal locations', fact: true, def: 'the forearm, the upper chest, and the mid back' },
+    { term: 'What angle is an intradermal injection given at', fact: true, def: '10 to 15 degrees' },
+    { term: 'What gauge is used for an intradermal injection', fact: true, def: '27 to 30 gauge' },
+    { term: 'What size syringe is used for an intradermal injection', fact: true, def: 'a 1 mL syringe' },
+    { term: 'What is the maximum amount for an intradermal injection', fact: true, def: 'no more than 0.1 mL' },
+    { term: 'Is an intradermal injection aspirated and massaged', fact: true, def: 'not aspirated and not massaged' },
+    { term: 'Where is an intradermal injection given', fact: true, def: 'given in the forearm, the upper chest, or the mid back' },
 
-    { term: 'Subcutaneous angle', fact: true, def: '45 to 90 degrees' },
-    { term: 'Subcutaneous syringe', fact: true, def: 'a 3 mL syringe' },
-    { term: 'Subcutaneous gauge', fact: true, def: '25 to 27 gauge' },
-    { term: 'Subcutaneous maximum amount', fact: true, def: 'no more than 2 mL' },
-    { term: 'Subcutaneous aspiration and massage', fact: true, def: 'both recommended, neither one mandatory' },
-    { term: 'Subcutaneous locations', fact: true, def: 'the abdomen, the thigh, and the upper arm' },
+    { term: 'What angle is a subcutaneous injection given at', fact: true, def: '45 to 90 degrees' },
+    { term: 'What gauge is used for a subcutaneous injection', fact: true, def: '25 to 27 gauge' },
+    { term: 'What size syringe is used for a subcutaneous injection', fact: true, def: 'a 3 mL syringe' },
+    { term: 'What is the maximum amount for a subcutaneous injection', fact: true, def: 'no more than 2 mL' },
+    { term: 'Is a subcutaneous injection aspirated and massaged', fact: true, def: 'aspirated and massaged, both recommended but neither mandatory' },
+    { term: 'Where is a subcutaneous injection given', fact: true, def: 'given in the abdomen, the thigh, or the upper arm' },
 
-    { term: 'Intramuscular angle', fact: true, def: 'always 90 degrees' },
-    { term: 'Intramuscular syringe', fact: true, def: 'a 5 mL syringe' },
-    { term: 'Intramuscular gauge', fact: true, def: '20 to 23 gauge' },
-    { term: 'Intramuscular maximum amount', fact: true, def: 'no more than 3 mL' },
-    { term: 'Intramuscular aspiration and massage', fact: true, def: 'both mandatory — aspirate and massage every time' },
-    { term: 'Intramuscular locations', fact: true, def: 'the deltoid, the dorsogluteal, the ventrogluteal, and the lateralis' },
+    { term: 'What angle is an intramuscular injection given at', fact: true, def: 'always 90 degrees' },
+    { term: 'What gauge is used for an intramuscular injection', fact: true, def: '20 to 23 gauge' },
+    { term: 'What size syringe is used for an intramuscular injection', fact: true, def: 'a 5 mL syringe' },
+    { term: 'What is the maximum amount for an intramuscular injection', fact: true, def: 'no more than 3 mL' },
+    { term: 'Is an intramuscular injection aspirated and massaged', fact: true, def: 'aspirated and massaged, both mandatory every time' },
+    { term: 'Where is an intramuscular injection given', fact: true, def: 'given in the deltoid, the dorsogluteal, the ventrogluteal, or the lateralis' },
 
     { term: 'Gauge', def: 'the measure of the needle lumen, the bore that the medication passes through' },
-    { term: 'What a higher gauge number means', fact: true, def: 'a lower lumen — the higher the number, the narrower the needle' },
-    { term: 'Which route takes the narrowest needle', fact: true, def: 'intradermal, at 27 to 30 gauge, because the highest gauge numbers are the finest' },
-    { term: 'Which route takes the widest needle', fact: true, def: 'intramuscular, at 20 to 23 gauge, because the lowest gauge numbers are the widest' },
-    { term: 'Which route uses the largest syringe', fact: true, def: 'intramuscular, a 5 mL syringe' },
-    { term: 'Which route uses the smallest syringe', fact: true, def: 'intradermal, a 1 mL syringe' },
-    { term: 'The only route given at a fixed angle', fact: true, def: 'intramuscular, which is always 90 degrees' },
+    { term: 'What a higher gauge number means', fact: true, def: 'a lower lumen, so the higher the number the narrower the needle' },
 
     { term: 'The seven rights', fact: true, def: 'right patient, right drug, right dose, right route, right time, right documentation, and right technique' },
     { term: 'Right Patient', def: 'confirming the full name plus one other identifier from the chart, never with a question that can be answered yes or no' },
     { term: 'Right Drug', def: 'verifying the medication three times before administration and once after' },
     { term: 'Right Dose', def: 'reading the order carefully and double-checking a drug reference if there is any doubt' },
-    { term: 'Right Route', def: 'giving it the ordered way — topical, transdermal, oral or injection — because the wrong one can be dangerous' },
+    { term: 'Right Route', def: 'giving it the ordered way, whether topical, transdermal, oral or injection, because the wrong one can be dangerous' },
     { term: 'Right Time', def: 'giving it on schedule, which is also the reminder to check the expiration date' },
     { term: 'Right Documentation', def: 'recording it after administration, verifying all seven again while writing it down' },
     { term: 'Right Technique', def: 'how the medication is actually given, the skill of the injection itself' },
-    { term: 'How many times the drug is verified', fact: true, def: 'four times — three before administration and once after' },
-    { term: 'Which right comes last, and why', fact: true, def: 'right documentation, because it always follows administration rather than preceding it' },
+    { term: 'How many times the drug is verified', fact: true, def: 'four times, three before administration and once after' },
+    { term: 'Which right always comes last', fact: true, def: 'right documentation, because it follows administration rather than preceding it' },
     { term: 'What checking the time reminds you to do', fact: true, def: 'check the expiration date' },
-    { term: 'How a patient must not be identified', fact: true, def: 'with any question that can be answered yes or no' },
+    { term: 'How a patient must never be identified', fact: true, def: 'with any question that can be answered yes or no' },
 
     { term: 'Parts of a syringe', fact: true, def: 'the barrel, the plunger, the flange, the rubber stopper, and the tip' },
     { term: 'Barrel', def: 'the calibrated cylinder of the syringe that holds the medication' },
@@ -5486,49 +5490,22 @@ window.DECKS = [
     { term: 'Lumen', def: 'the hollow channel running through the needle that the medication travels along' },
     { term: 'Plastic sheath', def: 'the cap that covers and protects the needle until it is used' },
   ],
+  /* The per-spec drilling comes from the cards above, so what is written by
+     hand here is only what a card cannot ask: the comparisons, and the rights
+     and parts questions that turn on a misconception rather than a value. */
   questions: [
-    { q: 'Which injection is given at 10 to 15 degrees?',
-      choices: ['Intradermal', 'Subcutaneous', 'Intramuscular', 'Intravenous'], answer: 0,
-      why: 'It is the shallowest of the three, because the solution has to stay in the dermis.' },
-    { q: 'Which injection is always given at 90 degrees?',
-      choices: ['Intramuscular', 'Intradermal', 'Subcutaneous', 'All three'], answer: 0,
-      why: 'Subcutaneous has a range of 45 to 90. Intramuscular is the one with no range at all.' },
-    { q: 'What is the maximum amount for an intradermal injection?',
-      choices: ['0.1 mL', '1 mL', '2 mL', '3 mL'], answer: 0,
-      why: 'A 1 mL syringe is the size used, but only a tenth of it is ever given.' },
-    { q: 'Which route is aspiration and massage mandatory for?',
-      choices: ['Intramuscular', 'Intradermal', 'Subcutaneous', 'None of them'], answer: 0,
-      why: 'Subcutaneous recommends both. Intradermal does neither. Only intramuscular requires both.' },
-    { q: 'Which route calls for no aspiration and no massage?',
-      choices: ['Intradermal', 'Subcutaneous', 'Intramuscular', 'All routes need both'], answer: 0,
-      why: 'Massaging would move the solution out of the dermis, and there is no vessel to aspirate that shallow.' },
-    { q: 'Which gauge range is intramuscular?',
-      choices: ['20 to 23', '25 to 27', '27 to 30', '18 to 19'], answer: 0,
-      why: 'Muscle takes the widest needle, and the widest needles carry the lowest gauge numbers.' },
-    { q: 'Which gauge range is intradermal?',
-      choices: ['27 to 30', '25 to 27', '20 to 23', '18 to 21'], answer: 0,
-      why: 'The finest needle of the three, which is why it carries the highest gauge numbers.' },
-    { q: 'A higher gauge number means the lumen is:',
-      choices: ['Lower', 'Higher', 'Unchanged', 'Gauge does not describe the lumen'], answer: 0,
-      why: 'The scale runs backwards. Gauge is the lumen, and a bigger number is a narrower bore.' },
-    { q: 'Which syringe size goes with a subcutaneous injection?',
-      choices: ['3 mL', '1 mL', '5 mL', '10 mL'], answer: 0,
-      why: '1 mL is intradermal and 5 mL is intramuscular. The maximum given subcutaneously is 2 mL.' },
-    { q: 'Deltoid, dorsogluteal, ventrogluteal and lateralis are sites for which route?',
-      choices: ['Intramuscular', 'Subcutaneous', 'Intradermal', 'Intravenous'], answer: 0,
-      why: 'All four are muscles. Abdomen, thigh and upper arm are the subcutaneous sites.' },
-    { q: 'Forearm, upper chest and mid back are sites for which route?',
-      choices: ['Intradermal', 'Subcutaneous', 'Intramuscular', 'Any of them'], answer: 0,
-      why: 'They are flat and easy to read a reaction on, which is what a skin test needs.' },
+    { q: 'Compared with a 20 gauge needle, a 30 gauge needle has a lumen that is:',
+      choices: ['Narrower', 'Wider', 'The same width', 'Longer'], answer: 0,
+      why: 'Gauge is the lumen and the scale runs backwards, so 30 is finer than 20. Length is measured separately from gauge.' },
     { q: 'How many times is the drug verified in total?',
-      choices: ['Four — three before and one after', 'Three, all before', 'Twice, before and after', 'Once, at the bedside'], answer: 0,
+      choices: ['Four, three before and one after', 'Three, all before', 'Twice, before and after', 'Once, at the bedside'], answer: 0,
       why: 'The check after administration is the one people forget, and it is part of right drug.' },
     { q: 'Which of these is NOT one of the seven rights?',
       choices: ['Right diagnosis', 'Right technique', 'Right documentation', 'Right route'], answer: 0,
       why: 'The seven are patient, drug, dose, route, time, documentation and technique.' },
     { q: 'You ask a patient "Are you John Smith?" What is wrong with that?',
-      choices: ['It can be answered yes or no, so it does not confirm identity', 'It uses the full name', 'It should be asked twice', 'Nothing is wrong with it'], answer: 0,
-      why: 'Have them state their name, plus one other identifier from the chart.' },
+      choices: ['It can be answered yes or no', 'It uses the full name instead of initials', 'It should be asked twice for safety', 'It should come after the dose is drawn'], answer: 0,
+      why: 'Have them state their name, plus one other identifier from the chart. A yes-or-no question confirms nothing.' },
     { q: 'Checking the time also reminds you to check:',
       choices: ['The expiration date', 'The lot number', 'The patient allergies', 'The needle gauge'], answer: 0,
       why: 'Right time is the point in the sequence where the date on the vial gets looked at.' },
@@ -5621,19 +5598,19 @@ window.DECKS = [
       choices: ['1 mL syringe, 0.1 mL', '3 mL syringe, 0.1 mL', '1 mL syringe, 1.0 mL', '3 mL syringe, 0.5 mL'], answer: 0,
       why: 'A 1 mL syringe reads in tenths, which is the only way to measure 0.1 mL accurately.' },
     { q: 'Which injection requires neither aspiration nor massage?',
-      choices: ['Intradermal', 'Subcutaneous', 'Intramuscular', 'All three require both'], answer: 0,
+      choices: ['Intradermal', 'Subcutaneous', 'Intramuscular', 'Intravenous'], answer: 0,
       why: 'Massage would drive the solution out of the dermis, and there is no vessel to aspirate at that depth.' },
     { q: 'A needle has a wider lumen when the gauge number is:',
       choices: ['Lower', 'Higher', 'Even', 'Gauge does not describe the lumen'], answer: 0,
       why: 'The scale runs backwards. A 21 gauge is wider than a 25 gauge, which is why thick medications take the low numbers.' },
     { q: 'Which gluteal site is preferred, and why?',
-      choices: ['Ventrogluteal, because the sciatic nerve makes the dorsogluteal riskier', 'Dorsogluteal, because it holds more volume', 'Dorsogluteal, because it is easier to landmark', 'Neither is used for injections'], answer: 0,
+      choices: ['Ventrogluteal, because the sciatic nerve makes the dorsogluteal riskier', 'Dorsogluteal, because it holds more volume', 'Ventrogluteal, because it absorbs medication faster', 'Dorsogluteal, because it is easier to landmark'], answer: 0,
       why: 'The sciatic nerve runs through the dorsogluteal region, so an injury there can be permanent.' },
     { q: 'Which is the preferred intramuscular site for an infant?',
       choices: ['Vastus lateralis', 'Deltoid', 'Dorsogluteal', 'Ventrogluteal'], answer: 0,
       why: 'It is the best developed muscle an infant has, and it sits well away from major nerves.' },
     { q: 'A Mantoux test is read:',
-      choices: ['48 to 72 hours after placement', 'After 20 minutes', 'At 24 hours', 'At one week'], answer: 0,
+      choices: ['48 to 72 hours after placement', '20 minutes after placement', '24 hours after placement', '7 days after placement'], answer: 0,
       why: 'The patient has to be told to come back before they leave, or the test is wasted.' },
     { q: 'You aspirate before an intramuscular injection and blood appears in the syringe. What do you do?',
       choices: ['Withdraw the needle and start over with a fresh dose', 'Inject more slowly', 'Advance the needle slightly and inject', 'Massage the site and inject'], answer: 0,
@@ -5642,7 +5619,7 @@ window.DECKS = [
       choices: ['2 mL', '0.1 mL', '1 mL', '3 mL'], answer: 0,
       why: 'The fat layer has nowhere to put more than that. 3 mL is the intramuscular maximum.' },
     { q: 'Which way does the bevel face for an intradermal injection?',
-      choices: ['Upward', 'Downward', 'To the side', 'It does not matter'], answer: 0,
+      choices: ['Upward', 'Downward', 'To the side', 'Toward the wrist'], answer: 0,
       why: 'Bevel up opens the needle toward the surface, so the solution lifts the dermis into a wheal.' },
     { q: 'A subcutaneous injection is given at what angle?',
       choices: ['45 degrees', '15 degrees', '25 degrees', '90 degrees'], answer: 0,
@@ -5651,7 +5628,7 @@ window.DECKS = [
       choices: ['Intramuscular', 'Intradermal', 'Subcutaneous', 'Topical'], answer: 0,
       why: 'Muscle is well supplied with blood, so part of the dose acts at once and the rest follows steadily.' },
     { q: 'Which gauge range is used intramuscularly?',
-      choices: ['20 to 23', '25 to 27', '27 to 30', '31 to 33'], answer: 0,
+      choices: ['20 to 23', '25 to 27', '27 to 30', '22 to 25'], answer: 0,
       why: 'Muscle takes thicker medication, and the wider lumen of a low gauge number is what lets it through.' },
     { q: 'How is the skin handled for an intramuscular injection?',
       choices: ['Spread taut between the thumb and finger', 'Pinched into a fold', 'Stretched aside and released after the needle is in', 'Left alone entirely'], answer: 0,
@@ -5747,7 +5724,7 @@ window.DECKS = [
       choices: ['Giving a vaccine made from dead or weakened agents', 'Recovering from the illness', 'Antibodies passed from mother to infant', 'Taking an antibiotic'], answer: 0,
       why: 'It triggers the antibody response without making the patient go through the disease.' },
     { q: 'Vaccines are categorised into which three types?',
-      choices: ['Live attenuated pathogens, pathogenic toxins, killed pathogens', 'Oral, injected, inhaled', 'Bacterial, viral, fungal', 'Primary, booster, seasonal'], answer: 0,
+      choices: ['Live attenuated, pathogenic toxins, killed', 'Oral, injected, inhaled', 'Bacterial, viral, fungal', 'Primary, booster, seasonal'], answer: 0,
       why: 'The type determines how strong the immune response is and how often a booster is needed.' },
     { q: 'What is the hub of a needle?',
       choices: ['The wider base that attaches to the syringe', 'The hollow channel through the needle', 'The sharpened end', 'The flared rim of the barrel'], answer: 0,
@@ -11583,7 +11560,17 @@ function valueDecoys(def, n){
 function autoQuestions(d){
   const out = [];
   d.cards.forEach(card => {
-    const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def));
+    /* Distractors have to be the same SHAPE as the answer. A value answer is
+       already safe, because it takes manufactured values rather than anything
+       from the deck — but an answer in words was drawing from the whole deck,
+       and in a deck of specifications most of the deck is bare measurements.
+       That produced "10 to 15 degrees" offered as an answer to where an
+       injection is given: wrong in a way that needs no knowledge to see, which
+       hands the question away. Match on shape and the siblings win, because
+       the other routes' sites are then the only things left to choose from. */
+    const shape = valueAnswer(card.def);
+    const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def)
+                                  && valueAnswer(c.def) === shape);
     if (pool.length < 3) return;
 
     /* Each question carries its source card so the quiz can avoid asking the

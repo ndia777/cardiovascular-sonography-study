@@ -2286,7 +2286,17 @@ function valueDecoys(def, n){
 function autoQuestions(d){
   const out = [];
   d.cards.forEach(card => {
-    const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def));
+    /* Distractors have to be the same SHAPE as the answer. A value answer is
+       already safe, because it takes manufactured values rather than anything
+       from the deck — but an answer in words was drawing from the whole deck,
+       and in a deck of specifications most of the deck is bare measurements.
+       That produced "10 to 15 degrees" offered as an answer to where an
+       injection is given: wrong in a way that needs no knowledge to see, which
+       hands the question away. Match on shape and the siblings win, because
+       the other routes' sites are then the only things left to choose from. */
+    const shape = valueAnswer(card.def);
+    const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def)
+                                  && valueAnswer(c.def) === shape);
     if (pool.length < 3) return;
 
     /* Each question carries its source card so the quiz can avoid asking the
