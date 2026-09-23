@@ -7893,7 +7893,7 @@ window.DECKS = [
 {
   id: 'mt5-guide',
   group: 'Chapter 5',
-  current: true,
+  retired: true,
   exam: true,
   added: '2026-09-09',
   termNo: 1,
@@ -7959,7 +7959,7 @@ window.DECKS = [
 {
   id: 'mt6-guide',
   group: 'Chapter 6',
-  current: true,
+  retired: true,
   exam: true,
   added: '2026-09-09',
   termNo: 1,
@@ -9265,6 +9265,141 @@ window.DECKS = [
       choices: ['A foreign antigen resembling a self antigen', 'A virus picking up host proteins',
         'Fetal cells persisting in the mother', 'An inherited lack of T cells'], answer: 0,
       why: 'Heart valve cells resemble strep bacteria, so antibodies against the infection attack the valves too.' }
+  ]
+},
+{
+  id: 'mt7-guide',
+  group: 'Chapter 7',
+  current: true,
+  exam: true,
+  added: '2026-09-23',
+  termNo: 1,
+  course: 'M159 · Medical Terminology 1',
+  title: 'Ch. 7 — Respiratory: Study Guide',
+  source: 'Chapter 7 — instructor study guide (respiratory system)',
+  /* Fifty-one description/answer pairs, one card each, in the guide's own
+     wording with only the grammar smoothed where a sentence was written to
+     read forwards ("A/An X is ...") rather than as a definition.
+
+     Three answers the guide states more loosely than the chapter does keep the
+     guide's wording in the definition, because that is what a question will
+     use, and carry the fuller fact in a note: otolaryngologist (the guide stops
+     at "the head"), tuberculosis (the guide never says what kind of disease it
+     is), and asbestosis (which is a pneumoconiosis, though the guide does not
+     name it as one).
+
+     The confusable pairs this chapter turns on are all here and are what the
+     written questions test: tracheotomy against tracheostomy, thoracotomy
+     against thoracentesis, hypoxia against hypoxemia, hemothorax against
+     pneumothorax against pyothorax. */
+  cards: [
+    /* ---- structures ---- */
+    { term: 'Mediastinum', def: 'the middle section of the chest cavity, located between the lungs' },
+    { term: 'Alveoli', also: ['Air sacs'], def: 'the very small, grapelike clusters found at the end of each bronchiole' },
+
+    /* ---- specialists ---- */
+    { term: 'Pulmonologist', def: 'a physician who specializes in diagnosing and treating diseases and disorders of the respiratory system' },
+    { term: 'Otolaryngologist', def: 'a physician with specialized training in the diagnosis and treatment of diseases and disorders of the head',
+      note: 'Usually written out in full as the ears, nose, throat, head and neck.' },
+
+    /* ---- equipment and medication ---- */
+    { term: 'Metered-dose inhaler (MDI)', also: ['MDI', 'Metered-dose inhaler'],
+      def: 'a device that administers a specific amount of a medication such as a bronchodilator in aerosol form' },
+    { term: 'Nebulizer', def: 'an electronic device that pumps air or oxygen through a liquid medicine to turn it into a mist, which is then inhaled by the patient via a face mask or mouthpiece' },
+    { term: 'Pulse oximeter', def: 'an external monitor placed on the patient’s fingertip or earlobe to measure the oxygen saturation level in the blood' },
+    { term: 'Spirometer', def: 'a recording device that measures the amount of air inhaled or exhaled, the volume, and the length of time required for each breath' },
+    { term: 'Bronchodilator', def: 'an inhaled medication that relaxes and expands the bronchial passages into the lungs' },
+    { term: 'Antitussive', also: ['Cough medicine'], def: 'a medication administered to prevent or relieve coughing' },
+
+    /* ---- procedures ---- */
+    { term: 'Emergency tracheotomy', also: ['Tracheotomy'],
+      def: 'a procedure in which an incision is made into the trachea to gain access to the airway below a blockage' },
+    { term: 'Tracheostomy', def: 'the surgical creation of a stoma into the trachea to insert a temporary or permanent tube to facilitate breathing' },
+    { term: 'Thoracotomy', def: 'a surgical incision into the chest walls to open the pleural cavity for biopsy or treatment' },
+    { term: 'Thoracentesis', def: 'the surgical puncture of the chest wall with a needle to obtain fluid from the pleural cavity' },
+    { term: 'Bronchoscopy', def: 'the visual examination of the bronchi using a bronchoscope' },
+
+    /* ---- breathing patterns ---- */
+    { term: 'Eupnea', def: 'easy or normal breathing' },
+    { term: 'Dyspnea', also: ['Shortness of breath', 'SOB'], def: 'difficult or labored breathing' },
+    { term: 'Tachypnea', def: 'an abnormally rapid rate of respiration, usually of more than 20 breaths per minute' },
+    { term: 'Bradypnea', def: 'an abnormally slow rate of respiration, usually of less than 10 breaths per minute' },
+    { term: 'Hyperpnea', def: 'breathing that is deeper and more rapid than is normal at rest, commonly associated with exertion' },
+    { term: 'Hypopnea', def: 'shallow or slow respiration' },
+    { term: 'Cheyne-Stokes respiration', def: 'an irregular pattern of breathing characterized by alternating rapid or shallow respiration followed by slower respiration or apnea' },
+
+    /* ---- oxygen and carbon dioxide ---- */
+    { term: 'Hypoxia', def: 'the condition of having deficient oxygen levels in the body’s tissues' },
+    { term: 'Hypoxemia', def: 'the condition of having low oxygen levels in the blood, usually due to respiratory disorders or heart conditions' },
+    { term: 'Anoxia', def: 'the absence of oxygen from the body’s tissues and organs even though there is an adequate flow of blood' },
+    { term: 'Hypercapnia', def: 'the abnormal buildup of carbon dioxide in the blood' },
+    { term: 'Asphyxia', def: 'the loss of consciousness that occurs when the body cannot get the oxygen it needs to function' },
+    { term: 'Cyanosis', def: 'a bluish discoloration of the skin and mucous membranes caused by a lack of adequate oxygen in the blood' },
+
+    /* ---- the pleural cavity ---- */
+    { term: 'Hemothorax', def: 'a collection of blood in the pleural cavity' },
+    { term: 'Pneumothorax', def: 'the accumulation of air in the pleural space resulting in a pressure imbalance that causes the lung to fully or partially collapse' },
+    { term: 'Pyothorax', also: ['Empyema of the pleural cavity'],
+      def: 'the presence of pus in the pleural cavity between the layers of the pleural membrane' },
+    { term: 'Empyema', def: 'a collection of pus in a body cavity' },
+    { term: 'Pleurisy', also: ['Pleuritis'], def: 'an inflammation of the pleura, the membranes that cover the lungs and line the pleural cavity' },
+
+    /* ---- disease and disorder ---- */
+    { term: 'Asthma', def: 'a chronic inflammatory disease of the bronchial tubes, often triggered by an allergic reaction' },
+    { term: 'Chronic obstructive pulmonary disease (COPD)', also: ['COPD', 'Chronic obstructive pulmonary disease'],
+      def: 'the progressive, long-term loss of lung function, usually due to smoking' },
+    { term: 'Cystic fibrosis', def: 'a life-threatening genetic disorder in which the lungs and pancreas are clogged with large quantities of abnormally thick mucus' },
+    { term: 'Pneumonia', def: 'a serious inflammation of the lungs in which the alveoli and air passages fill with pus and other fluids' },
+    { term: 'Tuberculosis (TB)', also: ['TB', 'Tuberculosis'],
+      def: 'a disease that usually attacks the lungs, although it can also affect other parts of the body',
+      note: 'A contagious bacterial infection, which is why it is reportable and why exposure is screened for.' },
+    { term: 'Diphtheria', def: 'an acute bacterial infection of the throat and upper respiratory tract' },
+    { term: 'Pertussis', also: ['Whooping cough'],
+      def: 'a contagious bacterial infection of the upper respiratory tract characterized by recurrent bouts of a paroxysmal cough, followed by breathlessness and a noisy inspiration' },
+    { term: 'Croup', def: 'an acute respiratory infection in children and infants characterized by obstruction of the larynx, hoarseness, and swelling around the vocal cords resulting in a barking cough and stridor' },
+    { term: 'Atelectasis', def: 'the incomplete expansion of part or all of a lung due to a blockage of the air passages or pneumothorax' },
+    { term: 'Pneumoconiosis', def: 'any fibrosis of the lung tissues caused by dust in the lungs after prolonged environmental or occupational contact' },
+    { term: 'Asbestosis', def: 'a lung disease caused by asbestos particles in the lungs, usually occurring after working with asbestos',
+      note: 'One of the pneumoconioses, named for the dust that caused it.' },
+    { term: 'Bronchospasm', def: 'a contraction of the smooth muscle in the walls of the bronchi and bronchioles, tightening and squeezing the airway shut' },
+    { term: 'Bronchorrhea', def: 'an excessive discharge of mucus from the bronchi' },
+    { term: 'Laryngitis', def: 'an inflammation of the larynx, also commonly used to describe the voice loss caused by that inflammation' },
+    { term: 'Aphonia', def: 'the loss of the ability of the larynx to produce normal speech sounds' },
+    { term: 'Dysphonia', def: 'difficulty in speaking, which may include any impairment in vocal quality such as hoarseness, weakness, or the cracking of a boy’s voice during puberty' },
+    { term: 'Hemoptysis', def: 'the expectoration of blood or blood-stained sputum derived from the lungs or bronchial tubes as the result of a pulmonary or bronchial hemorrhage' },
+    { term: 'Epistaxis', def: 'bleeding from the nose that may be caused by dry air, injury, medication to prevent blood clotting, or high blood pressure' },
+  ],
+  questions: [
+    { q: 'Which procedure creates a stoma to hold a breathing tube?',
+      choices: ['Tracheostomy', 'Tracheotomy', 'Thoracotomy', 'Thoracentesis'], answer: 0,
+      why: 'A tracheotomy is the incision itself, made in an emergency to get below a blockage. The -stomy is the opening that stays.' },
+    { q: 'A needle is put through the chest wall to draw fluid off the pleural cavity. That is a:',
+      choices: ['Thoracentesis', 'Thoracotomy', 'Tracheostomy', 'Bronchoscopy'], answer: 0,
+      why: 'A thoracotomy cuts the chest wall open. -centesis is the puncture, and it is what drains a pleural effusion.' },
+    { q: 'Which term is low oxygen in the BLOOD specifically?',
+      choices: ['Hypoxemia', 'Hypoxia', 'Anoxia', 'Hypercapnia'], answer: 0,
+      why: 'The -emia ending puts it in the blood. Hypoxia is the tissues, and anoxia is no oxygen in them at all.' },
+    { q: 'Breathing at more than 20 breaths per minute is:',
+      choices: ['Tachypnea', 'Bradypnea', 'Hyperpnea', 'Hypopnea'], answer: 0,
+      why: 'Tachy- is the rate. Hyperpnea is depth as well as rate, and it is normal during exertion.' },
+    { q: 'Pus in the pleural cavity is:',
+      choices: ['Pyothorax', 'Hemothorax', 'Pneumothorax', 'Atelectasis'], answer: 0,
+      why: 'Pyo- is pus, hemo- is blood, pneumo- is air. Atelectasis is the collapse that any of them can cause.' },
+    { q: 'Which device measures how much air is moved and how long each breath takes?',
+      choices: ['Spirometer', 'Pulse oximeter', 'Nebulizer', 'Metered-dose inhaler'], answer: 0,
+      why: 'A pulse oximeter reads saturation off a fingertip. The other two deliver medication rather than measure anything.' },
+    { q: 'Complete loss of the voice is:',
+      choices: ['Aphonia', 'Dysphonia', 'Laryngitis', 'Bronchorrhea'], answer: 0,
+      why: 'A- is without, dys- is difficult. Laryngitis is the inflammation that often causes either one.' },
+    { q: 'Which physician would you send a patient with a chronic lung disease to?',
+      choices: ['Pulmonologist', 'Otolaryngologist', 'Cardiologist', 'Rheumatologist'], answer: 0,
+      why: 'An otolaryngologist covers the upper structures. Below that, the lungs are the pulmonologist’s.' },
+    { q: 'Alternating rapid breathing and slow breathing or apnea describes:',
+      choices: ['Cheyne-Stokes respiration', 'Hyperpnea', 'Eupnea', 'Bradypnea'], answer: 0,
+      why: 'The others are each a single steady pattern. Cheyne-Stokes is the cycling between two.' },
+    { q: 'Coughing up blood from the lungs is:',
+      choices: ['Hemoptysis', 'Epistaxis', 'Hemothorax', 'Cyanosis'], answer: 0,
+      why: 'Epistaxis is a nosebleed and hemothorax is blood in the pleural cavity, neither of which is expectorated.' },
   ]
 },
 ];
