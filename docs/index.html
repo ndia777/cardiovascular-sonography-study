@@ -459,23 +459,33 @@
     font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .deck .meta{font-size:12.5px;color:var(--dim)}
   .badges{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
-  .badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--card2);
+  /* No fill on any badge. A filled chip reads as a button, and a row of them
+     under every deck was the loudest thing on the page — the scores especially,
+     which are the least important part of a card. Outlines carry the same
+     information at a fraction of the weight, and they keep the whole row at one
+     weight so a neutral badge never outranks a graded one. */
+  .badge{font-size:11px;padding:2px 8px;border-radius:20px;background:transparent;
     color:var(--dim);border:1px solid var(--line)}
   .badge.on{color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent)}
-  /* A score badge takes its hue from --sh, set per badge; everything else is
-     fixed here so the whole scale shares one weight and one saturation and
-     reads as a family. Chroma is kept low deliberately — this has to sit beside
-     the amber "Study guide" badge without either shouting.
+  /* A score badge takes its hue from --sh, set per badge; the lightness is
+     fixed here so the whole scale shares one weight and reads as a family.
 
-     If a browser has no oklch these three declarations are simply dropped and
-     the badge falls back to the plain one above, which is legible and correct,
+     --s-c is NOT fixed. It was, at .115 for every theme, and that is what made
+     the scores shout: palette accents run from .082 chroma (Espresso) to .216
+     (Onyx), so one hard-coded number was louder than the theme's own accent in
+     seven of the twenty-two palettes and duller than it in others. applyTheme
+     now measures the live accent and scales this to it, so the grading sits at
+     the same relative loudness whichever theme is on. The values below are the
+     fallback for a browser that never runs it.
+
+     If a browser has no oklch these declarations are simply dropped and the
+     badge falls back to the plain one above, which is legible and correct,
      only uncoloured. */
-  :root{ --s-l:.76; --s-c:.115; --s-border-l:.52; --s-bg-l:.26 }
-  html[data-mode="light"]{ --s-l:.46; --s-c:.115; --s-border-l:.70; --s-bg-l:.955 }
+  :root{ --s-l:.76; --s-c:.09; --s-border-l:.52 }
+  html[data-mode="light"]{ --s-l:.46; --s-c:.09; --s-border-l:.70 }
   .badge.scored{
     color:oklch(var(--s-l) var(--s-c) var(--sh));
-    border-color:oklch(var(--s-border-l) calc(var(--s-c) * .8) var(--sh));
-    background:oklch(var(--s-bg-l) calc(var(--s-c) * .45) var(--sh))}
+    border-color:oklch(var(--s-border-l) calc(var(--s-c) * .8) var(--sh))}
 
   /* ---- deck menu ---- */
   /* No box: the arrow and the word are enough, and a bordered button up here
@@ -10347,10 +10357,53 @@ const PALETTES = [
 let palette = localStorage.getItem('cvs-palette') || '';
 if (!PALETTES.some(p => p.id === palette)) palette = '';
 let theme = localStorage.getItem('cvs-theme') || 'dark';
+/* OKLab chroma of a resolved colour. Only the chroma is wanted, so the hue and
+   lightness are computed and thrown away rather than being worked around. */
+function chromaOf(cssColor){
+  /* parented on documentElement, not body: applyTheme runs while the document
+     is still parsing and there is no body to append to yet */
+  const probe = document.createElement('span');
+  probe.style.cssText = 'position:absolute;visibility:hidden';
+  probe.style.color = cssColor;
+  document.documentElement.appendChild(probe);
+  const px = getComputedStyle(probe).color.match(/[\d.]+/g);
+  probe.remove();
+  if (!px || px.length < 3) return null;
+  const lin = v => (v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+  const [r, g, b] = px.slice(0, 3).map(v => lin(Number(v) / 255));
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const A = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
+  return Math.hypot(A, B);
+}
+
+/* The score scale borrows its saturation from whatever palette is on, so a
+   muted theme gets muted grading and a vivid one gets vivid grading. Clamped at
+   both ends: below the floor the red and the green stop being distinguishable,
+   above the ceiling the badges start competing with the accent again. */
+const SCORE_CHROMA = 0.55, SCORE_MIN = 0.035, SCORE_MAX = 0.105;
+function tuneScoreChroma(){
+  /* Measuring a colour needs a real layout engine. Where there is none — a
+     stubbed DOM, an old browser — the stylesheet's own --s-c stands, which is
+     the middle of the range this would have picked. */
+  try {
+    const el = document.documentElement;
+    const accent = getComputedStyle(el).getPropertyValue('--accent').trim();
+    if (!accent) return;
+    const c = chromaOf(accent);
+    if (c == null) return;
+    el.style.setProperty('--s-c',
+      Math.max(SCORE_MIN, Math.min(SCORE_MAX, c * SCORE_CHROMA)).toFixed(3));
+  } catch { /* leave the stylesheet value in place */ }
+}
+
 function applyTheme(){
   const el = document.documentElement;
   if (palette) el.dataset.theme = palette; else delete el.dataset.theme;
   el.dataset.mode = theme;
+  tuneScoreChroma();
 }
 applyTheme();
 function toggleTheme(){
