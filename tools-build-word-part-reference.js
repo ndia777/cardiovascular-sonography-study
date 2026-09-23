@@ -11,8 +11,11 @@
    to be edited to keep this current. A test re-runs this logic and fails if the
    two ever drift. Adding Chapter 5 later means re-running this file. */
 const fs = require('fs');
-const FILE = 'C:/Users/nicho/Documents/Cardiovascular Sonography/Study Guides/decks.js';
+const path = require('path');
 const vm = require('vm');
+/* Relative to this file, so the tool travels with the folder rather than
+   depending on one machine's absolute path. */
+const FILE = path.join(__dirname, 'decks.js');
 
 const raw = fs.readFileSync(FILE, 'utf8');
 const NL = raw.includes('\r\n') ? '\r\n' : '\n';
@@ -66,7 +69,22 @@ const OVERRIDE = {
   /* Both readings are correct and the chapters each teach one; the reference
      carries both rather than making a lookup pick a side. */
   'hypo-'  : 'below, deficient or decreased',
-  '-pathy' : 'disease, suffering, feeling, emotion'
+  '-pathy' : 'disease, suffering, feeling, emotion',
+
+  /* Chapter 7 (2026-09-23) reworded eight parts Chapter 1 had already taught.
+     Chapter 1 is retired and frozen, so the disagreement can only be settled
+     here. Left to the fallback, "last chapter wins" would have quietly traded
+     Chapter 1's fuller reading of -graphy and hyper- for a thinner one, which
+     is the exact failure this table exists to prevent. The other six take
+     Chapter 7's wording because it is the better of the two. */
+  'pneum/o' : 'lung or air',
+  '-dynia'  : 'pain',
+  '-graphy' : 'the process of producing a picture or record',
+  '-ostomy' : 'the surgical creation of an artificial opening',
+  '-otomy'  : 'a surgical incision, a cutting into',
+  '-rrhea'  : 'abnormal flow or discharge',
+  '-scopy'  : 'direct visual examination',
+  'hyper-'  : 'excessive or increased'
 };
 
 function resolve(found) {
@@ -106,7 +124,21 @@ const META = {
     blurb: 'Every suffix taught so far, from all chapters' }
 };
 
-function renderDeck(kind, entries) {
+/* The term the reference belongs to is taken from the decks it was harvested
+   from rather than hard-coded, so this keeps working when the course moves to a
+   later term. Emitting it at all is the other half of the 2026-09-23 bug: the
+   field was added to the data after this generator was written, so a rebuild
+   silently produced three decks with no termNo and the term checks failed. */
+function termOfCourse(DECKS) {
+  const terms = DECKS
+    .filter(d => d.course.startsWith('M159') && !REF_IDS.includes(d.id))
+    .map(d => d.termNo)
+    .filter(t => t != null);
+  if (!terms.length) throw new Error('no M159 chapter deck declares a termNo');
+  return Math.max(...terms);
+}
+
+function renderDeck(kind, entries, termNo) {
   const m = META[kind];
   const rows = entries
     .filter(e => e.kind === kind)
@@ -117,6 +149,7 @@ function renderDeck(kind, entries) {
     `  id: '${m.id}',`,
     '  reference: true,',
     `  added: '2026-08-20',`,
+    `  termNo: ${termNo},`,
     `  course: 'M159 · Medical Terminology 1',`,
     `  title: '${m.title}',`,
     `  source: '${m.blurb}',`,
@@ -139,20 +172,78 @@ for (const k of ['prefix', 'root', 'suffix'])
 console.log('hand-resolved   :', Object.keys(OVERRIDE).length);
 console.log('unresolved      :', conflicts.length, conflicts.map(c => c.part).join(' ') || '(none)');
 
-/* Strip any previous run before inserting, so this is safe to re-run. */
-let s = raw;
-for (const id of REF_IDS) {
-  const at = s.indexOf(`  id: '${id}',`);
-  if (at < 0) continue;
-  const open = s.lastIndexOf('{', at);
-  const close = s.indexOf(NL + '},', at);
-  s = s.slice(0, open) + s.slice(close + NL.length + 3 + NL.length);
+/* Strip any previous run before inserting, so this is safe to re-run.
+
+   This is the part that bit. It used to find the deck by searching BACKWARDS
+   for the nearest '{' and forwards for the next line-initial '},', then resume
+   at `close + NL.length + 3 + NL.length`. The span actually removed is NL + '}'
+   + ',' — NL.length + 2 characters — so the +3 swallowed one character too
+   many, and that character was the '{' opening the next deck. The next pass
+   then found no '{' where it expected one, walked backwards into the PREVIOUS
+   deck's cards, and deleted from the middle of that deck to the end of this
+   one. On 2026-09-23 it took the tail of mt4-guide with it and left the file
+   unparseable, then crashed on its own re-read pointing hundreds of lines away.
+
+   It never fired on the first build, because there was nothing to strip.
+
+   Anchoring on the whole opening line instead removes the backwards search, so
+   nothing depends on a brace that a previous pass may already have eaten. */
+function stripDeck(text, id) {
+  const head = `{${NL}  id: '${id}',`;
+  const open = text.indexOf(head);
+  if (open < 0) return text;                       /* not present yet */
+  const close = text.indexOf(`${NL}},`, open);
+  if (close < 0) throw new Error(`unterminated deck ${id} — refusing to guess`);
+  /* NL + '}' + ',' is what closes it; take the newline after it too */
+  let after = close + NL.length + 2;
+  if (text.startsWith(NL, after)) after += NL.length;
+  return text.slice(0, open) + text.slice(after);
 }
 
-const block = ['prefix', 'root', 'suffix'].map(k => renderDeck(k, entries)).join(NL);
+let s = raw;
+for (const id of REF_IDS) s = stripDeck(s, id);
+
+const termNo = termOfCourse(ctx.window.DECKS);
+const block = ['prefix', 'root', 'suffix'].map(k => renderDeck(k, entries, termNo)).join(NL);
 const end = s.lastIndexOf('];');
 s = s.slice(0, end) + block + NL + s.slice(end);
+
+/* Prove the result before it reaches disk. The old version validated only
+   AFTER writing, so the first thing it did on a bad edit was destroy the file
+   and then report the damage as if it had found it. */
+function parseOrThrow(text, label) {
+  const c = { window: {} };
+  vm.createContext(c);
+  try { vm.runInContext(text, c); }
+  catch (e) { throw new Error(`${label} does not parse: ${e.message}`); }
+  const decks = c.window.DECKS;
+  if (!Array.isArray(decks)) throw new Error(`${label} produced no DECKS array`);
+  return decks;
+}
+
+const before = parseOrThrow(raw, 'the file as read');
+const after = parseOrThrow(s, 'the rewritten file');
+
+const ids = after.map(d => d.id);
+const dupes = ids.filter((x, i) => ids.indexOf(x) !== i);
+if (dupes.length) throw new Error('duplicate deck ids after rewrite: ' + [...new Set(dupes)].join(', '));
+
+/* Every deck that was there before, other than the three being replaced, has
+   to still be there with the same number of cards. This is the check that would
+   have caught mt4-guide losing its tail. */
+/* Not every deck has cards — the dosage deck carries `dose` instead. */
+const nCards = d => (d.cards || []).length;
+const kept = new Map(before.filter(d => !REF_IDS.includes(d.id)).map(d => [d.id, nCards(d)]));
+for (const [id, n] of kept) {
+  const now = after.find(d => d.id === id);
+  if (!now) throw new Error(`rewrite lost deck ${id}`);
+  if (nCards(now) !== n) throw new Error(`rewrite changed ${id}: ${n} cards before, ${nCards(now)} after`);
+}
+if (after.length !== kept.size + REF_IDS.length)
+  throw new Error(`expected ${kept.size + REF_IDS.length} decks, got ${after.length}`);
+
 fs.writeFileSync(FILE, s);
+console.log(`untouched decks intact : ${kept.size}`);
 
 /* ----------------------------------------------------------------- validate */
 const c2 = { window: {} };
