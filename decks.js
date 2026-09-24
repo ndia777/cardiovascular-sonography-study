@@ -4425,7 +4425,6 @@ window.DECKS = [
 {
   id: 'mp52-lab',
   group: 'Injections',
-  current: true,
   added: '2026-09-22',
   termNo: 1,
   course: 'M103 · Medical Procedures',
