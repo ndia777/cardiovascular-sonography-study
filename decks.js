@@ -8277,7 +8277,6 @@ window.DECKS = [
 {
   id: 'bio-ch14-1',
   group: 'Chapter 14',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8327,7 +8326,6 @@ window.DECKS = [
 {
   id: 'bio-ch14-2',
   group: 'Chapter 14',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8408,7 +8406,6 @@ window.DECKS = [
 {
   id: 'bio-ch14-3',
   group: 'Chapter 14',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8485,7 +8482,6 @@ window.DECKS = [
 {
   id: 'bio-ch14-4',
   group: 'Chapter 14',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8540,7 +8536,6 @@ window.DECKS = [
 {
   id: 'bio-ch14-5',
   group: 'Chapter 14',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8622,7 +8617,6 @@ window.DECKS = [
 {
   id: 'bio-ch14-6',
   group: 'Chapter 14',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8687,7 +8681,6 @@ window.DECKS = [
 {
   id: 'bio-ch16-1',
   group: 'Chapter 16',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8753,7 +8746,6 @@ window.DECKS = [
 {
   id: 'bio-ch16-2',
   group: 'Chapter 16',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8825,7 +8817,6 @@ window.DECKS = [
 {
   id: 'bio-ch16-3',
   group: 'Chapter 16',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8902,7 +8893,6 @@ window.DECKS = [
 {
   id: 'bio-ch16-4',
   group: 'Chapter 16',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8981,7 +8971,6 @@ window.DECKS = [
 {
   id: 'bio-ch16-5',
   group: 'Chapter 16',
-  current: true,
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
