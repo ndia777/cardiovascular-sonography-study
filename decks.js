@@ -4425,8 +4425,8 @@ window.DECKS = [
 {
   id: 'mp-sterilization-lab',
   group: 'Sterilization',
-  current: true,
   exam: true,
+  retired: true,
   added: '2026-09-26',
   termNo: 1,
   course: 'M103 · Medical Procedures',
