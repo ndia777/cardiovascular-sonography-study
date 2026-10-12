@@ -20,7 +20,7 @@
    term; everything before it moves into the Earlier drawer. Bump this when
    a term ends — no deck needs editing, because each one carries its own
    term below. */
-window.CURRENT_TERM = 1;
+window.CURRENT_TERM = 2;
 
 window.DECKS = [
 
@@ -28,7 +28,7 @@ window.DECKS = [
 
 {
   id: 'mt1-roots',
-  group: 'Chapter 1',
+  group: 'Chapter 1 — Word Parts',
 
   added: '2026-07-29',
   termNo: 1,
@@ -122,7 +122,7 @@ window.DECKS = [
 
 {
   id: 'mt1-suffixes',
-  group: 'Chapter 1',
+  group: 'Chapter 1 — Word Parts',
 
   added: '2026-07-29',
   termNo: 1,
@@ -189,7 +189,7 @@ window.DECKS = [
 
 {
   id: 'mt1-prefixes',
-  group: 'Chapter 1',
+  group: 'Chapter 1 — Word Parts',
 
   added: '2026-07-29',
   termNo: 1,
@@ -256,7 +256,7 @@ window.DECKS = [
 
 {
   id: 'mt1-terms',
-  group: 'Chapter 1',
+  group: 'Chapter 1 — Word Parts',
 
   added: '2026-07-29',
   termNo: 1,
@@ -382,7 +382,7 @@ window.DECKS = [
 
 {
   id: 'mt2-parts',
-  group: 'Chapter 2',
+  group: 'Chapter 2 — Body Structure',
 
   added: '2026-07-29',
   termNo: 1,
@@ -431,7 +431,7 @@ window.DECKS = [
 
 {
   id: 'mt2-terms',
-  group: 'Chapter 2',
+  group: 'Chapter 2 — Body Structure',
 
   added: '2026-07-29',
   termNo: 1,
@@ -603,7 +603,7 @@ window.DECKS = [
 
 {
   id: 'mt2-overview',
-  group: 'Chapter 2',
+  group: 'Chapter 2 — Body Structure',
 
   added: '2026-07-31',
   termNo: 1,
@@ -921,7 +921,7 @@ window.DECKS = [
   id: 'mt1-guide',
   exam: true,
   retired: true,
-  group: 'Chapter 1',
+  group: 'Chapter 1 — Word Parts',
   added: '2026-08-05',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -997,7 +997,7 @@ window.DECKS = [
   id: 'mt2-guide',
   exam: true,
   retired: true,
-  group: 'Chapter 2',
+  group: 'Chapter 2 — Body Structure',
   added: '2026-08-05',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -1114,7 +1114,7 @@ window.DECKS = [
    in every other Chapter 12 deck are built out of these pieces. */
 {
   id: 'mt12-parts',
-  group: 'Chapter 12',
+  group: 'Chapter 12 — The Integumentary System',
   added: '2026-08-10',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -1178,7 +1178,7 @@ window.DECKS = [
    session rather than a marathon. Every title still names Chapter 12. */
 {
   id: 'mt12-structure',
-  group: 'Chapter 12',
+  group: 'Chapter 12 — The Integumentary System',
   added: '2026-08-06',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -1271,7 +1271,7 @@ window.DECKS = [
 
 {
   id: 'mt12-glands-hair-nails',
-  group: 'Chapter 12',
+  group: 'Chapter 12 — The Integumentary System',
   added: '2026-08-06',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -1352,7 +1352,7 @@ window.DECKS = [
 
 {
   id: 'mt12-lesions',
-  group: 'Chapter 12',
+  group: 'Chapter 12 — The Integumentary System',
   added: '2026-08-06',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -1457,7 +1457,7 @@ window.DECKS = [
 
 {
   id: 'mt12-conditions',
-  group: 'Chapter 12',
+  group: 'Chapter 12 — The Integumentary System',
   added: '2026-08-06',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -1599,7 +1599,7 @@ window.DECKS = [
 
 {
   id: 'mt12-procedures',
-  group: 'Chapter 12',
+  group: 'Chapter 12 — The Integumentary System',
   added: '2026-08-06',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -1735,7 +1735,7 @@ window.DECKS = [
   },
   exam: true,
   retired: true,
-  group: 'Chapter 3',
+  group: 'Chapter 3 — Cells',
 
   added: "2026-07-30",
   termNo: 1,
@@ -1858,7 +1858,7 @@ window.DECKS = [
   id: 'bio-ch4',
   exam: true,
   retired: true,
-  group: 'Chapter 4',
+  group: 'Chapter 4 — Cellular Metabolism',
 
   added: '2026-07-30',
   termNo: 1,
@@ -2065,7 +2065,7 @@ window.DECKS = [
 {
   /* Section 5.1. The four tissue types and the three junctions that hold cells together. Small on purpose — it is the frame the rest of the chapter hangs on. */
   id: 'bio-ch5-1',
-  group: 'Chapter 5',
+  group: 'Chapter 5 — Tissues',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2118,7 +2118,7 @@ window.DECKS = [
 {
   /* Section 5.2, first half: what makes an epithelium, the two axes it is classified on, and the eight types. */
   id: 'bio-ch5-2',
-  group: 'Chapter 5',
+  group: 'Chapter 5 — Tissues',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2213,7 +2213,7 @@ window.DECKS = [
 {
   /* Section 5.2, second half. Split from the epithelia because the gland classifications are their own vocabulary — structure, then mode of secretion — and 43 cards in one deck was the complaint that prompted all this. */
   id: 'bio-ch5-3',
-  group: 'Chapter 5',
+  group: 'Chapter 5 — Tissues',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2276,7 +2276,7 @@ window.DECKS = [
 {
   /* Section 5.3, first half: the cells, the three fibres, and connective tissue proper. */
   id: 'bio-ch5-4',
-  group: 'Chapter 5',
+  group: 'Chapter 5 — Tissues',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2321,7 +2321,7 @@ window.DECKS = [
 {
   /* Section 5.3, second half: the specialised connective tissues. Kept apart from the rest of 5.3 because the vascular contrast running through them — cartilage has no blood supply, bone is rich in it, blood IS the matrix — is easiest to see when they sit together. */
   id: 'bio-ch5-5',
-  group: 'Chapter 5',
+  group: 'Chapter 5 — Tissues',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2364,7 +2364,7 @@ window.DECKS = [
 {
   /* The last three sections together. Alone they are 4, 7 and 5 cards, and a four-card deck cannot build a quiz — every card would appear as a choice on every question. */
   id: 'bio-ch5-6',
-  group: 'Chapter 5',
+  group: 'Chapter 5 — Tissues',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2441,7 +2441,7 @@ window.DECKS = [
 {
   /* The structural half of 6.1: the three layers, the five strata, and the two dermal layers. Holds the skin diagram, which labels accessory structures filed under 6.2 as well — the figure is a map of the whole chapter and only needs one home. */
   id: 'bio-ch6-1',
-  group: 'Chapter 6',
+  group: 'Chapter 6 — Integumentary System',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2526,7 +2526,7 @@ window.DECKS = [
 {
   /* The rest of 6.1: what lives in the epidermis besides keratinocytes, what decides skin colour, and the conditions that follow from those cells misbehaving. */
   id: 'bio-ch6-2',
-  group: 'Chapter 6',
+  group: 'Chapter 6 — Integumentary System',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2579,7 +2579,7 @@ window.DECKS = [
 {
   /* Nails, hair and glands. Everything the skin grows rather than everything it is. */
   id: 'bio-ch6-3',
-  group: 'Chapter 6',
+  group: 'Chapter 6 — Integumentary System',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2627,7 +2627,7 @@ window.DECKS = [
 {
   /* What the skin does. The four routes of heat loss are the part worth drilling — they are easy to name and easy to mix up. */
   id: 'bio-ch6-4',
-  group: 'Chapter 6',
+  group: 'Chapter 6 — Integumentary System',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -2672,7 +2672,7 @@ window.DECKS = [
 {
   /* Healing, burns and life-span changes together: one deck about the skin being damaged and the skin wearing out. */
   id: 'bio-ch6-5',
-  group: 'Chapter 6',
+  group: 'Chapter 6 — Integumentary System',
   added: '2026-08-10',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -3865,7 +3865,7 @@ window.DECKS = [
 
 {
   id: 'mt12-guide',
-  group: 'Chapter 12',
+  group: 'Chapter 12 — The Integumentary System',
   exam: true,
   retired: true,
   added: '2026-08-12',
@@ -3964,7 +3964,7 @@ window.DECKS = [
   /* Filed under Chapter 3 rather than standing alone: it is section 3.3 pulled
      out for one test, and once that test is behind us it belongs with the
      chapter it came from rather than holding a shelf of its own. */
-  group: 'Chapter 3',
+  group: 'Chapter 3 — Cells',
   added: '2026-08-12',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -4811,7 +4811,7 @@ window.DECKS = [
 },
 {
   id: 'mt3-parts',
-  group: 'Chapter 3',
+  group: 'Chapter 3 — The Skeletal System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -4860,7 +4860,7 @@ window.DECKS = [
 },
 {
   id: 'mt3-structure',
-  group: 'Chapter 3',
+  group: 'Chapter 3 — The Skeletal System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -4915,7 +4915,7 @@ window.DECKS = [
 },
 {
   id: 'mt3-skeleton',
-  group: 'Chapter 3',
+  group: 'Chapter 3 — The Skeletal System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -4984,7 +4984,7 @@ window.DECKS = [
 },
 {
   id: 'mt3-pathology',
-  group: 'Chapter 3',
+  group: 'Chapter 3 — The Skeletal System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -5066,7 +5066,7 @@ window.DECKS = [
 },
 {
   id: 'mt3-procedures',
-  group: 'Chapter 3',
+  group: 'Chapter 3 — The Skeletal System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -5130,7 +5130,7 @@ window.DECKS = [
 },
 {
   id: 'mt3-guide',
-  group: 'Chapter 3',
+  group: 'Chapter 3 — The Skeletal System',
   retired: true,
   exam: true,
   added: '2026-08-26',
@@ -5222,7 +5222,7 @@ window.DECKS = [
 },
 {
   id: 'mt4-parts',
-  group: 'Chapter 4',
+  group: 'Chapter 4 — The Muscular System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -5275,7 +5275,7 @@ window.DECKS = [
 },
 {
   id: 'mt4-structure',
-  group: 'Chapter 4',
+  group: 'Chapter 4 — The Muscular System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -5333,7 +5333,7 @@ window.DECKS = [
 },
 {
   id: 'mt4-motions',
-  group: 'Chapter 4',
+  group: 'Chapter 4 — The Muscular System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -5380,7 +5380,7 @@ window.DECKS = [
 },
 {
   id: 'mt4-pathology',
-  group: 'Chapter 4',
+  group: 'Chapter 4 — The Muscular System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -5468,7 +5468,7 @@ window.DECKS = [
 },
 {
   id: 'mt4-procedures',
-  group: 'Chapter 4',
+  group: 'Chapter 4 — The Muscular System',
   added: '2026-08-19',
   termNo: 1,
   course: 'M159 · Medical Terminology 1',
@@ -5529,7 +5529,7 @@ window.DECKS = [
 },
 {
   id: 'mt4-guide',
-  group: 'Chapter 4',
+  group: 'Chapter 4 — The Muscular System',
   retired: true,
   exam: true,
   added: '2026-08-26',
@@ -5612,7 +5612,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch7-1',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — Skeletal System',
   added: '2026-08-20',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -5680,7 +5680,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch7-2',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — Skeletal System',
   added: '2026-08-20',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -5751,7 +5751,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch7-3',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — Skeletal System',
   added: '2026-08-20',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -5941,7 +5941,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch7-4',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — Skeletal System',
   added: '2026-08-20',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6064,7 +6064,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch7-5',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — Skeletal System',
   added: '2026-08-20',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6151,7 +6151,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch7-6',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — Skeletal System',
   added: '2026-08-20',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6249,7 +6249,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch7-guide',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — Skeletal System',
   exam: true,
   retired: true,
   added: '2026-08-20',
@@ -6306,7 +6306,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch8-1',
-  group: 'Chapter 8',
+  group: 'Chapter 8 — Joints of the Skeletal System',
   added: '2026-08-27',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6391,7 +6391,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch8-2',
-  group: 'Chapter 8',
+  group: 'Chapter 8 — Joints of the Skeletal System',
   added: '2026-08-27',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6447,7 +6447,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch8-3',
-  group: 'Chapter 8',
+  group: 'Chapter 8 — Joints of the Skeletal System',
   added: '2026-08-27',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6542,7 +6542,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch8-4',
-  group: 'Chapter 8',
+  group: 'Chapter 8 — Joints of the Skeletal System',
   added: '2026-08-27',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6584,7 +6584,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch8-guide',
-  group: 'Chapter 8',
+  group: 'Chapter 8 — Joints of the Skeletal System',
   exam: true,
   retired: true,
   added: '2026-09-02',
@@ -6723,7 +6723,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-1',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6817,7 +6817,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-2',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -6934,7 +6934,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-3',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7027,7 +7027,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-4',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7100,7 +7100,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-5',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7158,7 +7158,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-6',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7267,7 +7267,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-7',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7407,7 +7407,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-8',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7484,7 +7484,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-9',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7625,7 +7625,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-10',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   added: '2026-09-03',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -7774,7 +7774,7 @@ window.DECKS = [
 
 {
   id: 'mt5-guide',
-  group: 'Chapter 5',
+  group: 'Chapter 5 — The Cardiovascular System',
   retired: true,
   exam: true,
   added: '2026-09-09',
@@ -7840,7 +7840,7 @@ window.DECKS = [
 
 {
   id: 'mt6-guide',
-  group: 'Chapter 6',
+  group: 'Chapter 6 — The Lymphatic and Immune Systems',
   retired: true,
   exam: true,
   added: '2026-09-09',
@@ -7970,7 +7970,7 @@ window.DECKS = [
 
 {
   id: 'bio-ch9-guide',
-  group: 'Chapter 9',
+  group: 'Chapter 9 — Muscles',
   retired: true,
   exam: true,
   added: '2026-09-10',
@@ -8360,7 +8360,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch14-1',
-  group: 'Chapter 14',
+  group: 'Chapter 14 — Blood',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8409,7 +8409,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch14-2',
-  group: 'Chapter 14',
+  group: 'Chapter 14 — Blood',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8489,7 +8489,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch14-3',
-  group: 'Chapter 14',
+  group: 'Chapter 14 — Blood',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8565,7 +8565,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch14-4',
-  group: 'Chapter 14',
+  group: 'Chapter 14 — Blood',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8619,7 +8619,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch14-5',
-  group: 'Chapter 14',
+  group: 'Chapter 14 — Blood',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8700,7 +8700,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch14-6',
-  group: 'Chapter 14',
+  group: 'Chapter 14 — Blood',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8764,7 +8764,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch16-1',
-  group: 'Chapter 16',
+  group: 'Chapter 16 — Lymphatic System and Immunity',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8829,7 +8829,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch16-2',
-  group: 'Chapter 16',
+  group: 'Chapter 16 — Lymphatic System and Immunity',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8900,7 +8900,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch16-3',
-  group: 'Chapter 16',
+  group: 'Chapter 16 — Lymphatic System and Immunity',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -8976,7 +8976,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch16-4',
-  group: 'Chapter 16',
+  group: 'Chapter 16 — Lymphatic System and Immunity',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -9054,7 +9054,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch16-5',
-  group: 'Chapter 16',
+  group: 'Chapter 16 — Lymphatic System and Immunity',
   added: '2026-09-17',
   termNo: 1,
   course: 'BIO101 · Anatomy & Physiology 1',
@@ -9140,7 +9140,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-guide',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   exam: true,
   added: '2026-09-24',
@@ -9466,7 +9466,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-1',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   added: '2026-09-24',
   termNo: 1,
@@ -9573,7 +9573,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-2',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   added: '2026-09-24',
   termNo: 1,
@@ -9673,7 +9673,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-3',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   added: '2026-09-24',
   termNo: 1,
@@ -9761,7 +9761,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-4',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   added: '2026-09-24',
   termNo: 1,
@@ -9872,7 +9872,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-5',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   added: '2026-09-24',
   termNo: 1,
@@ -9983,7 +9983,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-6',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   added: '2026-09-24',
   termNo: 1,
@@ -10083,7 +10083,7 @@ window.DECKS = [
 },
 {
   id: 'bio-ch19-7',
-  group: 'Chapter 19',
+  group: 'Chapter 19 — Respiratory System',
   current: true,
   added: '2026-09-24',
   termNo: 1,
@@ -10199,7 +10199,7 @@ window.DECKS = [
 },
 {
   id: 'mt7-guide',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — The Respiratory System',
   current: true,
   exam: true,
   added: '2026-09-23',
@@ -10334,7 +10334,7 @@ window.DECKS = [
 },
 {
   id: 'mt7-parts',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — The Respiratory System',
   current: true,
   added: '2026-09-23',
   termNo: 1,
@@ -10406,7 +10406,7 @@ window.DECKS = [
 },
 {
   id: 'mt7-structure',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — The Respiratory System',
   current: true,
   added: '2026-09-23',
   termNo: 1,
@@ -10478,7 +10478,7 @@ window.DECKS = [
 },
 {
   id: 'mt7-respiration',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — The Respiratory System',
   current: true,
   added: '2026-09-23',
   termNo: 1,
@@ -10549,7 +10549,7 @@ window.DECKS = [
 },
 {
   id: 'mt7-pathology',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — The Respiratory System',
   current: true,
   added: '2026-09-23',
   termNo: 1,
@@ -10654,7 +10654,7 @@ window.DECKS = [
 },
 {
   id: 'mt7-procedures',
-  group: 'Chapter 7',
+  group: 'Chapter 7 — The Respiratory System',
   current: true,
   added: '2026-09-23',
   termNo: 1,

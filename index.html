@@ -317,8 +317,27 @@
   .dchap{font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text);
     margin:20px 0 8px;padding:7px 8px 7px 11px;font-weight:700;
     border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 var(--accent);
-    position:sticky;top:0;background:var(--bg2);z-index:1;font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    position:sticky;top:0;background:var(--bg2);z-index:1;font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    /* it is a button now: strip the control look, keep the heading look */
+    display:flex;align-items:center;gap:8px;width:100%;text-align:left;
+    border-top:0;border-left:0;border-right:0;cursor:pointer}
   .dchap:first-child{margin-top:4px}
+  @media (hover: hover){ .dchap:hover{background:var(--card2)} }
+  .dchap:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  /* The caret is the only thing that moves, so open and shut are legible at a
+     glance down a column of twenty-five of them. */
+  .dcaret{flex:none;display:inline-block;color:var(--dim);font-size:14px;line-height:1;
+    transition:transform .15s ease}
+  .dchap[aria-expanded="true"] .dcaret{transform:rotate(90deg)}
+  @media (prefers-reduced-motion:reduce){.dcaret{transition:none}}
+  .dchapname{flex:1 1 auto;min-width:0}
+  /* A shut chapter still has to say how much is behind it, or the fold hides
+     the thing you are choosing between. */
+  .dchapn{flex:none;color:var(--dim);font-weight:600;font-size:11px;
+    letter-spacing:.02em;font-variant-numeric:tabular-nums}
+  .dchapwrap[hidden]{display:none}
+  /* Between terms the page is otherwise bare, so this one line is carrying it. */
+  .between{color:var(--dim);font-size:14px;line-height:1.55;max-width:46ch;margin:26px 2px 0}
   /* When a whole term is open the drawer gains a level above the chapters, so
      the class name is set the way it is on the home page and does not stick —
      only one thing should be pinned to the top of a scrolling list at a time. */
@@ -1295,6 +1314,15 @@ function splitTitle(t){
   const i = t.indexOf(" — ");
   return i < 0 ? { pre: "", name: t } : { pre: t.slice(0, i), name: t.slice(i + 3) };
 }
+/* A chapter group carries its subject so it can be found in a list — "Chapter
+   19 — Respiratory System" rather than a bare number. Two places want only the
+   handle back: a sentence that reads "across all 8 Chapter 19 decks", and a
+   heading that already appends its own dash. Giving them the full name would
+   put a second dash in the line. */
+function groupShort(g){
+  const i = String(g || '').indexOf(" — ");
+  return i < 0 ? String(g || '') : String(g).slice(0, i);
+}
 /* a choice that has to stay at the bottom of the list to make sense */
 const ABOVE = /^(all|none|both) of the above\b/i;
 /* Decks run oldest-first inside a course, so the list follows the order the
@@ -1434,6 +1462,7 @@ function archiveGo(id){ archive = null; go('deck', id); }
    it cannot drift out of step with what was retired. */
 function archiveHtml(a){
   const forTerm = a.term != null;
+  let chapSeq = 0;
   /* A finished term is finished whole: every deck of it belongs in here,
      whatever its own chapter still claims about being current, and study
      guides included. Within a live course only the retired chapters do. */
@@ -1461,10 +1490,29 @@ function archiveHtml(a){
   /* Each chapter is its own section so its heading sticks only over its own
      decks. Sharing one container made every heading stick at the same spot and
      sit on top of the last, which reads fine but leaves six headings piled at
-     the top of the list. */
-  const block = (label, decks) =>
-    `<section class="dgroup"><div class="dchap">${esc(label)}</div>`
-    + guideFirst(decks).map(row).join('') + `</section>`;
+     the top of the list.
+
+     The chapter folds. A finished term is three classes and twenty-five
+     chapters, and opened flat that is a hundred-odd deck rows to scroll past
+     to reach any one of them — the drawer stops being a way in and becomes a
+     wall. Closed, the same drawer is a contents page: one line per chapter,
+     named and counted, and the chapter you want is one click from the top.
+     Shut by default for that reason, and remembered for the session, so
+     reopening the drawer puts you back where you were rather than closing
+     what you just went to the trouble of opening. */
+  const block = (label, decks) => {
+    const key = `drawer/${decks[0] ? decks[0].course : ''}/${label}`;
+    const id = `dchap${chapSeq++}`;
+    const open = chipOpen[key] === true;
+    return `<section class="dgroup">`
+      + `<button type="button" class="dchap" data-key="${esc(key)}" aria-controls="${id}"`
+      + ` aria-expanded="${open}" onclick="togglePast(this)">`
+      + `<span class="dcaret" aria-hidden="true">›</span>`
+      + `<span class="dchapname">${esc(label)}</span>`
+      + `<span class="dchapn">${decks.length}</span></button>`
+      + `<div class="dchapwrap" id="${id}"${open ? '' : ' hidden'}>`
+      + guideFirst(decks).map(row).join('') + `</div></section>`;
+  };
 
   /* One course's decks, split into its chapters. Used on its own for a live
      course, and once per class when a whole term is open. */
@@ -1609,7 +1657,17 @@ function screenHome(){
       <input class="search" id="search" placeholder="Search decks or terms…" value="${esc(session&&session.q||'')}">
     </div>`;
 
-  if (!list.length) html += `<p style="color:var(--dim)">No decks match that search.</p>`;
+  /* Two different nothings. A search that found nothing is the user's doing
+     and says so. An empty page with no search running means the term has
+     turned over and nothing has been added to the new one yet — saying "no
+     decks match that search" there is simply false, and it reads as though
+     the app has lost the decks rather than filed them. Name the real state
+     and point at where everything went. */
+  if (!list.length) html += q
+    ? `<p style="color:var(--dim)">No decks match that search.</p>`
+    : `<p class="between">Term ${TERM_NOW} has not started yet. Everything from
+         ${pastTerms().length > 1 ? 'the earlier terms' : `Term ${TERM_NOW - 1}`}
+         is below, and search still reaches all of it.</p>`;
 
   /* The term sits above the first course's rule, aligned to its left end, so it
      labels everything below it rather than crowding the app title. The label
@@ -1887,7 +1945,7 @@ function screenDeck(){
      would just be the Review Sheet above under a grander name. */
   if (chapterDecks(d).length > 1)
     modes.push(['chapter', `Whole Chapter Sheet`,
-      `Every term across all ${chapterDecks(d).length} ${d.group} decks in one table, labelled by source.`]);
+      `Every term across all ${chapterDecks(d).length} ${groupShort(d.group)} decks in one table, labelled by source.`]);
 
   /* A deck may name the only modes it wants offered. A dosage problem has one
      sensible way to be studied — work it out and type the answer back — and
@@ -4398,7 +4456,7 @@ function runChapter(d){
 
   app.innerHTML = `
     <button class="back" onclick="go('deck','${d.id}')">← Back</button>
-    <h2 class="title">${esc(d.group)} — everything</h2>
+    <h2 class="title">${esc(groupShort(d.group))} — everything</h2>
     <div class="srcline">${esc(d.course)} · ${decks.length} deck${decks.length === 1 ? '' : 's'}</div>
     <div class="bar">
       <div class="seg">

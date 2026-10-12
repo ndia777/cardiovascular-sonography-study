@@ -160,14 +160,47 @@ function suite(s, label, srcCss) {
      finished term. These checks are all about a course. */
   const archiveOf = c => vm.runInContext(`archiveHtml({ course: ${JSON.stringify(c)} })`, s);
   const archiveIds = c => [...archiveOf(c).matchAll(/archiveGo\('([^']+)'\)/g)].map(m => m[1]);
-  const archiveChaps = c => [...archiveOf(c).matchAll(/class="dchap">([^<]*)</g)].map(m => m[1].trim());
+  /* The chapter heading is a disclosure button now, so its name sits in a span
+     inside it rather than being the button's whole text. */
+  const archiveChaps = c => [...archiveOf(c).matchAll(/class="dchapname">([^<]*)</g)]
+    .map(m => m[1].trim().replace(/&amp;/g, '&'));
 
   /* Course sections must RENDER alphabetically by subject name. Read the order
      out of the markup the app actually produced — comparing a sorted list to
      itself would pass no matter what the app did. */
+  /* ---- between terms ----
+     When a term ends and the next one has no decks yet, the current term is
+     empty and the home page rightly shows no course at all. That is a real
+     state the app sits in for weeks, so it gets checked rather than crashed
+     on — the course assertions below used to assume at least one course and
+     threw outright the first time the term rolled over.
+
+     Having checked it, run the rest of the home checks against the last term
+     that does hold material. The rendering is the same code path whichever
+     term is current, and leaving it uncovered until the new term fills up
+     would mean nothing watches the home page over exactly the stretch where
+     it is being changed. TERM_NOW is put back at the end of the suite. */
+  const TERM_REAL = vm.runInContext('TERM_NOW', s);
+  const populated = [...new Set(DECKS.map(d => Number(d.termNo) || 1))].sort((a, b) => b - a);
+  const betweenTerms = !DECKS.some(d => (Number(d.termNo) || 1) === TERM_REAL);
+  if (betweenTerms) {
+    go('home');
+    const page = s.__app.innerHTML;
+    check(`[${label}] between terms the page names the real state`,
+          !/No decks match that search/.test(page) && /has not started yet/.test(page),
+          'an empty current term is being reported as a failed search');
+    check(`[${label}] between terms the finished term is still offered`,
+          /class="pastterms"/.test(page) && page.includes(`data-term="${populated[0]}"`),
+          'no way through to the term that just ended');
+    vm.runInContext(`TERM_NOW = ${populated[0]}; session = null; archive = null;`, s);
+  }
+
   go('home');
   const renderedCourses = [...s.__app.innerHTML.matchAll(/class="cname">([^<]+)</g)]
     .map(m => m[1].trim().replace(/&amp;/g, '&'));
+  check(`[${label}] the home page renders at least one course to check`,
+        renderedCourses.length > 0,
+        'no course rendered, so every course assertion below would be vacuous');
   /* Everything rendered under one course heading, up to where the next begins.
      The chip bar lives on the heading line itself, so slicing from the course
      NAME rather than from the heading element keeps the chips inside the slice
@@ -2681,6 +2714,11 @@ function suite(s, label, srcCss) {
       check(`[${label}] ${deck}/${mode} playthrough terminates`, false, e.message);
     }
   }
+
+  /* Put the term back, in case the home checks borrowed a populated one. The
+     next caller gets the sandbox in the state the data describes, not the
+     state these checks found convenient. */
+  vm.runInContext(`TERM_NOW = ${TERM_REAL}; session = null; archive = null;`, s);
 }
 
 /* ------------------------------------------- heart contraction geometry ---
