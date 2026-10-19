@@ -181,26 +181,36 @@ function suite(s, label, srcCss) {
      would mean nothing watches the home page over exactly the stretch where
      it is being changed. TERM_NOW is put back at the end of the suite. */
   const TERM_REAL = vm.runInContext('TERM_NOW', s);
-  const populated = [...new Set(DECKS.map(d => Number(d.termNo) || 1))].sort((a, b) => b - a);
-  const betweenTerms = !DECKS.some(d => (Number(d.termNo) || 1) === TERM_REAL);
-  if (betweenTerms) {
+  const termsSeen = [...new Set(DECKS.map(d => Number(d.termNo) || 1))].sort((a, b) => b - a);
+  const coursesIn = t => [...new Set(DECKS.filter(d => (Number(d.termNo) || 1) === t).map(d => d.course))];
+  if (!coursesIn(TERM_REAL).length) {
     go('home');
     const page = s.__app.innerHTML;
     check(`[${label}] between terms the page names the real state`,
           !/No decks match that search/.test(page) && /has not started yet/.test(page),
           'an empty current term is being reported as a failed search');
     check(`[${label}] between terms the finished term is still offered`,
-          /class="pastterms"/.test(page) && page.includes(`data-term="${populated[0]}"`),
+          /class="pastterms"/.test(page) && page.includes(`data-term="${termsSeen[0]}"`),
           'no way through to the term that just ended');
-    vm.runInContext(`TERM_NOW = ${populated[0]}; session = null; archive = null;`, s);
   }
+  /* Everything from here to the end of the home-page checks runs against the
+     newest term that holds more than one class. A term opens with a single
+     chapter of a single class, and almost every check below needs a page with
+     some furniture on it — two courses to order, a chip to click, a chapter
+     with siblings to reset, a reference deck, a study guide. Pinning them to
+     whichever term happens to be current would mean the home page goes
+     unwatched for the opening weeks of every term, which is exactly when it is
+     being changed. The term is restored at the end of the suite, and the one
+     check that must see every term regardless — reachability — sets its own. */
+  const homeTerm = termsSeen.find(t => coursesIn(t).length > 1) ?? TERM_REAL;
+  if (homeTerm !== TERM_REAL)
+    vm.runInContext(`TERM_NOW = ${homeTerm}; session = null; archive = null;`, s);
 
   go('home');
   const renderedCourses = [...s.__app.innerHTML.matchAll(/class="cname">([^<]+)</g)]
     .map(m => m[1].trim().replace(/&amp;/g, '&'));
-  check(`[${label}] the home page renders at least one course to check`,
-        renderedCourses.length > 0,
-        'no course rendered, so every course assertion below would be vacuous');
+  check(`[${label}] the home page renders a course to check against`,
+        renderedCourses.length > 0, 'nothing rendered, so the checks below say nothing');
   /* Everything rendered under one course heading, up to where the next begins.
      The chip bar lives on the heading line itself, so slicing from the course
      NAME rather than from the heading element keeps the chips inside the slice
@@ -230,11 +240,12 @@ function suite(s, label, srcCss) {
   /* Live courses form the first tier; alphabetical by subject decides the rest
      and the order inside each tier. Derived from the deck data rather than a
      fixed list, so it keeps holding as courses change status. */
-  const expected = [...renderedCourses]
+  const orderCourses = renderedCourses;
+  const expected = [...orderCourses]
     .sort((a, b) => (live(b) - live(a)) || subj(a).localeCompare(subj(b)));
   check(`[${label}] live courses lead, then alphabetical by subject`,
-        renderedCourses.length > 1 && JSON.stringify(renderedCourses) === JSON.stringify(expected),
-        `rendered: ${renderedCourses.map(subj).join(' | ')}`);
+        orderCourses.length > 1 && JSON.stringify(orderCourses) === JSON.stringify(expected),
+        `rendered: ${orderCourses.map(subj).join(' | ')}`);
   /* The assertion above only proves the tier rule while some course is dormant;
      once they are all live it silently degrades to "alphabetical". It used to
      fail in that situation, which is a check that breaks when the material
@@ -242,8 +253,8 @@ function suite(s, label, srcCss) {
      from one course, re-render, and confirm it drops below the ones that keep
      them. Stripping only the guide would no longer demote anything, because a
      current chapter holds the course up on its own — which is the point. */
-  const demoted = renderedCourses.find(live);
-  const stillLive = renderedCourses.filter(c => c !== demoted && live(c));
+  const demoted = orderCourses.find(live);
+  const stillLive = orderCourses.filter(c => c !== demoted && live(c));
   if (demoted && stillLive.length) {
     const stripped = DECKS.filter(d => d.course === demoted && (d.exam || d.current));
     const was = stripped.map(d => [d.exam, d.current]);
@@ -360,7 +371,23 @@ function suite(s, label, srcCss) {
        "lose". Since finished chapters moved into the archive, reachable now
        means the page OR the drawer of the deck's own course, and both have to
        be asked or a deck could vanish from one and be counted by the other. */
-    const shown = new Set([...html.matchAll(DECK_ID)].map(m => m[1]));
+    /* Asking only the page as it stands would mean every deck outside the term
+       being rendered counted as lost, which is not what reachable means — a
+       past term is reached through its own drawer, and a term still to come is
+       reached by it arriving. So state the invariant properly: a deck is
+       reachable when its own term is the one on screen, or through an archive.
+       Walk the terms, collect what each one offers, and put the page back. */
+    const shown = new Set();
+    for (const t of termsSeen) {
+      vm.runInContext(`TERM_NOW = ${t}; session = null; archive = null;`, s);
+      go('home');
+      for (const m of s.__app.innerHTML.matchAll(DECK_ID)) shown.add(m[1]);
+      for (const past of termsSeen.filter(x => x < t))
+        for (const m of vm.runInContext(`archiveHtml({ term: ${past} })`, s).matchAll(/archiveGo\('([^']+)'\)/g))
+          shown.add(m[1]);
+    }
+    vm.runInContext(`TERM_NOW = ${homeTerm}; session = null; archive = null;`, s);
+    go('home');
     for (const c of new Set(DECKS.map(d => d.course)))
       for (const id of archiveIds(c)) shown.add(id);
     const lost = DECKS.filter(d => !shown.has(d.id)).map(d => d.id);
@@ -720,7 +747,9 @@ function suite(s, label, srcCss) {
     /* The chapter being worked on now is simply on screen. Read it out of the
        rendered markup, since a `current` flag that never reaches the page would
        look right in the deck file and change nothing for the reader. */
-    const currentDecks = DECKS.filter(d => d.current);
+    /* Only the term on screen can be checked against the page; a current deck
+       in another term is correctly absent from it. */
+    const currentDecks = DECKS.filter(d => d.current && (Number(d.termNo) || 1) === homeTerm);
     if (currentDecks.length) {
       const groupsWithCurrent = [...new Set(currentDecks.map(d => d.group))];
       check(`[${label}] every current deck declares a group`,
