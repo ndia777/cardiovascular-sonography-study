@@ -410,6 +410,40 @@ function suite(s, label, srcCss) {
           !/class="drawer"/.test(html) && !/class="scrim"/.test(html),
           'the home screen rendered an open drawer');
 
+    /* A finished term's drawer folds twice: class, then chapter. The checks
+       that matter are that both levels are really closed, that the two levels
+       cannot overwrite each other's remembered state, and that a class says how
+       many chapters are behind it — a fold that hides its own size makes you
+       open all three to find out which one you wanted. */
+    for (const t of termsSeen.filter(x => x < TERM_REAL)) {
+      const drw = vm.runInContext(`archiveHtml({ term: ${t} })`, s);
+      const folds = [...drw.matchAll(
+        /class="dcourse"[^>]*data-key="([^"]+)"[^>]*aria-expanded="(\w+)"[\s\S]*?class="dcoursename">([^<]*)<[\s\S]*?class="dchapn">(\d+) chapters?</g)];
+      const inTerm = DECKS.filter(d => (Number(d.termNo) || 1) === t);
+      const courses = [...new Set(inTerm.map(d => d.course))];
+      check(`[${label}] Term ${t}'s drawer folds every class`,
+            folds.length === courses.length,
+            `${courses.length} classes, ${folds.length} folds`);
+      check(`[${label}] Term ${t}'s class folds start shut`,
+            folds.every(f => f[2] === 'false'),
+            folds.filter(f => f[2] !== 'false').map(f => f[3]).join(', '));
+      const shut = (drw.match(/class="dcoursewrap" id="[^"]*" hidden>/g) || []).length;
+      check(`[${label}] Term ${t}'s class panels are hidden to match`,
+            shut === folds.length, `${shut} of ${folds.length} hidden`);
+      /* the count on the fold is the number of chapters inside it */
+      for (const [, , , name, n] of folds) {
+        const mine = inTerm.filter(d => esc(d.course) === name);
+        const want = new Set(mine.map(d => d.group).filter(Boolean)).size
+                   + (mine.some(d => !d.group) ? 1 : 0);
+        check(`[${label}] ${name} counts its chapters`, Number(n) === want,
+              `fold says ${n}, the decks make ${want}`);
+      }
+      const keys = [...drw.matchAll(/data-key="([^"]+)"/g)].map(m => m[1]);
+      check(`[${label}] Term ${t}'s folds have distinct keys`,
+            new Set(keys).size === keys.length,
+            'a class and a chapter would toggle each other');
+    }
+
     /* A search must not leave a match sealed inside a collapsed fold. Set the
        query the way the search box does — go() nulls the session, so calling it
        after would wipe the query being tested. */

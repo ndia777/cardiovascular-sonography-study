@@ -338,14 +338,28 @@
   .dchapwrap[hidden]{display:none}
   /* Between terms the page is otherwise bare, so this one line is carrying it. */
   .between{color:var(--dim);font-size:14px;line-height:1.55;max-width:46ch;margin:26px 2px 0}
-  /* When a whole term is open the drawer gains a level above the chapters, so
-     the class name is set the way it is on the home page and does not stick —
-     only one thing should be pinned to the top of a scrolling list at a time. */
+  /* When a whole term is open the drawer gains a level above the chapters, and
+     the class folds too. A finished term shut all the way down is three lines —
+     one per class — which is the whole point: the drawer opens as a contents
+     page you read, not a list you scroll. It does not stick, because only one
+     thing should be pinned to the top of a scrolling list at a time, and that
+     job belongs to the chapter you are actually reading through. */
   .dcourse{font-size:13px;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
-    color:var(--text);margin:22px 0 2px;padding:0 4px;
-    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .dcourse:first-child{margin-top:12px}
-  .dcourse + .dgroup .dchap{margin-top:8px}
+    color:var(--text);margin:18px 0 2px;padding:8px 8px 8px 4px;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    /* a button wearing a heading's clothes, same as .dchap */
+    display:flex;align-items:center;gap:8px;width:100%;text-align:left;
+    background:transparent;border:0;border-bottom:1px solid var(--line);cursor:pointer}
+  .dcgroup:first-child .dcourse{margin-top:12px}
+  @media (hover: hover){ .dcourse:hover{background:var(--card2)} }
+  .dcourse:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  .dcourse[aria-expanded="true"] .dcaret{transform:rotate(90deg)}
+  .dcoursename{flex:1 1 auto;min-width:0}
+  /* Indented so the accent bars of the chapters inside sit clear of the class
+     name above them, which is the only thing saying they are nested. */
+  .dcoursewrap{padding-left:8px}
+  .dcoursewrap[hidden]{display:none}
+  .dcoursewrap > .dgroup:first-child .dchap{margin-top:8px}
   .ditem{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;
     border-radius:9px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);
     cursor:pointer;
@@ -13226,7 +13240,7 @@ function archiveGo(id){ archive = null; go('deck', id); }
    it cannot drift out of step with what was retired. */
 function archiveHtml(a){
   const forTerm = a.term != null;
-  let chapSeq = 0;
+  let chapSeq = 0, courseSeq = 0;
   /* A finished term is finished whole: every deck of it belongs in here,
      whatever its own chapter still claims about being current, and study
      guides included. Within a live course only the retired chapters do. */
@@ -13290,12 +13304,30 @@ function archiveHtml(a){
       + (loose.length ? block('Other decks', loose) : '');
   };
 
+  /* One finished class, its chapters folded inside it. The count is chapters
+     rather than decks, so that each level's number says how many things are
+     one click further in: a class holds chapters, a chapter holds decks. */
+  const courseBlock = (c, decks) => {
+    const key = `drawer/term${a.term}/${c}`;
+    const id = `dcourse${courseSeq++}`;
+    const open = chipOpen[key] === true;
+    const n = new Set(decks.map(d => d.group).filter(Boolean)).size
+      + (decks.some(d => !d.group) ? 1 : 0);
+    return `<section class="dcgroup">`
+      + `<button type="button" class="dcourse" data-key="${esc(key)}" aria-controls="${id}"`
+      + ` aria-expanded="${open}" onclick="togglePast(this)">`
+      + `<span class="dcaret" aria-hidden="true">›</span>`
+      + `<span class="dcoursename">${esc(c)}</span>`
+      + `<span class="dchapn">${n} chapter${n === 1 ? '' : 's'}</span></button>`
+      + `<div class="dcoursewrap" id="${id}"${open ? '' : ' hidden'}>`
+      + courseBody(decks, true) + `</div></section>`;
+  };
+
   const body = forTerm
     /* Classes first, chapters under each: the extra level is what stops a
        term's worth of chapters reading as one undifferentiated list. */
     ? [...new Set(scope.map(d => d.course))].sort().map(c =>
-        `<div class="dcourse">${esc(c)}</div>` +
-        courseBody(scope.filter(d => d.course === c), true)).join('')
+        courseBlock(c, scope.filter(d => d.course === c))).join('')
     : courseBody(scope, false);
 
   return `<div class="scrim" onclick="closeArchive()"></div>
