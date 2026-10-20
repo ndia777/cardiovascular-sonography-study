@@ -201,8 +201,27 @@ function suite(s, label, srcCss) {
      whichever term happens to be current would mean the home page goes
      unwatched for the opening weeks of every term, which is exactly when it is
      being changed. The term is restored at the end of the suite, and the one
-     check that must see every term regardless — reachability — sets its own. */
-  const homeTerm = termsSeen.find(t => coursesIn(t).length > 1) ?? TERM_REAL;
+     check that must see every term regardless — reachability — sets its own.
+
+     "More than one class" was the first version of that rule and it was not
+     enough. A second term reached two classes while still being nothing but
+     live chapters, so the page it rendered had no reference deck, no study
+     guide and nothing behind a chip, and eleven checks failed for want of
+     something to look at rather than because anything was wrong. So state what
+     the block actually needs and look for a term that has it, falling back the
+     way it used to if no term does. */
+  const furnished = t => {
+    const ds = DECKS.filter(d => (Number(d.termNo) || 1) === t);
+    const groups = [...new Set(ds.map(d => d.group).filter(Boolean))];
+    return new Set(ds.map(d => d.course)).size > 1          /* two courses to order */
+        && ds.some(d => d.reference)                        /* a standing reference */
+        && ds.some(d => d.exam && !d.retired)               /* a live study guide */
+        /* a chapter whose decks are all finished, so it renders as a chip */
+        && groups.some(g => !ds.some(d => d.group === g && d.current));
+  };
+  const homeTerm = termsSeen.find(furnished)
+                ?? termsSeen.find(t => coursesIn(t).length > 1)
+                ?? TERM_REAL;
   if (homeTerm !== TERM_REAL)
     vm.runInContext(`TERM_NOW = ${homeTerm}; session = null; archive = null;`, s);
 
