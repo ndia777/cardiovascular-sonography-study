@@ -1022,8 +1022,12 @@ function suite(s, label, srcCss) {
        deck IS. Matching "badge exam" loosely covers the muted variant too. */
     /* A live guide wears the tag on its card; a retired one wears it in the
        archive. Both are words rather than colour, which is the point — a
-       border alone would not reach a colour-blind reader. */
-    const live = marked.filter(d => !d.retired);
+       border alone would not reach a colour-blind reader.
+
+       Count only the guides of the term on screen. The page renders one term,
+       so counting every live guide in the file made a guide added to any other
+       term look like a missing label. */
+    const live = marked.filter(d => !d.retired && (Number(d.termNo) || 1) === homeTerm);
     check(`[${label}] every live study guide keeps a readable label`,
           (html.match(/class="badge exam[^"]*">Study guide</g) || []).length === live.length,
           'colour alone would not reach a colour-blind reader');
