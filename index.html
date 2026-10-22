@@ -331,8 +331,11 @@
   .dchap[aria-expanded="true"] .dcaret{transform:rotate(90deg)}
   @media (prefers-reduced-motion:reduce){.dcaret{transition:none}}
   .dchapname{flex:1 1 auto;min-width:0}
-  /* A shut chapter still has to say how much is behind it, or the fold hides
-     the thing you are choosing between. */
+  /* A shut CLASS says how many chapters are behind it, which is what you are
+     choosing between at that level. A shut chapter used to show its deck count
+     the same way and it was dropped: how many decks a chapter happens to be
+     split into is an authoring detail, not something a reader is choosing on,
+     and a column of bare numbers down the list read as clutter. */
   .dchapn{flex:none;color:var(--dim);font-weight:600;font-size:11px;
     letter-spacing:.02em;font-variant-numeric:tabular-nums}
   .dchapwrap[hidden]{display:none}
@@ -1522,8 +1525,7 @@ function archiveHtml(a){
       + `<button type="button" class="dchap" data-key="${esc(key)}" aria-controls="${id}"`
       + ` aria-expanded="${open}" onclick="togglePast(this)">`
       + `<span class="dcaret" aria-hidden="true">›</span>`
-      + `<span class="dchapname">${esc(label)}</span>`
-      + `<span class="dchapn">${decks.length}</span></button>`
+      + `<span class="dchapname">${esc(label)}</span></button>`
       + `<div class="dchapwrap" id="${id}"${open ? '' : ' hidden'}>`
       + guideFirst(decks).map(row).join('') + `</div></section>`;
   };
