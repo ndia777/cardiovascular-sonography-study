@@ -1486,19 +1486,22 @@ function archiveHtml(a){
   const scope = forTerm
     ? DECKS.filter(d => termOf(d) === a.term)
     : DECKS.filter(d => d.course === a.course && !pinned(d) && !standing(d));
-  const progress = load();
   const row = d => {
-    const p = progress[d.id] || {};
     const n = d.cards.length ? `${d.cards.length} terms`
       : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`;
     const { pre, name } = splitTitle(d.title);
     /* Name and count share a line, joined by leader dots, the way an index
        joins an entry to its page. In a list this long it gives the eye a rail
-       to run along instead of two loose columns. */
+       to run along instead of two loose columns.
+
+       Rows used to append "· started" where there was saved progress. It is
+       gone: the drawer holds finished terms, so nearly everything in it has
+       been started, and a marker that is true of almost every row tells the
+       reader nothing while adding a second thing to read on every line. */
     return `<button type="button" class="ditem${d.exam ? ' exam' : ''}" onclick="archiveGo('${d.id}')">${
       pre ? `<span class="prefix">${esc(pre)}</span>` : ""
     }<span class="dline"><span class="dname">${esc(name)}</span><span class="dots"></span
-      ><span class="dmeta">${n}${p.last ? ' · started' : ''}</span></span>${
+      ><span class="dmeta">${n}</span></span>${
       d.exam ? '<span class="dflag">Study guide</span>' : ''}</button>`;
   };
   /* study guides first within a chapter — the tested material is what you
