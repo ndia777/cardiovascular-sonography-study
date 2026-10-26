@@ -12995,7 +12995,7 @@ window.DECKS = [
     { fact: true, term: 'Where the renal veins drain',
       def: 'into the inferior vena cava' },
     { fact: true, term: 'What the radial and ulnar veins merge to form',
-      def: 'the brachial vein' },
+      def: 'the paired brachial veins' },
     { fact: true, term: 'The longest vein in the body',
       def: 'the great saphenous vein' },
     { fact: true, term: 'What the basilar artery supplies',
