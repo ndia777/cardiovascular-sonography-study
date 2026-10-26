@@ -2513,6 +2513,51 @@ function suite(s, label, srcCss) {
   check(`[${label}] no definition gives away its own answer`, !leaks.length,
         leaks.join('\n      '));
 
+  /* Two more ways a definition can hand over the answer, both found by reading
+     rather than by this suite, which is why they are here now.
+
+     ONE: an `also` form is an accepted answer, so a definition that contains
+     one can be read straight off. "CAM" defined as "complementary alternative
+     medicine, treatment offered alongside..." lets you type the alias without
+     knowing anything. The fix is never to drop the `also` — a reader who
+     types the real synonym deserves the mark — but to keep the synonym out of
+     the definition. Detail like that belongs in `note`.
+
+     TWO: a definition can spell the term out in pieces. "Gastroenterology"
+     defined as "the study of the stomach and intestines, built from gastr/o,
+     enter/o and -ology" never contains the word, so the check above passes,
+     yet the parts assemble it in front of you. Catching it means looking for
+     cited word parts whose letters sit inside the term.
+
+     Both are scoped to the current term and later. Older decks carry a
+     backlog of the first kind — 33 cards across Term 1 — and finished
+     chapters are left as they are, the same convention the choices auditor
+     uses. The rule is that the count goes down, never up. */
+  const liveDeck = d => (Number(d.termNo) || 1) >= TERM_REAL;
+  const letters = s => String(s).toLowerCase().replace(/[^a-z]/g, '');
+  const aliasLeaks = [], partLeaks = [];
+  for (const d of DECKS.filter(liveDeck)) for (const c of recallableCards(d)) {
+    const def = c.def.toLowerCase();
+    for (const alt of (c.also || [])) {
+      const form = alt.replace(TAIL, '').trim();
+      if (form.length > 3 && def.includes(form.toLowerCase())) {
+        aliasLeaks.push(`${d.id} / "${c.term}" — the definition contains the accepted alias "${alt}"`);
+        break;
+      }
+    }
+    /* a cited word part is one written with a slash, or led by a hyphen */
+    const cited = [...c.def.matchAll(/[A-Za-z]{2,}\/[A-Za-z]+|(?:^|[\s(])-[A-Za-z]{3,}/g)]
+      .map(m => letters(m[0])).filter(p => p.length >= 4);
+    const term = letters(c.term);
+    const spelling = cited.filter(p => term.includes(p));
+    if (spelling.length)
+      partLeaks.push(`${d.id} / "${c.term}" — the definition spells it out as ${spelling.join(' + ')}`);
+  }
+  check(`[${label}] no definition contains an accepted alias`, !aliasLeaks.length,
+        aliasLeaks.join('\n      '));
+  check(`[${label}] no definition spells out its own term in word parts`, !partLeaks.length,
+        partLeaks.join('\n      '));
+
   /* No automated check for "definition trails off into trivia". Flagging a
      semicolon with a long tail was tried and over-fired badly: "pelvic cavity —
      the space formed by the hip bones; contains reproductive and excretory
