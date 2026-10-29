@@ -818,38 +818,24 @@ function suite(s, label, srcCss) {
       check(`[${label}] no current deck is filed under a chip`, !stowedNow.length,
             stowedNow.join(', '));
 
-      /* Every current deck must be visible without a click, and must be labelled
-         as current — either on the card or by the heading above it. */
+      /* Every current deck must be visible without a click. Being on the page
+         at all IS the signal now: there is no "current" label any more, because
+         a chapter that stops being current folds into a chip or moves to the
+         drawer, so the label sat on everything and separated nothing. */
       const panes = panelsOf(openHtml);
-      let hidden = '', unlabelled = '';
+      let hidden = '';
       for (const d of currentDecks) {
         const tag = tagOf(d);
         const inPane = panes.find(p => p.includes(tag));
         if (inPane && /^[^>]*\shidden>/.test(inPane) && !hidden)
           hidden = `${d.title} sits in a hidden panel`;
-        /* Labelled one way or the other: either the card carries the marker, or
-           the nearest heading above it does. Take the nearest <div class="sect">
-           within the same course — anything earlier belongs to another chapter
-           and would credit this deck with a label it does not have. */
-        const card = (openHtml.split(tag)[1] || '').split('</button>')[0];
-        const before = openHtml.slice(0, openHtml.indexOf(tag));
-        const secAt = before.lastIndexOf('<div class="sect">');
-        const underNow = secAt > before.lastIndexOf('class="coursehead"') &&
-          /^<div class="sect">[^<]*<span class="now">/.test(before.slice(secAt));
-        if (!/class="badge now"/.test(card) && !underNow && !unlabelled)
-          unlabelled = `${d.title} renders with no current marker on it or above it`;
       }
       check(`[${label}] every current deck is visible without a click`, !hidden, hidden);
-      check(`[${label}] every current deck is marked, on the card or above it`,
-            !unlabelled, unlabelled);
-      /* and under a heading it does NOT repeat — the heading already says it, and
-         a badge on every card of a six-deck chapter is just noise. A region runs
-         from one heading to the next, or to the next course. */
-      const titled = openHtml.split('<div class="sect">').slice(1)
-        .map(r => r.split('class="coursehead"')[0]);
-      check(`[${label}] cards under a labelled heading do not repeat the label`,
-            !titled.some(r => /class="badge now"/.test(r)),
-            'a chapter heading and its cards both claim to be current');
+      /* and the label stays gone. It was removed deliberately; this is here so
+         it cannot drift back in without the decision being revisited. */
+      check(`[${label}] nothing on the page labels itself current`,
+            !/class="badge now"|<span class="now">/.test(openHtml),
+            'a current marker is being rendered again');
 
       /* Two deck grids can now render back to back, with no heading or fold
          between them to space them apart. Where that happens the stylesheet has
@@ -860,35 +846,29 @@ function suite(s, label, srcCss) {
         check(`[${label}] adjacent deck grids are spaced apart`,
               /\.decks\s*\+\s*\.decks\s*\{[^}]*margin/.test(srcCss),
               'two grids render back to back with no rule separating them');
-      check(`[${label}] the current chapter is labelled as such`,
-            /<span class="now">current<\/span>/.test(openHtml) || /class="badge now"/.test(openHtml),
-            'nothing on screen says which chapter is current');
-
-      /* The marker breathes. Both placements have to carry it — the chip on a
-         chapter heading and the badge on a bare deck card are the same signal,
-         and which one renders depends on how the chapter is laid out, so
-         animating only the one currently on screen would look like a bug the
-         first time a chapter changed shape. */
-      const frames = /@keyframes\s+nowbreathe\s*\{([\s\S]*?)\n\s*\}/.exec(srcCss);
-      check(`[${label}] the current marker declares a breathing animation`, !!frames,
-            'no @keyframes nowbreathe');
-      const applied = /([^{}]*)\{[^{}]*animation:\s*nowbreathe\s+([\d.]+)s/.exec(srcCss);
-      check(`[${label}] both current markers breathe`,
-            !!applied && /\.badge\.now/.test(applied[1]) && /\.sect\s+\.now/.test(applied[1]),
-            applied ? `applied to: ${applied[1].trim()}` : 'animation never applied');
-      check(`[${label}] one breath takes about four seconds`,
-            !!applied && Math.abs(parseFloat(applied[2]) - 4) < 0.01,
-            applied && `${applied[2]}s`);
-      /* A full cycle, not a half one: dim at both ends and bright in the middle,
-         so 4s is one in-and-out rather than a fade that snaps back. */
-      check(`[${label}] the breath returns to where it started`,
-            !!frames && /0%\s*,\s*100%/.test(frames[1]) && /\b50%/.test(frames[1]),
-            frames && frames[1].replace(/\s+/g, ' ').trim());
-      /* Anything that moves forever must be switchable off. */
-      const reduced = /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([^{}]*\{[^{}]*\}\s*)*/g;
-      check(`[${label}] reduced motion stops the breathing`,
-            [...srcCss.matchAll(reduced)].some(m => /\.badge\.now[^{]*\{[^}]*animation:\s*none/.test(m[0])),
-            'the animation keeps running when the user asks for less motion');
+      /* The marker used to breathe, and four checks here guarded the animation.
+         They went with it. The colour it used, --now, is still live on the
+         progress bar and the next button, so the variable stays. */
+      check(`[${label}] no dead breathing animation is left behind`,
+            !/nowbreathe/.test(srcCss), '@keyframes nowbreathe outlived the marker');
+      /* Anything that moves forever must be switchable off. The old version of
+         this named .badge.now, so it died with the marker and took the
+         guarantee with it. This asks the general question instead: every
+         selector carrying an infinite animation has to be reachable from a
+         reduced-motion block, whatever animates next. */
+      const motionOff = [...srcCss.matchAll(
+        /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([\s\S]*?)\n  \}/g)]
+        .map(m => m[1]).join('\n');
+      const forever = [...srcCss.matchAll(/^\s*([^@{}\n][^{}\n]*)\{[^{}]*animation:[^;}]*\binfinite\b/gm)]
+        .map(m => m[1].trim());
+      /* a selector counts as covered when any of its parts is switched off */
+      const parts = s => s.split(',').map(x => x.trim().split(/[\s>]+/).pop());
+      const loose = forever.filter(sel =>
+        !parts(sel).some(p => p && motionOff.includes(p)));
+      check(`[${label}] every endless animation can be switched off`,
+            !loose.length,
+            loose.length ? `${loose.join(' / ')} keep moving under reduced motion`
+                         : `${forever.length} checked`);
     }
   }
 
@@ -1750,9 +1730,9 @@ function suite(s, label, srcCss) {
      a handful of samples. */
   {
     const scoreHue = s.$('typeof scoreHue === "function" ? scoreHue : null');
-    const scoreBadge = s.$('typeof scoreBadge === "function" ? scoreBadge : null');
-    check(`[${label}] the score colour ramp is reachable`, !!scoreHue && !!scoreBadge);
-    if (scoreHue && scoreBadge) {
+    const scoreItem = s.$('typeof scoreItem === "function" ? scoreItem : null');
+    check(`[${label}] the score colour ramp is reachable`, !!scoreHue && !!scoreItem);
+    if (scoreHue && scoreItem) {
       let backwards = '';
       for (let i = 0; i < 1000; i++) {
         const a = scoreHue(i / 10), b = scoreHue((i + 1) / 10);
@@ -1800,8 +1780,9 @@ function suite(s, label, srcCss) {
       const mods = new Set();
       for (const m of s.__app.innerHTML.matchAll(/class="badge ([^"]+)"/g))
         for (const t of m[1].trim().split(/\s+/)) if (t) mods.add(t);
-      check(`[${label}] the seeded score badge is on the page to be checked`,
-            mods.has('scored'), `saw modifiers: ${[...mods].join(', ')}`);
+      check(`[${label}] the seeded scores are on the page to be checked`,
+            /<div class="scores">/.test(s.__app.innerHTML),
+            `saw badge modifiers: ${[...mods].join(', ')}, but no score line`);
       /* Only an UNQUALIFIED rule is dangerous: `.score{...}` matches any badge
          carrying that modifier, while `.sect .now{...}` cannot reach one unless
          the badge sits inside a .sect. So require the class to start a selector
@@ -1812,17 +1793,25 @@ function suite(s, label, srcCss) {
             !collide.length,
             collide.map(t => `.${t} is styled outside .badge`).join('; '));
 
-      /* Every percentage badge carries a hue; the match TIME must not, since
-         lower is better there and the same ramp would read backwards. */
-      const markup = scoreBadge('Recall', 72);
-      check(`[${label}] a score badge carries its hue and its number`,
-            /class="badge scored"/.test(markup) && /--sh:/.test(markup) && /72%/.test(markup),
+      /* Every percentage carries a hue; the match TIME must not, since lower is
+         better there and the same ramp would read backwards. */
+      const markup = scoreItem('Recall', 72);
+      check(`[${label}] a score carries its hue and its number`,
+            /class="sc"/.test(markup) && /--sh:/.test(markup) && /72%/.test(markup),
             markup);
       const home = s.__app.innerHTML;
-      const timed = /<span class="badge[^"]*"[^>]*>Match \d+s<\/span>/.exec(home);
-      check(`[${label}] a match time renders to be checked`, !!timed, 'no match badge found');
+      const timed = /<span class="sc">Match \d+s<\/span>/.exec(home);
+      check(`[${label}] a match time renders to be checked`, !!timed, 'no match time found');
       check(`[${label}] the match time is not on the score scale`,
             !timed || !/--sh:/.test(timed[0]), timed && timed[0]);
+      /* The line only exists when there is something on it — an empty div
+         would leave a gap under the title of every untouched deck. */
+      const fresh = DECKS.find(d => d.cards.length && !s.$('load()')[d.id]);
+      if (fresh) {
+        const card = (home.split(tagOf(fresh))[1] || '').split('</button>')[0];
+        check(`[${label}] an unattempted deck shows no score line`,
+              !/class="scores"/.test(card), `${fresh.title} draws an empty line`);
+      }
       s.$('save')(snap);
       go('home');
     }
