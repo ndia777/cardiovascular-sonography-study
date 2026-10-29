@@ -920,6 +920,25 @@
   @media (hover: hover){ .step:hover{border-color:var(--accent);background:var(--card2)} }
   .step.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card));animation:shake .3s}
 
+  /* ---- flow chart ---- */
+  /* Vessel names are short, and a route can run ten deep, so the pool wraps as
+     chips instead of stacking full-width rows off the bottom of a phone. */
+  .pool{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;
+    padding:9px 15px;font-size:14px;line-height:1.3;transition:.12s}
+  @media (hover: hover){ .chip:hover{border-color:var(--accent);background:var(--card2)} }
+  .chip.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card));animation:shake .3s}
+  /* the two fixed ends of the route, stated before the first chip is placed */
+  .ends{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 14px;font-size:15px}
+  .ends b{font-weight:700}
+  .ends i{color:var(--accent);font-style:normal}
+  .flowtree,.flowtree ul{list-style:none;margin:0;padding:0}
+  .flowtree ul{margin-left:13px;padding-left:13px;border-left:1px solid var(--line)}
+  .flowtree li{padding:5px 0}
+  .flowtree .vn{font-weight:600;font-size:14.5px}
+  .flowtree .vd{display:block;color:var(--dim);font-size:12.9px;line-height:1.5;margin-top:2px}
+  .crumb{color:var(--dim);font-size:12.5px;line-height:1.5;margin-top:3px}
+
   /* ---- browse ---- */
   table.browse{width:100%;border-collapse:collapse;font-size:14.5px}
   table.browse td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -1060,6 +1079,32 @@ const STORE = 'cvs-study-v1';
 /* A deck is either a vocabulary list (`cards`) or a sequence (`steps`).
    Default both so the rest of the engine never has to check. */
 DECKS.forEach(d => { d.cards = d.cards || []; d.steps = d.steps || []; });
+
+/* ---------- flow charts ---------- */
+/* A flow chart deck holds one tree of vessels instead of a list of terms, and
+   every prompt is derived from that tree. Nothing is written twice, so no
+   question can drift out of step with the chart: the chart is the data. */
+const flowWalk = (nodes, trail, out) => {
+  for (const n of nodes || []){
+    const here = trail.concat([n]);
+    out.push(here);
+    flowWalk(n.to, here, out);
+  }
+  return out;
+};
+/* every trail from the top of the chart down to a vessel, shallowest first */
+const flowTrails = d => d.flow ? flowWalk(d.flow.tree, [], []) : [];
+const flowNodes = d => flowTrails(d).map(t => t[t.length - 1]);
+/* A destination worth tracing has to be far enough along that the route is
+   actually a question. One vessel off the heart is a branch, not a route. */
+const flowRoutes = d => flowTrails(d).filter(t => t.length >= 3);
+
+/* What a deck is counted in. Four kinds of deck, one label each, in one place
+   so the home list, the archive row and the deck header cannot disagree. */
+const deckSize = d => d.cards.length ? `${d.cards.length} terms`
+  : (d.dose || []).length ? `${d.dose.length} problems`
+  : d.flow ? `${flowNodes(d).length} vessels`
+  : `${d.steps.length} steps`;
 
 /* Not every card is a term with a definition. Some are a topic paired with a
    fact, list, or sequence ("Parts of ATP", "Order of chest placement"). Those
@@ -1487,8 +1532,7 @@ function archiveHtml(a){
     ? DECKS.filter(d => termOf(d) === a.term)
     : DECKS.filter(d => d.course === a.course && !pinned(d) && !standing(d));
   const row = d => {
-    const n = d.cards.length ? `${d.cards.length} terms`
-      : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`;
+    const n = deckSize(d);
     const { pre, name } = splitTitle(d.title);
     /* Name and count share a line, joined by leader dots, the way an index
        joins an entry to its page. In a list this long it gives the eye a rail
@@ -1752,10 +1796,13 @@ function screenHome(){
     const badgeRow = inner => inner.trim() ? `<div class="badges">${inner}</div>` : '';
     const deckCard = (d, bare) => {
       const p = progress[d.id] || {};
-      const hits = q ? d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length : 0;
+      /* A flow chart has no cards to match, so searching it matches vessels. */
+      const hits = !q ? 0
+        : d.flow ? flowNodes(d).filter(v => (v.n + ' ' + (v.d || '')).toLowerCase().includes(q)).length
+        : d.cards.filter(x => (x.term+' '+x.def).toLowerCase().includes(q)).length;
       return `<button class="deck ${d.exam && !d.retired ? 'exam' : ''}${d.reference ? ' ref' : ''}" onclick="go('deck','${d.id}')">
         ${titleParts(d.title)}
-        <div class="meta">${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
+        <div class="meta">${deckSize(d)}${hits ? ` · <span style="color:var(--accent)">${hits} match${hits>1?'es':''}</span>` : ''}</div>
         ${badgeRow(`
           ${d.exam ? `<span class="badge exam${d.retired ? ' past' : ''}">Study guide</span>` : ''}
           ${d.reference ? `<span class="badge ref">Reference</span>` : ''}
@@ -1937,6 +1984,12 @@ function screenDeck(){
   if ((d.dose || []).length)
     modes.push(['dose', 'Work the Dose',
       `Step through ${d.dose.length} orders — convert the weight, build D, read H and Q off the label, then divide. Every step is marked.`, 'hot']);
+  /* A flow chart deck is a tree of vessels, so it leads with the mode that
+     walks it. The card modes below have nothing to work with. */
+  if (d.flow)
+    modes.push(['path', 'Trace the Path',
+      `Name every vessel between two points, in the order blood reaches them. ${flowRoutes(d).length} routes through the chart.`,
+      'hot']);
   /* First, and bordered, because this chapter is tested by diagram — the
      professor said so, and the mode order is how the page says which to do. */
   const lf = labelFigs(d);
@@ -1975,9 +2028,12 @@ function screenDeck(){
       `Point to each of the ${d.figure.parts.length} structures on the diagram.`]);
   if (d.beat)
     modes.push(['beat','Watch a Heartbeat','See the impulse travel the conduction system while the ECG draws in step — then switch rhythms to compare the arrhythmias.']);
-  modes.push(['browse','Review Sheet', d.steps.length
-    ? 'The full procedure in order, with the rationale for each step.'
-    : 'The whole list in one table. Hide the definitions to self-test.']);
+  modes.push(['browse', d.flow ? 'The Whole Chart' : 'Review Sheet',
+    d.flow
+      ? 'The chart itself, branch by branch, with what each vessel feeds. Filter it to see the route to any one vessel.'
+      : d.steps.length
+        ? 'The full procedure in order, with the rationale for each step.'
+        : 'The whole list in one table. Hide the definitions to self-test.']);
   /* Only where the chapter actually spans more than this deck — otherwise it
      would just be the Review Sheet above under a grander name. */
   if (chapterDecks(d).length > 1)
@@ -1997,7 +2053,7 @@ function screenDeck(){
   app.innerHTML = `
     <button class="back" onclick="go('home')">← All decks</button>
     ${((t) => `${t.pre ? `<div class="titlepre">${esc(t.pre)}</div>` : ''}<h2 class="title deckname">${esc(t.name)}</h2>`)(splitTitle(d.title))}
-    <div class="srcline"><span class="srccourse">${esc(d.course)}</span> · ${d.cards.length ? `${d.cards.length} terms` : (d.dose || []).length ? `${d.dose.length} problems` : `${d.steps.length} steps`}</div>
+    <div class="srcline"><span class="srccourse">${esc(d.course)}</span> · ${deckSize(d)}</div>
     ${d.note ? `<div class="decknote">${esc(d.note)}</div>` : ''}
     <div class="modes">
       ${offered.map(([m,t,s,cls]) => `<button class="mode ${cls || ''}" onclick="go('run','${d.id}','${m}')">
@@ -4370,6 +4426,109 @@ function placeStep(i){
   render();
 }
 
+/* ═══════════════ TRACE THE PATH ═══════════════ */
+/* Every route is generated by walking the chart, so the data is authored once
+   and no prompt can contradict it. Both ends of the route are given and the
+   vessels in between are what gets placed. Two decoys ride along in the pool,
+   because knowing which vessels are NOT on the way is half of what the chart
+   teaches — and they are drawn from the chart itself, so they are always
+   siblings of the right answer rather than obvious filler. */
+const ROUTES_PER_RUN = 6;
+const DECOYS = 2;
+
+/* The chart is written from the heart outward whichever way blood runs through
+   it, so an arterial route reads down the trail and a venous one reads back up
+   it. One reversal here is the whole difference between the two decks. */
+const routeOrder = (d, trail) => {
+  const mid = trail.slice(0, -1).map(n => n.n);
+  return d.flow.dir === 'in' ? mid.slice().reverse() : mid;
+};
+const routeEnds = (d, trail) => {
+  const far = trail[trail.length - 1].n;
+  return d.flow.dir === 'in' ? { from: far, to: d.flow.start }
+                             : { from: d.flow.start, to: far };
+};
+function newRound(d, trail){
+  const order = routeOrder(d, trail);
+  const onRoute = new Set(order.concat([trail[trail.length - 1].n]));
+  const decoys = shuffle(flowNodes(d).map(n => n.n).filter(n => !onRoute.has(n)))
+                   .slice(0, DECOYS);
+  return { trail, order, placed: [], pool: shuffle(order.concat(decoys)),
+           bad: null, done: false };
+}
+function runPath(d){
+  if (!session){
+    const routes = shuffle(flowRoutes(d)).slice(0, ROUTES_PER_RUN);
+    session = { routes, i: 0, misses: 0, start: Date.now(),
+                round: routes.length ? newRound(d, routes[0]) : null };
+  }
+  const s = session;
+
+  if (!s.round){
+    const secs = Math.round((Date.now() - s.start) / 1000);
+    const prev = load()[d.id] || {};
+    record(d.id, { pathBest: prev.pathBest != null ? Math.min(prev.pathBest, s.misses) : s.misses });
+    return results(d, String(s.misses),
+      `misses tracing ${s.routes.length} routes · ${secs}s`, [], 'path');
+  }
+
+  const r = s.round;
+  const ends = routeEnds(d, r.trail);
+  const detail = new Map(flowNodes(d).map(n => [n.n, n.d]));
+  /* The near end is always shown, so the numbering of what has been placed
+     never shifts as the route fills in, and the chain always reads from a
+     real vessel rather than starting mid-stream. */
+  const chain = [ends.from].concat(r.placed, r.done ? [ends.to] : []);
+
+  app.innerHTML = `
+    ${sessionBar(d, s.i + (r.done ? 1 : 0), s.routes.length,
+       `Trace the Path · <span style="color:${s.misses ? 'var(--bad)' : 'var(--dim)'}">${s.misses} misses</span>`)}
+    <div class="stagehead">Route ${s.i + 1} of ${s.routes.length}
+      <span>${r.order.length} vessel${r.order.length === 1 ? '' : 's'} between</span></div>
+    <div class="ends"><b>${esc(ends.from)}</b><i>→</i><span style="color:var(--dim)">?</span><i>→</i><b>${esc(ends.to)}</b></div>
+    <ol class="placed">${chain.map((name, i) => {
+       /* the ends are given, so only the placed vessels are numbered */
+       const fixed = i === 0 || (r.done && i === chain.length - 1);
+       /* the detail belongs to the vessel just placed, so it hangs off that
+          row — the same way a placed step carries its rationale */
+       const last = !r.done && i === chain.length - 1 && i > 0;
+       return `<li class="${last ? 'current' : ''}">
+         <div class="row"><b>${fixed ? '·' : i}</b><span>${esc(name)}</span></div>
+         ${last && detail.get(name) ? `<div class="detail">${esc(detail.get(name))}</div>` : ''}</li>`;
+     }).join('')}</ol>
+    ${r.done
+      ? `<div class="q">Route complete.</div>
+         <div class="steps"><button class="step" onclick="nextRoute()">${
+           s.i + 1 < s.routes.length ? 'Next route →' : 'See the score →'}</button></div>`
+      : `<div class="q">Which vessel does blood reach ${r.placed.length ? 'next' : 'first'}?</div>
+         <div class="pool">${r.pool.map((name, i) =>
+            `<button class="chip ${r.bad === i ? 'bad' : ''}" onclick="placeVessel(${i})">${esc(name)}</button>`
+          ).join('')}</div>`}`;
+  keyHandler = null;
+}
+function placeVessel(i){
+  const s = session, r = s.round;
+  if (r.bad !== null || r.done) return;
+  if (r.pool[i] !== r.order[r.placed.length]){
+    s.misses++;
+    r.bad = i;
+    render();
+    return setTimeout(() => {
+      if (session && session.round) { session.round.bad = null; render(); }
+    }, 340);
+  }
+  r.placed.push(r.pool[i]);
+  r.pool.splice(i, 1);
+  if (r.placed.length === r.order.length) r.done = true;
+  render();
+}
+function nextRoute(){
+  const s = session, d = deckById(view.deck);
+  s.i++;
+  s.round = s.i < s.routes.length ? newRound(d, s.routes[s.i]) : null;
+  render();
+}
+
 /* ═══════════════ BROWSE ═══════════════ */
 /* ═══════════════ WHOLE CHAPTER SHEET ═══════════════ */
 /* Every deck sharing a course and a chapter, in one table. Studying Chapter 1
@@ -4518,6 +4677,44 @@ function runBrowse(d){
   if (!session) session = { hide: false, filter: '' };
   const s = session;
   const f = s.filter.toLowerCase();
+
+  /* A flow chart deck reads as the chart: an indented tree, not a glossary.
+     Filtering switches it to a flat list, because a vessel is only useful here
+     with the route that reaches it, and that route is what the filter hides. */
+  if (d.flow){
+    const trails = flowTrails(d);
+    const found = trails.filter(t => {
+      const v = t[t.length - 1];
+      return (v.n + ' ' + (v.d || '')).toLowerCase().includes(f);
+    });
+    const branch = nodes => `<ul>${nodes.map(n =>
+      `<li><span class="vn">${esc(n.n)}</span>${n.d ? `<span class="vd">${esc(n.d)}</span>` : ''}${
+        n.to ? branch(n.to) : ''}</li>`).join('')}</ul>`;
+
+    app.innerHTML = `
+      <button class="back" onclick="go('deck','${d.id}')">← Back</button>
+      <div class="bar"><span>${f ? `${found.length} of ` : ''}${trails.length} vessels</span></div>
+      <div class="decknote">${d.flow.dir === 'in'
+        ? `Written from the heart outward. Blood runs the other way, from the end of a branch back up to the ${esc(d.flow.start.toLowerCase())}.`
+        : `Written in the direction blood flows, out from the ${esc(d.flow.start.toLowerCase())}.`}</div>
+      <input class="search" id="bfilter" placeholder="Filter…" value="${esc(s.filter)}">
+      ${f
+        ? (found.length ? `<ol class="placed">${found.map(t => {
+             const v = t[t.length - 1];
+             const route = [d.flow.start].concat(t.map(n => n.n));
+             return `<li><div class="row"><span><span class="vn">${esc(v.n)}</span>
+               ${v.d ? `<span class="vd">${esc(v.d)}</span>` : ''}
+               <span class="crumb">${(d.flow.dir === 'in' ? route.slice().reverse() : route)
+                 .map(esc).join(' → ')}</span></span></div></li>`;
+           }).join('')}</ol>` : '<p style="color:var(--dim)">Nothing matches that filter.</p>')
+        : `<ul class="flowtree"><li><span class="vn">${esc(d.flow.start)}</span>${branch(d.flow.tree)}</li></ul>`}`;
+
+    const ff = document.getElementById('bfilter');
+    ff.oninput = e => { const p = e.target.selectionStart; s.filter = e.target.value; runBrowse(d);
+      const nn = document.getElementById('bfilter'); nn.focus(); nn.setSelectionRange(p, p); };
+    keyHandler = null;
+    return;
+  }
 
   /* A sequence deck reads as a numbered procedure, not a two-column glossary. */
   if (d.steps.length){
@@ -4969,7 +5166,8 @@ function render(){
   ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
      chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse,
      chapter: runChapter, trace: runTrace, parts: runParts,
-     figure: runFigure, region: runRegion, label: runLabel, dose: runDose
+     figure: runFigure, region: runRegion, label: runLabel, dose: runDose,
+     path: runPath
    }[String(view.mode).split(':')[0]] || screenDeck)(d);
 }
 document.addEventListener('keydown', e => {

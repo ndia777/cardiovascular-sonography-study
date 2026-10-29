@@ -13134,6 +13134,193 @@ window.DECKS = [
   ],
 },
 {
+  id: 'bio201-ch15-flow-arteries',
+  group: 'Chapter 15 — Cardiovascular System',
+  current: true,
+  added: '2026-10-27',
+  termNo: 2,
+  course: 'BIO201 · Anatomy & Physiology 2',
+  title: 'Ch. 15 — Arterial Flow Chart',
+  source: 'Chapter 15 — course notes',
+  only: ['path', 'browse'],
+  flow: {
+    start: 'Left ventricle',
+    dir: 'out',
+    unit: 'artery',
+    tree: [
+      { n: 'Ascending aorta', d: 'the first stretch of the aorta above the root', to: [
+        { n: 'Right coronary artery', d: 'arises from an aortic sinus and supplies the right side of the myocardium' },
+        { n: 'Left coronary artery', d: 'arises from an aortic sinus and supplies the left side of the myocardium' },
+        { n: 'Aortic arch', d: 'carries baroreceptors, and aortic bodies holding chemoreceptors', to: [
+          { n: 'Brachiocephalic trunk', d: 'the first branch of the arch, and the only one of the three that is a trunk', to: [
+            { n: 'Right common carotid artery', d: 'the right side of the head and neck, dividing into an external and an internal carotid like the left' },
+            { n: 'Right subclavian artery', d: 'the right upper limb, continuing as axillary, brachial, then radial and ulnar like the left' }
+          ] },
+          { n: 'Left common carotid artery', d: 'the second branch of the arch, dividing at the upper border of the larynx', to: [
+            { n: 'External carotid artery', d: 'the face, scalp and neck', to: [
+              { n: 'Superior thyroid artery', d: 'the hyoid, larynx and thyroid gland' },
+              { n: 'Lingual artery', d: 'the tongue and the sublingual salivary glands' },
+              { n: 'Facial artery', d: 'the pharynx, palate, chin, lips and nose' },
+              { n: 'Occipital artery', d: 'the back of the scalp, the meninges and the neck muscles' },
+              { n: 'Posterior auricular artery', d: 'the ear and the scalp above it' },
+              { n: 'Maxillary artery', d: 'one of the two terminal branches, supplying the teeth, gums, jaws and nasal cavity' },
+              { n: 'Superficial temporal artery', d: 'the other terminal branch, supplying the parotid gland and the surface of the face and scalp' }
+            ] },
+            { n: 'Internal carotid artery', d: 'the major blood supply to the brain', to: [
+              { n: 'Ophthalmic artery', d: 'the eyeball and the rest of the orbit' },
+              { n: 'Anterior cerebral artery', d: 'a terminal branch, supplying the medial surface of the brain' },
+              { n: 'Middle cerebral artery', d: 'a terminal branch, supplying the lateral surface, including the motor and sensory areas for the face and upper limb' }
+            ] }
+          ] },
+          { n: 'Left subclavian artery', d: 'the third branch of the arch', to: [
+            { n: 'Vertebral artery', d: 'ascends through the transverse foramina of the cervical vertebrae and enters the skull at the foramen magnum', to: [
+              { n: 'Basilar artery', d: 'formed where the two vertebral arteries unite, supplying the pons, midbrain and cerebellum', to: [
+                { n: 'Posterior cerebral artery', d: 'one of the two terminal branches, supplying the occipital and temporal lobes' }
+              ] }
+            ] },
+            { n: 'Thyrocervical artery', d: 'the thyroid, parathyroids, larynx, trachea and the muscles of the neck, shoulder and back' },
+            { n: 'Costocervical artery', d: 'the muscles of the neck, back and thoracic wall' },
+            { n: 'Internal thoracic artery', d: 'descends behind the costal cartilages to supply the thoracic wall', to: [
+              { n: 'Anterior intercostal arteries', d: 'two to each of the upper six intercostal spaces, supplying the intercostal muscles and the mammary glands' }
+            ] },
+            { n: 'Axillary artery', d: 'the name the subclavian takes between the clavicle and the first rib', to: [
+              { n: 'Brachial artery', d: 'the name it takes on leaving the axilla', to: [
+                { n: 'Deep brachial artery', d: 'curves behind the humerus to the triceps brachii' },
+                { n: 'Radial artery', d: 'runs close to the surface at the wrist, which makes it the usual pulse point' },
+                { n: 'Ulnar artery', d: 'runs down the medial forearm to the network at the wrist' }
+              ] }
+            ] }
+          ] },
+          { n: 'Thoracic aorta', d: 'the descending aorta above the diaphragm', to: [
+            { n: 'Bronchial arteries', d: 'the bronchi' },
+            { n: 'Esophageal arteries', d: 'the esophagus' },
+            { n: 'Mediastinal arteries', d: 'the mediastinum' },
+            { n: 'Pericardial arteries', d: 'the pericardium' },
+            { n: 'Posterior intercostal arteries', d: 'the intercostal muscles, vertebrae, spinal cord and deep back muscles' },
+            { n: 'Abdominal aorta', d: 'the descending aorta below the diaphragm', to: [
+              { n: 'Celiac trunk', d: 'the first branch below the diaphragm', to: [
+                { n: 'Left gastric artery', d: 'the stomach' },
+                { n: 'Splenic artery', d: 'the spleen and part of the pancreas' },
+                { n: 'Hepatic artery', d: 'delivers about a third of the blood the liver receives, and that third is the oxygen-rich part' }
+              ] },
+              { n: 'Phrenic arteries', d: 'the diaphragm' },
+              { n: 'Superior mesenteric artery', d: 'the jejunum, ileum, cecum, ascending colon and most of the transverse colon' },
+              { n: 'Suprarenal arteries', d: 'the adrenal glands' },
+              { n: 'Renal arteries', d: 'the kidneys' },
+              { n: 'Gonadal arteries', d: 'the ovaries, or the testes by way of the inguinal canal' },
+              { n: 'Inferior mesenteric artery', d: 'the rest of the transverse colon, the descending and sigmoid colon, and the rectum' },
+              { n: 'Lumbar arteries', d: 'the skin, muscles and posterior wall of the abdomen' },
+              { n: 'Middle sacral artery', d: 'the sacrum and coccyx' },
+              { n: 'Common iliac artery', d: 'the terminal split of the aorta, at the pelvic brim', to: [
+                { n: 'Internal iliac artery', d: 'the pelvic organs and the gluteal region', to: [
+                  { n: 'Superior and inferior gluteal arteries', d: 'the gluteal and pelvic muscles and the skin of the buttock' },
+                  { n: 'Internal pudendal artery', d: 'the distal alimentary canal, the external genitalia and the hip joint' },
+                  { n: 'Obturator artery', d: 'the adductor muscles of the thigh' }
+                ] },
+                { n: 'External iliac artery', d: 'the main supply to the lower limb', to: [
+                  { n: 'Femoral artery', d: 'the name it takes midway between the pubic symphysis and the anterior superior iliac spine', to: [
+                    { n: 'Deep femoral artery', d: 'its largest branch, to the hip joint and the thigh muscles' },
+                    { n: 'Popliteal artery', d: 'the name it takes behind the knee', to: [
+                      { n: 'Anterior tibial artery', d: 'passes between the tibia and fibula to the anterior and lateral leg', to: [
+                        { n: 'Dorsalis pedis artery', d: 'its continuation into the foot, supplying the instep and toes' }
+                      ] },
+                      { n: 'Posterior tibial artery', d: 'the larger of the two, descending beneath the calf muscles', to: [
+                        { n: 'Fibular artery', d: 'its largest branch' },
+                        { n: 'Medial and lateral plantar arteries', d: 'the division between the medial malleolus and the heel' }
+                      ] }
+                    ] }
+                  ] }
+                ] }
+              ] }
+            ] }
+          ] }
+        ] }
+      ] }
+    ]
+  }
+},
+
+{
+  id: 'bio201-ch15-flow-veins',
+  group: 'Chapter 15 — Cardiovascular System',
+  current: true,
+  added: '2026-10-27',
+  termNo: 2,
+  course: 'BIO201 · Anatomy & Physiology 2',
+  title: 'Ch. 15 — Venous Flow Chart',
+  source: 'Chapter 15 — course notes',
+  only: ['path', 'browse'],
+  flow: {
+    start: 'Right atrium',
+    dir: 'in',
+    unit: 'vein',
+    tree: [
+      { n: 'Superior vena cava', d: 'formed where the two brachiocephalic veins merge in the mediastinum', to: [
+        { n: 'Azygos vein', d: 'ascends the mediastinum on the right of the vertebral column, draining most of the muscular tissue of the abdominal and thoracic walls', to: [
+          { n: 'Right posterior intercostal veins', d: 'the intercostal spaces of the right thoracic wall' },
+          { n: 'Superior hemiazygos vein', d: 'takes the upper left posterior intercostal veins' },
+          { n: 'Inferior hemiazygos vein', d: 'takes the lower left posterior intercostal veins' },
+          { n: 'Ascending lumbar veins', d: 'one on each side, draining the posterior abdominal wall' }
+        ] },
+        { n: 'Brachiocephalic vein', d: 'formed where an internal jugular and a subclavian vein join, one on each side', to: [
+          { n: 'Internal thoracic vein', d: 'the thoracic wall behind the costal cartilages' },
+          { n: 'Internal jugular vein', d: 'the larger of the two jugulars, collecting from the venous sinuses of the brain and the deep face and neck' },
+          { n: 'Subclavian vein', d: 'the continuation of the axillary vein beyond the axilla', to: [
+            { n: 'External jugular vein', d: 'the face, scalp and superficial neck, descending over the sternocleidomastoid' },
+            { n: 'Axillary vein', d: 'formed where the basilic and brachial veins join, and also receiving the cephalic', to: [
+              { n: 'Cephalic vein', d: 'the superficial vein of the radial side, running up the lateral limb from hand to shoulder before it pierces the tissues' },
+              { n: 'Brachial veins', d: 'the paired deep veins of the arm', to: [
+                { n: 'Basilic vein', d: 'the superficial vein of the ulnar side, which dives deep in mid-arm to join the brachial', to: [
+                  { n: 'Median cubital vein', d: 'crosses the bend of the elbow from the cephalic to the basilic, and is the standard venipuncture site' }
+                ] },
+                { n: 'Radial veins', d: 'the paired deep veins of the lateral forearm' },
+                { n: 'Ulnar veins', d: 'the paired deep veins of the medial forearm' }
+              ] }
+            ] }
+          ] }
+        ] }
+      ] },
+      { n: 'Inferior vena cava', d: 'formed where the two common iliac veins merge at the level of the fifth lumbar vertebra', to: [
+        { n: 'Hepatic veins', d: 'carry blood out of the liver and are the only route by which portal blood reaches the heart', to: [
+          { n: 'Hepatic sinusoids', d: 'the discontinuous capillaries of the liver, lined with Kupffer cells that remove bacteria from portal blood', to: [
+            { n: 'Hepatic portal vein', d: 'runs from one capillary bed to another rather than back to the heart, delivering nutrient-rich but oxygen-poor blood to the liver', to: [
+              { n: 'Right and left gastric veins', d: 'the stomach' },
+              { n: 'Superior mesenteric vein', d: 'the small intestine, the ascending colon and the transverse colon' },
+              { n: 'Splenic vein', d: 'the spleen, the pancreas and part of the stomach', to: [
+                { n: 'Inferior mesenteric vein', d: 'the largest tributary of the splenic, draining the descending and sigmoid colon and the rectum' }
+              ] }
+            ] }
+          ] }
+        ] },
+        { n: 'Phrenic veins', d: 'the diaphragm' },
+        { n: 'Suprarenal veins', d: 'the adrenal glands' },
+        { n: 'Renal veins', d: 'the kidneys' },
+        { n: 'Gonadal veins', d: 'the ovaries or the testes' },
+        { n: 'Lumbar veins', d: 'the posterior abdominal wall' },
+        { n: 'Common iliac vein', d: 'formed where an internal and an external iliac vein join', to: [
+          { n: 'Internal iliac vein', d: 'the pelvic organs, by tributaries matching the branches of the internal iliac artery', to: [
+            { n: 'Gluteal and pudendal veins', d: 'the buttock and the external genitalia' },
+            { n: 'Vesical and rectal veins', d: 'the bladder and rectum, forming plexuses around both' }
+          ] },
+          { n: 'External iliac vein', d: 'the continuation of the femoral vein above the inguinal ligament', to: [
+            { n: 'Femoral vein', d: 'the continuation of the popliteal vein up through the thigh', to: [
+              { n: 'Great saphenous vein', d: 'the longest vein in the body, running from the medial foot in front of the medial malleolus up to the femoral' },
+              { n: 'Popliteal vein', d: 'the single trunk formed at the knee where the tibial veins join', to: [
+                { n: 'Small saphenous vein', d: 'begins on the lateral foot, passes behind the lateral malleolus and up the back of the calf' },
+                { n: 'Anterior tibial veins', d: 'the paired deep veins of the anterior leg' },
+                { n: 'Posterior tibial veins', d: 'the paired deep veins behind the calf muscles' }
+              ] }
+            ] }
+          ] }
+        ] }
+      ] },
+      { n: 'Coronary sinus', d: 'collects the cardiac veins and empties into the right atrium beside the two venae cavae', to: [
+        { n: 'Cardiac veins', d: 'drain the blood that has passed through the capillaries of the myocardium' }
+      ] }
+    ]
+  }
+},
+{
   id: 'm101-ch1-role',
   group: 'Chapter 1 — The Medical Assistant and the Health Care Team',
   current: true,
@@ -13724,6 +13911,240 @@ window.DECKS = [
       answer: 0,
       why: 'The mechanism is attention, which is also why distraction works during a procedure.' },
   ],
+},
+{
+  id: 'm101-mc-money',
+  group: 'Managed Care',
+  current: true,
+  added: '2026-10-29',
+  termNo: 2,
+  course: 'M101 · Medical Office Management',
+  title: 'Managed Care — Paying for Care',
+  source: 'Managed Care — course notes',
+  cards: [
+    { term: 'Fee for service', also: ['FFS'],
+      def: 'the older arrangement in which a patient was billed for each thing the provider did, then sought reimbursement afterward' },
+    { term: 'Point of service', also: ['POS'],
+      def: 'the arrangement that lets a patient use any hospital or provider they choose, and the most expensive of the plans' },
+    { fact: true, term: 'Who handled the billing before the 1990s',
+      def: 'the patient, who acted as their own billing service and was reimbursed by the insurer afterward' },
+    { fact: true, term: 'Why billers and coders were not needed before the 1990s',
+      def: 'the patient paid the provider directly for each service and sought reimbursement themselves' },
+    { term: 'Deductible',
+      def: 'the amount a patient must pay out of pocket before the insurance company pays anything at all' },
+    { fact: true, term: 'How often a deductible resets',
+      def: 'once a year, every January 1' },
+    { term: 'Co-pay',
+      def: 'the set amount a patient hands over at every visit, separate from the yearly amount they must meet first' },
+    { fact: true, term: 'Which the insurer can tell has gone unpaid, the co-pay or the yearly amount',
+      def: 'the yearly amount, because an unpaid co-pay would go unnoticed by the insurance company' },
+    { fact: true, term: 'What an 80/20 plan means for the patient',
+      def: 'the patient pays 20 percent of the bill and the insurer pays 80 percent' },
+    { fact: true, term: 'How to read the second number in a plan split',
+      def: 'the higher it is, the more of the bill falls on the patient' },
+    { fact: true, term: 'What a 90/10 plan leaves the patient owing',
+      def: 'the co-pay, plus 10 percent of the bill after the insurer has paid 90 percent' },
+    { term: 'UCR',
+      def: 'the three-part test an insurer applies to decide how much of a submitted fee it is willing to pay' },
+    { fact: true, term: 'What the U in UCR asks',
+      def: 'what this particular provider charges on average for the service' },
+    { fact: true, term: 'What the C in UCR asks',
+      def: 'what other providers in the same area charge for the same service' },
+    { fact: true, term: 'What the R in UCR asks',
+      def: 'whether any factor entitles the provider to more money than they usually charge' },
+    { fact: true, term: 'What happens when a provider bills above their usual fee',
+      def: 'the insurer pays part of the bill rather than all of it, unless the provider can justify the difference' },
+    { fact: true, term: 'The reason given for a surgical fee coming in above the usual',
+      def: 'a surgeon does not know what they will find until the procedure is underway, and may have to do something different' },
+    { term: 'Explanation of benefits', also: ['EOB'],
+      def: 'the report telling the provider and the patient how a bill was processed' },
+    { fact: true, term: 'When no explanation of benefits is issued',
+      def: 'when the patient pays cash, since one is only required where insurance is involved' },
+    { term: 'High deductible plan',
+      def: 'an arrangement in which a large sum, around five thousand dollars, must be paid before any coverage begins' },
+    { fact: true, term: 'What a patient pays on a $10,000 procedure with a $2,500 deductible and an 80/20 split',
+      def: 'four thousand dollars, being the deductible plus 20 percent of the remaining seven thousand five hundred' }
+  ],
+  questions: [
+    { q: 'A deductible is the amount a patient must pay:',
+      choices: ['Before the insurance company pays anything at all',
+                'At every visit to the provider',
+                'After the insurance company has paid its share',
+                'Only when treated outside the provider network'],
+      answer: 0,
+      why: 'The co-pay is the per-visit amount; the deductible comes first and is a yearly figure.' },
+    { q: 'Deductibles reset:',
+      choices: ['Every January 1', 'Every July 1', 'Every April 1', 'Every October 1'],
+      answer: 0,
+      why: 'They run by the calendar year, so the clock restarts at the start of January.' },
+    { q: 'Under an 80/20 plan, the patient pays:',
+      choices: ['20 percent of the bill', '80 percent of the bill', '50 percent of the bill', '10 percent of the bill'],
+      answer: 0,
+      why: 'The second number is the patient share, so the higher it is the worse the plan is for them.' },
+    { q: 'In a co-insurance split, the second number tells you:',
+      choices: ['The share of the bill the patient pays',
+                'The share of the bill the insurer pays',
+                'The share of the deductible already met',
+                'The share of visits covered each year'],
+      answer: 0,
+      why: 'So the higher that second number climbs, the worse the plan is for the patient.' },
+    { q: 'The three parts of UCR are:',
+      choices: ['Usual, customary, reasonable', 'Uniform, customary, required',
+                'Usual, contractual, reasonable', 'Uniform, contractual, required'],
+      answer: 0,
+      why: 'Each part is a separate question the insurer asks about the fee that was submitted.' },
+    { q: 'Asking what other providers in the same area charge for a service is the part of UCR called:',
+      choices: ['Customary', 'Usual', 'Reasonable', 'Required'],
+      answer: 0,
+      why: 'Usual looks at this provider alone; customary widens it to the surrounding area.' },
+    { q: 'Asking whether anything entitles a provider to more than their normal fee is the part of UCR called:',
+      choices: ['Reasonable', 'Usual', 'Customary', 'Contractual'],
+      answer: 0,
+      why: 'It is the part that lets a justified overcharge through, such as a procedure that turned out to be more involved.' },
+    { q: 'A provider bills $1,100 for a procedure they usually charge $900 for. The insurer will most likely:',
+      choices: ['Pay part of the bill and ask why the provider is entitled to more',
+                'Pay the submitted fee in full without question',
+                'Refuse to pay any part of the bill',
+                'Pay the usual fee and bill the patient for the difference'],
+      answer: 0,
+      why: 'The gap between the submitted fee and the usual fee is what triggers the question.' },
+    { q: 'An explanation of benefits tells the provider and patient:',
+      choices: ['How the bill was processed', 'What the provider is allowed to charge next time',
+                'Which providers are inside the network', 'How much of the deductible remains for the year'],
+      answer: 0,
+      why: 'It is a report on one processed bill, issued only where insurance was involved.' },
+    { q: 'A patient who pays cash for a visit should expect:',
+      choices: ['No explanation of benefits, because none is required',
+                'An explanation of benefits within thirty days',
+                'An explanation of benefits only if they ask for one',
+                'An explanation of benefits issued directly to the provider'],
+      answer: 0,
+      why: 'The document exists to explain how an insurer processed a claim, so with no insurer there is nothing to explain.' },
+    { q: 'A high deductible plan requires the patient to pay roughly how much before coverage starts?',
+      choices: ['$5,000', '$500', '$1,500', '$10,000'],
+      answer: 0,
+      why: 'It is the defining feature of the plan, and it is an order of magnitude above an ordinary deductible.' },
+    { q: 'A $10,000 procedure under a plan with a $2,500 deductible and an 80/20 split costs the patient:',
+      choices: ['$4,000', '$2,500', '$1,500', '$5,500'],
+      answer: 0,
+      why: 'The deductible of $2,500 comes first, then 20 percent of the remaining $7,500, which is $1,500.' }
+  ]
+},
+{
+  id: 'm101-mc-plans',
+  group: 'Managed Care',
+  current: true,
+  added: '2026-10-29',
+  termNo: 2,
+  course: 'M101 · Medical Office Management',
+  title: 'Managed Care — Plans & Networks',
+  source: 'Managed Care — course notes',
+  cards: [
+    { term: 'Managed care',
+      def: 'the approach of delivering the most health care to the most people for the least cost' },
+    { fact: true, term: 'Where most people get their health insurance',
+      def: 'through their employer, which means the plan the employer picked limits the care they can get' },
+    { term: 'Health maintenance organization', also: ['HMO'],
+      def: 'a plan built on a network of providers whose fees are set in advance when they join it' },
+    { fact: true, term: 'What happens to a provider fee schedule on joining a network',
+      def: 'it is pre-set by the plan rather than decided by the provider' },
+    { term: 'Primary care provider', also: ['PCP', 'Gate keeper'],
+      def: 'the family practice, pediatrics or internal medicine provider who keeps a patient in their own office until the care exceeds what they can handle' },
+    { term: 'In-network',
+      def: 'describing a provider inside the plan, who a patient on a health maintenance organization is required to use' },
+    { fact: true, term: 'What a health maintenance organization pays when a patient goes outside the network',
+      def: 'nothing at all' },
+    { fact: true, term: 'What an emergency room visit carries that an ordinary visit does not',
+      def: 'its own separate deductible' },
+    { term: 'Referral',
+      def: 'the authorization from a primary provider that a specialist must hold in order to be paid' },
+    { fact: true, term: 'What happens to a specialist who treats a patient without a referral',
+      def: 'they cannot be paid for the visit' },
+    { term: 'Open access plan',
+      def: 'an arrangement letting a patient see any provider inside the plan without first obtaining a referral' },
+    { fact: true, term: 'What a patient owes under most health maintenance organizations once the co-pay is paid',
+      def: 'nothing further for that visit' },
+    { term: 'No Surprises Act',
+      def: 'the law treating everyone who provides emergency care to an insured patient as part of that patient network' },
+    { fact: true, term: 'The problem the No Surprises Act was written to solve',
+      def: 'patients who went to the emergency room were left with large bills their insurer would not pay' },
+    { term: 'Preferred provider organization', also: ['PPO'],
+      def: 'a hybrid plan with a network offering cheaper fees, a large deductible, and fee-for-service treatment available outside the plan' },
+    { fact: true, term: 'What a preferred provider organization buys the patient',
+      def: 'the option to use any provider they want, at greater cost once they leave the network' },
+    { term: 'Omnia plan',
+      def: 'a plan sorting providers and facilities into two tiers, the first cheaper for the patient than the second' },
+    { fact: true, term: 'Why one procedure can straddle both tiers of an Omnia plan',
+      def: 'the facility and the provider are tiered separately, so one may sit in tier one and the other in tier two' },
+    { fact: true, term: 'A common restriction under a tiered plan',
+      def: 'limits on which laboratories and radiology services the patient may use' },
+    { fact: true, term: 'The employer size and weekly hours the Affordable Care Act turns on',
+      def: 'fifty employees, and thirty hours a week counted as full time' }
+  ],
+  questions: [
+    { q: 'Managed care is best described as delivering:',
+      choices: ['The most health care to the most people for the least cost',
+                'The best available health care regardless of cost',
+                'Health care only to those who can pay for it directly',
+                'Specialist health care ahead of primary health care'],
+      answer: 0,
+      why: 'Cost control across a whole population is the organising idea, which is why plans restrict choice.' },
+    { q: 'Most people in the United States get their health insurance through:',
+      choices: ['Their employer', 'A policy they buy individually', 'A state exchange', 'A professional association'],
+      answer: 0,
+      why: 'It also means the employer chooses the plan, so the employer limits the care available.' },
+    { q: 'Once a provider signs on as a network provider, their fees are:',
+      choices: ['Pre-set by the plan', 'Set by the provider each year',
+                'Negotiated separately for each patient', 'Set by the state medical board'],
+      answer: 0,
+      why: 'Agreeing to the set fee schedule is what joining the network means.' },
+    { q: 'The provider who keeps a patient in their own office until the care exceeds what they can handle is the:',
+      choices: ['Primary care provider', 'Attending specialist', 'Consulting physician', 'Hospitalist'],
+      answer: 0,
+      why: 'The nickname gate keeper describes the same role, controlling what passes through to specialists.' },
+    { q: 'A patient on a health maintenance organization who sees a provider outside the network will find that:',
+      choices: ['The plan pays nothing toward the care',
+                'The plan pays at a reduced rate',
+                'The plan pays once a second deductible is met',
+                'The plan pays at its usual rate'],
+      answer: 0,
+      why: 'Unlike a preferred provider organization, there is no out-of-network benefit at all.' },
+    { q: 'A specialist who treats a patient without obtaining a referral:',
+      choices: ['Cannot be paid for the visit', 'Is paid at a reduced rate',
+                'Is paid in full but must document why', 'Is paid only if the patient pays the co-pay'],
+      answer: 0,
+      why: 'The referral is the condition of payment, which is why the primary provider controls access.' },
+    { q: 'The plan that lets a patient see any provider inside it without a referral is the:',
+      choices: ['Open access plan', 'Health maintenance organization', 'High deductible plan', 'Omnia plan'],
+      answer: 0,
+      why: 'It removes the step of making an appointment with the primary provider purely to get the referral.' },
+    { q: 'Under the No Surprises Act, a provider who treats an insured patient in the emergency room is:',
+      choices: ['Deemed part of that patient network',
+                'Paid directly by the patient',
+                'Required to waive the deductible',
+                'Permitted to bill the patient for the balance'],
+      answer: 0,
+      why: 'It exists because emergency patients were receiving large bills from providers they never chose.' },
+    { q: 'A preferred provider organization differs from a health maintenance organization because it:',
+      choices: ['Pays something toward care obtained outside the network',
+                'Has no deductible at all',
+                'Requires a referral for every specialist',
+                'Sets no fee schedule for its network providers'],
+      answer: 0,
+      why: 'Outside the network it reverts to fee for service, which is what makes it a hybrid.' },
+    { q: 'An Omnia plan sorts providers and facilities into:',
+      choices: ['Two tiers, the first cheaper than the second',
+                'Three tiers by specialty',
+                'Two groups, in network and out of network',
+                'Four tiers by geographic region'],
+      answer: 0,
+      why: 'Because facility and provider are tiered separately, a single procedure can draw on both.' },
+    { q: 'The Affordable Care Act requirements turn on an employer with:',
+      choices: ['50 employees and 30 hours a week', '25 employees and 40 hours a week',
+                '100 employees and 35 hours a week', '50 employees and 40 hours a week'],
+      answer: 0,
+      why: 'Thirty hours is the point at which some facilities count an employee as full time.' }
+  ]
 },
 {
   id: 'm160-ch14-parts',

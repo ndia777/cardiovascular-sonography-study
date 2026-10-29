@@ -91,6 +91,8 @@ const modesFor = d => {
   const m = [];
   /* a problem set leads, ahead of the card modes it gives nothing to */
   if ((d.dose || []).length) m.push('dose');
+  /* a flow chart leads for the same reason: it holds no cards at all */
+  if (d.flow) m.push('path');
   if (steps) m.push('order');
   if (recallableCards(d).length) m.push('recall');
   if (cards) m.push('learn', 'match');
@@ -1175,6 +1177,107 @@ function suite(s, label, srcCss) {
             $('session.right') === steps, `${$('session.right')} of ${steps}`);
     }
   }
+  /* A flow chart deck holds one tree and generates every prompt from it, so
+     there is no second copy to compare against. These checks are about the
+     walk instead: a route has to run the way blood runs, both ends have to be
+     named, the decoys have to be off the route, and a clean run has to finish.
+     The direction matters most — the chart is written from the heart outward
+     either way, so the venous deck is correct only if the walk comes back up
+     the branch, and a reversal that quietly stopped happening would teach the
+     circulation backwards while every other check still passed. */
+  {
+    const trailsOf = vm.runInContext('flowTrails', s);
+    const routesOf = vm.runInContext('flowRoutes', s);
+    const nodesOf  = vm.runInContext('flowNodes', s);
+    const orderOf  = vm.runInContext('routeOrder', s);
+    const endsOf   = vm.runInContext('routeEnds', s);
+    const roundOf  = vm.runInContext('newRound', s);
+    const decoys   = vm.runInContext('DECOYS', s);
+    const SRC = /\b(chapter|textbook|powerpoint|slide|canvas|the book|this deck|study guide|lecture)\b/i;
+
+    for (const d of DECKS.filter(x => x.flow)) {
+      const vessels = nodesOf(d);
+      const names = vessels.map(v => v.n);
+      const dupes = [...new Set(names.filter((n, i) => names.indexOf(n) !== i))];
+      check(`[${label}] ${d.id} names every vessel once`, !dupes.length,
+            `a repeated name makes two different routes look like one: ${dupes.join(', ')}`);
+      check(`[${label}] ${d.id} starts outside its own tree`,
+            !!d.flow.start && !names.includes(d.flow.start), `start is ${d.flow.start}`);
+      check(`[${label}] ${d.id} declares which way blood runs`,
+            d.flow.dir === 'in' || d.flow.dir === 'out', `dir is ${d.flow.dir}`);
+
+      const sourced = vessels.filter(v => SRC.test(v.n + ' ' + (v.d || ''))).map(v => v.n);
+      check(`[${label}] ${d.id} no vessel cites a source`, !sourced.length, sourced.join(', '));
+      const bare = vessels.filter(v => !v.d || String(v.d).trim().split(/\s+/).length < 2).map(v => v.n);
+      check(`[${label}] ${d.id} every vessel says what it is or what it feeds`,
+            !bare.length, bare.join(', '));
+
+      const routes = routesOf(d);
+      check(`[${label}] ${d.id} offers enough routes to trace`, routes.length >= 6,
+            `${routes.length} routes of ${trailsOf(d).length} vessels`);
+
+      const wrongWay = [], badEnds = [], leaky = [];
+      for (const t of routes) {
+        const target = t[t.length - 1].n;
+        const spine = t.slice(0, -1).map(v => v.n);
+        const want = d.flow.dir === 'in' ? spine.slice().reverse() : spine;
+        const got = orderOf(d, t);
+        if (JSON.stringify(got) !== JSON.stringify(want))
+          wrongWay.push(`${target}: ${got.join(' → ')}`);
+
+        const e = endsOf(d, t);
+        const ends = d.flow.dir === 'in' ? e.from === target && e.to === d.flow.start
+                                         : e.from === d.flow.start && e.to === target;
+        if (!ends) badEnds.push(`${target}: ${e.from} → ${e.to}`);
+
+        /* the pool is the route plus decoys, and a decoy is never the answer */
+        for (let n = 0; n < 5; n++) {
+          const r = roundOf(d, t);
+          const extra = r.pool.filter(x => !r.order.includes(x));
+          if (extra.includes(target)) leaky.push(`${target}: offered as its own decoy`);
+          if (extra.length !== decoys) leaky.push(`${target}: ${extra.length} decoys, expected ${decoys}`);
+          if (r.pool.length !== r.order.length + extra.length)
+            leaky.push(`${target}: pool does not add up`);
+        }
+      }
+      check(`[${label}] ${d.id} every route runs the way blood does`,
+            !wrongWay.length, wrongWay.join('\n      '));
+      check(`[${label}] ${d.id} every route names both of its ends`,
+            !badEnds.length, badEnds.join('\n      '));
+      check(`[${label}] ${d.id} no decoy sits on the route it decoys`,
+            !leaky.length, [...new Set(leaky)].join('\n      '));
+
+      /* a clean run, always taking the right vessel, must reach the score */
+      go('run', d.id, 'path');
+      const ran = $('session.routes.length');
+      let guard = 0;
+      while (guard++ < 400 && !$('session.round === null')) {
+        if ($('session.round.done')) { vm.runInContext('nextRoute()', s); continue; }
+        vm.runInContext(`placeVessel(session.round.pool.indexOf(
+          session.round.order[session.round.placed.length]))`, s);
+      }
+      check(`[${label}] ${d.id} a clean run finishes`, $('session.round === null'),
+            `stopped after ${guard} moves`);
+      check(`[${label}] ${d.id} a clean run takes no misses`, $('session.misses') === 0,
+            `${$('session.misses')} misses over ${ran} routes`);
+      check(`[${label}] ${d.id} a run traces more than one route`, ran > 1, `${ran} routes`);
+
+      /* the chart itself has to be readable, not just quizzable */
+      go('run', d.id, 'browse');
+      const chart = s.__app.innerHTML;
+      const absent = names.filter(n => !chart.includes(esc(n)));
+      check(`[${label}] ${d.id} the chart shows every vessel`, !absent.length,
+            absent.slice(0, 5).join(', '));
+      check(`[${label}] ${d.id} the chart shows the heart end`,
+            chart.includes(esc(d.flow.start)));
+
+      go('deck', d.id);
+      check(`[${label}] ${d.id} counts itself in vessels`,
+            s.__app.innerHTML.includes(`${names.length} vessels`),
+            'the deck header counts terms, steps or problems it does not have');
+    }
+  }
+
   /* The review sheet lists terms alphabetically, ignoring leading punctuation.
      Read the order out of the rendered table, not out of a re-sorted array. */
   for (const d of DECKS.filter(x => x.cards.length)) {
@@ -1403,11 +1506,12 @@ function suite(s, label, srcCss) {
     }
   }
 
-  /* a deck is a vocabulary list or a sequence, and must offer matching modes */
+  /* a deck is a vocabulary list, a sequence, a problem set or a flow chart,
+     and must offer modes matching whichever it is */
   for (const d of DECKS) {
-    const kinds = [d.cards.length > 0, d.steps.length > 0, (d.dose || []).length > 0];
-    check(`[${label}] ${d.id} holds terms, steps or problems`,
-          kinds.some(Boolean), 'deck holds none of the three');
+    const kinds = [d.cards.length > 0, d.steps.length > 0, (d.dose || []).length > 0, !!d.flow];
+    check(`[${label}] ${d.id} holds terms, steps, problems or a flow chart`,
+          kinds.some(Boolean), 'deck holds none of the four');
     check(`[${label}] ${d.id} holds only one of them`,
           kinds.filter(Boolean).length < 2,
           'mixing kinds makes the mode list ambiguous');
