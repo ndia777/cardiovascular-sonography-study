@@ -2914,6 +2914,181 @@ function suite(s, label, srcCss) {
   }
   check(`[${label}] short form only where the definition repeats the word`,
         !notRedundant, notRedundant);
+  /* ── Word parts say which kind of part they want ───────────────────────────
+     A combining form, a suffix and a prefix all answer to a one-word gloss.
+     "sugar" is glyc/o, and gluc/o sits two cards away meaning glucose, so a
+     prompt that only says "sugar" has more than one defensible answer typed
+     into it. The shape of the term declares the kind, and Recall now says it.
+     The kind is part of the answer's form, not part of its meaning, so saying
+     it removes an ambiguity from the question without giving the card away. */
+  {
+    const askFor = vm.runInContext('askFor', s);
+    const partKind = vm.runInContext('partKind', s);
+    check(`[${label}] the word-part detector is reachable`,
+          typeof askFor === 'function' && typeof partKind === 'function');
+
+    const kinds = [
+      ['glyc/o', 'combining form'], ['abdomin/o', 'combining form'],
+      ['periton/eo', 'combining form'], ['chol/e', 'combining form'],
+      ['-algia', 'suffix'], ['-pathy', 'suffix'], ['-ac', 'suffix'],
+      ['ab-', 'prefix'], ['dextro-', 'prefix'], ['oto-', 'prefix'],
+      /* a slash inside running text is punctuation, not a combining form */
+      ['Electrocardiogram (ECG/EKG)', null], ['ST elevation / depression', null],
+      ['Mitral valve', null], ['Hypogastric region', null], ['90/10', null],
+    ];
+    for (const [token, want] of kinds)
+      check(`[${label}] "${token}" reads as ${want || 'not a word part'}`,
+            partKind(token) === want, `got ${partKind(token)}`);
+
+    /* a term listing two kinds has no single name for what it wants */
+    const mixed = DECKS.flatMap(d => d.cards || [])
+      .find(c => c.term === 'pneum/o, pneumon/o, pneu-');
+    if (mixed) check(`[${label}] a term spanning two kinds asks for a word part`,
+                     askFor(mixed) === 'word part', `got ${askFor(mixed)}`);
+
+    /* Every word-part card is labelled, unless its own definition already names
+       the kind — "the suffix meaning disease" would otherwise stutter. */
+    let unlabelled = '', mislabelled = '', labelled = 0;
+    const shapeOf = term => {
+      const seen = [...new Set(term.split(/\s*,\s*/).map(t => {
+        t = t.trim();
+        if (!t || /\s/.test(t)) return null;
+        if (/^-[a-z]+$/i.test(t)) return 'suffix';
+        if (/^[a-z]+-$/i.test(t)) return 'prefix';
+        if (/^[a-z]+(?:\/[a-z]+)+$/.test(t)) return 'combining form';
+        return null;
+      }).filter(Boolean))];
+      return seen.length === 0 ? null : seen.length === 1 ? seen[0] : 'word part';
+    };
+    for (const d of DECKS) for (const c of recallableCards(d)) {
+      const want = shapeOf(c.term);
+      const got = askFor(c);
+      if (!want) {
+        /* and nothing that is not a word part may claim to be one */
+        if (/combining form|^suffix$|^prefix$|word part/.test(got || '') && !mislabelled)
+          mislabelled = `${d.id} / "${c.term}" is not a word part but asks for a ${got}`;
+        continue;
+      }
+      const names = want.split(' ').pop();
+      if (got === want) { labelled++; continue; }
+      if (got === null && String(c.def).toLowerCase().includes(names)) continue;
+      if (!unlabelled) unlabelled = `${d.id} / "${c.term}" (${c.def}) asks for ${got}, wanted ${want}`;
+    }
+    check(`[${label}] every word part says which kind it wants`, !unlabelled, unlabelled);
+    check(`[${label}] nothing else claims to be a word part`, !mislabelled, mislabelled);
+    check(`[${label}] the labelling reaches the whole terminology course`,
+          labelled > 380, `only ${labelled} cards labelled`);
+
+    /* and it has to reach the screen, not just the helper */
+    go('run', 'm160-ch14-parts', 'recall');
+    $("session.queue = session.queue.filter(c => c.term === 'glyc/o')");
+    $('session.total = 1'); s.render();
+    const page = s.document.getElementById('app').innerHTML;
+    check(`[${label}] Recall prints the kind before the definition`,
+          page.includes('Which combining form') && page.includes('sugar'),
+          page.slice(0, 200));
+    check(`[${label}] and asks for it in the input`,
+          page.includes('Type the combining form'), 'placeholder unchanged');
+  }
+
+  /* ── Two cards, one question ───────────────────────────────────────────────
+     Some definitions are carried by more than one term in the same deck:
+     "mouth" is both stomat/o and or/o, "bone" is four roots. The prompt in
+     Recall IS the definition, so each of them answers it, and marking the
+     other one wrong would be the app being wrong rather than the student. */
+  {
+    const twins = [
+      ['m160-ch14-parts', 'stomat/o', 'or/o', 'twin'],
+      ['m160-ch14-parts', 'or/o', 'stomat/o', 'twin'],
+      ['m160-ch14-parts', 'cheil/o', 'labi/o', 'twin'],
+      ['mtref-roots', 'oste/o', 'oss/i', 'twin'],
+      ['mtref-prefixes', 'end-', 'endo-', 'twin'],
+      /* its own term still grades as a plain hit, not a twin */
+      ['m160-ch14-parts', 'stomat/o', 'stomat/o', 'exact'],
+      /* a different meaning is still wrong: sugar is not glucose */
+      ['m160-ch14-parts', 'glyc/o', 'gluc/o', 'wrong'],
+      ['m160-ch14-parts', 'gluc/o', 'glyc/o', 'wrong'],
+      /* same definition, but the prompt tells them apart: one asks for a
+         combining form and the other for a suffix */
+      ['mt2-parts', 'path/o', '-pathy', 'wrong'],
+      ['mt2-parts', '-pathy', 'path/o', 'wrong'],
+    ];
+    for (const [deck, term, typed, want] of twins) {
+      const c = card(deck, term);
+      if (!c) { check(`[${label}] twin: ${deck} / ${term} exists`, false, 'card missing'); continue; }
+      const got = judge(typed, c, deckOf(deck));
+      check(`[${label}] "${typed}" against ${term} -> ${want}`, got === want, `got ${got}`);
+    }
+
+    /* The invariant: no card in any deck can be marked wrong for a term that
+       answers its question just as well. */
+    const askFor = vm.runInContext('askFor', s);
+    let punished = '', pairs = 0;
+    for (const d of DECKS) {
+      /* grouped rather than compared pair by pair: every card against every
+         other card in 144 decks is minutes of work for a handful of hits */
+      const groups = new Map();
+      for (const c of recallableCards(d)) {
+        const k = String(c.def).toLowerCase() + ' | ' + (askFor(c) || '');
+        if (!groups.has(k)) groups.set(k, []);
+        groups.get(k).push(c);
+      }
+      for (const cs of groups.values()) {
+        if (cs.length < 2) continue;
+        for (const c of cs) for (const o of cs) {
+          if (o === c) continue;
+          pairs++;
+          if (judge(o.term, c, d) === 'wrong' && !punished)
+            punished = `${d.id}: "${o.term}" answers "${c.def}" but is wrong on ${c.term}`;
+        }
+      }
+    }
+    check(`[${label}] a term is never wrong for answering its own prompt`, !punished, punished);
+    check(`[${label}] there are shared definitions to protect`, pairs > 20, `${pairs} pairs`);
+
+    /* and a twin has to count in a run, not just grade kindly */
+    go('run', 'm160-ch14-parts', 'recall');
+    $("session.queue = session.queue.filter(c => c.term === 'stomat/o')");
+    $('session.total = 1'); $("session.typed = 'or/o'");
+    s.checkRecall();
+    check(`[${label}] a twin scores as correct`,
+          $('session.right') === 1 && $('session.wrong') === 0,
+          `right ${$('session.right')}, wrong ${$('session.wrong')}`);
+    check(`[${label}] and the page says so`,
+          s.document.getElementById('app').innerHTML.includes('carries the same meaning'),
+          'no twin line shown');
+  }
+
+  /* ── Matching with twin definitions ────────────────────────────────────────
+     Two tiles reading "mouth" used to make the pairing a coin flip: the grid
+     held the same objects in both columns, so a correct pick could land on the
+     other card's id and score a miss. */
+  {
+    go('run', 'm160-ch14-parts', 'match');
+    const shared = $('session.left.some(x => session.right.includes(x))');
+    check(`[${label}] the two columns no longer share objects`, !shared);
+
+    $('session.pool = []');
+    $("session.round = [{ term: 'stomat/o', def: 'mouth' }, { term: 'or/o', def: 'mouth' }]");
+    $("session.left = session.round.map(c => ({ term: c.term, def: c.def, id: c.term }))");
+    $("session.right = session.left.map(x => ({ ...x })).reverse()");
+    $('session.matched = 0'); $('session.wrong = 0'); $('session.total = 2');
+    $('session.sel = null'); $('session.selItem = null');
+    s.pick('L', 0);           /* stomat/o */
+    s.pick('R', 0);           /* the "mouth" tile dealt from or/o */
+    check(`[${label}] a twin definition pairs with either term`,
+          $('session.matched') === 1 && $('session.wrong') === 0,
+          `matched ${$('session.matched')}, misses ${$('session.wrong')}`);
+    check(`[${label}] and consumes one tile from each column`,
+          $('session.left.filter(x => x.done).length') === 1 &&
+          $('session.right.filter(x => x.done).length') === 1,
+          'the wrong number of tiles went done');
+    s.pick('L', 1); s.pick('R', 1);
+    check(`[${label}] leaving the other pair to finish the round`,
+          $('session.matched') === 2 && $('session.wrong') === 0,
+          `matched ${$('session.matched')}, misses ${$('session.wrong')}`);
+  }
+
 
   /* full playthroughs terminate and reach a result */
   for (const [deck, mode] of [['bio-ch3', 'recall'], ['ekg-basics', 'quiz'], ['ekg-leads', 'chest']]) {

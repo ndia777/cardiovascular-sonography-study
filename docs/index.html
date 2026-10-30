@@ -17182,6 +17182,17 @@ function judge(input, card, deck){
   if (!n) return 'wrong';
   if (alternatives(card).map(normalize).some(t => t && t === n)) return 'exact';
 
+  /* Two cards in one deck can carry the same definition outright: "mouth" is
+     both stomat/o and or/o, "bone" is four roots. The prompt in Recall IS the
+     definition, so every term that carries it answers the question, and marking
+     the second one wrong would be the app being wrong. Where the prompt does
+     tell them apart, because one asks for a suffix and the other a combining
+     form, they are not interchangeable and this never fires. */
+  const sameQuestion = o => String(o.def).toLowerCase() === String(card.def).toLowerCase()
+    && askFor(o) === askFor(card);
+  if (((deck && deck.cards) || []).some(o => o !== card && sameQuestion(o)
+      && alternatives(o).map(normalize).some(x => x === n))) return 'twin';
+
   /* Same guard as the short form: a plural only counts when nothing ELSE in the
      deck answers to it, so two cards can never take the same typed answer. */
   const p = deplural(n);
@@ -17230,9 +17241,37 @@ const traceSvg = r => `<svg viewBox="0 0 400 90" class="ecg cardtrace" role="img
 const ASK_CATEGORY = /\s(waves?|complex|intervals?|segments?|nodes?|valves?|axis)$/i;
 const askFor = card => {
   const m = ASK_CATEGORY.exec(card.term);
-  return m ? m[1].toLowerCase() : null;
+  return m ? m[1].toLowerCase() : askPart(card);
 };
 
+/* A word part declares its own kind in its shape: a combining form carries a
+   slash (glyc/o), a suffix leads with a hyphen (-pathy), a prefix trails one
+   (dys-). A one-word definition like "sugar" is honest about the meaning and
+   silent about the form, so "glucose" looks every bit as right as "glyc/o".
+   Naming the kind is the same trade as the category tail: the shape is part of
+   the answer being typed, never part of the knowledge being tested. */
+const PART_SHAPES = [
+  [/^-[a-z]+$/i, 'suffix'],
+  [/^[a-z]+-$/i, 'prefix'],
+  [/^[a-z]+(?:\/[a-z]+)+$/, 'combining form'],
+];
+const partKind = token => {
+  const t = token.trim();
+  /* a slash inside running text is punctuation, not a combining form:
+     "ST elevation / depression", "Electrocardiogram (ECG/EKG)" */
+  if (!t || /\s/.test(t)) return null;
+  const hit = PART_SHAPES.find(([re]) => re.test(t));
+  return hit ? hit[1] : null;
+};
+const askPart = card => {
+  const kinds = [...new Set(card.term.split(/\s*,\s*/).map(partKind).filter(Boolean))];
+  if (!kinds.length) return null;
+  /* a term listing two kinds has no one name: "pneum/o, pneumon/o, pneu-" */
+  const kind = kinds.length === 1 ? kinds[0] : 'word part';
+  /* a definition that already names the kind would make the prompt stutter */
+  const said = String(card.def).toLowerCase();
+  return kinds.concat('word part').some(k => said.includes(k)) ? null : kind;
+};
 function runRecall(d){
   const pool = recallable(d);
   if (!session) session = { queue: shuffle(pool), total: pool.length, right: 0, wrong: 0,
@@ -17261,9 +17300,11 @@ function runRecall(d){
       style="${v ? `border-color:${tone}` : ''}">
     ${v ? `
       <div class="why" style="border-left-color:${tone}">
-        <b style="color:${tone}">${v === 'exact' ? '✓ Correct' : '✗ Not quite'}</b><br>
+        <b style="color:${tone}">${v === 'wrong' ? '✗ Not quite' : '✓ Correct'}</b><br>
         ${v === 'wrong' && s.typed.trim()
           ? `You typed: <b style="color:var(--bad)">${esc(s.typed.trim())}</b><br>` : ''}
+        ${v === 'twin'
+          ? `<b style="color:var(--good)">${esc(s.typed.trim())}</b> carries the same meaning, so it counts.<br>` : ''}
         Answer: <b style="color:var(--text)">${esc(c.term)}</b>
         ${c.note ? `<span class="note">${esc(c.note)}</span>` : ''}
       </div>
@@ -18838,7 +18879,9 @@ function dealMatch(){
   const s = session;
   s.round = s.pool.splice(0, 6);
   s.left  = s.round.map(c => ({ term: c.term, def: c.def, id: c.term }));
-  s.right = shuffle(s.left);
+  /* copies, not the same objects: with twin definitions in the grid a pair is
+     the two tiles that were clicked, not every tile sharing an id */
+  s.right = shuffle(s.left.map(x => ({ ...x })));
   s.sel = null;
 }
 function pick(side, i){
@@ -18848,9 +18891,8 @@ function pick(side, i){
   if (s.sel === key){ s.sel = null; s.selItem = null; return render(); }
   if (s.sel[0] === side){ s.sel = key; s.selItem = item; return render(); }
 
-  if (s.selItem.id === item.id){
-    s.left.forEach(x => { if (x.id === item.id) x.done = true; });
-    s.right.forEach(x => { if (x.id === item.id) x.done = true; });
+  if (s.selItem.id === item.id || s.selItem.def === item.def){
+    s.selItem.done = true; item.done = true;
     s.matched++;
     s.sel = null; s.selItem = null;
     if (s.left.every(x => x.done)){ if (s.pool.length) dealMatch(); else s.round = []; }
