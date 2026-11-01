@@ -1407,7 +1407,42 @@ function suite(s, label, srcCss) {
             (s.__app.innerHTML.match(/cdrop[^"]*armed/g) || []).length === 1,
             'the wrong number of gaps lit');
       check(`[${label}] ${d.id} and the bank says it is waiting`,
-            s.__app.innerHTML.includes('pick one for the lit gap'), 'the bank gave no prompt');
+            s.__app.innerHTML.includes('tap one for the lit gap'), 'the bank gave no prompt');
+
+      /* ── the bank on a touch screen ───────────────────────────────────────
+         Three things broke on a phone at once: the default was prevented on
+         the way down, which kills a tap; the drag threshold was 5px, so
+         ordinary finger drift started a phantom drag that ended over the word
+         rather than a gap and did nothing; and touch-action:none meant a swipe
+         starting on a word dragged it instead of scrolling the bank. */
+      const sideChip = (/\.lbank\.side \.lchip\{([^}]*)\}/.exec(srcCss) || [])[1] || '';
+      check(`[${label}] a word can be swiped past, not just dragged`,
+            /touch-action:\s*pan-y/.test(sideChip),
+            `.lbank.side .lchip reads: ${sideChip.replace(/\s+/g, ' ').slice(0, 90)}`);
+      const wire = (/function wireChart\(d\)\{[\s\S]*?\n\}/.exec(srcCss) || [''])[0];
+      check(`[${label}] a mostly vertical pull is a scroll, not a drag`,
+            /dy > dx/.test(wire), 'nothing distinguishes a scroll from a drag');
+      check(`[${label}] the drag threshold is past finger drift`,
+            /Math\.hypot\(dx, dy\) < 1[0-9]/.test(wire),
+            'a few pixels of drift would still start a drag');
+      check(`[${label}] a gesture the browser takes is cleaned up`,
+            /pointercancel/.test(wire), 'no pointercancel handler');
+      check(`[${label}] the tap is not killed on the way down`,
+            !/addEventListener\('pointerdown', e => \{\s*e\.preventDefault\(\);/.test(wire),
+            'preventDefault on pointerdown kills taps and scrolling');
+
+      /* a name in hand must not light all 27 gaps: it says nothing about where
+         that one goes, and on a phone it reads as the chart having answered */
+      go('run', d.id, 'build');
+      $(`session.picked = ${JSON.stringify(blanks[2].n)}`);
+      s.render();
+      check(`[${label}] ${d.id} a name in hand lights no gaps`,
+            !/cdrop[^"]*armed/.test(s.__app.innerHTML),
+            'every gap lit up at once');
+      check(`[${label}] ${d.id} and the bank names what is held`,
+            s.__app.innerHTML.includes(`tap a gap for ${blanks[2].n}`),
+            'the bank does not say what is in hand');
+      go('run', d.id, 'build');
       s.buildPlace(d, '4', blanks[4].n);
       check(`[${label}] ${d.id} a name fills the chosen gap and clears it`,
             !!$('session.placed[4]') && $('session.aimed') === null,

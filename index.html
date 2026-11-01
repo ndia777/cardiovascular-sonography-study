@@ -639,7 +639,12 @@
     position:sticky;top:10px;max-height:calc(100vh - 96px);overflow-y:auto;overflow-x:hidden;
     overscroll-behavior:contain;padding:10px;border:1px solid var(--line);
     border-radius:10px;background:var(--card)}
-  .lbank.side .lchip{text-align:left;border-radius:8px;font-size:12.5px;padding:6px 9px}
+  /* .lchip sets touch-action:none, which is right for the diagram labels but
+     means a swipe starting on a word in this bank drags the word instead of
+     scrolling the bank. pan-y hands vertical gestures back to the browser,
+     so the list scrolls and only a sideways pull starts a drag. */
+  .lbank.side .lchip{text-align:left;border-radius:8px;font-size:12.5px;padding:6px 9px;
+    touch-action:pan-y}
   .banknote{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
     font-weight:600;padding:1px 2px 3px}
   @media (max-width:760px){
@@ -2515,7 +2520,8 @@ function runBuild(d){
       <pre class="chart">${buildRows(d)}</pre>
       <div class="lbank side" id="lbank">
         <div class="banknote">${left.length} left${
-          s.aimed !== null ? ' · pick one for the lit gap' : ''}</div>
+          s.aimed !== null ? ' · tap one for the lit gap'
+          : s.picked ? ` · tap a gap for ${esc(s.picked)}` : ''}</div>
         ${left.map(name =>
           `<button class="lchip${s.picked === name ? ' picked' : ''}" data-chip="${esc(name)}"
             type="button">${esc(name)}</button>`).join('')}
@@ -2559,14 +2565,34 @@ function wireChart(d){
 
   bank.querySelectorAll('.lchip').forEach(chip => {
     chip.addEventListener('pointerdown', e => {
-      e.preventDefault();
+      /* NOT prevented here: preventing the default on the way down kills the
+         tap and the scroll, and on a touch screen almost every tap drifts a
+         few pixels. The default is only prevented once a drag has really
+         started, below. */
       const name = chip.dataset.chip;
       const sx = e.clientX, sy = e.clientY;
       let ghost = null, moved = false;
+      const tap = () => {
+        /* a gap chosen first is answered by this tap; otherwise the name is
+           taken in hand and waits for a gap */
+        if (session.aimed !== null) buildPlace(d, String(session.aimed), name);
+        else { session.picked = session.picked === name ? null : name; render(); }
+      };
+      const stop = () => {
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+        document.removeEventListener('pointercancel', cancel);
+        if (ghost) ghost.remove();
+        chip.style.opacity = '';
+      };
       const move = ev => {
-        if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
+        const dx = Math.abs(ev.clientX - sx), dy = Math.abs(ev.clientY - sy);
+        /* 12px, and sideways: a mostly vertical pull is someone scrolling the
+           bank, and touch-action:pan-y lets the browser have it */
+        if (!moved && (Math.hypot(dx, dy) < 12 || dy > dx)) return;
         if (!moved){
           moved = true;
+          ev.preventDefault();
           ghost = chip.cloneNode(true);
           ghost.classList.add('ghost');
           document.body.appendChild(ghost);
@@ -2578,25 +2604,21 @@ function wireChart(d){
         const over = hit(ev.clientX, ev.clientY);
         if (over) over.classList.add('armed');
       };
+      /* the browser took the gesture to scroll with — nothing was dropped */
+      const cancel = () => stop();
       const up = ev => {
-        document.removeEventListener('pointermove', move);
-        document.removeEventListener('pointerup', up);
-        if (ghost) ghost.remove();
-        chip.style.opacity = '';
-        if (moved){
-          const over = hit(ev.clientX, ev.clientY);
-          if (over) buildPlace(d, over.dataset.slot, name);
-          else drops.forEach(el => el.classList.remove('armed'));
-        } else if (session.aimed !== null){
-          /* a gap was chosen first, so this tap answers that gap */
-          buildPlace(d, String(session.aimed), name);
-        } else {
-          session.picked = session.picked === name ? null : name;
-          render();
-        }
+        stop();
+        if (!moved) return tap();
+        const over = hit(ev.clientX, ev.clientY);
+        if (over) buildPlace(d, over.dataset.slot, name);
+        /* a drag that ended on nothing still meant the lit gap, if there is
+           one — otherwise a jittery tap would do nothing at all */
+        else if (session.aimed !== null) buildPlace(d, String(session.aimed), name);
+        else { drops.forEach(el => el.classList.remove('armed')); render(); }
       };
-      document.addEventListener('pointermove', move);
+      document.addEventListener('pointermove', move, { passive: false });
       document.addEventListener('pointerup', up);
+      document.addEventListener('pointercancel', cancel);
     });
   });
 
@@ -2608,7 +2630,9 @@ function wireChart(d){
       if (session.picked) buildPlace(d, el.dataset.slot, session.picked);
       else { session.aimed = session.aimed === k ? null : k; render(); }
     });
-    if (session.picked) el.classList.add('armed');
+    /* Deliberately does NOT light every gap when a name is in hand. Lighting
+       all 27 says nothing about where this one goes, and on a phone it reads
+       as the chart having answered. The bank line names what is held. */
   });
 }
 
