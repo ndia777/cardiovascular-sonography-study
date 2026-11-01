@@ -1431,6 +1431,21 @@ function suite(s, label, srcCss) {
             !/addEventListener\('pointerdown', e => \{\s*e\.preventDefault\(\);/.test(wire),
             'preventDefault on pointerdown kills taps and scrolling');
 
+      /* A tap has to be a click. On a real touchscreen the browser cancels the
+         pointer as soon as it claims the gesture for a scroll, so the pointerup
+         the tap logic waited for never arrived: tapping a word did nothing on a
+         phone while working perfectly with a mouse, and the words carried no
+         click listener at all. */
+      check(`[${label}] a word in the bank is clickable`,
+            /chip\.addEventListener\('click'/.test(wire),
+            'the only way to tap a word is a reconstructed pointer sequence');
+      check(`[${label}] a press that never moved is left to the click`,
+            /if \(!moved\) return;/.test(wire),
+            'pointerup also handles taps, so a tap would place twice');
+      check(`[${label}] the click trailing a drag is ignored`,
+            /dragEndedAt/.test(wire),
+            'a completed drag would place again on its trailing click');
+
       /* a name in hand must not light all 27 gaps: it says nothing about where
          that one goes, and on a phone it reads as the chart having answered */
       go('run', d.id, 'build');

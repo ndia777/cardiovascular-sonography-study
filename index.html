@@ -2581,21 +2581,29 @@ function wireChart(d){
     return i < 0 ? null : drops[i];
   };
 
+  /* A tap is a CLICK, not a pointer sequence pieced back together. On a real
+     touchscreen the browser cancels the pointer the moment it claims the
+     gesture for a scroll, and the pointerup the tap logic was waiting for
+     never arrives — so tapping a word did nothing on a phone while working
+     perfectly with a mouse. Pointer events below now do dragging only. */
+  let dragEndedAt = 0;
   bank.querySelectorAll('.lchip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      /* a completed drag is followed by a click on the chip; ignore that one */
+      if (Date.now() - dragEndedAt < 400) return;
+      const name = chip.dataset.chip;
+      /* a gap chosen first is answered by this tap; otherwise the name is
+         taken in hand and waits for a gap */
+      if (session.aimed !== null) buildPlace(d, String(session.aimed), name);
+      else { session.picked = session.picked === name ? null : name; render(); }
+    });
     chip.addEventListener('pointerdown', e => {
       /* NOT prevented here: preventing the default on the way down kills the
-         tap and the scroll, and on a touch screen almost every tap drifts a
-         few pixels. The default is only prevented once a drag has really
-         started, below. */
+         click and the scroll both. The default is only prevented once a drag
+         has really started, below. */
       const name = chip.dataset.chip;
       const sx = e.clientX, sy = e.clientY;
       let ghost = null, moved = false;
-      const tap = () => {
-        /* a gap chosen first is answered by this tap; otherwise the name is
-           taken in hand and waits for a gap */
-        if (session.aimed !== null) buildPlace(d, String(session.aimed), name);
-        else { session.picked = session.picked === name ? null : name; render(); }
-      };
       const stop = () => {
         document.removeEventListener('pointermove', move);
         document.removeEventListener('pointerup', up);
@@ -2622,15 +2630,19 @@ function wireChart(d){
         const over = hit(ev.clientX, ev.clientY);
         if (over) over.classList.add('armed');
       };
-      /* the browser took the gesture to scroll with — nothing was dropped */
+      /* the browser took the gesture to scroll with — nothing was dropped,
+         and the click that may follow is a tap, so it is left alone */
       const cancel = () => stop();
       const up = ev => {
         stop();
-        if (!moved) return tap();
+        /* a press that never became a drag is a tap, and the click handler
+           above has it — doing it here too would place twice */
+        if (!moved) return;
+        dragEndedAt = Date.now();
         const over = hit(ev.clientX, ev.clientY);
         if (over) buildPlace(d, over.dataset.slot, name);
         /* a drag that ended on nothing still meant the lit gap, if there is
-           one — otherwise a jittery tap would do nothing at all */
+           one — otherwise a near miss would do nothing at all */
         else if (session.aimed !== null) buildPlace(d, String(session.aimed), name);
         else { drops.forEach(el => el.classList.remove('armed')); render(); }
       };
