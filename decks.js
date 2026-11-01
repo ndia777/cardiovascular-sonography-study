@@ -13142,7 +13142,7 @@ window.DECKS = [
   course: 'BIO201 · Anatomy & Physiology 2',
   title: 'Ch. 15 — Arterial Flow Chart',
   source: 'Chapter 15 — course notes',
-  only: ['browse', 'build', 'fill', 'path'],
+  only: ['build', 'fill', 'browse', 'path'],
   flow: {
     start: 'Left ventricle',
     dir: 'out',
@@ -13249,7 +13249,7 @@ window.DECKS = [
   course: 'BIO201 · Anatomy & Physiology 2',
   title: 'Ch. 15 — Venous Flow Chart',
   source: 'Chapter 15 — course notes',
-  only: ['browse', 'build', 'fill', 'path'],
+  only: ['build', 'fill', 'browse', 'path'],
   flow: {
     start: 'Right atrium',
     dir: 'in',

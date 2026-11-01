@@ -1476,9 +1476,9 @@ function suite(s, label, srcCss) {
 
       /* the drills sit in the order they should be done */
       go('deck', d.id);
-      const order = ['The Whole Chart', 'Build the Chart', 'Fill in the Chart', 'Trace the Path']
+      const order = ['Build the Chart', 'Fill in the Chart', 'The Whole Chart', 'Trace the Path']
         .map(x => s.__app.innerHTML.indexOf(x));
-      check(`[${label}] ${d.id} chart, then drag, then type, then routes`,
+      check(`[${label}] ${d.id} drag, then type, then the chart, then routes`,
             order.every(x => x >= 0) && order.every((x, i) => i === 0 || x > order[i - 1]),
             order.join(', '));
       go('deck', d.id);
@@ -1716,6 +1716,27 @@ function suite(s, label, srcCss) {
     }
   }
 
+  /* The accent on a mode box says which one to do first, so a page with three
+     of them says nothing. The flow decks shipped with three once, because each
+     mode was added in its own pass and each one claimed to lead.
+
+     The Chapter 7 skeletal decks are the deliberate exception: that chapter is
+     tested by diagram, so both diagram modes lead there. Naming them keeps
+     that call visible and still fails on any NEW page that lights two. */
+  {
+    const BOTH_DIAGRAMS = ['bio-ch7-3', 'bio-ch7-4'];
+    const crowded = [], quiet = [];
+    for (const d of DECKS) {
+      go('deck', d.id);
+      const lit = (s.__app.innerHTML.match(/class="mode hot"/g) || []).length;
+      if (lit > 1 && !BOTH_DIAGRAMS.includes(d.id)) crowded.push(`${d.id} lights ${lit}`);
+      if (lit < 2 && BOTH_DIAGRAMS.includes(d.id)) quiet.push(`${d.id} lights ${lit}`);
+    }
+    check(`[${label}] no deck page accents more than one mode`, !crowded.length,
+          crowded.join(', '));
+    check(`[${label}] the two diagram decks still lead with both`, !quiet.length,
+          `${quiet.join(', ')} — if this was intended, drop it from the list`);
+  }
   /* a deck is a vocabulary list, a sequence, a problem set or a flow chart,
      and must offer modes matching whichever it is */
   for (const d of DECKS) {

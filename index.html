@@ -2109,15 +2109,17 @@ function screenDeck(){
   /* A flow chart deck is a tree of vessels, so it leads with the mode that
      walks it. The card modes below have nothing to work with. */
   if (d.flow){
-    modes.push(['browse', 'The Whole Chart',
-      `The chart itself, every vessel in order with what it feeds. ${flowNodes(d).length} of them.`,
-      'hot']);
+    /* The drills lead and only the first is accented. The accent says which
+       one to do first, so more than one of them says nothing. The chart
+       itself sits behind them: it is the reference to read, the way the whole
+       chapter sheet is for a vocabulary deck, not a way to test yourself. */
     modes.push(['build', 'Build the Chart',
       `The chart with its key vessels missing and their names in a bank — drag ${flowBlanks(d).length} of them into place.`,
       'hot']);
     modes.push(['fill', 'Fill in the Chart',
-      `The chart with the vessels it is built around left empty — ${flowBlanks(d).length} of them to type, with what each one feeds beside it.`,
-      'hot']);
+      `The chart with the vessels it is built around left empty — ${flowBlanks(d).length} of them to type, with what each one feeds beside it.`]);
+    modes.push(['browse', 'The Whole Chart',
+      `The chart itself, every vessel in order with what it feeds. ${flowNodes(d).length} of them.`]);
     modes.push(['path', 'Trace the Path',
       `Name every vessel between two points, in the order blood reaches them. ${flowRoutes(d).length} routes through the chart.`]);
   }
