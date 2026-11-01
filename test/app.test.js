@@ -1386,6 +1386,25 @@ function suite(s, label, srcCss) {
       check(`[${label}] ${d.id} the bank says how many are left`,
             s.__app.innerHTML.includes(`>${blanks.length} left`),
             'no count on the bank');
+
+      /* The bank reads alphabetically. Shuffled, finding a name among 27 is a
+         search every time. Chart order is the one order that would hand over
+         the answers, so it is the only one ruled out. */
+      go('run', d.id, 'build');
+      const banked = [...s.__app.innerHTML.matchAll(/class="lchip[^"]*" data-chip="([^"]*)"/g)]
+        .map(m => m[1].replace(/&amp;/g, '&'));
+      const az = banked.slice().sort((a, b) => a.localeCompare(b));
+      check(`[${label}] ${d.id} the bank reads alphabetically`,
+            JSON.stringify(banked) === JSON.stringify(az),
+            `starts: ${banked.slice(0, 4).join(', ')}`);
+      check(`[${label}] ${d.id} and is not the chart's own order`,
+            JSON.stringify(banked) !== JSON.stringify(blanks.map(n => n.n)),
+            'the bank hands over the chart order');
+      check(`[${label}] ${d.id} the bank holds every blank once`,
+            banked.length === blanks.length
+            && new Set(banked).size === blanks.length
+            && blanks.every(n => banked.includes(n.n)),
+            `${banked.length} chips for ${blanks.length} blanks`);
       /* .lbank wraps by default, and a wrapping COLUMN with a capped height
          spills into further columns that run off the right edge — which is
          exactly the sideways scroll this bank shipped with once. One column,
