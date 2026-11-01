@@ -624,6 +624,31 @@
   .ldrop.ok .lv{color:var(--good)}
   .ldrop.no .lv{color:var(--bad)}
   .lbank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 0}
+  /* A chart is taller than the screen, so a bank underneath it is a bank you
+     cannot see while you work, and a drag across a page that will not scroll
+     itself cannot reach. On a wide screen the bank rides alongside the chart;
+     on a narrow one it becomes a tray pinned to the bottom. Either way the
+     names are always within one tap. */
+  .chartwrap{display:grid;grid-template-columns:minmax(0,1fr) 232px;gap:14px;align-items:start}
+  .chartwrap .chart{margin-top:0}
+  /* nowrap matters: .lbank wraps, and a wrapping COLUMN with a capped height
+     spills into a second and third column that run off the right edge, which
+     is where the sideways scroll came from. One column, scrolled vertically. */
+  .lbank.side{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;
+    gap:6px;margin:0;
+    position:sticky;top:10px;max-height:calc(100vh - 96px);overflow-y:auto;overflow-x:hidden;
+    overscroll-behavior:contain;padding:10px;border:1px solid var(--line);
+    border-radius:10px;background:var(--card)}
+  .lbank.side .lchip{text-align:left;border-radius:8px;font-size:12.5px;padding:6px 9px}
+  .banknote{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
+    font-weight:600;padding:1px 2px 3px}
+  @media (max-width:760px){
+    .chartwrap{grid-template-columns:minmax(0,1fr);padding-bottom:34vh}
+    .lbank.side{position:fixed;left:8px;right:8px;bottom:8px;top:auto;z-index:20;
+      max-height:31vh;flex-direction:row;flex-wrap:wrap;align-items:flex-start;
+      justify-content:flex-start;box-shadow:0 -6px 20px rgba(0,0,0,.3)}
+    .banknote{width:100%}
+  }
   .lchip{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);
     font-size:13px;color:var(--text);touch-action:none;cursor:grab;user-select:none;
     transition:border-color .12s,background .12s}
@@ -930,6 +955,28 @@
   .ends{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 14px;font-size:15px}
   .ends b{font-weight:700}
   .ends i{color:var(--accent);font-style:normal}
+  .chart{margin:10px 0 0;padding:14px 14px 16px;background:var(--card);
+    border:1px solid var(--line);border-radius:10px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    font-size:12.5px;line-height:1.85;color:var(--text)}
+  /* pre-wrap keeps the runs of spaces that draw the guide lines while still
+     letting a long row wrap; the hanging indent on each row is what makes it
+     wrap underneath itself instead of back to the margin */
+  .chart .crow{white-space:pre-wrap;overflow-wrap:break-word}
+  .chart b{font-weight:700;color:var(--accent)}
+  .chart .cdrop{display:inline-block;padding:0 6px;border:1px dashed var(--dim);
+    border-radius:5px;background:var(--card2);color:var(--dim);cursor:pointer;
+    vertical-align:baseline}
+  .chart .cdrop.armed{border-style:solid;border-color:var(--accent);background:var(--card);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+  .chart .cdrop.bad{border-color:var(--bad);border-style:solid;color:var(--bad)}
+  .chart .blank{font:inherit;padding:0 5px;color:var(--text);background:var(--card2);
+    border:1px solid var(--line);border-bottom-color:var(--accent);border-radius:5px;
+    vertical-align:baseline}
+  .chart .blank:focus{outline:none;border-color:var(--accent);background:var(--card)}
+  .chart .blank.bad{border-color:var(--bad);color:var(--bad)}
+  .chart .gu{color:var(--dim);opacity:.5}
+  .chart .ter{color:var(--dim)}
   .flowtree,.flowtree ul{list-style:none;margin:0;padding:0}
   .flowtree ul{margin-left:13px;padding-left:13px;border-left:1px solid var(--line)}
   .flowtree li{padding:5px 0}
@@ -1096,6 +1143,73 @@ const flowNodes = d => flowTrails(d).map(t => t[t.length - 1]);
 /* A destination worth tracing has to be far enough along that the route is
    actually a question. One vessel off the heart is a branch, not a route. */
 const flowRoutes = d => flowTrails(d).filter(t => t.length >= 3);
+
+/* The chart drawn as a chart rather than a nested list. One vessel becomes the
+   next all the way down the middle of the page, and everything each one throws
+   off hangs to the side. `cont` marks that spine, `via` is what the blood
+   passes on the way in, and `t` is the territory the vessel feeds. A chart
+   with no spine marked, which is how venous return actually behaves, comes out
+   as one converging tree with no straight arrows at all. */
+const flowSpine = node => (node.to || []).find(k => k.cont);
+const flowSide = node => (node.to || []).filter(k => !k.cont);
+const chartTer = n => n.t ? `<span class="ter"> — ${esc(n.t)}</span>` : '';
+/* Each row is its own block with a hanging indent: the guide characters sit
+   where they belong on the first line, and a row too long for the window
+   wraps underneath itself at its own depth rather than pushing the chart
+   sideways. A chart is something to read down, so height is free and width
+   is not. */
+const crow = (indent, html) =>
+  `<div class="crow" style="padding-left:${indent}ch;text-indent:-${indent}ch">${html}</div>`;
+/* The chart, the drag drill and the typed drill are the same chart with a
+   different thing standing in for each vessel, so they share one walk and
+   differ only in `cell`. */
+const chartLines = (d, cell) => {
+  const arrow = d.flow.dir === 'in' ? '↑' : '↓';
+  const out = [crow(0, `<b>${esc(d.flow.start)}</b>`)];
+  const branch = (nodes, pad) => {
+    nodes.forEach((n, i) => {
+      const last = i === nodes.length - 1;
+      out.push(crow(pad.length + 4,
+        `<span class="gu">${pad}${last ? '└── ' : '├── '}</span>${cell(n)}${chartTer(n)}`));
+      /* inside a branch there is no straight arrow — the vessel it becomes
+         is simply the next row down */
+      const sp = flowSpine(n);
+      const under = flowSide(n).concat(sp ? [sp] : []);
+      if (under.length) branch(under, pad + (last ? '    ' : '│   '));
+    });
+  };
+  let node = { to: d.flow.tree };
+  for (;;){
+    const side = flowSide(node), next = flowSpine(node);
+    if (side.length) branch(side, '    ');
+    if (!next) break;
+    out.push(crow(6, `<span class="gu">    ${arrow}</span>${
+      next.via ? `<span class="ter">  ${esc(next.via)}</span>` : ''}`));
+    out.push(crow(0, `${cell(next)}${chartTer(next)}`));
+    node = next;
+  }
+  return out.join('');
+};
+/* The vessels worth filling in are the ones the chart is built around: any
+   vessel that goes on to branch, plus the ones told apart only by their side,
+   where knowing there is a right and a left IS the thing being learned. The
+   terminal twigs stay printed, because they are the clue to where you are. */
+const flowKey = node => !!(node.to || []).length || /^(right|left)\b/i.test(node.n);
+const flowBlanks = d => flowNodes(d).filter(flowKey);
+/* A vessel answers to its name with or without the word "artery" on the end:
+   the chart has already told you which it is, and typing it adds nothing. */
+/* "sinus" and "sinusoids" are part of the name, not the unit word: dropping
+   them would make "hepatic" answer both the hepatic veins and the hepatic
+   sinusoids, and two vessels in one chart must never take the same answer. */
+const UNIT_TAIL = /\s+(arter(?:y|ies)|veins?|trunk)$/i;
+const vesselKey = name => normalize(String(name).replace(UNIT_TAIL, ''));
+const vesselHit = (typed, name) => {
+  const n = normalize(typed);
+  return !!n && (n === normalize(name) || n === vesselKey(name));
+};
+
+/* reading it: every vessel printed, the spine in the accent colour */
+const flowChart = d => chartLines(d, n => (n.cont ? `<b>${esc(n.n)}</b>` : esc(n.n)));
 
 /* What a deck is counted in. Four kinds of deck, one label each, in one place
    so the home list, the archive row and the deck header cannot disagree. */
@@ -1820,6 +1934,8 @@ function screenHome(){
           p.traceBest  != null ? scoreItem('Rhythms', p.traceBest) : '',
           p.partsBest  != null ? scoreItem('Segments', p.partsBest) : '',
           p.figureBest != null ? scoreItem('Diagram', p.figureBest) : '',
+          p.buildBest  != null ? scoreItem('Chart built', p.buildBest) : '',
+          p.fillBest   != null ? scoreItem('Chart filled', p.fillBest) : '',
           p.matchBest  != null ? plainItem(`Match ${p.matchBest}s`) : '',
           p.learned ? plainItem(`${p.learned} learned`) : '',
         ])}</button>`;
@@ -1992,10 +2108,19 @@ function screenDeck(){
       `Step through ${d.dose.length} orders — convert the weight, build D, read H and Q off the label, then divide. Every step is marked.`, 'hot']);
   /* A flow chart deck is a tree of vessels, so it leads with the mode that
      walks it. The card modes below have nothing to work with. */
-  if (d.flow)
-    modes.push(['path', 'Trace the Path',
-      `Name every vessel between two points, in the order blood reaches them. ${flowRoutes(d).length} routes through the chart.`,
+  if (d.flow){
+    modes.push(['browse', 'The Whole Chart',
+      `The chart itself, every vessel in order with what it feeds. ${flowNodes(d).length} of them.`,
       'hot']);
+    modes.push(['build', 'Build the Chart',
+      `The chart with its key vessels missing and their names in a bank — drag ${flowBlanks(d).length} of them into place.`,
+      'hot']);
+    modes.push(['fill', 'Fill in the Chart',
+      `The chart with the vessels it is built around left empty — ${flowBlanks(d).length} of them to type, with what each one feeds beside it.`,
+      'hot']);
+    modes.push(['path', 'Trace the Path',
+      `Name every vessel between two points, in the order blood reaches them. ${flowRoutes(d).length} routes through the chart.`]);
+  }
   /* First, and bordered, because this chapter is tested by diagram — the
      professor said so, and the mode order is how the page says which to do. */
   const lf = labelFigs(d);
@@ -2034,10 +2159,8 @@ function screenDeck(){
       `Point to each of the ${d.figure.parts.length} structures on the diagram.`]);
   if (d.beat)
     modes.push(['beat','Watch a Heartbeat','See the impulse travel the conduction system while the ECG draws in step — then switch rhythms to compare the arrhythmias.']);
-  modes.push(['browse', d.flow ? 'The Whole Chart' : 'Review Sheet',
-    d.flow
-      ? 'The chart itself, branch by branch, with what each vessel feeds. Filter it to see the route to any one vessel.'
-      : d.steps.length
+  if (!d.flow) modes.push(['browse', 'Review Sheet',
+    d.steps.length
         ? 'The full procedure in order, with the rationale for each step.'
         : 'The whole list in one table. Hide the definitions to self-test.']);
   /* Only where the chapter actually spans more than this deck — otherwise it
@@ -2346,6 +2469,221 @@ function nextRecall(){
   const s = session, c = s.queue.shift();
   if (s.verdict === 'wrong') s.queue.splice(Math.min(5, s.queue.length), 0, c);
   s.typed = ''; s.verdict = null;
+  render();
+}
+
+/* ═══════════════ BUILD THE CHART ═══════════════ */
+/* The same chart with its key vessels missing, and those vessel names in a
+   bank underneath. Dragging a name in is recognition rather than recall, which
+   is the easier half of knowing it — Fill in the Chart below is the same chart
+   with nothing to choose from. */
+function buildRows(d){
+  const s = session;
+  let i = 0;
+  const slot = n => {
+    const k = i++;
+    if (s.placed[k]) return `<b>${esc(n.n)}</b>`;
+    const w = Math.max(9, Math.min(32, n.n.length));
+    const cls = (s.wrongAt[k] ? ' bad' : '') + (s.aimed === k ? ' armed' : '');
+    return `<span class="cdrop${cls}" data-slot="${k}" style="width:${w}ch"> </span>`;
+  };
+  return chartLines(d, n => (flowKey(n) ? slot(n) : esc(n.n)));
+}
+function runBuild(d){
+  const blanks = flowBlanks(d);
+  if (!session) session = { placed: {}, wrongAt: {}, tried: {}, missed: [], score: 0,
+                            total: blanks.length, picked: null, aimed: null,
+                            bank: shuffle(blanks.map(n => n.n)) };
+  const s = session;
+  const done = Object.keys(s.placed).length;
+
+  if (done === s.total){
+    record(d.id, { buildBest: Math.max((load()[d.id] || {}).buildBest || 0,
+                                       Math.round(s.score / s.total * 100)) });
+    return results(d, `${s.score}/${s.total}`,
+                   `placed on the first try · ${s.missed.length} missed`, s.missed, 'build');
+  }
+
+  const left = s.bank.filter(name => !blanks.some((n, k) => s.placed[k] && n.n === name));
+  app.innerHTML = `
+    ${sessionBar(d, done, s.total, `Build the chart · ${done} of ${s.total}`)}
+    <div class="decknote">Tap a gap and then a vessel, or a vessel and then a gap.
+      Dragging works too. What each one feeds is printed beside it.</div>
+    <div class="chartwrap">
+      <pre class="chart">${buildRows(d)}</pre>
+      <div class="lbank side" id="lbank">
+        <div class="banknote">${left.length} left${
+          s.aimed !== null ? ' · pick one for the lit gap' : ''}</div>
+        ${left.map(name =>
+          `<button class="lchip${s.picked === name ? ' picked' : ''}" data-chip="${esc(name)}"
+            type="button">${esc(name)}</button>`).join('')}
+      </div>
+    </div>`;
+  wireChart(d);
+  keyHandler = null;
+}
+function buildPlace(d, slot, name){
+  const s = session, blanks = flowBlanks(d), k = Number(slot);
+  if (!name || s.placed[k] || !blanks[k]) return;
+  if (blanks[k].n === name){
+    s.placed[k] = name;
+    delete s.wrongAt[k];
+    if (!s.tried[k]) s.score++;                          /* first attempt only */
+  } else {
+    s.wrongAt[k] = name;
+    const key = k + '|' + name;
+    if (!s.tried[key]){
+      s.tried[key] = true;
+      s.missed.push({ q: `You put <b>${esc(name)}</b> where ${esc(blanks[k].n)} goes`,
+                      a: blanks[k].n });
+    }
+    s.tried[k] = true;
+  }
+  s.picked = null;
+  s.aimed = null;
+  render();
+}
+/* The same pointer handling as the diagram labels: one path for mouse and
+   touch, and a press that never moves is a tap, which is the fallback for
+   anyone who cannot drag. */
+function wireChart(d){
+  const bank = document.getElementById('lbank');
+  if (!bank) return;
+  const drops = [...document.querySelectorAll('.cdrop')];
+  const hit = (x, y) => drops.find(el => {
+    const r = el.getBoundingClientRect();
+    return x >= r.left - 12 && x <= r.right + 12 && y >= r.top - 10 && y <= r.bottom + 10;
+  });
+
+  bank.querySelectorAll('.lchip').forEach(chip => {
+    chip.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      const name = chip.dataset.chip;
+      const sx = e.clientX, sy = e.clientY;
+      let ghost = null, moved = false;
+      const move = ev => {
+        if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
+        if (!moved){
+          moved = true;
+          ghost = chip.cloneNode(true);
+          ghost.classList.add('ghost');
+          document.body.appendChild(ghost);
+          chip.style.opacity = '.35';
+        }
+        ghost.style.left = (ev.clientX - ghost.offsetWidth / 2) + 'px';
+        ghost.style.top  = (ev.clientY - ghost.offsetHeight / 2) + 'px';
+        drops.forEach(el => el.classList.remove('armed'));
+        const over = hit(ev.clientX, ev.clientY);
+        if (over) over.classList.add('armed');
+      };
+      const up = ev => {
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+        if (ghost) ghost.remove();
+        chip.style.opacity = '';
+        if (moved){
+          const over = hit(ev.clientX, ev.clientY);
+          if (over) buildPlace(d, over.dataset.slot, name);
+          else drops.forEach(el => el.classList.remove('armed'));
+        } else if (session.aimed !== null){
+          /* a gap was chosen first, so this tap answers that gap */
+          buildPlace(d, String(session.aimed), name);
+        } else {
+          session.picked = session.picked === name ? null : name;
+          render();
+        }
+      };
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+    });
+  });
+
+  drops.forEach(el => {
+    el.addEventListener('click', () => {
+      const k = Number(el.dataset.slot);
+      /* either order works: a name already in hand drops here, otherwise
+         this gap lights up and waits for one */
+      if (session.picked) buildPlace(d, el.dataset.slot, session.picked);
+      else { session.aimed = session.aimed === k ? null : k; render(); }
+    });
+    if (session.picked) el.classList.add('armed');
+  });
+}
+
+/* ═══════════════ FILL IN THE CHART ═══════════════ */
+/* The same chart, with the vessels it is built around left empty. Everything
+   else stays on the page, because a blank with no chart around it is just a
+   list of questions. */
+function fillSlot(n, i){
+  const s = session, got = s.solved[i], typed = s.typed[i] || '';
+  if (got) return `<b>${esc(n.n)}</b>`;
+  const w = Math.max(10, Math.min(34, n.n.length + 1));
+  return `<input class="blank${s.wrong[i] ? ' bad' : ''}" id="bl${i}" data-i="${i}"
+    style="width:${w}ch" autocomplete="off" autocapitalize="off" spellcheck="false"
+    value="${esc(typed)}" aria-label="vessel ${i + 1}">`;
+}
+function fillRows(d){
+  let i = 0;
+  return chartLines(d, n => (flowKey(n) ? fillSlot(n, i++) : esc(n.n)));
+}
+function runFill(d){
+  const blanks = flowBlanks(d);
+  if (!session) session = { typed: {}, solved: {}, wrong: {}, missed: [], at: 0,
+                            total: blanks.length };
+  const s = session;
+  const got = Object.keys(s.solved).length;
+
+  if (got === s.total){
+    record(d.id, { fillBest: Math.max((load()[d.id] || {}).fillBest || 0,
+                                      Math.round((s.total - s.missed.length) / s.total * 100)) });
+    return results(d, `${s.total - s.missed.length}/${s.total}`,
+                   `filled on the first try · ${s.missed.length} shown`, s.missed, 'fill');
+  }
+
+  app.innerHTML = `
+    ${sessionBar(d, got, s.total, `Fill in the chart · ${got} of ${s.total}`)}
+    <div class="decknote">Type each empty vessel and press Enter. What it feeds is
+      printed beside it.</div>
+    <pre class="chart fill">${fillRows(d)}</pre>
+    <div class="row" style="margin-top:12px">
+      <button onclick="fillGiveUp()">Show me this one</button>
+    </div>`;
+
+  /* every blank grades itself, and Enter walks down the chart */
+  const boxes = [...document.querySelectorAll('.blank')];
+  boxes.forEach(b => {
+    const i = Number(b.dataset.i);
+    b.oninput = e => { session.typed[i] = e.target.value; session.wrong[i] = false; };
+    b.onkeydown = e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      fillCheck(i);
+    };
+  });
+  const first = boxes.find(b => Number(b.dataset.i) === s.at) || boxes[0];
+  if (first) first.focus();
+  keyHandler = null;
+}
+function fillCheck(i){
+  const s = session, d = deckById(view.deck), n = flowBlanks(d)[i];
+  if (!(s.typed[i] || '').trim()) return;
+  if (vesselHit(s.typed[i], n.n)){
+    s.solved[i] = true;
+    s.at = i + 1;
+  } else {
+    s.wrong[i] = true;
+  }
+  render();
+}
+function fillGiveUp(){
+  const s = session, d = deckById(view.deck), blanks = flowBlanks(d);
+  /* the one being worked on, or the first still empty */
+  let i = s.at;
+  while (i < blanks.length && s.solved[i]) i++;
+  if (i >= blanks.length) return;
+  s.solved[i] = true;
+  s.missed.push({ q: blanks[i].t || 'in the chart', a: blanks[i].n });
+  s.at = i + 1;
   render();
 }
 
@@ -4721,6 +5059,7 @@ function runChapter(d){
   keyHandler = null;
 }
 
+function chartView(on){ session.detail = on; render(); }
 function runBrowse(d){
   if (!session) session = { hide: false, filter: '' };
   const s = session;
@@ -4730,6 +5069,7 @@ function runBrowse(d){
      Filtering switches it to a flat list, because a vessel is only useful here
      with the route that reaches it, and that route is what the filter hides. */
   if (d.flow){
+    if (s.detail === undefined) s.detail = false;
     const trails = flowTrails(d);
     const found = trails.filter(t => {
       const v = t[t.length - 1];
@@ -4745,6 +5085,10 @@ function runBrowse(d){
       <div class="decknote">${d.flow.dir === 'in'
         ? `Written from the heart outward. Blood runs the other way, from the end of a branch back up to the ${esc(d.flow.start.toLowerCase())}.`
         : `Written in the direction blood flows, out from the ${esc(d.flow.start.toLowerCase())}.`}</div>
+      <div class="bar"><div class="seg">
+        <button class="${s.detail ? '' : 'on'}" onclick="chartView(false)">Chart</button>
+        <button class="${s.detail ? 'on' : ''}" onclick="chartView(true)">What each one feeds</button>
+      </div></div>
       <input class="search" id="bfilter" placeholder="Filter…" value="${esc(s.filter)}">
       ${f
         ? (found.length ? `<ol class="placed">${found.map(t => {
@@ -4755,7 +5099,9 @@ function runBrowse(d){
                <span class="crumb">${(d.flow.dir === 'in' ? route.slice().reverse() : route)
                  .map(esc).join(' → ')}</span></span></div></li>`;
            }).join('')}</ol>` : '<p style="color:var(--dim)">Nothing matches that filter.</p>')
-        : `<ul class="flowtree"><li><span class="vn">${esc(d.flow.start)}</span>${branch(d.flow.tree)}</li></ul>`}`;
+        : s.detail
+          ? `<ul class="flowtree"><li><span class="vn">${esc(d.flow.start)}</span>${branch(d.flow.tree)}</li></ul>`
+          : `<pre class="chart">${flowChart(d)}</pre>`}`;
 
     const ff = document.getElementById('bfilter');
     ff.oninput = e => { const p = e.target.selectionStart; s.filter = e.target.value; runBrowse(d);
@@ -5211,7 +5557,7 @@ function render(){
   const d = deckById(view.deck);
   if (!d) return go('home');
   if (view.screen === 'deck') return screenDeck();
-  ({ recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
+  ({ build: runBuild, fill: runFill, recall: runRecall, learn: runLearn, quiz: runQuiz, match: runMatch, tf: runTF,
      chest: runChest, order: runOrder, beat: runBeat, browse: runBrowse,
      chapter: runChapter, trace: runTrace, parts: runParts,
      figure: runFigure, region: runRegion, label: runLabel, dose: runDose,

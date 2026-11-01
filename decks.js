@@ -13135,98 +13135,98 @@ window.DECKS = [
 },
 {
   id: 'bio201-ch15-flow-arteries',
-  group: 'Chapter 15 — Cardiovascular System',
+  group: 'Chapter 15 — Blood Flow Sequence',
   current: true,
   added: '2026-10-27',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
   title: 'Ch. 15 — Arterial Flow Chart',
   source: 'Chapter 15 — course notes',
-  only: ['path', 'browse'],
+  only: ['browse', 'build', 'fill', 'path'],
   flow: {
     start: 'Left ventricle',
     dir: 'out',
     unit: 'artery',
     tree: [
-      { n: 'Ascending aorta', d: 'the first stretch of the aorta above the root', to: [
-        { n: 'Right coronary artery', d: 'arises from an aortic sinus and supplies the right side of the myocardium' },
-        { n: 'Left coronary artery', d: 'arises from an aortic sinus and supplies the left side of the myocardium' },
-        { n: 'Aortic arch', d: 'carries baroreceptors, and aortic bodies holding chemoreceptors', to: [
+      { n: 'Ascending aorta', cont: true, via: 'the aortic valve', d: 'the first stretch of the aorta above the root', to: [
+        { n: 'Right coronary artery', t: 'right myocardium', d: 'arises from an aortic sinus and supplies the right side of the myocardium' },
+        { n: 'Left coronary artery', t: 'left myocardium', d: 'arises from an aortic sinus and supplies the left side of the myocardium' },
+        { n: 'Aortic arch', cont: true, d: 'carries baroreceptors, and aortic bodies holding chemoreceptors', to: [
           { n: 'Brachiocephalic trunk', d: 'the first branch of the arch, and the only one of the three that is a trunk', to: [
-            { n: 'Right common carotid artery', d: 'the right side of the head and neck, dividing into an external and an internal carotid like the left' },
-            { n: 'Right subclavian artery', d: 'the right upper limb, continuing as axillary, brachial, then radial and ulnar like the left' }
+            { n: 'Right common carotid artery', t: 'right head and neck', d: 'the right side of the head and neck, dividing into an external and an internal carotid like the left' },
+            { n: 'Right subclavian artery', t: 'right upper limb', d: 'the right upper limb, continuing as axillary, brachial, then radial and ulnar like the left' }
           ] },
           { n: 'Left common carotid artery', d: 'the second branch of the arch, dividing at the upper border of the larynx', to: [
-            { n: 'External carotid artery', d: 'the face, scalp and neck', to: [
-              { n: 'Superior thyroid artery', d: 'the hyoid, larynx and thyroid gland' },
-              { n: 'Lingual artery', d: 'the tongue and the sublingual salivary glands' },
-              { n: 'Facial artery', d: 'the pharynx, palate, chin, lips and nose' },
-              { n: 'Occipital artery', d: 'the back of the scalp, the meninges and the neck muscles' },
-              { n: 'Posterior auricular artery', d: 'the ear and the scalp above it' },
-              { n: 'Maxillary artery', d: 'one of the two terminal branches, supplying the teeth, gums, jaws and nasal cavity' },
-              { n: 'Superficial temporal artery', d: 'the other terminal branch, supplying the parotid gland and the surface of the face and scalp' }
+            { n: 'External carotid artery', t: 'face, scalp, neck', d: 'the face, scalp and neck', to: [
+              { n: 'Superior thyroid artery', t: 'hyoid, larynx, thyroid', d: 'the hyoid, larynx and thyroid gland' },
+              { n: 'Lingual artery', t: 'tongue, sublingual glands', d: 'the tongue and the sublingual salivary glands' },
+              { n: 'Facial artery', t: 'pharynx, palate, lips, nose', d: 'the pharynx, palate, chin, lips and nose' },
+              { n: 'Occipital artery', t: 'back of the scalp, meninges', d: 'the back of the scalp, the meninges and the neck muscles' },
+              { n: 'Posterior auricular artery', t: 'ear, scalp above it', d: 'the ear and the scalp above it' },
+              { n: 'Maxillary artery', t: 'teeth, gums, jaws, nasal cavity', d: 'one of the two terminal branches, supplying the teeth, gums, jaws and nasal cavity' },
+              { n: 'Superficial temporal artery', t: 'parotid, face and scalp surface', d: 'the other terminal branch, supplying the parotid gland and the surface of the face and scalp' }
             ] },
-            { n: 'Internal carotid artery', d: 'the major blood supply to the brain', to: [
-              { n: 'Ophthalmic artery', d: 'the eyeball and the rest of the orbit' },
-              { n: 'Anterior cerebral artery', d: 'a terminal branch, supplying the medial surface of the brain' },
-              { n: 'Middle cerebral artery', d: 'a terminal branch, supplying the lateral surface, including the motor and sensory areas for the face and upper limb' }
+            { n: 'Internal carotid artery', t: 'brain', d: 'the major blood supply to the brain', to: [
+              { n: 'Ophthalmic artery', t: 'eyeball, orbit', d: 'the eyeball and the rest of the orbit' },
+              { n: 'Anterior cerebral artery', t: 'medial surface of the brain', d: 'a terminal branch, supplying the medial surface of the brain' },
+              { n: 'Middle cerebral artery', t: 'lateral surface of the brain', d: 'a terminal branch, supplying the lateral surface, including the motor and sensory areas for the face and upper limb' }
             ] }
           ] },
           { n: 'Left subclavian artery', d: 'the third branch of the arch', to: [
             { n: 'Vertebral artery', d: 'ascends through the transverse foramina of the cervical vertebrae and enters the skull at the foramen magnum', to: [
-              { n: 'Basilar artery', d: 'formed where the two vertebral arteries unite, supplying the pons, midbrain and cerebellum', to: [
-                { n: 'Posterior cerebral artery', d: 'one of the two terminal branches, supplying the occipital and temporal lobes' }
+              { n: 'Basilar artery', t: 'pons, midbrain, cerebellum', d: 'formed where the two vertebral arteries unite, supplying the pons, midbrain and cerebellum', to: [
+                { n: 'Posterior cerebral artery', t: 'occipital and temporal lobes', d: 'one of the two terminal branches, supplying the occipital and temporal lobes' }
               ] }
             ] },
-            { n: 'Thyrocervical artery', d: 'the thyroid, parathyroids, larynx, trachea and the muscles of the neck, shoulder and back' },
-            { n: 'Costocervical artery', d: 'the muscles of the neck, back and thoracic wall' },
-            { n: 'Internal thoracic artery', d: 'descends behind the costal cartilages to supply the thoracic wall', to: [
-              { n: 'Anterior intercostal arteries', d: 'two to each of the upper six intercostal spaces, supplying the intercostal muscles and the mammary glands' }
+            { n: 'Thyrocervical artery', t: 'thyroid, larynx, trachea, neck', d: 'the thyroid, parathyroids, larynx, trachea and the muscles of the neck, shoulder and back' },
+            { n: 'Costocervical artery', t: 'neck, back, thoracic wall', d: 'the muscles of the neck, back and thoracic wall' },
+            { n: 'Internal thoracic artery', t: 'thoracic wall', d: 'descends behind the costal cartilages to supply the thoracic wall', to: [
+              { n: 'Anterior intercostal arteries', t: 'intercostal muscles, mammary glands', d: 'two to each of the upper six intercostal spaces, supplying the intercostal muscles and the mammary glands' }
             ] },
             { n: 'Axillary artery', d: 'the name the subclavian takes between the clavicle and the first rib', to: [
               { n: 'Brachial artery', d: 'the name it takes on leaving the axilla', to: [
-                { n: 'Deep brachial artery', d: 'curves behind the humerus to the triceps brachii' },
-                { n: 'Radial artery', d: 'runs close to the surface at the wrist, which makes it the usual pulse point' },
-                { n: 'Ulnar artery', d: 'runs down the medial forearm to the network at the wrist' }
+                { n: 'Deep brachial artery', t: 'triceps brachii', d: 'curves behind the humerus to the triceps brachii' },
+                { n: 'Radial artery', t: 'lateral forearm, the usual pulse point', d: 'runs close to the surface at the wrist, which makes it the usual pulse point' },
+                { n: 'Ulnar artery', t: 'medial forearm', d: 'runs down the medial forearm to the network at the wrist' }
               ] }
             ] }
           ] },
-          { n: 'Thoracic aorta', d: 'the descending aorta above the diaphragm', to: [
-            { n: 'Bronchial arteries', d: 'the bronchi' },
-            { n: 'Esophageal arteries', d: 'the esophagus' },
-            { n: 'Mediastinal arteries', d: 'the mediastinum' },
-            { n: 'Pericardial arteries', d: 'the pericardium' },
-            { n: 'Posterior intercostal arteries', d: 'the intercostal muscles, vertebrae, spinal cord and deep back muscles' },
-            { n: 'Abdominal aorta', d: 'the descending aorta below the diaphragm', to: [
+          { n: 'Thoracic aorta', cont: true, d: 'the descending aorta above the diaphragm', to: [
+            { n: 'Bronchial arteries', t: 'bronchi', d: 'the bronchi' },
+            { n: 'Esophageal arteries', t: 'esophagus', d: 'the esophagus' },
+            { n: 'Mediastinal arteries', t: 'mediastinum', d: 'the mediastinum' },
+            { n: 'Pericardial arteries', t: 'pericardium', d: 'the pericardium' },
+            { n: 'Posterior intercostal arteries', t: 'intercostals, vertebrae, spinal cord', d: 'the intercostal muscles, vertebrae, spinal cord and deep back muscles' },
+            { n: 'Abdominal aorta', cont: true, via: 'the diaphragm, at T12', d: 'the descending aorta below the diaphragm', to: [
               { n: 'Celiac trunk', d: 'the first branch below the diaphragm', to: [
-                { n: 'Left gastric artery', d: 'the stomach' },
-                { n: 'Splenic artery', d: 'the spleen and part of the pancreas' },
-                { n: 'Hepatic artery', d: 'delivers about a third of the blood the liver receives, and that third is the oxygen-rich part' }
+                { n: 'Left gastric artery', t: 'stomach', d: 'the stomach' },
+                { n: 'Splenic artery', t: 'spleen, part of the pancreas', d: 'the spleen and part of the pancreas' },
+                { n: 'Hepatic artery', t: 'liver', d: 'delivers about a third of the blood the liver receives, and that third is the oxygen-rich part' }
               ] },
-              { n: 'Phrenic arteries', d: 'the diaphragm' },
-              { n: 'Superior mesenteric artery', d: 'the jejunum, ileum, cecum, ascending colon and most of the transverse colon' },
-              { n: 'Suprarenal arteries', d: 'the adrenal glands' },
-              { n: 'Renal arteries', d: 'the kidneys' },
-              { n: 'Gonadal arteries', d: 'the ovaries, or the testes by way of the inguinal canal' },
-              { n: 'Inferior mesenteric artery', d: 'the rest of the transverse colon, the descending and sigmoid colon, and the rectum' },
-              { n: 'Lumbar arteries', d: 'the skin, muscles and posterior wall of the abdomen' },
-              { n: 'Middle sacral artery', d: 'the sacrum and coccyx' },
-              { n: 'Common iliac artery', d: 'the terminal split of the aorta, at the pelvic brim', to: [
-                { n: 'Internal iliac artery', d: 'the pelvic organs and the gluteal region', to: [
-                  { n: 'Superior and inferior gluteal arteries', d: 'the gluteal and pelvic muscles and the skin of the buttock' },
-                  { n: 'Internal pudendal artery', d: 'the distal alimentary canal, the external genitalia and the hip joint' },
-                  { n: 'Obturator artery', d: 'the adductor muscles of the thigh' }
+              { n: 'Phrenic arteries', t: 'diaphragm', d: 'the diaphragm' },
+              { n: 'Superior mesenteric artery', t: 'small intestine, ascending colon', d: 'the jejunum, ileum, cecum, ascending colon and most of the transverse colon' },
+              { n: 'Suprarenal arteries', t: 'adrenal glands', d: 'the adrenal glands' },
+              { n: 'Renal arteries', t: 'kidneys', d: 'the kidneys' },
+              { n: 'Gonadal arteries', t: 'ovaries, or testes', d: 'the ovaries, or the testes by way of the inguinal canal' },
+              { n: 'Inferior mesenteric artery', t: 'descending and sigmoid colon, rectum', d: 'the rest of the transverse colon, the descending and sigmoid colon, and the rectum' },
+              { n: 'Lumbar arteries', t: 'posterior abdominal wall', d: 'the skin, muscles and posterior wall of the abdomen' },
+              { n: 'Middle sacral artery', t: 'sacrum, coccyx', d: 'the sacrum and coccyx' },
+              { n: 'Common iliac artery', cont: true, via: 'the aorta ends here, at L4', d: 'the terminal split of the aorta, at the pelvic brim', to: [
+                { n: 'Internal iliac artery', t: 'pelvic organs, gluteal region', d: 'the pelvic organs and the gluteal region', to: [
+                  { n: 'Superior and inferior gluteal arteries', t: 'gluteal and pelvic muscles', d: 'the gluteal and pelvic muscles and the skin of the buttock' },
+                  { n: 'Internal pudendal artery', t: 'external genitalia, hip joint', d: 'the distal alimentary canal, the external genitalia and the hip joint' },
+                  { n: 'Obturator artery', t: 'adductors of the thigh', d: 'the adductor muscles of the thigh' }
                 ] },
-                { n: 'External iliac artery', d: 'the main supply to the lower limb', to: [
-                  { n: 'Femoral artery', d: 'the name it takes midway between the pubic symphysis and the anterior superior iliac spine', to: [
-                    { n: 'Deep femoral artery', d: 'its largest branch, to the hip joint and the thigh muscles' },
-                    { n: 'Popliteal artery', d: 'the name it takes behind the knee', to: [
-                      { n: 'Anterior tibial artery', d: 'passes between the tibia and fibula to the anterior and lateral leg', to: [
-                        { n: 'Dorsalis pedis artery', d: 'its continuation into the foot, supplying the instep and toes' }
+                { n: 'External iliac artery', cont: true, t: 'lower limb', d: 'the main supply to the lower limb', to: [
+                  { n: 'Femoral artery', cont: true, via: 'under the inguinal ligament', t: 'thigh', d: 'the name it takes midway between the pubic symphysis and the anterior superior iliac spine', to: [
+                    { n: 'Deep femoral artery', t: 'hip joint, thigh muscles', d: 'its largest branch, to the hip joint and the thigh muscles' },
+                    { n: 'Popliteal artery', cont: true, d: 'the name it takes behind the knee', to: [
+                      { n: 'Anterior tibial artery', t: 'anterior and lateral leg', d: 'passes between the tibia and fibula to the anterior and lateral leg', to: [
+                        { n: 'Dorsalis pedis artery', t: 'instep, toes', d: 'its continuation into the foot, supplying the instep and toes' }
                       ] },
-                      { n: 'Posterior tibial artery', d: 'the larger of the two, descending beneath the calf muscles', to: [
-                        { n: 'Fibular artery', d: 'its largest branch' },
-                        { n: 'Medial and lateral plantar arteries', d: 'the division between the medial malleolus and the heel' }
+                      { n: 'Posterior tibial artery', cont: true, d: 'the larger of the two, descending beneath the calf muscles', to: [
+                        { n: 'Fibular artery', t: 'lateral leg', d: 'its largest branch' },
+                        { n: 'Medial and lateral plantar arteries', t: 'sole of the foot', d: 'the division between the medial malleolus and the heel' }
                       ] }
                     ] }
                   ] }
@@ -13242,80 +13242,80 @@ window.DECKS = [
 
 {
   id: 'bio201-ch15-flow-veins',
-  group: 'Chapter 15 — Cardiovascular System',
+  group: 'Chapter 15 — Blood Flow Sequence',
   current: true,
   added: '2026-10-27',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
   title: 'Ch. 15 — Venous Flow Chart',
   source: 'Chapter 15 — course notes',
-  only: ['path', 'browse'],
+  only: ['browse', 'build', 'fill', 'path'],
   flow: {
     start: 'Right atrium',
     dir: 'in',
     unit: 'vein',
     tree: [
-      { n: 'Superior vena cava', d: 'formed where the two brachiocephalic veins merge in the mediastinum', to: [
-        { n: 'Azygos vein', d: 'ascends the mediastinum on the right of the vertebral column, draining most of the muscular tissue of the abdominal and thoracic walls', to: [
-          { n: 'Right posterior intercostal veins', d: 'the intercostal spaces of the right thoracic wall' },
-          { n: 'Superior hemiazygos vein', d: 'takes the upper left posterior intercostal veins' },
-          { n: 'Inferior hemiazygos vein', d: 'takes the lower left posterior intercostal veins' },
-          { n: 'Ascending lumbar veins', d: 'one on each side, draining the posterior abdominal wall' }
+      { n: 'Superior vena cava', t: 'return from above the diaphragm', d: 'formed where the two brachiocephalic veins merge in the mediastinum', to: [
+        { n: 'Azygos vein', t: 'thoracic and abdominal walls', d: 'ascends the mediastinum on the right of the vertebral column, draining most of the muscular tissue of the abdominal and thoracic walls', to: [
+          { n: 'Right posterior intercostal veins', t: 'right thoracic wall', d: 'the intercostal spaces of the right thoracic wall' },
+          { n: 'Superior hemiazygos vein', t: 'upper left intercostals', d: 'takes the upper left posterior intercostal veins' },
+          { n: 'Inferior hemiazygos vein', t: 'lower left intercostals', d: 'takes the lower left posterior intercostal veins' },
+          { n: 'Ascending lumbar veins', t: 'posterior abdominal wall', d: 'one on each side, draining the posterior abdominal wall' }
         ] },
         { n: 'Brachiocephalic vein', d: 'formed where an internal jugular and a subclavian vein join, one on each side', to: [
-          { n: 'Internal thoracic vein', d: 'the thoracic wall behind the costal cartilages' },
-          { n: 'Internal jugular vein', d: 'the larger of the two jugulars, collecting from the venous sinuses of the brain and the deep face and neck' },
+          { n: 'Internal thoracic vein', t: 'thoracic wall', d: 'the thoracic wall behind the costal cartilages' },
+          { n: 'Internal jugular vein', t: 'brain, deep face and neck', d: 'the larger of the two jugulars, collecting from the venous sinuses of the brain and the deep face and neck' },
           { n: 'Subclavian vein', d: 'the continuation of the axillary vein beyond the axilla', to: [
-            { n: 'External jugular vein', d: 'the face, scalp and superficial neck, descending over the sternocleidomastoid' },
+            { n: 'External jugular vein', t: 'face, scalp, superficial neck', d: 'the face, scalp and superficial neck, descending over the sternocleidomastoid' },
             { n: 'Axillary vein', d: 'formed where the basilic and brachial veins join, and also receiving the cephalic', to: [
-              { n: 'Cephalic vein', d: 'the superficial vein of the radial side, running up the lateral limb from hand to shoulder before it pierces the tissues' },
-              { n: 'Brachial veins', d: 'the paired deep veins of the arm', to: [
-                { n: 'Basilic vein', d: 'the superficial vein of the ulnar side, which dives deep in mid-arm to join the brachial', to: [
-                  { n: 'Median cubital vein', d: 'crosses the bend of the elbow from the cephalic to the basilic, and is the standard venipuncture site' }
+              { n: 'Cephalic vein', t: 'superficial, radial side of the limb', d: 'the superficial vein of the radial side, running up the lateral limb from hand to shoulder before it pierces the tissues' },
+              { n: 'Brachial veins', t: 'deep veins of the arm', d: 'the paired deep veins of the arm', to: [
+                { n: 'Basilic vein', t: 'superficial, ulnar side', d: 'the superficial vein of the ulnar side, which dives deep in mid-arm to join the brachial', to: [
+                  { n: 'Median cubital vein', t: 'the standard venipuncture site', d: 'crosses the bend of the elbow from the cephalic to the basilic, and is the standard venipuncture site' }
                 ] },
-                { n: 'Radial veins', d: 'the paired deep veins of the lateral forearm' },
-                { n: 'Ulnar veins', d: 'the paired deep veins of the medial forearm' }
+                { n: 'Radial veins', t: 'deep, lateral forearm', d: 'the paired deep veins of the lateral forearm' },
+                { n: 'Ulnar veins', t: 'deep, medial forearm', d: 'the paired deep veins of the medial forearm' }
               ] }
             ] }
           ] }
         ] }
       ] },
-      { n: 'Inferior vena cava', d: 'formed where the two common iliac veins merge at the level of the fifth lumbar vertebra', to: [
-        { n: 'Hepatic veins', d: 'carry blood out of the liver and are the only route by which portal blood reaches the heart', to: [
-          { n: 'Hepatic sinusoids', d: 'the discontinuous capillaries of the liver, lined with Kupffer cells that remove bacteria from portal blood', to: [
-            { n: 'Hepatic portal vein', d: 'runs from one capillary bed to another rather than back to the heart, delivering nutrient-rich but oxygen-poor blood to the liver', to: [
-              { n: 'Right and left gastric veins', d: 'the stomach' },
-              { n: 'Superior mesenteric vein', d: 'the small intestine, the ascending colon and the transverse colon' },
-              { n: 'Splenic vein', d: 'the spleen, the pancreas and part of the stomach', to: [
-                { n: 'Inferior mesenteric vein', d: 'the largest tributary of the splenic, draining the descending and sigmoid colon and the rectum' }
+      { n: 'Inferior vena cava', t: 'return from below the diaphragm', d: 'formed where the two common iliac veins merge at the level of the fifth lumbar vertebra', to: [
+        { n: 'Hepatic veins', t: 'the only route portal blood takes to the heart', d: 'carry blood out of the liver and are the only route by which portal blood reaches the heart', to: [
+          { n: 'Hepatic sinusoids', t: 'liver capillaries, lined with Kupffer cells', d: 'the discontinuous capillaries of the liver, lined with Kupffer cells that remove bacteria from portal blood', to: [
+            { n: 'Hepatic portal vein', t: 'nutrient-rich blood to the liver', d: 'runs from one capillary bed to another rather than back to the heart, delivering nutrient-rich but oxygen-poor blood to the liver', to: [
+              { n: 'Right and left gastric veins', t: 'stomach', d: 'the stomach' },
+              { n: 'Superior mesenteric vein', t: 'small intestine, ascending and transverse colon', d: 'the small intestine, the ascending colon and the transverse colon' },
+              { n: 'Splenic vein', t: 'spleen, pancreas, part of the stomach', d: 'the spleen, the pancreas and part of the stomach', to: [
+                { n: 'Inferior mesenteric vein', t: 'descending and sigmoid colon, rectum', d: 'the largest tributary of the splenic, draining the descending and sigmoid colon and the rectum' }
               ] }
             ] }
           ] }
         ] },
-        { n: 'Phrenic veins', d: 'the diaphragm' },
-        { n: 'Suprarenal veins', d: 'the adrenal glands' },
-        { n: 'Renal veins', d: 'the kidneys' },
-        { n: 'Gonadal veins', d: 'the ovaries or the testes' },
-        { n: 'Lumbar veins', d: 'the posterior abdominal wall' },
+        { n: 'Phrenic veins', t: 'diaphragm', d: 'the diaphragm' },
+        { n: 'Suprarenal veins', t: 'adrenal glands', d: 'the adrenal glands' },
+        { n: 'Renal veins', t: 'kidneys', d: 'the kidneys' },
+        { n: 'Gonadal veins', t: 'ovaries or testes', d: 'the ovaries or the testes' },
+        { n: 'Lumbar veins', t: 'posterior abdominal wall', d: 'the posterior abdominal wall' },
         { n: 'Common iliac vein', d: 'formed where an internal and an external iliac vein join', to: [
-          { n: 'Internal iliac vein', d: 'the pelvic organs, by tributaries matching the branches of the internal iliac artery', to: [
-            { n: 'Gluteal and pudendal veins', d: 'the buttock and the external genitalia' },
-            { n: 'Vesical and rectal veins', d: 'the bladder and rectum, forming plexuses around both' }
+          { n: 'Internal iliac vein', t: 'pelvic organs', d: 'the pelvic organs, by tributaries matching the branches of the internal iliac artery', to: [
+            { n: 'Gluteal and pudendal veins', t: 'buttock, external genitalia', d: 'the buttock and the external genitalia' },
+            { n: 'Vesical and rectal veins', t: 'bladder, rectum', d: 'the bladder and rectum, forming plexuses around both' }
           ] },
-          { n: 'External iliac vein', d: 'the continuation of the femoral vein above the inguinal ligament', to: [
-            { n: 'Femoral vein', d: 'the continuation of the popliteal vein up through the thigh', to: [
-              { n: 'Great saphenous vein', d: 'the longest vein in the body, running from the medial foot in front of the medial malleolus up to the femoral' },
-              { n: 'Popliteal vein', d: 'the single trunk formed at the knee where the tibial veins join', to: [
-                { n: 'Small saphenous vein', d: 'begins on the lateral foot, passes behind the lateral malleolus and up the back of the calf' },
-                { n: 'Anterior tibial veins', d: 'the paired deep veins of the anterior leg' },
-                { n: 'Posterior tibial veins', d: 'the paired deep veins behind the calf muscles' }
+          { n: 'External iliac vein', t: 'lower limb', d: 'the continuation of the femoral vein above the inguinal ligament', to: [
+            { n: 'Femoral vein', t: 'thigh', d: 'the continuation of the popliteal vein up through the thigh', to: [
+              { n: 'Great saphenous vein', t: 'longest vein in the body, medial leg and thigh', d: 'the longest vein in the body, running from the medial foot in front of the medial malleolus up to the femoral' },
+              { n: 'Popliteal vein', t: 'behind the knee', d: 'the single trunk formed at the knee where the tibial veins join', to: [
+                { n: 'Small saphenous vein', t: 'lateral foot, back of the calf', d: 'begins on the lateral foot, passes behind the lateral malleolus and up the back of the calf' },
+                { n: 'Anterior tibial veins', t: 'deep, anterior leg', d: 'the paired deep veins of the anterior leg' },
+                { n: 'Posterior tibial veins', t: 'deep, behind the calf', d: 'the paired deep veins behind the calf muscles' }
               ] }
             ] }
           ] }
         ] }
       ] },
-      { n: 'Coronary sinus', d: 'collects the cardiac veins and empties into the right atrium beside the two venae cavae', to: [
-        { n: 'Cardiac veins', d: 'drain the blood that has passed through the capillaries of the myocardium' }
+      { n: 'Coronary sinus', t: 'the cardiac veins', d: 'collects the cardiac veins and empties into the right atrium beside the two venae cavae', to: [
+        { n: 'Cardiac veins', t: 'myocardium', d: 'drain the blood that has passed through the capillaries of the myocardium' }
       ] }
     ]
   }

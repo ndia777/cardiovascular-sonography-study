@@ -91,8 +91,10 @@ const modesFor = d => {
   const m = [];
   /* a problem set leads, ahead of the card modes it gives nothing to */
   if ((d.dose || []).length) m.push('dose');
-  /* a flow chart leads for the same reason: it holds no cards at all */
-  if (d.flow) m.push('path');
+  /* a flow chart leads for the same reason: it holds no cards at all. The two
+     chart drills come before the route drill because reading the chart and
+     filling it in is what the deck is for. */
+  if (d.flow) m.push('build', 'fill', 'path');
   if (steps) m.push('order');
   if (recallableCards(d).length) m.push('recall');
   if (cards) m.push('learn', 'match');
@@ -1251,6 +1253,234 @@ function suite(s, label, srcCss) {
       check(`[${label}] ${d.id} the chart shows the heart end`,
             chart.includes(esc(d.flow.start)));
 
+      /* ── the chart drawn as a chart ──────────────────────────────────────
+         One vessel becoming the next runs straight down the page; everything
+         thrown off it hangs to the side. The old nested list said the same
+         thing but gave a fork and a continuation the same shape, which is the
+         part that made it unreadable. */
+      const chartOf = vm.runInContext('flowChart', s);
+      const drawn = [...chartOf(d).matchAll(
+        /<div class="crow" style="padding-left:(\d+)ch;text-indent:-(\d+)ch">([\s\S]*?)<\/div>/g)];
+      const text = drawn.map(m => m[3]);
+      const arrow = d.flow.dir === 'in' ? '↑' : '↓';
+      const strip = l => l.replace(/<[^>]+>/g, '');
+      const rows = text.filter(l => !strip(l).trim().startsWith(arrow));
+
+      /* every row hangs by its own depth, or a wrapped line would fall back
+         to the margin and lose which branch it belongs to */
+      check(`[${label}] ${d.id} every row carries a hanging indent`,
+            drawn.length > 0 && drawn.every(m => m[1] === m[2]),
+            'a row would wrap back to the margin');
+      /* and nothing is wide enough to need a sideways scroll on a laptop */
+      const widest = Math.max(...text.map(l => strip(l).length));
+      check(`[${label}] ${d.id} no row is absurdly wide`, widest <= 110,
+            `the longest row is ${widest} characters`);
+      const named = rows.map(l => strip(l)
+        .replace(/^[\s│]*(?:├──|└──)?\s*/, '')
+        .split(' — ')[0].trim());
+
+      /* every vessel exactly once: a chart that repeats a branch or drops one
+         is worse than no chart, because it reads as authoritative */
+      const want = [d.flow.start].concat(names).sort();
+      check(`[${label}] ${d.id} the chart names every vessel exactly once`,
+            JSON.stringify(named.slice().sort()) === JSON.stringify(want),
+            `chart has ${named.length} rows for ${want.length} vessels`);
+
+      /* nothing but box-drawing characters and the one arrow decorate it */
+      const stray = text.join('\n').replace(/<[^>]+>/g, '')
+        .replace(new RegExp('[\\w\\s,.()/\'’—│├└─' + arrow + '-]', 'g'), '');
+      check(`[${label}] ${d.id} the chart draws with box characters only`, !stray,
+            `stray characters: ${stray}`);
+
+      /* a vessel may continue as exactly one other vessel */
+      let twoSpines = '';
+      const everyNode = [{ to: d.flow.tree }].concat(nodesOf(d));
+      for (const n of everyNode) {
+        const conts = (n.to || []).filter(k => k.cont);
+        if (conts.length > 1 && !twoSpines)
+          twoSpines = `${n.n || d.flow.start} continues as ${conts.map(c => c.n).join(' and ')}`;
+      }
+      check(`[${label}] ${d.id} no vessel continues as two`, !twoSpines, twoSpines);
+
+      /* the straight arrows and the spine agree: one arrow per continuation */
+      const arrows = text.filter(l => strip(l).trim().startsWith(arrow)).length;
+      const conts = nodesOf(d).filter(n => n.cont).length;
+      check(`[${label}] ${d.id} one arrow for each continuation`, arrows === conts,
+            `${arrows} arrows, ${conts} marked continuations`);
+
+      /* territories have to fit a line and must not just repeat the name */
+      let badTer = '';
+      for (const n of nodesOf(d)) {
+        if (!n.t) continue;
+        if (n.t.length > 52) badTer = `${n.n}: "${n.t}" is ${n.t.length} characters`;
+        else if (n.t.toLowerCase() === n.n.toLowerCase()) badTer = `${n.n} repeats itself`;
+      }
+      check(`[${label}] ${d.id} every territory fits on its line`, !badTer, badTer);
+
+      /* Browse opens on the chart, and the annotated tree is still reachable */
+      go('run', d.id, 'browse');
+      check(`[${label}] ${d.id} browse opens on the chart`,
+            s.__app.innerHTML.includes('<pre class="chart">'), 'no chart block rendered');
+      s.chartView(true);
+      check(`[${label}] ${d.id} and switches to what each vessel feeds`,
+            s.__app.innerHTML.includes('class="flowtree"')
+            && !s.__app.innerHTML.includes('<pre class="chart">'),
+            'the switch did not change the view');
+      s.chartView(false);
+
+      /* and the chart comes before the drill on the deck page, because reading
+         it is what you do first */
+      go('deck', d.id);
+      const page = s.__app.innerHTML;
+      check(`[${label}] ${d.id} the chart leads the deck page`,
+            page.indexOf('The Whole Chart') >= 0
+            && page.indexOf('The Whole Chart') < page.indexOf('Trace the Path'),
+            'the drill is listed first');
+
+
+      /* ── the two chart drills ────────────────────────────────────────────
+         Both blank the same vessels: the ones that go on to branch, plus the
+         ones told apart only by their side. Build hands you the names, Fill
+         does not, which is the whole difference between them. */
+      const progressOf = id => $('load')()[id];
+      const blanksOf = vm.runInContext('flowBlanks', s);
+      const keyOf = vm.runInContext('vesselKey', s);
+      const blanks = blanksOf(d);
+
+      check(`[${label}] ${d.id} blanks the vessels the chart turns on`,
+            blanks.length >= 15 && blanks.length < names.length,
+            `${blanks.length} blanks out of ${names.length} vessels`);
+      check(`[${label}] ${d.id} every branching vessel is a blank`,
+            nodesOf(d).filter(n => (n.to || []).length).every(n => blanks.includes(n)),
+            'a vessel that branches was left printed');
+      check(`[${label}] ${d.id} the right and left pairs are blanks`,
+            nodesOf(d).filter(n => /^(right|left)\b/i.test(n.n)).every(n => blanks.includes(n)),
+            'a sided vessel was left printed');
+
+      /* two blanks that take the same typed answer would make one unanswerable */
+      const bySeen = new Map(); let keyClash = '';
+      for (const n of blanks) {
+        const k = keyOf(n.n);
+        if (bySeen.has(k) && !keyClash) keyClash = `${bySeen.get(k)} and ${n.n} both answer to "${k}"`;
+        bySeen.set(k, n.n);
+      }
+      check(`[${label}] ${d.id} no two blanks take the same answer`, !keyClash, keyClash);
+
+      /* ---- Build the Chart: a gap for each name, and a name for each gap ---- */
+      go('run', d.id, 'build');
+      const slots = (s.__app.innerHTML.match(/class="cdrop[^"]*" data-slot="\d+"/g) || []).length;
+      const chips = (s.__app.innerHTML.match(/class="lchip[^"]*" data-chip=/g) || []).length;
+      check(`[${label}] ${d.id} build shows one gap per blank`, slots === blanks.length,
+            `${slots} gaps for ${blanks.length} blanks`);
+      check(`[${label}] ${d.id} build banks one name per gap`, chips === blanks.length,
+            `${chips} names for ${blanks.length} gaps`);
+
+
+      /* The bank sits beside the chart, not under it. A chart is taller than
+         the screen, so a bank below it is one you cannot see while you work,
+         and a drag cannot reach it because the page will not scroll itself. */
+      check(`[${label}] ${d.id} the bank rides beside the chart`,
+            s.__app.innerHTML.includes('class="chartwrap"')
+            && s.__app.innerHTML.includes('class="lbank side"'),
+            'the bank is still a block underneath');
+      check(`[${label}] ${d.id} the bank says how many are left`,
+            s.__app.innerHTML.includes(`>${blanks.length} left`),
+            'no count on the bank');
+      /* .lbank wraps by default, and a wrapping COLUMN with a capped height
+         spills into further columns that run off the right edge — which is
+         exactly the sideways scroll this bank shipped with once. One column,
+         scrolled vertically, and nothing allowed to escape sideways. */
+      const sideRule = (/.lbank.side{([^}]*)}/.exec(srcCss) || [])[1] || '';
+      check(`[${label}] the bank is a single column`,
+            /flex-wrap:s*nowrap/.test(sideRule) && /flex-direction:s*column/.test(sideRule),
+            `.lbank.side reads: ${sideRule.replace(/s+/g, ' ').slice(0, 120)}`);
+      check(`[${label}] and cannot scroll sideways`,
+            /overflow-x:s*hidden/.test(sideRule),
+            'overflow-y alone makes overflow-x compute to auto');
+
+      /* and a gap can be chosen first, which is what makes the drag optional */
+      check(`[${label}] ${d.id} nothing is lit before a gap is chosen`,
+            !/cdrop[^"]*armed/.test(s.__app.innerHTML), 'a gap is lit at rest');
+      $('session.aimed = 4');
+      s.render();
+      check(`[${label}] ${d.id} choosing a gap lights exactly that one`,
+            (s.__app.innerHTML.match(/cdrop[^"]*armed/g) || []).length === 1,
+            'the wrong number of gaps lit');
+      check(`[${label}] ${d.id} and the bank says it is waiting`,
+            s.__app.innerHTML.includes('pick one for the lit gap'), 'the bank gave no prompt');
+      s.buildPlace(d, '4', blanks[4].n);
+      check(`[${label}] ${d.id} a name fills the chosen gap and clears it`,
+            !!$('session.placed[4]') && $('session.aimed') === null,
+            `placed ${!!$('session.placed[4]')}, aim ${$('session.aimed')}`);
+      /* and the name-in-hand order still works */
+      $(`session.picked = ${JSON.stringify(blanks[5].n)}`);
+      s.buildPlace(d, '5', blanks[5].n);
+      check(`[${label}] ${d.id} a name chosen first still drops into a gap`,
+            !!$('session.placed[5]') && $('session.picked') === null,
+            'the name-first order broke');
+      check(`[${label}] ${d.id} a used name leaves the bank`,
+            (s.__app.innerHTML.match(/class="lchip/g) || []).length === blanks.length - 2,
+            'the bank did not shrink');
+      go('run', d.id, 'build');       /* back to a clean board for the run below */
+      /* a wrong drop marks the gap, keeps the answer back, and counts once */
+      s.buildPlace(d, '0', blanks[1].n);
+      s.buildPlace(d, '0', blanks[1].n);
+      check(`[${label}] ${d.id} a wrong drop is recorded once`,
+            $('session.missed.length') === 1 && $('session.score') === 0,
+            `${$('session.missed.length')} misses, score ${$('session.score')}`);
+      check(`[${label}] ${d.id} a wrong drop does not fill the gap`,
+            !$('session.placed[0]'), 'the gap took the wrong vessel');
+
+      /* and a clean finish from there scores everything but that one */
+      for (let i = 0; i < blanks.length; i++) s.buildPlace(d, String(i), blanks[i].n);
+      check(`[${label}] ${d.id} build completes and scores first tries only`,
+            $('session.score') === blanks.length - 1,
+            `scored ${$('session.score')} of ${blanks.length}`);
+      check(`[${label}] ${d.id} build records a percentage`,
+            (progressOf(d.id) || {}).buildBest === Math.round((blanks.length - 1) / blanks.length * 100),
+            `recorded ${(progressOf(d.id) || {}).buildBest}`);
+
+      /* ---- Fill in the Chart: typed, with the unit word optional ---- */
+      go('run', d.id, 'fill');
+      const boxes = (s.__app.innerHTML.match(/class="blank[^"]*" id="bl\d+"/g) || []).length;
+      check(`[${label}] ${d.id} fill shows one box per blank`, boxes === blanks.length,
+            `${boxes} boxes for ${blanks.length} blanks`);
+      check(`[${label}] ${d.id} fill hands out no names`,
+            !s.__app.innerHTML.includes('class="lchip'), 'the bank is showing in the typed drill');
+
+      /* the chart already says whether it is an artery or a vein */
+      const withUnit = blanks.find(n => /\s(arter(?:y|ies)|veins?)$/i.test(n.n));
+      if (withUnit) {
+        const i = blanks.indexOf(withUnit);
+        const short = withUnit.n.replace(/\s+(arter(?:y|ies)|veins?)$/i, '');
+        $(`session.typed[${i}] = ${JSON.stringify(short)}`);
+        s.fillCheck(i);
+        check(`[${label}] ${d.id} "${short}" answers "${withUnit.n}"`,
+              !!$(`session.solved[${i}]`), 'the unit word was treated as required');
+      }
+      const wrongAt = blanks.findIndex((n, i) => !$(`session.solved[${i}]`));
+      $(`session.typed[${wrongAt}] = 'not a vessel at all'`);
+      s.fillCheck(wrongAt);
+      check(`[${label}] ${d.id} a wrong answer marks the box and leaves it open`,
+            !!$(`session.wrong[${wrongAt}]`) && !$(`session.solved[${wrongAt}]`),
+            'a wrong answer was let through');
+
+      for (let i = 0; i < blanks.length; i++) {
+        if ($(`session.solved[${i}]`)) continue;
+        $(`session.typed[${i}] = ${JSON.stringify(blanks[i].n)}`);
+        s.fillCheck(i);
+      }
+      check(`[${label}] ${d.id} fill completes on typed names alone`,
+            (progressOf(d.id) || {}).fillBest === 100,
+            `recorded ${(progressOf(d.id) || {}).fillBest}`);
+
+      /* the drills sit in the order they should be done */
+      go('deck', d.id);
+      const order = ['The Whole Chart', 'Build the Chart', 'Fill in the Chart', 'Trace the Path']
+        .map(x => s.__app.innerHTML.indexOf(x));
+      check(`[${label}] ${d.id} chart, then drag, then type, then routes`,
+            order.every(x => x >= 0) && order.every((x, i) => i === 0 || x > order[i - 1]),
+            order.join(', '));
       go('deck', d.id);
       check(`[${label}] ${d.id} counts itself in vessels`,
             s.__app.innerHTML.includes(`${names.length} vessels`),
