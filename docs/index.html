@@ -17558,14 +17558,32 @@ function buildPlace(d, slot, name){
 /* The same pointer handling as the diagram labels: one path for mouse and
    touch, and a press that never moves is a tap, which is the fallback for
    anyone who cannot drag. */
+/* The gap NEAREST a point, never just the first one close to it. Chart rows
+   sit about 25px apart and a fingertip is wider than that, so a tolerance
+   generous enough to be forgiving reaches into the row above. Taking the
+   first match in document order then scored a drop in the middle of one gap
+   against the gap above it, which turned a correct answer into a recorded
+   mistake. Distance is zero anywhere inside a box, so an unambiguous drop
+   always wins. Returns an index, or -1 when nothing is within reach. */
+const DROP_REACH = 14;
+const nearestDrop = (x, y, boxes) => {
+  let best = -1, bestD = Infinity;
+  boxes.forEach((r, i) => {
+    const dx = x < r.left ? r.left - x : x > r.right ? x - r.right : 0;
+    const dy = y < r.top ? r.top - y : y > r.bottom ? y - r.bottom : 0;
+    const d = Math.hypot(dx, dy);
+    if (d < bestD){ bestD = d; best = i; }
+  });
+  return bestD <= DROP_REACH ? best : -1;
+};
 function wireChart(d){
   const bank = document.getElementById('lbank');
   if (!bank) return;
   const drops = [...document.querySelectorAll('.cdrop')];
-  const hit = (x, y) => drops.find(el => {
-    const r = el.getBoundingClientRect();
-    return x >= r.left - 12 && x <= r.right + 12 && y >= r.top - 10 && y <= r.bottom + 10;
-  });
+  const hit = (x, y) => {
+    const i = nearestDrop(x, y, drops.map(el => el.getBoundingClientRect()));
+    return i < 0 ? null : drops[i];
+  };
 
   bank.querySelectorAll('.lchip').forEach(chip => {
     chip.addEventListener('pointerdown', e => {

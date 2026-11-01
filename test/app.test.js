@@ -1751,6 +1751,44 @@ function suite(s, label, srcCss) {
     }
   }
 
+  /* ── which gap a drop lands on ─────────────────────────────────────────────
+     Chart rows sit ~25px apart and the old search took the FIRST gap within
+     10px of the point, so a drop in the middle of one gap registered on the
+     gap above it and a correct answer was recorded as a mistake. The stubbed
+     DOM here has no layout, which is why this logic lives outside wireChart as
+     a pure function: these are real boxes, made up. */
+  {
+    const nearest = vm.runInContext('nearestDrop', s);
+    const reach = vm.runInContext('DROP_REACH', s);
+    check(`[${label}] the drop search is reachable`, typeof nearest === 'function');
+    /* three rows, 25px apart, the way the chart actually draws them */
+    const rows = [
+      { left: 343, right: 446, top: 220, bottom: 245 },
+      { left: 398, right: 542, top: 245, bottom: 269 },
+      { left: 398, right: 536, top: 269, bottom: 294 },
+    ];
+    const cases = [
+      ['the middle of the third row', 440, 281, 2],
+      ['the middle of the second row', 440, 257, 1],
+      ['the middle of the first row', 400, 232, 0],
+      /* a point inside one row is never claimed by its neighbour, which is the
+         exact failure this replaces */
+      ['just inside the top of the third row', 440, 271, 2],
+      ['just inside the bottom of the second row', 440, 267, 1],
+      /* near misses are still forgiving */
+      ['a few pixels left of the first row', 337, 232, 0],
+      ['a few pixels under the third row', 440, 300, 2],
+      /* and a point nowhere near anything is not a drop */
+      ['far below everything', 440, 420, -1],
+      ['far to the right', 900, 232, -1],
+    ];
+    for (const [what, x, y, want] of cases)
+      check(`[${label}] a drop at ${what} lands on ${want < 0 ? 'nothing' : 'row ' + want}`,
+            nearest(x, y, rows) === want, `got ${nearest(x, y, rows)}`);
+    check(`[${label}] the drop reach is smaller than a chart row`, reach < 25,
+          `reach is ${reach}px against ~25px rows, so neighbours overlap again`);
+  }
+
   /* The accent on a mode box says which one to do first, so a page with three
      of them says nothing. The flow decks shipped with three once, because each
      mode was added in its own pass and each one claimed to lead.
