@@ -1000,6 +1000,12 @@
   .chart .got{color:var(--text);text-decoration:underline;
     text-decoration-color:var(--good);text-decoration-thickness:1px;
     text-underline-offset:3px;text-decoration-skip-ink:none}
+  /* On the finished chart, the ones that took a second try. Marked where
+     they actually are, which is the thing a list of them afterwards cannot
+     do. */
+  .chart .miss{text-decoration:underline;text-decoration-color:var(--bad);
+    text-decoration-thickness:1px;text-underline-offset:3px;
+    text-decoration-skip-ink:none}
   /* The trunk: the vessels that run down the left margin of the chart, one
      becoming the next. They keep the accent whether or not they are answered,
      because that is what they are, and they carry no underline — the accent
@@ -2568,8 +2574,7 @@ function runBuild(d){
   if (done === s.total){
     record(d.id, { buildBest: Math.max((load()[d.id] || {}).buildBest || 0,
                                        Math.round(s.score / s.total * 100)) });
-    return results(d, `${s.score}/${s.total}`,
-                   `placed on the first try · ${s.missed.length} missed`, s.missed, 'build');
+    return buildDone(d, s);
   }
 
   const left = s.bank.filter(name => !blanks.some((n, k) => s.placed[k] && n.n === name));
@@ -2589,6 +2594,35 @@ function runBuild(d){
       </div>
     </div>`;
   wireChart(d);
+  keyHandler = null;
+}
+/* The finished chart, not a list of mistakes. "You put the left coronary
+   where the right coronary goes" cannot be acted on once the chart is gone:
+   by the time you read it you no longer know WHERE in the chart that was,
+   which is the only thing that would have made it worth knowing. The chart
+   itself says where. So it comes back whole, reading exactly as it does in
+   The Whole Chart, with the vessels that took a second try underlined in
+   place. */
+function buildDone(d, s){
+  let i = 0;
+  const paint = n => (flowMajor(n) ? `<b>${esc(n.n)}</b>` : esc(n.n));
+  const rows = chartLines(d, n =>
+    !flowKey(n) ? paint(n)
+      : s.tried[i++] ? `<span class="miss">${paint(n)}</span>` : paint(n));
+  const retries = s.total - s.score;
+  app.innerHTML = `
+    <button class="back" onclick="go('deck','${d.id}')">← Back</button>
+    <div class="score">
+      <div class="big">${s.score}/${s.total}</div>
+      <div class="lbl">placed on the first try</div>
+      <div class="row">
+        <button onclick="go('run','${d.id}','build')">Run it again</button>
+        <button onclick="go('deck','${d.id}')">Other modes</button>
+        <button onclick="go('home')">All decks</button>
+      </div>
+    </div>
+    ${retries ? '<div class="decknote">Underlined in red: took more than one try.</div>' : ''}
+    <pre class="chart">${rows}</pre>`;
   keyHandler = null;
 }
 function buildPlace(d, slot, name){

@@ -1618,6 +1618,24 @@ function suite(s, label, srcCss) {
             (progressOf(d.id) || {}).buildBest === Math.round((blanks.length - 1) / blanks.length * 100),
             `recorded ${(progressOf(d.id) || {}).buildBest}`);
 
+      /* It ends on the chart it just built, not on a list of mistakes. "You
+         put the left coronary where the right coronary goes" cannot be acted
+         on once the chart is gone, because it never says WHERE in the chart
+         that was. The chart does, so the retries are marked in place. */
+      const endScreen = s.__app.innerHTML;
+      check(`[${label}] ${d.id} build ends on the finished chart`,
+            endScreen.includes('<pre class="chart">')
+            && endScreen.includes(esc(blanks[0].n))
+            && !/Worth another look/.test(endScreen),
+            'the build drill ends on a list of mistakes instead of the chart');
+      check(`[${label}] ${d.id} and marks a second try where it happened`,
+            endScreen.includes('class="miss"'),
+            'nothing on the finished chart says which one took two goes');
+      const missRule = (/\.chart \.miss\{([^}]*)\}/.exec(srcCss) || [])[1] || '';
+      check(`[${label}] a second try is marked in the wrong-answer colour`,
+            /text-decoration-color:\s*var\(--bad\)/.test(missRule),
+            `.chart .miss reads: ${missRule.replace(/\s+/g, ' ').slice(0, 90)}`);
+
       /* ---- Fill in the Chart: typed, with the unit word optional ---- */
       go('run', d.id, 'fill');
       const boxes = (s.__app.innerHTML.match(/class="blank[^"]*" id="bl\d+"/g) || []).length;
