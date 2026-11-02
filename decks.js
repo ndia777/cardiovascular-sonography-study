@@ -13158,24 +13158,24 @@ window.DECKS = [
           ] },
           { n: 'Left common carotid artery', d: 'the second branch of the arch, dividing at the upper border of the larynx', to: [
             { n: 'External carotid artery', t: 'face, scalp, neck', d: 'the face, scalp and neck', to: [
-              { n: 'Superior thyroid artery', t: 'hyoid, larynx, thyroid', d: 'the hyoid, larynx and thyroid gland' },
-              { n: 'Lingual artery', t: 'tongue, sublingual glands', d: 'the tongue and the sublingual salivary glands' },
-              { n: 'Facial artery', t: 'pharynx, palate, lips, nose', d: 'the pharynx, palate, chin, lips and nose' },
-              { n: 'Occipital artery', t: 'back of the scalp, meninges', d: 'the back of the scalp, the meninges and the neck muscles' },
-              { n: 'Posterior auricular artery', t: 'ear, scalp above it', d: 'the ear and the scalp above it' },
-              { n: 'Maxillary artery', t: 'teeth, gums, jaws, nasal cavity', d: 'one of the two terminal branches, supplying the teeth, gums, jaws and nasal cavity' },
-              { n: 'Superficial temporal artery', t: 'parotid, face and scalp surface', d: 'the other terminal branch, supplying the parotid gland and the surface of the face and scalp' }
+              { n: 'Superior thyroid artery', ask: true, t: 'hyoid, larynx, thyroid', d: 'the hyoid, larynx and thyroid gland' },
+              { n: 'Lingual artery', ask: true, t: 'tongue, sublingual glands', d: 'the tongue and the sublingual salivary glands' },
+              { n: 'Facial artery', ask: true, t: 'pharynx, palate, lips, nose', d: 'the pharynx, palate, chin, lips and nose' },
+              { n: 'Occipital artery', ask: true, t: 'back of the scalp, meninges', d: 'the back of the scalp, the meninges and the neck muscles' },
+              { n: 'Posterior auricular artery', ask: true, t: 'ear, scalp above it', d: 'the ear and the scalp above it' },
+              { n: 'Maxillary artery', ask: true, t: 'teeth, gums, jaws, nasal cavity', d: 'one of the two terminal branches, supplying the teeth, gums, jaws and nasal cavity' },
+              { n: 'Superficial temporal artery', ask: true, t: 'parotid, face and scalp surface', d: 'the other terminal branch, supplying the parotid gland and the surface of the face and scalp' }
             ] },
             { n: 'Internal carotid artery', t: 'brain', d: 'the major blood supply to the brain', to: [
-              { n: 'Ophthalmic artery', t: 'eyeball, orbit', d: 'the eyeball and the rest of the orbit' },
-              { n: 'Anterior cerebral artery', t: 'medial surface of the brain', d: 'a terminal branch, supplying the medial surface of the brain' },
-              { n: 'Middle cerebral artery', t: 'lateral surface of the brain', d: 'a terminal branch, supplying the lateral surface, including the motor and sensory areas for the face and upper limb' }
+              { n: 'Ophthalmic artery', ask: true, t: 'eyeball, orbit', d: 'the eyeball and the rest of the orbit' },
+              { n: 'Anterior cerebral artery', ask: true, t: 'medial surface of the brain', d: 'a terminal branch, supplying the medial surface of the brain' },
+              { n: 'Middle cerebral artery', ask: true, t: 'lateral surface of the brain', d: 'a terminal branch, supplying the lateral surface, including the motor and sensory areas for the face and upper limb' }
             ] }
           ] },
           { n: 'Left subclavian artery', d: 'the third branch of the arch', to: [
             { n: 'Vertebral artery', d: 'ascends through the transverse foramina of the cervical vertebrae and enters the skull at the foramen magnum', to: [
               { n: 'Basilar artery', t: 'pons, midbrain, cerebellum', d: 'formed where the two vertebral arteries unite, supplying the pons, midbrain and cerebellum', to: [
-                { n: 'Posterior cerebral artery', t: 'occipital and temporal lobes', d: 'one of the two terminal branches, supplying the occipital and temporal lobes' }
+                { n: 'Posterior cerebral artery', ask: true, t: 'occipital and temporal lobes', d: 'one of the two terminal branches, supplying the occipital and temporal lobes' }
               ] }
             ] },
             { n: 'Thyrocervical artery', t: 'thyroid, larynx, trachea, neck', d: 'the thyroid, parathyroids, larynx, trachea and the muscles of the neck, shoulder and back' },
@@ -13264,9 +13264,9 @@ window.DECKS = [
         ] },
         { n: 'Brachiocephalic vein', d: 'formed where an internal jugular and a subclavian vein join, one on each side', to: [
           { n: 'Internal thoracic vein', t: 'thoracic wall', d: 'the thoracic wall behind the costal cartilages' },
-          { n: 'Internal jugular vein', t: 'brain, deep face and neck', d: 'the larger of the two jugulars, collecting from the venous sinuses of the brain and the deep face and neck' },
+          { n: 'Internal jugular vein', ask: true, t: 'brain, deep face and neck', d: 'the larger of the two jugulars, collecting from the venous sinuses of the brain and the deep face and neck' },
           { n: 'Subclavian vein', d: 'the continuation of the axillary vein beyond the axilla', to: [
-            { n: 'External jugular vein', t: 'face, scalp, superficial neck', d: 'the face, scalp and superficial neck, descending over the sternocleidomastoid' },
+            { n: 'External jugular vein', ask: true, t: 'face, scalp, superficial neck', d: 'the face, scalp and superficial neck, descending over the sternocleidomastoid' },
             { n: 'Axillary vein', d: 'formed where the basilic and brachial veins join, and also receiving the cephalic', to: [
               { n: 'Cephalic vein', t: 'superficial, radial side of the limb', d: 'the superficial vein of the radial side, running up the lateral limb from hand to shoulder before it pierces the tissues' },
               { n: 'Brachial veins', t: 'deep veins of the arm', d: 'the paired deep veins of the arm', to: [

@@ -1317,6 +1317,23 @@ function suite(s, label, srcCss) {
       }
       check(`[${label}] ${d.id} every territory fits on its line`, !badTer, badTer);
 
+      /* ── what the accent colour means ────────────────────────────────────
+         One thing, in every mode: a vessel the chart branches off from. It
+         used to mark the spine instead, which told you which vessel runs down
+         the middle of the page rather than which ones are the turns, and it
+         left the venous chart — which has no spine — with no landmarks at all. */
+      const majorOf = vm.runInContext('flowMajor', s);
+      const lit = [...chartOf(d).matchAll(/<b>([^<]*)<\/b>/g)].map(m => m[1]).sort();
+      const wantLit = [d.flow.start].concat(nodesOf(d).filter(majorOf).map(n => n.n))
+        .map(esc).sort();
+      check(`[${label}] ${d.id} the accent marks every vessel branched off from`,
+            JSON.stringify(lit) === JSON.stringify(wantLit),
+            `${lit.length} marked, ${wantLit.length} branch points`);
+      check(`[${label}] ${d.id} and marks no twig`,
+            nodesOf(d).filter(n => !(n.to || []).length)
+              .every(n => !lit.includes(esc(n.n))),
+            'a vessel nothing comes off is coloured like a landmark');
+
       /* Browse opens on the chart, and the annotated tree is still reachable */
       go('run', d.id, 'browse');
       check(`[${label}] ${d.id} browse opens on the chart`,
@@ -1356,6 +1373,19 @@ function suite(s, label, srcCss) {
       check(`[${label}] ${d.id} the right and left pairs are blanks`,
             nodesOf(d).filter(n => /^(right|left)\b/i.test(n.n)).every(n => blanks.includes(n)),
             'a sided vessel was left printed');
+      check(`[${label}] ${d.id} every twig marked ask is a blank`,
+            nodesOf(d).filter(n => n.ask).every(n => blanks.includes(n)),
+            'a twig the deck asks for was left printed');
+
+      /* The carotids and the jugulars have to lead somewhere. Their branches
+         are twigs, so the drills printed them and asked only which vessel the
+         aorta turns into next — never which one feeds the tongue or the orbit,
+         which is half of what a head and neck chart is for. */
+      const headVessels = nodesOf(d).filter(n => /carotid|jugular/i.test(n.n));
+      const headAndBranches = headVessels.concat(...headVessels.map(n => n.to || []));
+      check(`[${label}] ${d.id} the head and neck vessels are all blanks`,
+            headAndBranches.length >= 2 && headAndBranches.every(n => blanks.includes(n)),
+            headAndBranches.filter(n => !blanks.includes(n)).map(n => n.n).join(', '));
 
       /* two blanks that take the same typed answer would make one unanswerable */
       const bySeen = new Map(); let keyClash = '';
@@ -1416,6 +1446,17 @@ function suite(s, label, srcCss) {
       check(`[${label}] and cannot scroll sideways`,
             /overflow-x:s*hidden/.test(sideRule),
             'overflow-y alone makes overflow-x compute to auto');
+
+      /* Two colours, two meanings: the accent for a landmark the chart printed,
+         the right-answer colour for a vessel you put there yourself. A couple
+         of themes run the two close in hue, so the answered one also carries a
+         wash behind it and does not rest on hue alone. */
+      const gotRule = (/\.chart \.got\{([^}]*)\}/.exec(srcCss) || [])[1] || '';
+      check(`[${label}] an answered vessel is not coloured like a landmark`,
+            /color:var\(--good\)/.test(gotRule) && !/var\(--accent\)/.test(gotRule),
+            `.chart .got reads: ${gotRule.replace(/\s+/g, ' ').slice(0, 110)}`);
+      check(`[${label}] and does not rest on hue alone`,
+            /background:/.test(gotRule), 'colour is the only thing marking an answer');
 
       /* and a gap can be chosen first, which is what makes the drag optional */
       check(`[${label}] ${d.id} nothing is lit before a gap is chosen`,
@@ -1481,6 +1522,13 @@ function suite(s, label, srcCss) {
       check(`[${label}] ${d.id} a name fills the chosen gap and clears it`,
             !!$('session.placed[4]') && $('session.aimed') === null,
             `placed ${!!$('session.placed[4]')}, aim ${$('session.aimed')}`);
+      /* A gap you filled has to read as yours. Wearing the chart's own accent,
+         a placed vessel was indistinguishable from one the chart printed for
+         you, so you could not see what you had answered. */
+      check(`[${label}] ${d.id} a placed name reads as yours, not as the chart's`,
+            s.__app.innerHTML.includes(`<span class="got">${esc(blanks[4].n)}</span>`)
+            && !s.__app.innerHTML.includes(`<b>${esc(blanks[4].n)}</b>`),
+            'a placed vessel takes the colour of a printed landmark');
       /* and the name-in-hand order still works */
       $(`session.picked = ${JSON.stringify(blanks[5].n)}`);
       s.buildPlace(d, '5', blanks[5].n);
@@ -1526,6 +1574,9 @@ function suite(s, label, srcCss) {
         s.fillCheck(i);
         check(`[${label}] ${d.id} "${short}" answers "${withUnit.n}"`,
               !!$(`session.solved[${i}]`), 'the unit word was treated as required');
+        check(`[${label}] ${d.id} a filled blank reads as yours too`,
+              s.__app.innerHTML.includes(`<span class="got">${esc(withUnit.n)}</span>`),
+              'a typed answer takes the colour of a printed landmark');
       }
       const wrongAt = blanks.findIndex((n, i) => !$(`session.solved[${i}]`));
       $(`session.typed[${wrongAt}] = 'not a vessel at all'`);
