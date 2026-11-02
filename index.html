@@ -2423,6 +2423,14 @@ const traceSvg = r => `<svg viewBox="0 0 400 90" class="ecg cardtrace" role="img
 
 const ASK_CATEGORY = /\s(waves?|complex|intervals?|segments?|nodes?|valves?|axis)$/i;
 const askFor = card => {
+  /* A card can refuse the tail. The prompt promises that the answer is one of
+     the named members of the set, which holds while the word in front of the
+     tail says WHICH member: tricuspid, mitral, PR, QRS. In "Incompetent
+     valve" that word describes the state a valve is in, so the term names a
+     condition any of the four can have, and "Which valve" sends the reader
+     hunting the four names for an answer that is not among them. Nothing in
+     the string tells the two apart, so the card says it. */
+  if (card.category === false) return askPart(card);
   const m = ASK_CATEGORY.exec(card.term);
   return m ? m[1].toLowerCase() : askPart(card);
 };
@@ -3030,6 +3038,23 @@ function valueDecoys(def, n){
   return null;
 }
 
+/* What KIND of thing a term is, judged from its shape, which is the part a
+   reader can see without knowing the answer. Distractors have to be the same
+   kind as the right one or the question hands itself over: offered
+   "pericardi/o", "What the cardiovascular system does" and "What the two
+   sides of the heart do" against "ather/o", nobody needs to know what fatty
+   matter means to pick the only combining form on the list. */
+const termKind = term => {
+  const t = String(term).trim();
+  /* one card may list two spellings: "arteri/o, arter/o", "ECG, EKG" */
+  const head = t.split(',')[0].trim();
+  const part = partKind(head);
+  if (part) return part;
+  if (/^[A-Z][A-Z0-9]{1,7}$/.test(head)) return 'abbreviation';
+  const cat = ASK_CATEGORY.exec(t);
+  if (cat) return cat[1].toLowerCase().replace(/s$/, '');
+  return 'term';
+};
 function autoQuestions(d){
   const out = [];
   d.cards.forEach(card => {
@@ -3042,9 +3067,15 @@ function autoQuestions(d){
        hands the question away. Match on shape and the siblings win, because
        the other routes' sites are then the only things left to choose from. */
     const shape = valueAnswer(card.def);
-    const pool = d.cards.filter(c => c !== card && !conflicts(c.def, card.def)
-                                  && valueAnswer(c.def) === shape);
-    if (pool.length < 3) return;
+    /* everything that does not clash with the answer, which is what decides
+       whether the reverse question has exactly one right answer */
+    const clean = d.cards.filter(c => c !== card && !conflicts(c.def, card.def)
+                                   && valueAnswer(c.def) === shape);
+    /* and, out of those, the ones of the same kind, which are the only
+       honest wrong answers */
+    const kind = termKind(card.term);
+    const kin = clean.filter(c => termKind(c.term) === kind);
+    if (kin.length < 3) return;
 
     /* Each question carries its source card so the quiz can avoid asking the
        same card twice — see runQuiz. */
@@ -3052,7 +3083,7 @@ function autoQuestions(d){
        gives nothing away. Anything else keeps drawing from the deck, where the
        other cards are the best wrong answers there are. */
     const made = valueAnswer(card.def) ? valueDecoys(card.def, 3) : null;
-    const fwd = made || distractors(pool, 3, c => c.def, [card.def], card.def);
+    const fwd = made || distractors(kin, 3, c => c.def, [card.def], card.def);
     if (fwd){
       const ch = shuffle([card.def, ...(made ? made : fwd.map(c => c.def))]);
       /* "What does Parts of ATP mean?" reads badly — a fact card is a topic, so
@@ -3066,11 +3097,15 @@ function autoQuestions(d){
     /* Reverse direction only when no other card shares this meaning, otherwise
        "which term means X" would have more than one right answer. A fact card
        has no term to name, so it never gets a reverse question. */
-    if (!card.fact && pool.length === d.cards.length - 1){
+    /* A fact card has a topic where a term would be, and a topic is not an
+       answer to "which term means this" — not for the card being asked, and
+       not as a wrong answer either. */
+    const revKin = kin.filter(c => !c.fact);
+    if (!card.fact && clean.length === d.cards.length - 1 && revKin.length >= 3){
       /* Ranked on definitions even though the choices are terms: two terms are
          related when what they MEAN is related, which their names often do not
          show ("Tricuspid valve" and "Mitral valve" share no words at all). */
-      const rev = distractors(pool, 3, c => c.term, [card.term], card.def);
+      const rev = distractors(revKin, 3, c => c.term, [card.term], card.def);
       if (rev){
         const ch = shuffle([card.term, ...rev.map(c => c.term)]);
         out.push({ card, q:`Which term means: <em>${esc(card.def)}</em>`, choices: ch,

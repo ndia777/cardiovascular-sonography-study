@@ -1896,6 +1896,25 @@ function suite(s, label, srcCss) {
     }
     check(`[${label}] Recall names the category when the term declares one`, !bad, bad);
 
+    /* And a card can refuse it. The prompt promises the answer is one of the
+       named members of the set, which holds while the word in front of the
+       tail says which member. In "Incompetent valve" that word describes the
+       state a valve is in, so the term names a condition any of the four can
+       have and the prompt sends the reader hunting for an answer that is not
+       among them. */
+    let stillAsked = '';
+    for (const deck of DECKS)
+      for (const card of deck.cards || []) {
+        if (card.category !== false) continue;
+        go('run', deck.id, 'recall');
+        vm.runInContext(`session.queue.unshift(DECKS.find(d=>d.id===${JSON.stringify(deck.id)})` +
+          `.cards.find(c=>c.term===${JSON.stringify(card.term)})); render();`, s);
+        if (/<span class="asks">/.test(s.__app.innerHTML) && !stillAsked)
+          stillAsked = `"${card.term}" still names a category`;
+      }
+    check(`[${label}] and a card that refuses a category is not given one`,
+          !stillAsked, stillAsked);
+
     /* and stays quiet when it does not — a lead-in on every card would be noise */
     const plain = DECKS.find(x => x.id === 'ekg-basics').cards.find(c => c.term === 'Diastole');
     if (plain) {
@@ -2210,6 +2229,34 @@ function suite(s, label, srcCss) {
           chosenN > 100 && chosen > baseline * 1.5,
           `chosen ${chosen.toFixed(3)} vs deck average ${baseline.toFixed(3)} over ${chosenN} choices`);
     check(`[${label}] no distractor is close enough to be arguable`, !tooClose, tooClose);
+  }
+
+  /* Similarity of MEANING is not enough on its own. A combining form and a
+     fact card's topic sentence can both score near zero against the answer and
+     be ranked alike, which is how "ather/o" came to be offered against "What
+     the cardiovascular system does": nobody needs to know what fatty matter
+     means to pick the only combining form on the list. So the four choices
+     have to be the same KIND of thing — the part of an answer a reader can see
+     without knowing it. */
+  {
+    const termKind = vm.runInContext('termKind', s);
+    let mixed = '', topic = '';
+    for (const d of DECKS) {
+      if (!(d.cards || []).length) continue;
+      const topics = new Set(d.cards.filter(c => c.fact).map(c => c.term));
+      for (const q of autoQuestions(d)) {
+        if (!/^Which term means/.test(q.q)) continue;
+        if (new Set(q.choices.map(termKind)).size > 1 && !mixed)
+          mixed = `${d.id}: ${q.choices.join(' / ')}`;
+        const t = q.choices.find(c => topics.has(c));
+        if (t && !topic) topic = `${d.id}: "${t}" offered as a term`;
+      }
+    }
+    check(`[${label}] every choice is the same kind of thing as the answer`,
+          !mixed, mixed);
+    /* A fact card's term is a topic, not a term. It is already barred from
+       being ASKED in this direction; it must not be a wrong answer either. */
+    check(`[${label}] and no topic is offered as a term`, !topic, topic);
   }
 
   /* Score colour. The design promise is that a badge never looks worse for a
