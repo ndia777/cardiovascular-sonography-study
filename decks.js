@@ -15860,7 +15860,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Study Guide',
+  title: 'Ch. 11 — Cardiovascular: Study Guide Slides',
   source: 'Chapter 11 — course notes',
   note: "This deck only covers the terms named on the chapter PowerPoint posted on Canvas. Be sure to review the other sections for the whole scope of the material.",
   cards: [

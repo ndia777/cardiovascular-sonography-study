@@ -315,10 +315,23 @@
      but not which chapter you were in. Sized to be read, and stuck to the top
      of the scrolling list so the chapter stays named while you move through it. */
   /* Quiet: it labels the list rather than competing with the chapter
-     headings under it, which are the thing being chosen between. */
-  .drawer .dterm{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
-    color:var(--dim);font-weight:600;margin:14px 0 -10px;
+     headings under it, which are the thing being chosen between.
+
+     It has to be sticky, and stick ABOVE them. A chapter heading is opaque,
+     sticky and parks at the top of the scroller, so a term label that merely
+     sat above the first one was painted over the moment anything scrolled —
+     and a negative bottom margin had the first heading covering it even at
+     rest. The headings now park below this instead, which is also the right
+     reading order: the term holds the chapters, so it stays on screen while
+     they come and go. */
+  .drawer .dterm{position:sticky;top:0;z-index:2;background:var(--bg2);
+    font-size:11.5px;line-height:1.2;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--dim);font-weight:600;padding:12px 0 7px;
     font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  /* Only in a course's drawer, which is the one that has a term label. A
+     finished term's drawer names the term in its own title and has none, so
+     its headings keep the top of the scroller to themselves. */
+  .drawer .dbody > .dgroup .dchap{top:33px}
   .dchap{font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text);
     margin:20px 0 8px;padding:7px 8px 7px 11px;font-weight:700;
     border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 var(--accent);

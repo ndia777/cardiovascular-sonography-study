@@ -434,6 +434,20 @@ function suite(s, label, srcCss) {
     check(`[${label}] a course drawer files its chapters under their term`,
           !wrongTerm, wrongTerm);
 
+    /* And the label survives a scroll. Chapter headings are opaque, sticky and
+       park at the top of the scroller, so a term label above them is painted
+       over unless it sticks higher and they park below it. It shipped covered
+       once, by the first heading, at rest. */
+    const termRule = (/\.drawer \.dterm\{([^}]*)\}/.exec(srcCss) || [])[1] || '';
+    const chapTop = (/\.drawer \.dbody > \.dgroup \.dchap\{top:(\d+)px\}/.exec(srcCss) || [])[1];
+    check(`[${label}] the drawer term label sticks above the chapter headings`,
+          /position:sticky/.test(termRule) && /z-index:2/.test(termRule)
+          && /background:/.test(termRule) && Number(chapTop) > 0,
+          `.drawer .dterm reads: ${termRule.replace(/\s+/g, ' ').slice(0, 110)}`);
+    check(`[${label}] and nothing pulls a heading back over it`,
+          !/margin:[^;]*-\d/.test(termRule),
+          'a negative margin drags the next heading up across the label');
+
     /* And the archive holds only what is finished. A current deck filed there
        would be a chapter put away while it is still being studied. */
     const early = [];
