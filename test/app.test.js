@@ -1502,6 +1502,12 @@ function suite(s, label, srcCss) {
       check(`[${label}] a vessel on the trunk keeps the accent once answered`,
             /color:\s*var\(--accent\)/.test(spineRule),
             `.chart .got.spine reads: ${spineRule.replace(/\s+/g, ' ').slice(0, 90)}`);
+      /* and carries no underline. The accent already says what a trunk vessel
+         is, and a rule under every row of the left margin reads as a second
+         set of guide lines rather than as an answer. */
+      check(`[${label}] and the underline is for the branches only`,
+            /text-decoration:\s*none/.test(spineRule),
+            'the trunk is underlined as well as accented');
 
       /* and a gap can be chosen first, which is what makes the drag optional */
       check(`[${label}] ${d.id} nothing is lit before a gap is chosen`,

@@ -998,12 +998,14 @@
      green read as a third kind of vessel instead of as a filled gap. */
   .chart b{font-weight:700;color:var(--accent)}
   .chart .got{color:var(--text);text-decoration:underline;
-    text-decoration-color:var(--good);text-decoration-thickness:2px;
+    text-decoration-color:var(--good);text-decoration-thickness:1px;
     text-underline-offset:3px;text-decoration-skip-ink:none}
   /* The trunk: the vessels that run down the left margin of the chart, one
      becoming the next. They keep the accent whether or not they are answered,
-     because that is what they are. */
-  .chart .got.spine{color:var(--accent);font-weight:700}
+     because that is what they are, and they carry no underline — the accent
+     already says all there is to say about them, and a rule under every row
+     of the left margin reads as a second set of guide lines. */
+  .chart .got.spine{color:var(--accent);font-weight:700;text-decoration:none}
   .chart .cdrop{display:inline-block;padding:0 6px;border:1px dashed var(--dim);
     border-radius:5px;background:var(--card2);color:var(--dim);cursor:pointer;
     vertical-align:baseline}
