@@ -2553,6 +2553,9 @@ function runBuild(d){
   const blanks = flowBlanks(d);
   if (!session) session = { placed: {}, wrongAt: {}, tried: {}, missed: [], score: 0,
                             total: blanks.length, picked: null, aimed: null,
+                            /* how far down the bank was scrolled, carried
+                               across the rebuild every placement causes */
+                            bankTop: 0,
                             /* Alphabetical, not shuffled: a bank of 27 names
                                in no order is a search every time. Chart order
                                is the only order that would hand over the
@@ -2633,6 +2636,13 @@ const nearestDrop = (x, y, boxes) => {
 function wireChart(d){
   const bank = document.getElementById('lbank');
   if (!bank) return;
+  /* Answering rebuilds the whole page, so this is a brand new element that
+     opens at the top. Put the reader back where they were: with forty-odd
+     names in the list, scrolling back down after every single answer is the
+     length of the list over again, spread across the drill. */
+  if (session.bankTop) bank.scrollTop = session.bankTop;
+  bank.addEventListener('scroll', () => { session.bankTop = bank.scrollTop; },
+                        { passive: true });
   const drops = [...document.querySelectorAll('.cdrop')];
   const hit = (x, y) => {
     const i = nearestDrop(x, y, drops.map(el => el.getBoundingClientRect()));

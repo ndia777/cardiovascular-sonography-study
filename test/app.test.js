@@ -1556,6 +1556,13 @@ function suite(s, label, srcCss) {
       check(`[${label}] the click trailing a drag is ignored`,
             /dragEndedAt/.test(wire),
             'a completed drag would place again on its trailing click');
+      /* Answering rebuilds the page, so the bank is a new element every time
+         and opens at the top. It shipped that way: with forty-odd names, the
+         reader scrolled back down to where they were after every answer. */
+      check(`[${label}] the bank keeps its place across a placement`,
+            /bank\.scrollTop = session\.bankTop/.test(wire)
+            && /addEventListener\('scroll'/.test(wire),
+            'the bank scrolls back to the top on every answer');
 
       /* a name in hand must not light all 27 gaps: it says nothing about where
          that one goes, and on a phone it reads as the chart having answered */
