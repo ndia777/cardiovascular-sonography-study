@@ -314,6 +314,11 @@
      a long list of retired decks hard to place — you could see the deck names
      but not which chapter you were in. Sized to be read, and stuck to the top
      of the scrolling list so the chapter stays named while you move through it. */
+  /* Quiet: it labels the list rather than competing with the chapter
+     headings under it, which are the thing being chosen between. */
+  .drawer .dterm{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--dim);font-weight:600;margin:14px 0 -10px;
+    font-family:"Red Hat Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .dchap{font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text);
     margin:20px 0 8px;padding:7px 8px 7px 11px;font-weight:700;
     border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 var(--accent);
@@ -1750,12 +1755,18 @@ function archiveHtml(a){
       + courseBody(decks, true) + `</div></section>`;
   };
 
+  /* A live course's drawer says which term its retired chapters belong to. A
+     finished term already announces itself in the drawer's own title, but a
+     chapter put away inside a running course had nothing saying when: once
+     the term turns over, a chapter retired this term and one retired two
+     terms ago read exactly alike. */
+  const courseTerm = termOf(scope[0] || {});
   const body = forTerm
     /* Classes first, chapters under each: the extra level is what stops a
        term's worth of chapters reading as one undifferentiated list. */
     ? [...new Set(scope.map(d => d.course))].sort().map(c =>
         courseBlock(c, scope.filter(d => d.course === c))).join('')
-    : courseBody(scope, false);
+    : `<div class="dterm">Term ${courseTerm}</div>` + courseBody(scope, false);
 
   return `<div class="scrim" onclick="closeArchive()"></div>
     <aside class="drawer" role="dialog" aria-modal="true" aria-label="${

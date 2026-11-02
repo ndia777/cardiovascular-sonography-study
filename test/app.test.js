@@ -168,6 +168,8 @@ function suite(s, label, srcCss) {
      inside it rather than being the button's whole text. */
   const archiveChaps = c => [...archiveOf(c).matchAll(/class="dchapname">([^<]*)</g)]
     .map(m => m[1].trim().replace(/&amp;/g, '&'));
+  /* The term a course's drawer claims its retired chapters belong to. */
+  const archiveTerm = c => Number((/class="dterm">Term (\d+)</.exec(archiveOf(c)) || [])[1]);
 
   /* Course sections must RENDER alphabetically by subject name. Read the order
      out of the markup the app actually produced — comparing a sorted list to
@@ -416,6 +418,21 @@ function suite(s, label, srcCss) {
     const lost = DECKS.filter(d => !shown.has(d.id)).map(d => d.id);
     check(`[${label}] every deck is reachable from the page or its archive`,
           !lost.length, lost.join(', '));
+
+    /* A finished TERM announces itself in the drawer's own title. A chapter
+       put away inside a course that is still running had nothing saying when,
+       so once the term turned over a chapter retired this term and one
+       retired two terms ago read exactly alike. Every course drawer names its
+       term, and names its own. */
+    let wrongTerm = '';
+    for (const c of new Set(DECKS.map(d => d.course))) {
+      const want = Number(DECKS.find(d => d.course === c).termNo) || 1;
+      const got = archiveTerm(c);
+      if (got !== want && !wrongTerm)
+        wrongTerm = `${c} is term ${want} and its drawer says ${got || 'nothing'}`;
+    }
+    check(`[${label}] a course drawer files its chapters under their term`,
+          !wrongTerm, wrongTerm);
 
     /* And the archive holds only what is finished. A current deck filed there
        would be a chapter put away while it is still being studied. */
