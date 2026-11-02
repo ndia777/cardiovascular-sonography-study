@@ -1486,16 +1486,22 @@ function suite(s, label, srcCss) {
             /justify-content:\s*flex-start/.test(sideRule),
             'centred overflow puts the top of the list out of reach of scrollTop 0');
 
-      /* Two colours, two meanings: the accent for a landmark the chart printed,
-         the right-answer colour for a vessel you put there yourself. A couple
-         of themes run the two close in hue, so the answered one also carries a
-         wash behind it and does not rest on hue alone. */
+      /* Two facts about one word, carried by two different things: the colour
+         says where the vessel sits in the chart, the underline says you put it
+         there. Colouring an answer green made it read as a third kind of
+         vessel rather than as a filled gap. */
       const gotRule = (/\.chart \.got\{([^}]*)\}/.exec(srcCss) || [])[1] || '';
-      check(`[${label}] an answered vessel is not coloured like a landmark`,
-            /color:var\(--good\)/.test(gotRule) && !/var\(--accent\)/.test(gotRule),
+      const spineRule = (/\.chart \.got\.spine\{([^}]*)\}/.exec(srcCss) || [])[1] || '';
+      check(`[${label}] an answered vessel is marked by an underline, not a colour`,
+            /text-decoration-color:\s*var\(--good\)/.test(gotRule)
+            && /color:\s*var\(--text\)/.test(gotRule),
             `.chart .got reads: ${gotRule.replace(/\s+/g, ' ').slice(0, 110)}`);
-      check(`[${label}] and does not rest on hue alone`,
-            /background:/.test(gotRule), 'colour is the only thing marking an answer');
+      check(`[${label}] and does not take the colour that means a landmark`,
+            !/var\(--accent\)/.test(gotRule),
+            'an answered vessel wears the accent, which says where a vessel sits');
+      check(`[${label}] a vessel on the trunk keeps the accent once answered`,
+            /color:\s*var\(--accent\)/.test(spineRule),
+            `.chart .got.spine reads: ${spineRule.replace(/\s+/g, ' ').slice(0, 90)}`);
 
       /* and a gap can be chosen first, which is what makes the drag optional */
       check(`[${label}] ${d.id} nothing is lit before a gap is chosen`,
@@ -1561,13 +1567,16 @@ function suite(s, label, srcCss) {
       check(`[${label}] ${d.id} a name fills the chosen gap and clears it`,
             !!$('session.placed[4]') && $('session.aimed') === null,
             `placed ${!!$('session.placed[4]')}, aim ${$('session.aimed')}`);
-      /* A gap you filled has to read as yours. Wearing the chart's own accent,
-         a placed vessel was indistinguishable from one the chart printed for
-         you, so you could not see what you had answered. */
+      /* A gap you filled has to read as yours, and a vessel on the trunk has
+         to go on reading as the trunk. One class marks the answer, a second
+         one on top of it marks the trunk, so both survive. */
+      const marked = (html, n) =>
+        new RegExp(`<span class="got(?: spine)?">${esc(n.n)}</span>`).test(html)
+        && (!n.cont || html.includes(`<span class="got spine">${esc(n.n)}</span>`));
       check(`[${label}] ${d.id} a placed name reads as yours, not as the chart's`,
-            s.__app.innerHTML.includes(`<span class="got">${esc(blanks[4].n)}</span>`)
+            marked(s.__app.innerHTML, blanks[4])
             && !s.__app.innerHTML.includes(`<b>${esc(blanks[4].n)}</b>`),
-            'a placed vessel takes the colour of a printed landmark');
+            'a placed vessel is not marked as answered');
       /* and the name-in-hand order still works */
       $(`session.picked = ${JSON.stringify(blanks[5].n)}`);
       s.buildPlace(d, '5', blanks[5].n);
@@ -1614,8 +1623,8 @@ function suite(s, label, srcCss) {
         check(`[${label}] ${d.id} "${short}" answers "${withUnit.n}"`,
               !!$(`session.solved[${i}]`), 'the unit word was treated as required');
         check(`[${label}] ${d.id} a filled blank reads as yours too`,
-              s.__app.innerHTML.includes(`<span class="got">${esc(withUnit.n)}</span>`),
-              'a typed answer takes the colour of a printed landmark');
+              marked(s.__app.innerHTML, withUnit),
+              'a typed answer is not marked as answered');
       }
       const wrongAt = blanks.findIndex((n, i) => !$(`session.solved[${i}]`));
       $(`session.typed[${wrongAt}] = 'not a vessel at all'`);

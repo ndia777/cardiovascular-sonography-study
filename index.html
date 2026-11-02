@@ -992,13 +992,18 @@
      letting a long row wrap; the hanging indent on each row is what makes it
      wrap underneath itself instead of back to the margin */
   .chart .crow{white-space:pre-wrap;overflow-wrap:break-word}
-  /* The accent marks a landmark the chart printed for you. A vessel YOU put
-     there is the point of the drill, so it carries the colour the rest of the
-     app uses for right, and a wash behind it: two themes run their accent and
-     their green close enough together that colour alone could smear. */
+  /* Colour says WHERE a vessel sits, and the underline says you put it there.
+     Those are two different facts about one word, so they are carried by two
+     different things rather than fought over by one. A vessel answered in
+     green read as a third kind of vessel instead of as a filled gap. */
   .chart b{font-weight:700;color:var(--accent)}
-  .chart .got{font-weight:700;color:var(--good);border-radius:4px;padding:0 3px;
-    background:color-mix(in srgb,var(--good) 13%,transparent)}
+  .chart .got{color:var(--text);text-decoration:underline;
+    text-decoration-color:var(--good);text-decoration-thickness:2px;
+    text-underline-offset:3px;text-decoration-skip-ink:none}
+  /* The trunk: the vessels that run down the left margin of the chart, one
+     becoming the next. They keep the accent whether or not they are answered,
+     because that is what they are. */
+  .chart .got.spine{color:var(--accent);font-weight:700}
   .chart .cdrop{display:inline-block;padding:0 6px;border:1px dashed var(--dim);
     border-radius:5px;background:var(--card2);color:var(--dim);cursor:pointer;
     vertical-align:baseline}
@@ -2535,7 +2540,7 @@ function buildRows(d){
     const k = i++;
     /* not <b>: the accent is the chart's own mark for a landmark, and a gap you
        filled has to be legible AS something you filled */
-    if (s.placed[k]) return `<span class="got">${esc(n.n)}</span>`;
+    if (s.placed[k]) return `<span class="got${n.cont ? ' spine' : ''}">${esc(n.n)}</span>`;
     const w = Math.max(9, Math.min(32, n.n.length));
     const cls = (s.wrongAt[k] ? ' bad' : '') + (s.aimed === k ? ' armed' : '');
     return `<span class="cdrop${cls}" data-slot="${k}" style="width:${w}ch"> </span>`;
@@ -2723,7 +2728,7 @@ function wireChart(d){
    list of questions. */
 function fillSlot(n, i){
   const s = session, got = s.solved[i], typed = s.typed[i] || '';
-  if (got) return `<span class="got">${esc(n.n)}</span>`;
+  if (got) return `<span class="got${n.cont ? ' spine' : ''}">${esc(n.n)}</span>`;
   const w = Math.max(10, Math.min(34, n.n.length + 1));
   return `<input class="blank${s.wrong[i] ? ' bad' : ''}" id="bl${i}" data-i="${i}"
     style="width:${w}ch" autocomplete="off" autocapitalize="off" spellcheck="false"
