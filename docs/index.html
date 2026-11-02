@@ -14309,7 +14309,15 @@ window.DECKS = [
         { n: 'Aortic arch', cont: true, d: 'carries baroreceptors, and aortic bodies holding chemoreceptors', to: [
           { n: 'Brachiocephalic trunk', d: 'the first branch of the arch, and the only one of the three that is a trunk', to: [
             { n: 'Right common carotid artery', t: 'right head and neck', d: 'the right side of the head and neck, dividing into an external and an internal carotid like the left' },
-            { n: 'Right subclavian artery', t: 'right upper limb', d: 'the right upper limb, continuing as axillary, brachial, then radial and ulnar like the left' }
+            { n: 'Right subclavian artery', d: 'the right upper limb, taking the same names down the arm as the left does', to: [
+              { n: 'Right axillary artery', d: 'the name the right subclavian takes between the clavicle and the first rib', to: [
+                { n: 'Right brachial artery', d: 'the name it takes on leaving the axilla', to: [
+                  { n: 'Right deep brachial artery', t: 'right triceps brachii', d: 'curves behind the humerus to the triceps brachii' },
+                  { n: 'Right radial artery', t: 'right lateral forearm, a pulse point', d: 'runs close to the surface at the wrist, which makes it the usual pulse point' },
+                  { n: 'Right ulnar artery', t: 'right medial forearm', d: 'runs down the medial forearm to the network at the wrist' }
+                ] }
+              ] }
+            ] }
           ] },
           { n: 'Left common carotid artery', d: 'the second branch of the arch, dividing at the upper border of the larynx', to: [
             { n: 'External carotid artery', t: 'face, scalp, neck', d: 'the face, scalp and neck', to: [
@@ -14338,11 +14346,11 @@ window.DECKS = [
             { n: 'Internal thoracic artery', t: 'thoracic wall', d: 'descends behind the costal cartilages to supply the thoracic wall', to: [
               { n: 'Anterior intercostal arteries', t: 'intercostal muscles, mammary glands', d: 'two to each of the upper six intercostal spaces, supplying the intercostal muscles and the mammary glands' }
             ] },
-            { n: 'Axillary artery', d: 'the name the subclavian takes between the clavicle and the first rib', to: [
-              { n: 'Brachial artery', d: 'the name it takes on leaving the axilla', to: [
-                { n: 'Deep brachial artery', t: 'triceps brachii', d: 'curves behind the humerus to the triceps brachii' },
-                { n: 'Radial artery', t: 'lateral forearm, the usual pulse point', d: 'runs close to the surface at the wrist, which makes it the usual pulse point' },
-                { n: 'Ulnar artery', t: 'medial forearm', d: 'runs down the medial forearm to the network at the wrist' }
+            { n: 'Left axillary artery', d: 'the name the left subclavian takes between the clavicle and the first rib', to: [
+              { n: 'Left brachial artery', d: 'the name it takes on leaving the axilla', to: [
+                { n: 'Left deep brachial artery', t: 'left triceps brachii', d: 'curves behind the humerus to the triceps brachii' },
+                { n: 'Left radial artery', t: 'left lateral forearm, a pulse point', d: 'runs close to the surface at the wrist, which makes it the usual pulse point' },
+                { n: 'Left ulnar artery', t: 'left medial forearm', d: 'runs down the medial forearm to the network at the wrist' }
               ] }
             ] }
           ] },
