@@ -1477,6 +1477,14 @@ function suite(s, label, srcCss) {
       check(`[${label}] and cannot scroll sideways`,
             /overflow-x:s*hidden/.test(sideRule),
             'overflow-y alone makes overflow-x compute to auto');
+      /* .lbank centres its items. A COLUMN that centres content taller than
+         itself pushes the overflow off both ends, and only the bottom end is
+         reachable: scrollTop stops at 0, so the first names in the list sit
+         above the box forever. It shipped that way — the bank opened on the
+         C's with its scrollbar already at the top. */
+      check(`[${label}] the bank starts its list at the top`,
+            /justify-content:\s*flex-start/.test(sideRule),
+            'centred overflow puts the top of the list out of reach of scrollTop 0');
 
       /* Two colours, two meanings: the accent for a landmark the chart printed,
          the right-answer colour for a vessel you put there yourself. A couple

@@ -652,8 +652,14 @@
   /* nowrap matters: .lbank wraps, and a wrapping COLUMN with a capped height
      spills into a second and third column that run off the right edge, which
      is where the sideways scroll came from. One column, scrolled vertically. */
+  /* flex-start matters as much as nowrap: .lbank centres its items, and a
+     COLUMN that centres content taller than itself pushes the overflow off
+     both ends at once. The bottom of that overflow is reachable by scrolling
+     and the top is not, because scrollTop stops at 0 — so the bank opened on
+     the C's with its scrollbar already at the top and no way back up to the
+     A's. The mobile tray below overrode this and was never affected. */
   .lbank.side{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;
-    gap:6px;margin:0;
+    justify-content:flex-start;gap:6px;margin:0;
     position:sticky;top:10px;max-height:calc(100vh - 96px);overflow-y:auto;overflow-x:hidden;
     overscroll-behavior:contain;padding:10px;border:1px solid var(--line);
     border-radius:10px;background:var(--card)}
