@@ -11484,7 +11484,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-1',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -11607,7 +11606,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-2',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -11735,7 +11733,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-3',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -11849,7 +11846,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-4',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12003,7 +11999,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-5',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12137,7 +12132,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-6',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12244,7 +12238,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-7',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12438,7 +12431,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-8',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12536,7 +12528,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-9',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12659,7 +12650,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-10',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12781,7 +12771,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-11',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -12932,8 +12921,8 @@ window.DECKS = [
 {
   id: 'bio201-ch15-guide',
   group: 'Chapter 15 — Cardiovascular System',
-  current: true,
   exam: true,
+  retired: true,
   added: '2026-10-20',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -13137,7 +13126,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-flow-arteries',
   group: 'Chapter 15 — Blood Flow Sequence',
-  current: true,
   added: '2026-10-27',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
@@ -13252,7 +13240,6 @@ window.DECKS = [
 {
   id: 'bio201-ch15-flow-veins',
   group: 'Chapter 15 — Blood Flow Sequence',
-  current: true,
   added: '2026-10-27',
   termNo: 2,
   course: 'BIO201 · Anatomy & Physiology 2',
