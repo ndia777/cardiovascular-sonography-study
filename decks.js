@@ -13114,7 +13114,6 @@ window.DECKS = [
 {
   id: 'm101-ch1-role',
   group: 'Chapter 1 — The Medical Assistant and the Health Care Team',
-  current: true,
   added: '2026-10-22',
   termNo: 2,
   course: 'M101 · Medical Office Management',
@@ -13245,7 +13244,6 @@ window.DECKS = [
 {
   id: 'm101-ch1-scope',
   group: 'Chapter 1 — The Medical Assistant and the Health Care Team',
-  current: true,
   added: '2026-10-22',
   termNo: 2,
   course: 'M101 · Medical Office Management',
@@ -13342,7 +13340,6 @@ window.DECKS = [
 {
   id: 'm101-ch1-law',
   group: 'Chapter 1 — The Medical Assistant and the Health Care Team',
-  current: true,
   added: '2026-10-22',
   termNo: 2,
   course: 'M101 · Medical Office Management',
@@ -13430,7 +13427,6 @@ window.DECKS = [
 {
   id: 'm101-ch1-providers',
   group: 'Chapter 1 — The Medical Assistant and the Health Care Team',
-  current: true,
   added: '2026-10-22',
   termNo: 2,
   course: 'M101 · Medical Office Management',
@@ -13555,7 +13551,6 @@ window.DECKS = [
 {
   id: 'm101-ch1-settings',
   group: 'Chapter 1 — The Medical Assistant and the Health Care Team',
-  current: true,
   added: '2026-10-22',
   termNo: 2,
   course: 'M101 · Medical Office Management',
@@ -13641,7 +13636,6 @@ window.DECKS = [
 {
   id: 'm101-ch1-cam',
   group: 'Chapter 1 — The Medical Assistant and the Health Care Team',
-  current: true,
   added: '2026-10-22',
   termNo: 2,
   course: 'M101 · Medical Office Management',
@@ -13706,7 +13700,6 @@ window.DECKS = [
 {
   id: 'm101-mc-money',
   group: 'Managed Care',
-  current: true,
   added: '2026-10-29',
   termNo: 2,
   course: 'M101 · Medical Office Management',
@@ -13824,7 +13817,6 @@ window.DECKS = [
 {
   id: 'm101-mc-plans',
   group: 'Managed Care',
-  current: true,
   added: '2026-10-29',
   termNo: 2,
   course: 'M101 · Medical Office Management',
