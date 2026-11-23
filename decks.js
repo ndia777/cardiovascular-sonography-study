@@ -16347,7 +16347,7 @@ window.DECKS = [
   added: '2026-10-26',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 14 — Combining Forms & Word Building',
+  title: 'Ch. 14.1–14.2 — Combining Forms & Word Building',
   source: 'Chapter 14 — course notes',
   cards: [
     { term: 'stomat/o', def: 'mouth' },
@@ -16479,7 +16479,7 @@ window.DECKS = [
   added: '2026-10-26',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 14 — Structure & Function',
+  title: 'Ch. 14.1 — Structure & Function',
   source: 'Chapter 14 — course notes',
   cards: [
     { term: 'Gastroenterology', def: 'the study of the stomach and intestines' },
@@ -16666,7 +16666,7 @@ window.DECKS = [
   added: '2026-10-26',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 14 — Diagnostic & Procedural Terms',
+  title: 'Ch. 14.3 — Diagnostic & Procedural Terms',
   source: 'Chapter 14 — course notes',
   cards: [
     { fact: true, term: 'Why scopes are the usual way to evaluate the digestive system',
@@ -16734,7 +16734,7 @@ window.DECKS = [
   added: '2026-10-26',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 14 — Pathology: Eating Disorders, Mouth & Stomach',
+  title: 'Ch. 14.4 — Pathology: Eating Disorders, Mouth & Stomach',
   source: 'Chapter 14 — course notes',
   cards: [
     { fact: true, term: 'The most common pathological conditions associated with the digestive system',
@@ -16853,7 +16853,7 @@ window.DECKS = [
   added: '2026-10-26',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 14 — Pathology: Liver, Intestines & Hernias',
+  title: 'Ch. 14.4 — Pathology: Liver, Intestines & Hernias',
   source: 'Chapter 14 — course notes',
   cards: [
     { term: 'Jaundice', also: ['Icterus'],
@@ -17014,7 +17014,7 @@ window.DECKS = [
   added: '2026-10-26',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 14 — Surgical Terms',
+  title: 'Ch. 14.5 — Surgical Terms',
   source: 'Chapter 14 — course notes',
   cards: [
     { term: 'Abdominocentesis', also: ['Paracentesis'],
@@ -17108,7 +17108,7 @@ window.DECKS = [
   added: '2026-10-26',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 14 — Pharmacology & Abbreviations',
+  title: 'Ch. 14.6–14.7 — Pharmacology & Abbreviations',
   source: 'Chapter 14 — course notes',
   cards: [
     { term: 'Antacid', def: 'an agent that neutralizes stomach acid' },
@@ -17192,7 +17192,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Combining Forms & Word Building',
+  title: 'Ch. 11.1–11.2 — Combining Forms & Word Building',
   source: 'Chapter 11 — course notes',
   cards: [
     { term: 'angi/o', def: 'blood vessel' },
@@ -17275,7 +17275,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Structure & Function',
+  title: 'Ch. 11.1 — Structure & Function',
   source: 'Chapter 11 — course notes',
   cards: [
     { fact: true, term: 'The function of the cardiovascular system',
@@ -17401,7 +17401,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Blood Pressure, Conduction & Fetal Circulation',
+  title: 'Ch. 11.1 — Blood Pressure, Conduction & Fetal Circulation',
   source: 'Chapter 11 — course notes',
   cards: [
     { term: 'Blood pressure', def: 'the force of the blood surging against the walls of the arteries, recorded as the systolic pressure followed by the diastolic pressure' },
@@ -17517,7 +17517,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Diagnostic, Procedural & Laboratory Terms',
+  title: 'Ch. 11.3 — Diagnostic, Procedural & Laboratory Terms',
   source: 'Chapter 11 — course notes',
   cards: [
     { term: 'Cardiologist', def: 'a doctor who specializes in the diagnosis and treatment of cardiovascular disease' },
@@ -17624,7 +17624,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Pathology: Rhythm & Blood Pressure',
+  title: 'Ch. 11.4 — Pathology: Rhythm & Blood Pressure',
   source: 'Chapter 11 — course notes',
   cards: [
     { fact: true, term: 'Three kinds of cause of cardiovascular disease',
@@ -17711,7 +17711,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Pathology: Vessels, Heart & Valves',
+  title: 'Ch. 11.4 — Pathology: Vessels, Heart & Valves',
   source: 'Chapter 11 — course notes',
   cards: [
     { term: 'Plaque', def: 'a buildup of fatty material deposited on the wall of an artery' },
@@ -17842,7 +17842,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Surgical Terms',
+  title: 'Ch. 11.5 — Surgical Terms',
   source: 'Chapter 11 — course notes',
   cards: [
     { fact: true, term: 'The goal of most cardiovascular surgery',
@@ -17930,7 +17930,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Pharmacological Terms',
+  title: 'Ch. 11.6 — Pharmacological Terms',
   source: 'Chapter 11 — course notes',
   cards: [
     { term: 'Antianginals', def: 'drugs that relieve the pain of angina and prevent attacks of it' },
@@ -17990,7 +17990,7 @@ window.DECKS = [
   added: '2026-11-02',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 11 — Abbreviations',
+  title: 'Ch. 11.7 — Abbreviations',
   source: 'Chapter 11 — course notes',
   cards: [
     { term: 'AV', def: 'atrioventricular, meaning between an atrium and a ventricle' },
@@ -19260,7 +19260,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Combining Forms & Word Building',
+  title: 'Ch. 15.1–15.2 — Combining Forms & Word Building',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'cali/o, calic/o', def: 'calyx',
@@ -19337,7 +19337,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Structure & Function',
+  title: 'Ch. 15.1 — Structure & Function',
   source: 'Chapter 15 — course notes',
   cards: [
     { fact: true, term: 'What the urinary system does',
@@ -19424,7 +19424,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — The Nephron, Filtration & Blood Pressure',
+  title: 'Ch. 15.1 — The Nephron, Filtration & Blood Pressure',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'nephron', def: 'the functional unit of the kidney, which removes waste products from the blood and produces urine' },
@@ -19502,7 +19502,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Urinalysis & Laboratory Terms',
+  title: 'Ch. 15.3 — Urinalysis & Laboratory Terms',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'urinalysis', also: ['UA', 'U/A'], def: 'examination of urine for its physical, chemical and microscopic properties',
@@ -19594,7 +19594,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Imaging Tests & Urinary Tract Procedures',
+  title: 'Ch. 15.3 — Imaging Tests & Urinary Tract Procedures',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'kidney, ureter, bladder', also: ['KUB'], def: 'an x-ray of three parts of the urinary tract, taken from a midabdominal view',
@@ -19665,7 +19665,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Pathology: Infections & Kidney Conditions',
+  title: 'Ch. 15.4 — Pathology: Infections & Kidney Conditions',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'urinary tract infection', also: ['UTI'], def: 'any infection within the urinary tract, from the kidneys to the urethra',
@@ -19751,7 +19751,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Pathology: Bladder, Urination & Urine Findings',
+  title: 'Ch. 15.4 — Pathology: Bladder, Urination & Urine Findings',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'cystitis', def: 'inflammation of the bladder',
@@ -19833,7 +19833,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Surgical Terms',
+  title: 'Ch. 15.5 — Surgical Terms',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'nephrectomy', def: 'removal of a kidney',
@@ -19928,7 +19928,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Pharmacological Terms',
+  title: 'Ch. 15.6 — Pharmacological Terms',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'analgesic', def: 'a medication that relieves pain' },
@@ -19968,7 +19968,7 @@ window.DECKS = [
   added: '2026-11-16',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 15 — Abbreviations',
+  title: 'Ch. 15.7 — Abbreviations',
   source: 'Chapter 15 — course notes',
   cards: [
     { term: 'ARF', def: 'acute renal failure, a sudden loss of kidney function',
@@ -20172,7 +20172,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Combining Forms & Word Building',
+  title: 'Ch. 7.1–7.2 — Combining Forms & Word Building',
   source: 'Chapter 7 — course notes',
   cards: [
     { term: 'cephal/o', def: 'head' },
@@ -20258,7 +20258,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — The Neuron & the Nerve Impulse',
+  title: 'Ch. 7.1 — The Neuron & the Nerve Impulse',
   source: 'Chapter 7 — course notes',
   cards: [
     { fact: true, term: 'What the nervous system does for the body',
@@ -20386,7 +20386,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — The Brain',
+  title: 'Ch. 7.1 — The Brain',
   source: 'Chapter 7 — course notes',
   cards: [
     { fact: true, term: 'What an adult brain weighs',
@@ -20514,7 +20514,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Spinal Cord & Meninges',
+  title: 'Ch. 7.1 — Spinal Cord & Meninges',
   source: 'Chapter 7 — course notes',
   cards: [
     { term: 'spinal cord',
@@ -20588,7 +20588,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Peripheral Nerves & Divisions',
+  title: 'Ch. 7.1 — Peripheral Nerves & Divisions',
   source: 'Chapter 7 — course notes',
   cards: [
     { fact: true, term: 'How many pairs of cranial nerves there are',
@@ -20710,7 +20710,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Diagnostic Tests & Procedures',
+  title: 'Ch. 7.3 — Diagnostic Tests & Procedures',
   source: 'Chapter 7 — course notes',
   cards: [
     { term: 'electroencephalogram', also: ['EEG'],
@@ -20810,7 +20810,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Trauma & Congenital Disorders',
+  title: 'Ch. 7.4 — Trauma & Congenital Disorders',
   source: 'Chapter 7 — course notes',
   cards: [
     { fact: true, term: 'What protects the nervous system from most external trauma',
@@ -20894,7 +20894,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Degenerative & Nondegenerative Disorders',
+  title: 'Ch. 7.4 — Degenerative & Nondegenerative Disorders',
   source: 'Chapter 7 — course notes',
   cards: [
     { fact: true, term: 'The goal of treatment in a degenerative nerve disease',
@@ -21024,7 +21024,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Infections, Growths & Vascular Disorders',
+  title: 'Ch. 7.4 — Infections, Growths & Vascular Disorders',
   source: 'Chapter 7 — course notes',
   cards: [
     { term: 'shingles',
@@ -21152,7 +21152,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Surgical Terms',
+  title: 'Ch. 7.5 — Surgical Terms',
   source: 'Chapter 7 — course notes',
   cards: [
     { fact: true, term: 'Why surgery on this system is always high risk',
@@ -21222,7 +21222,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Pharmacological Terms',
+  title: 'Ch. 7.6 — Pharmacological Terms',
   source: 'Chapter 7 — course notes',
   cards: [
     { term: 'analgesics',
@@ -21274,7 +21274,7 @@ window.DECKS = [
   added: '2026-11-23',
   termNo: 2,
   course: 'M160 · Medical Terminology 2',
-  title: 'Ch. 7 — Abbreviations',
+  title: 'Ch. 7.7 — Abbreviations',
   source: 'Chapter 7 — course notes',
   cards: [
     { term: 'ALS', def: 'amyotrophic lateral sclerosis, the degenerative disease of the motor neurons' },
