@@ -138,6 +138,31 @@
     font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-text-size-adjust:100%;
   }
+
+  /* ---- the bloom ----
+     A light source behind the page, low and centred, so the background opens
+     out of --bg into --bg2 instead of sitting flat. Both are already the
+     theme's own colours, so all eleven palettes and both modes get it with
+     nothing to maintain per theme. It is fixed rather than scrolling, because
+     a light source does not move when the page does.
+
+     --wash is the one addition, and it exists because the pair is not equally
+     far apart in every theme. --bg to --bg2 is a 9-level step in Deep Indigo
+     but under 5 in Oxblood, so on the darker palettes the bloom all but
+     disappeared. A constant lift fixes that better than a proportional one
+     would: being constant, it carries Oxblood and Onyx up to where Indigo
+     already sat rather than scaling every theme up together. Light mode
+     carries no wash at all — a step that small still reads on a bright page,
+     and adding one only greyed the lighter palettes. */
+  :root{ --wash: rgba(255,255,255,.030); }
+  html[data-mode="light"]{ --wash: transparent; }
+  body::before{
+    content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(ellipse 120% 70% at 50% 100%, var(--wash) 0%, transparent 70%),
+      radial-gradient(ellipse 150% 95% at 50% 100%, var(--bg2) 0%, var(--bg) 62%),
+      var(--bg);
+  }
   .wrap{max-width:900px;margin:0 auto;padding:20px 18px 80px}
   a{color:var(--accent)}
   button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
