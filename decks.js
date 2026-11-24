@@ -22936,6 +22936,12 @@ window.DECKS = [
   title: 'Ch. 20 — Urinary: Assigned Question Formats',
   source: 'Chapter 20 — instructor assignment',
   note: "These run heavily to labelling, ordering and matching rather than plain recall, so work the sequences and the label sets until they are automatic.",
+  /* The cards here are prompts rather than terms, because the assignment is
+     built on labelling, ordering and matching. So Recall has nothing to type,
+     and pairing "the ten labels on a frontal section" against another card's
+     answer in matching or true-or-false is wrong at a glance without knowing
+     anything. What is left reads a prompt and shows an answer. */
+  only: ['quiz', 'learn', 'browse', 'chapter'],
   cards: [
     { fact: true, term: 'The two things the urinary system regulates, when the choices include blood glucose and bile secretion',
       def: 'the composition of body fluids and the pH of the blood, since glucose is reabsorbed rather than regulated here and bile belongs to the liver' },
